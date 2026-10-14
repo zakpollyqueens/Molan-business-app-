@@ -46,3 +46,12 @@ The initial frontend and database foundation have been committed, but this READM
 - Finance income/expense entries and simple totals. These are manual management records and are not connected to a bank or payment processor.
 - Database RLS policies are enabled for the added tables. Role-specific financial restrictions and granular department-level data access need additional review before handling sensitive live finance data.
 - Invitation token acceptance checks the authenticated account email and token expiry; the token is stored hashed in the database.
+
+
+## Onboarding, school operations and website services
+- Company onboarding captures a business profile category (30 options) and an existing website URL.
+- Attendance records, management reports and Staff Council meeting/minutes records are available as workspace modules.
+- Website service requests route to ZakiTech with package prices enforced in the database: Starter UGX 200,000; Business UGX 300,000; Premium UGX 450,000.
+- Website payments support installment records and remain pending until an authorized owner/admin checks the payment reference and marks them verified. No mobile-money gateway or automated payment verification is connected yet.
+- GitHub Pages deployment workflow is included. Repository Pages settings may need to be set to use **GitHub Actions** before the first deployment can succeed.
+- These modules are an extensible business-management foundation; they are not yet a full school information system, full accounting package, payment gateway, or automated stock-deduction sales system.
