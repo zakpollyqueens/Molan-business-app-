@@ -37,3 +37,12 @@ Serve this folder with any static HTTP server, or publish it using a static host
 
 ## Important
 The initial frontend and database foundation have been committed, but this README does not claim the application has passed full end-to-end testing or has been published to a live hosting URL.
+
+
+## Expanded business modules
+- Team invitations use expiring, one-time links; the invited person must sign in with the invited email. Email delivery is not configured, so the workspace admin shares the generated link.
+- Customer records and inventory items with stock quantity, reorder level, unit cost, and selling price.
+- Sales order records and high-level order/payment totals. The current sales form records order totals; line-item entry and automatic stock deduction remain future work.
+- Finance income/expense entries and simple totals. These are manual management records and are not connected to a bank or payment processor.
+- Database RLS policies are enabled for the added tables. Role-specific financial restrictions and granular department-level data access need additional review before handling sensitive live finance data.
+- Invitation token acceptance checks the authenticated account email and token expiry; the token is stored hashed in the database.
