@@ -1,57 +1,44 @@
 # Molan Business
 
-Molan Business is a responsive company workspace frontend backed by Supabase.
+Molan Business is a responsive, Supabase-backed workspace for small businesses and teams. The production frontend is published with GitHub Pages.
 
-## Implemented
-- Email/password sign-up and sign-in, password-reset requests, and persistent browser sessions
-- Company workspace creation through an authenticated database function
-- Company, member, department, task, product, announcement, and audit-event database tables
-- Row-level security policies for company membership and role-based access
-- Automatic user-profile creation after Supabase Auth signup
-- Overview dashboard with task, product, and team metrics
-- Task creation, assignment, priority, due dates, status filters, and search
-- Product hub for applications, websites, and services
-- Company announcements
-- Team and role visibility
+## Open the application
+
+- Live app: https://zakpollyqueens.github.io/Molan-business-app-/
+- Source repository: https://github.com/zakpollyqueens/Molan-business-app-
+
+New visitors are connected automatically to the configured Supabase project. The browser uses only the project's **publishable** key; access to company data must be enforced by Supabase Row Level Security (RLS). Existing local browser configuration is retained for users who deliberately configured a different project.
+
+## Current functionality
+
+- Email/password sign-up and sign-in, password-reset requests, persistent browser sessions, and explicit sign-out
+- Company workspace creation and business onboarding with 30 business-category choices and an optional existing website
+- Role-based company membership, departments, invitation links, and invitation acceptance
+- Overview dashboard and management for tasks, products, announcements, team visibility, and audit events
+- Customer records, inventory records, sales orders, and manual finance transactions
+- Attendance records, management reports, and Staff Council meetings, agendas, minutes, and decisions
+- ZakiTech website service requests and installment records
+- Server-side enforcement of website package prices: Starter UGX 200,000; Business UGX 300,000; Premium UGX 450,000
 - Responsive desktop and mobile navigation
-- Database indexes for frequently queried foreign-key columns
-- JavaScript syntax validation in GitHub Actions
+- GitHub Actions frontend syntax and module smoke checks, plus automated GitHub Pages deployment
 
-## Supabase setup
-The connected Supabase project reference is `rcubnewrfieqhwcnvrzs`.
+## Supabase project and security
 
-On first launch, enter the project URL and a **publishable** key in the setup screen. The configuration is stored in the current browser's local storage. Never put a service-role or secret key into client-side code.
+The app connects to project reference `rcubnewrfieqhwcnvrzs`. The public browser configuration contains a Supabase publishable key only. **Never place a service-role key or other server secret in frontend code.**
 
-Email confirmation behavior depends on the project's Supabase Auth settings. If confirmation is enabled, a new user must confirm their email before signing in.
+Supabase RLS is enabled on the application's public tables. Invitation creation/acceptance and company creation use database functions with validation and controlled privileges. Review Supabase Security Advisor findings periodically, especially after schema or policy changes.
 
-## Run locally
-Serve this folder with any static HTTP server, or publish it using a static host. The app uses the Supabase JavaScript v2 CDN library.
+Email confirmation behavior depends on Supabase Auth settings. If email confirmation is enabled, a new user must confirm their email before signing in. Password reset depends on the project's configured email delivery and redirect URLs.
 
-## Next development phases
-- Team invitation and member administration
-- Department editing and deletion
-- Editing and deletion with audit history
-- Finance, inventory, customers, sales, and reporting modules
-- Browser-level end-to-end tests
-- Production deployment and domain configuration
+## Important limitations
 
-## Important
-The initial frontend and database foundation have been committed, but this README does not claim the application has passed full end-to-end testing or has been published to a live hosting URL.
+- Team invitation links are generated in the app, but automatic email delivery is not configured.
+- Website-service payments are recorded for manual review; there is no automated Mobile Money/bank payment gateway or automatic payment verification.
+- Sales orders currently capture order-level records; full line-item sales workflows and automatic inventory deduction are not yet complete.
+- Finance entries are management records, not a full accounting package and not connected to bank feeds.
+- The app provides a general business-management foundation, not a complete school information system or full enterprise resource-planning suite.
+- GitHub Actions confirms build/deployment and static checks. Full browser-based end-to-end testing of sign-up, login, workspace creation, permissions, and each workflow is still required before treating all features as production-verified.
 
+## Local development
 
-## Expanded business modules
-- Team invitations use expiring, one-time links; the invited person must sign in with the invited email. Email delivery is not configured, so the workspace admin shares the generated link.
-- Customer records and inventory items with stock quantity, reorder level, unit cost, and selling price.
-- Sales order records and high-level order/payment totals. The current sales form records order totals; line-item entry and automatic stock deduction remain future work.
-- Finance income/expense entries and simple totals. These are manual management records and are not connected to a bank or payment processor.
-- Database RLS policies are enabled for the added tables. Role-specific financial restrictions and granular department-level data access need additional review before handling sensitive live finance data.
-- Invitation token acceptance checks the authenticated account email and token expiry; the token is stored hashed in the database.
-
-
-## Onboarding, school operations and website services
-- Company onboarding captures a business profile category (30 options) and an existing website URL.
-- Attendance records, management reports and Staff Council meeting/minutes records are available as workspace modules.
-- Website service requests route to ZakiTech with package prices enforced in the database: Starter UGX 200,000; Business UGX 300,000; Premium UGX 450,000.
-- Website payments support installment records and remain pending until an authorized owner/admin checks the payment reference and marks them verified. No mobile-money gateway or automated payment verification is connected yet.
-- GitHub Pages deployment workflow is included. Repository Pages settings may need to be set to use **GitHub Actions** before the first deployment can succeed.
-- These modules are an extensible business-management foundation; they are not yet a full school information system, full accounting package, payment gateway, or automated stock-deduction sales system.
+Serve this folder with a static HTTP server, or use GitHub Pages. The app loads Supabase JavaScript v2 from its CDN.
