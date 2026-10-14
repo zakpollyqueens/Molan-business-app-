@@ -29,6 +29,9 @@ jobs:
           for (const feature of ['accept_company_invitation','create_company_invitation','attendance_records','website_service_requests','website_service_payments','finance_transactions','inventory_items','sales_orders']) {
             if (!js.includes(feature)) throw new Error('Missing expected app integration: ' + feature);
           }
+          if (!js.includes('https://rcubnewrfieqhwcnvrzs.supabase.co')) throw new Error('Default Supabase project URL is missing.');
+          if (!js.includes('sb_publishable_')) throw new Error('Default Supabase publishable-key configuration is missing.');
+          if (!js.includes('DEFAULT_SUPABASE_CONFIG')) throw new Error('First-time visitors must be auto-configured.');
           if (/service_role|SUPABASE_SERVICE_ROLE_KEY/i.test(js)) throw new Error('A service-role secret must never be shipped in frontend code.');
-          console.log('Frontend module smoke checks passed.');
+          console.log('Frontend module, default connection, and public-key safety smoke checks passed.');
           NODE
