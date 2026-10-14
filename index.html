@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#081a35">
+  <meta name="description" content="Molan Business — manage your team, tasks, products and company updates in one workspace.">
+  <title>Molan Business</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+  <div id="toast" class="toast" role="status"></div>
+  <main id="app" class="app-shell">
+    <section id="setup-screen" class="auth-layout hidden">
+      <div class="brand-lockup"><div class="brand-mark">M</div><div><div class="brand-name">MOLAN <span>BUSINESS</span></div><div class="brand-tagline">Your business, in sync.</div></div></div>
+      <div class="auth-card">
+        <div class="eyebrow">FIRST-TIME CONNECTION</div><h1>Connect your workspace</h1><p class="muted">Enter your Supabase project URL and publishable key. These settings stay in this browser only.</p>
+        <form id="setup-form" class="form-stack">
+          <label>Supabase project URL<input id="project-url" type="url" placeholder="https://your-project.supabase.co" required></label>
+          <label>Publishable key<input id="publishable-key" type="password" placeholder="sb_publishable_…" required autocomplete="off"></label>
+          <button class="button primary full" type="submit">Connect securely <span>→</span></button>
+        </form><p class="tiny muted">Use a publishable/anon key only. Never enter a service-role key here.</p>
+      </div>
+    </section>
+    <section id="auth-screen" class="auth-layout hidden">
+      <div class="auth-intro"><div class="brand-lockup"><div class="brand-mark">M</div><div><div class="brand-name">MOLAN <span>BUSINESS</span></div><div class="brand-tagline">Your business, in sync.</div></div></div>
+        <div class="hero-copy"><div class="eyebrow">ONE WORKSPACE. MORE MOMENTUM.</div><h1>Make the work<br><em>move forward.</em></h1><p>Bring your people, projects, products and priorities into one clear view.</p></div>
+        <div class="feature-pills"><span>✦ Team operations</span><span>↗ Product hub</span><span>◷ Task tracking</span></div>
+      </div>
+      <div class="auth-card auth-form-card">
+        <div class="auth-tabs"><button class="tab active" data-auth-mode="signin">Sign in</button><button class="tab" data-auth-mode="signup">Create account</button></div>
+        <h2 id="auth-title">Welcome back</h2><p id="auth-subtitle" class="muted">Sign in to continue to your workspace.</p>
+        <form id="auth-form" class="form-stack">
+          <label id="name-field" class="hidden">Full name<input id="display-name" autocomplete="name" placeholder="Your name"></label>
+          <label>Email address<input id="email" type="email" required autocomplete="email" placeholder="you@company.com"></label>
+          <label>Password<input id="password" type="password" required minlength="8" autocomplete="current-password" placeholder="At least 8 characters"></label>
+          <button id="auth-submit" class="button primary full" type="submit">Sign in <span>→</span></button>
+        </form><button id="reset-password" class="text-button">Forgot password?</button>
+        <div class="secure-note">▣ Your workspace is protected by Supabase authentication and database access policies.</div>
+      </div>
+    </section>
+    <section id="company-screen" class="auth-layout hidden">
+      <div class="auth-intro"><div class="brand-lockup"><div class="brand-mark">M</div><div><div class="brand-name">MOLAN <span>BUSINESS</span></div><div class="brand-tagline">Your business, in sync.</div></div></div><div class="hero-copy"><div class="eyebrow">LET'S GET YOU SET UP</div><h1>Give your team<br><em>a home base.</em></h1><p>Create your company workspace. You will become its owner and can invite your team later.</p></div></div>
+      <div class="auth-card"><div class="eyebrow">WORKSPACE SETUP</div><h2>Create your company</h2><p class="muted">You can update these details later.</p>
+        <form id="company-form" class="form-stack"><label>Company name<input id="company-name" required maxlength="120" placeholder="e.g. Molan Business"></label><label>Motto <span class="optional">Optional</span><input id="company-motto" placeholder="What your company stands for"></label><button class="button primary full" type="submit">Create workspace <span>→</span></button></form>
+      </div>
+    </section>
+    <section id="dashboard-screen" class="dashboard hidden">
+      <aside class="sidebar"><div class="brand-lockup side-brand"><div class="brand-mark">M</div><div><div class="brand-name">MOLAN</div><div class="brand-tagline">BUSINESS SUITE</div></div></div>
+        <div class="workspace-chip"><span class="workspace-dot"></span><span id="sidebar-company">My workspace</span><span class="chevron">⌄</span></div>
+        <div class="nav-label">WORKSPACE</div><nav id="main-nav">
+          <button class="nav-item active" data-page="overview"><span>▦</span> Overview</button>
+          <button class="nav-item" data-page="tasks"><span>✓</span> Tasks <span id="task-count" class="nav-count">0</span></button>
+          <button class="nav-item" data-page="products"><span>◈</span> Product hub</button>
+          <button class="nav-item" data-page="team"><span>♙</span> Team</button>
+          <button class="nav-item" data-page="announcements"><span>◉</span> Announcements</button>
+        </nav><div class="sidebar-bottom"><div class="help-card"><div class="help-icon">✦</div><strong>Keep momentum</strong><p>Clear priorities make great work happen.</p></div><button id="signout" class="nav-item signout"><span>↪</span> Sign out</button><div class="profile-mini"><div id="avatar" class="avatar">M</div><div class="profile-text"><strong id="profile-name">Member</strong><span id="profile-email">Signed in</span></div><button id="settings-button" class="icon-button" aria-label="Settings">⚙</button></div></div>
+      </aside>
+      <div class="main-column"><header class="topbar"><div><div class="breadcrumb">Workspace <span>/</span> <strong id="breadcrumb-page">Overview</strong></div><div id="today-label" class="today-label"></div></div><div class="top-actions"><button id="refresh-button" class="button secondary small">↻ Refresh</button><div class="top-avatar" id="top-avatar">M</div></div></header>
+        <div id="page-content" class="page-content"><div class="loading"><div class="spinner"></div> Loading your workspace…</div></div>
+      </div>
+    </section>
+  </main>
+  <div id="modal-root"></div>
+  <script src="app.js"></script>
+</body></html>
