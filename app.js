@@ -3,6 +3,11 @@
   const $ = (s, root=document) => root.querySelector(s);
   const $$ = (s, root=document) => [...root.querySelectorAll(s)];
   const CONFIG_KEY = 'molan_supabase_config_v1';
+  // Supabase publishable keys are designed for browser use; database access is protected by RLS.
+  const DEFAULT_SUPABASE_CONFIG = {
+    url: 'https://rcubnewrfieqhwcnvrzs.supabase.co',
+    key: 'sb_publishable_0T7DCcWPMHr5sRGMUcc8sQ_8jnobyYQ'
+  };
   let supabase = null, session = null, user = null, company = null, membership = null, currentPage = 'overview', authMode = 'signin';
   let cache = {tasks:[],products:[],members:[],profiles:[],announcements:[],departments:[],customers:[],inventory:[],sales:[],finance:[],invitations:[],attendance:[],reports:[],council:[],websiteRequests:[],websitePayments:[]};
   const screens = ['setup-screen','auth-screen','company-screen','dashboard-screen'];
@@ -15,9 +20,21 @@
   function getConfig(){try{return JSON.parse(localStorage.getItem(CONFIG_KEY)||'null')}catch{return null}}
   function setClient(url,key){supabase=window.supabase.createClient(url,key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}})}
   function initConfig(){
-    const c=getConfig();
-    if(!c?.url||!c?.key){showScreen('setup-screen');return}
-    try{setClient(c.url,c.key);showScreen('auth-screen');supabase.auth.getSession().then(({data})=>{session=data.session;user=session?.user||null;if(user)bootUser()})}
+    // First-time visitors are connected automatically. A custom browser config still takes precedence.
+    let c=getConfig();
+    if(!c?.url||!c?.key){
+      c=DEFAULT_SUPABASE_CONFIG;
+      try{localStorage.setItem(CONFIG_KEY,JSON.stringify(c))}catch(e){}
+    }
+    try{
+      setClient(c.url,c.key);
+      showScreen('auth-screen');
+      supabase.auth.getSession().then(({data,error})=>{
+        if(error)throw error;
+        session=data.session;user=session?.user||null;
+        if(user)bootUser();
+      }).catch(e=>toast('Could not connect to Molan Business. Check your internet connection and reload.',true));
+    }
     catch(e){localStorage.removeItem(CONFIG_KEY);showScreen('setup-screen');toast('Could not initialize Supabase. Check the project URL and key.',true)}
   }
   $('#setup-form').addEventListener('submit',e=>{e.preventDefault();const url=$('#project-url').value.trim().replace(/\/$/,''),key=$('#publishable-key').value.trim();if(!/^https:\/\/[\w.-]+\.supabase\.co$/.test(url)){toast('Enter a valid Supabase project URL.',true);return}if(!key){toast('Enter your publishable key.',true);return}try{setClient(url,key);localStorage.setItem(CONFIG_KEY,JSON.stringify({url,key}));showScreen('auth-screen');toast('Connected. Sign in or create your account.')}catch(err){toast('Connection setup failed: '+err.message,true)}});
