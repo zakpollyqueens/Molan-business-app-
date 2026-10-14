@@ -47,10 +47,12 @@
       </div>
     </section>
     <section id="dashboard-screen" class="dashboard hidden">
-      <aside class="sidebar"><div class="brand-lockup side-brand"><div class="brand-mark">M</div><div><div class="brand-name">MOLAN</div><div class="brand-tagline">BUSINESS SUITE</div></div></div>
+      <div id="mobile-menu-backdrop" class="mobile-menu-backdrop" aria-hidden="true"></div>
+      <aside id="app-sidebar" class="sidebar"><div class="brand-lockup side-brand"><button id="mobile-menu-close" class="mobile-menu-close" aria-label="Close navigation">✕</button><div class="brand-mark">M</div><div><div class="brand-name">MOLAN</div><div class="brand-tagline">BUSINESS SUITE</div></div></div>
         <div class="workspace-chip"><span class="workspace-dot"></span><span id="sidebar-company">My workspace</span><span class="chevron">⌄</span></div>
         <div class="nav-label">WORKSPACE</div><nav id="main-nav">
           <button class="nav-item active" data-page="overview"><span>▦</span> Overview</button>
+          <button class="nav-item" data-page="business-profile"><span>▧</span> Business profile</button>
           <button class="nav-item" data-page="tasks"><span>✓</span> Tasks <span id="task-count" class="nav-count">0</span></button>
           <button class="nav-item" data-page="products"><span>◈</span> Product hub</button>
           <button class="nav-item" data-page="team"><span>♙</span> Team</button>
@@ -65,7 +67,7 @@
           <button class="nav-item" data-page="websites"><span>◈</span> Website services</button>
         </nav><div class="sidebar-bottom"><div class="help-card"><div class="help-icon">✦</div><strong>Keep momentum</strong><p>Clear priorities make great work happen.</p></div><button id="signout" class="nav-item signout"><span>↪</span> Sign out</button><div class="profile-mini"><div id="avatar" class="avatar">M</div><div class="profile-text"><strong id="profile-name">Member</strong><span id="profile-email">Signed in</span></div><button id="settings-button" class="icon-button" aria-label="Settings">⚙</button></div></div>
       </aside>
-      <div class="main-column"><header class="topbar"><div><div class="breadcrumb">Workspace <span>/</span> <strong id="breadcrumb-page">Overview</strong></div><div id="today-label" class="today-label"></div></div><div class="top-actions"><button id="refresh-button" class="button secondary small">↻ Refresh</button><div class="top-avatar" id="top-avatar">M</div></div></header>
+      <div class="main-column"><header class="topbar"><div class="topbar-left"><button id="mobile-menu-button" class="mobile-menu-button" aria-label="Open navigation" aria-expanded="false" aria-controls="app-sidebar"><span></span><span></span><span></span></button><div><div class="breadcrumb">Workspace <span>/</span> <strong id="breadcrumb-page">Overview</strong></div><div id="today-label" class="today-label"></div></div></div><div class="top-actions"><button id="refresh-button" class="button secondary small">↻ Refresh</button><div class="top-avatar" id="top-avatar">M</div></div></header>
         <div id="page-content" class="page-content"><div class="loading"><div class="spinner"></div> Loading your workspace…</div></div>
       </div>
     </section>
