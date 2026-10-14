@@ -16,3 +16,19 @@ jobs:
         run: node --check app.js
       - name: Check required frontend files
         run: test -s index.html && test -s styles.css && test -s app.js
+      - name: Smoke-check workspace modules and public frontend safety
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const html = fs.readFileSync('index.html', 'utf8');
+          const js = fs.readFileSync('app.js', 'utf8');
+          const pages = ['overview','tasks','products','team','announcements','customers','inventory','sales','finance','attendance','reports','council','websites'];
+          for (const page of pages) {
+            if (!html.includes('data-page="' + page + '"')) throw new Error('Missing navigation page: ' + page);
+          }
+          for (const feature of ['accept_company_invitation','create_company_invitation','attendance_records','website_service_requests','website_service_payments','finance_transactions','inventory_items','sales_orders']) {
+            if (!js.includes(feature)) throw new Error('Missing expected app integration: ' + feature);
+          }
+          if (/service_role|SUPABASE_SERVICE_ROLE_KEY/i.test(js)) throw new Error('A service-role secret must never be shipped in frontend code.');
+          console.log('Frontend module smoke checks passed.');
+          NODE
