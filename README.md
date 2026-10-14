@@ -29,7 +29,7 @@ Serve this folder with any static HTTP server, or publish it using a static host
 
 ## Next development phases
 - Team invitation and member administration
-- Department management
+- Department editing and deletion
 - Editing and deletion with audit history
 - Finance, inventory, customers, sales, and reporting modules
 - Browser-level end-to-end tests
