@@ -1,0 +1,23 @@
+name: Browser smoke test
+on:
+  workflow_run:
+    workflows: ["Deploy Molan Business to GitHub Pages"]
+    types: [completed]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser-smoke:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install Playwright
+        run: npm install --no-save playwright
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Test published mobile sign-in and signup screens
+        run: node tests/browser-smoke.js
