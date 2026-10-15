@@ -22,11 +22,11 @@ jobs:
           const fs = require('node:fs');
           const html = fs.readFileSync('index.html', 'utf8');
           const js = fs.readFileSync('app.js', 'utf8');
-          const pages = ['overview','tasks','products','team','announcements','customers','inventory','sales','finance','attendance','reports','council','websites','business-profile','industry-workspace','website-studio','operations'];
+          const pages = ['overview','tasks','products','team','announcements','customers','inventory','sales','finance','attendance','reports','council','websites','business-profile','industry-workspace','business-tools','website-studio','operations'];
           for (const page of pages) {
             if (!html.includes('data-page="' + page + '"')) throw new Error('Missing navigation page: ' + page);
           }
-          for (const feature of ['accept_company_invitation','create_company_invitation','attendance_records','website_service_requests','website_service_payments','finance_transactions','inventory_items','sales_orders','sales_order_items','create_sales_order_with_items','business-gallery','gallery_images','workspace-switcher','business_operations','inventory_movements','record_inventory_movement','school_classes','school_learners','school_assessments','school_fee_entries','create-school-assessment','operation-status','copy-media-url','set-media-logo','set-media-cover','Upload website images','industry-feature-grid']) {
+          for (const feature of ['accept_company_invitation','create_company_invitation','attendance_records','website_service_requests','website_service_payments','finance_transactions','inventory_items','sales_orders','sales_order_items','create_sales_order_with_items','business-gallery','gallery_images','workspace-switcher','business_operations','inventory_movements','record_inventory_movement','school_classes','school_learners','school_assessments','school_fee_entries','create-school-assessment','operation-status','copy-media-url','set-media-logo','set-media-cover','Upload website images','industry-feature-grid','Business tools & workflows','Appointments & bookings','Purchasing & procurement','Maintenance & inspections','EXTENDED WORKFLOWS']) {
             if (!js.includes(feature)) throw new Error('Missing expected app integration: ' + feature);
           }
           if (!js.includes('https://rcubnewrfieqhwcnvrzs.supabase.co')) throw new Error('Default Supabase project URL is missing.');
