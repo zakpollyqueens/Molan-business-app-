@@ -31,7 +31,7 @@ function safeEqual(a: string, b: string) {
 }
 async function memberLookup(companyId: string, accountCode: string, phone: string) {
   if (!/^[0-9a-f-]{36}$/i.test(companyId) || !/^[A-Z0-9_-]{2,40}$/.test(accountCode) || lastNine(phone).length < 8) return null;
-  const { data, error } = await admin.from("sacco_members").select("id,company_id,account_code,full_name,phone,email,avatar_url,joined_on,status").eq("company_id", companyId).ilike("account_code", accountCode).limit(2);
+  const { data, error } = await admin.from("sacco_members").select("id,company_id,account_code,full_name,phone,email,avatar_url,joined_on,status").eq("company_id", companyId).eq("account_code", accountCode).limit(2);
   if (error || !data || data.length !== 1) return null;
   const m = data[0];
   if (m.status !== "active" || !m.phone || !safeEqual(lastNine(m.phone), lastNine(phone))) return null;
