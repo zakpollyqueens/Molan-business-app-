@@ -70,3 +70,7 @@ html[data-theme="dark"] .settings-tile{border-color:#26354b}
 /* Category-specific operations and stock movement ledger */
 .operation-row{align-items:flex-start;flex-wrap:wrap}.operation-row .row-main{min-width:180px;flex:1}.operation-row .page-actions{display:flex;gap:7px;flex-wrap:wrap}.operation-row .page-actions .button{white-space:nowrap}
 @media(max-width:640px){.operation-row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px}.operation-row>.badge{grid-column:2;justify-self:start}.operation-row .page-actions{grid-column:1/-1;width:100%}.operation-row .page-actions .button{flex:1}}
+
+
+/* Structured school-management workstation */
+.school-management-panel{margin-top:18px}.school-management-panel .page-actions{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.school-record-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.school-record-grid>section{padding:14px;border:1px solid var(--line,rgba(151,203,234,.15));border-radius:14px;background:rgba(255,255,255,.018);min-width:0}.school-record-grid h4{margin:0 0 10px;font-size:13px}.school-record{padding:10px 0;border-bottom:1px solid var(--line,rgba(151,203,234,.15));display:grid;gap:5px}.school-record:last-child{border-bottom:0}.school-record strong{font-size:13px;overflow-wrap:anywhere}.school-record small{font-size:11px;color:var(--muted,#9bb1c8);line-height:1.55;overflow-wrap:anywhere}@media(max-width:650px){.school-record-grid{grid-template-columns:1fr}.school-management-panel .page-actions .button{flex:1}}
