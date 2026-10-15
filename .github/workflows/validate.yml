@@ -13,9 +13,9 @@ jobs:
         with:
           node-version: 20
       - name: Check JavaScript syntax
-        run: node --check app.js
+        run: node --check app.js && node --check member-portal.js
       - name: Check required frontend files
-        run: test -s index.html && test -s styles.css && test -s app.js
+        run: test -s index.html && test -s styles.css && test -s app.js && test -s member-portal.html && test -s member-portal.css && test -s member-portal.js && test -s supabase/functions/sacco-member-portal/index.ts
       - name: Smoke-check workspace modules and public frontend safety
         run: |
           node <<'NODE'
@@ -42,5 +42,20 @@ jobs:
             if (!profileMigration.includes(required)) throw new Error('Industry settings migration is missing security requirement: ' + required);
           }
           if (!js.includes("upsert({company_id:company.id,profile_key:profile[0],settings,updated_by:user.id")) throw new Error('Industry settings must be saved to the active tenant.');
-          console.log('Frontend modules, persistent profile settings, tenant RLS, SACCO workflows, and public-key safety smoke checks passed.');
+          const portalHtml = fs.readFileSync('member-portal.html', 'utf8');
+          const portalJs = fs.readFileSync('member-portal.js', 'utf8');
+          const portalEdge = fs.readFileSync('supabase/functions/sacco-member-portal/index.ts', 'utf8');
+          const portalMigration = fs.readFileSync('supabase/migrations/20261015190000_sacco_member_portal_security.sql', 'utf8').toLowerCase();
+          for (const required of ['sacco_member_portal_credentials','sacco_member_portal_sessions','sacco_member_portal_attempts','sacco_member_portal_preferences','enable row level security','revoke all','service_role','foreign key(company_id,member_id)']) {
+            if (!portalMigration.includes(required)) throw new Error('Member portal migration missing security requirement: ' + required);
+          }
+          for (const required of ['account code','registered phone number','private pin','set up pin']) {
+            if (!portalHtml.toLowerCase().includes(required)) throw new Error('Member portal is missing login/setup guidance: ' + required);
+          }
+          if (!portalJs.includes('/functions/v1/sacco-member-portal')) throw new Error('Member portal must use the secure Edge Function.');
+          if (portalJs.includes('from("sacco_members")') || portalJs.includes("from('sacco_members')")) throw new Error('Public portal must not query private member tables directly.');
+          for (const required of ['PBKDF2','sacco_member_portal_sessions','issue-enrollment-code','complete-enrollment','change-pin','update-profile']) {
+            if (!portalEdge.includes(required)) throw new Error('Member portal Edge Function missing security/workflow feature: ' + required);
+          }
+          console.log('Frontend modules, persistent profile settings, secure SACCO member portal, tenant RLS, and public-key safety smoke checks passed.');
           NODE
