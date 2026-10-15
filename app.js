@@ -369,8 +369,8 @@ el.innerHTML=head(esc(profile[1])+' workspace','A dedicated feature map for '+es
     if(cameraForm&&!cameraForm.dataset.wired){cameraForm.dataset.wired='1';cameraForm.addEventListener('submit',async e=>{
       e.preventDefault();const btn=cameraForm.querySelector('[type=submit]');btn.disabled=true;
       try{const f=new FormData(cameraForm);const stream=String(f.get('stream_url')||'').trim();if(stream){const u=new URL(stream);if(u.protocol!=='https:')throw new Error('Only secure HTTPS camera viewer links are accepted.');if(/rtsp:|password=|passwd=|token=[^&]+/i.test(stream))throw new Error('Do not store RTSP links, passwords, or secret tokens in a camera URL. Use the vendor’s secure authenticated viewer.')}
-        const pairing=String(f.get('pairing_code')||'').trim();
-        const row={company_id:company.id,location_id:String(f.get('location_id')||''),name:String(f.get('name')||'').trim(),provider:String(f.get('provider')||'').trim(),camera_ref:String(f.get('camera_ref')||'').trim()||null,stream_url:stream||null,pairing_code_hash:pairing?(await hashCameraPairing(pairing)).hash:null,pairing_code_salt:pairing?(await hashCameraPairing(pairing)).salt:null,status:stream?'viewer_configured':'registered',created_by:user.id};
+        const pairing=String(f.get('pairing_code')||'').trim();const pairingHash=pairing?await hashCameraPairing(pairing):null;
+        const row={company_id:company.id,location_id:String(f.get('location_id')||''),name:String(f.get('name')||'').trim(),provider:String(f.get('provider')||'').trim(),camera_ref:String(f.get('camera_ref')||'').trim()||null,stream_url:stream||null,pairing_code_hash:pairingHash?.hash||null,pairing_code_salt:pairingHash?.salt||null,status:stream?'viewer_configured':'registered',created_by:user.id};
         const q=await supabase.from('business_cameras').insert(row);if(q.error)throw q.error;cameraForm.reset();toast('Camera registered. Verify pairing in your camera vendor system.');await loadConnectedResources(el)
       }catch(err){toast(err.message||'Could not register camera.',true)}finally{btn.disabled=false}
     })}
