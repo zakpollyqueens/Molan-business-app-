@@ -141,7 +141,7 @@
       const [rolesR,termsR,membersR,savingsR,withdrawalsR,reviewsR]=results;
       const roles=rolesR.data||[],terms=termsR.data||[],members=membersR.data||[],entries=savingsR.data||[],withdrawals=withdrawalsR.data||[],reviews=reviewsR.data||[];
       const admin=['owner','admin'].includes(membership?.role), manager=['owner','admin','manager','accountant'].includes(membership?.role);
-      const myRoles=roles.filter(r=>r.user_id===user.id).map(r=>r.role), chair=admin||myRoles.includes('chairperson'), canSubmit=manager||myRoles.some(r=>['analyst','secretary','mobilizer'].includes(r)), canManage=admin;
+      const myRoles=roles.filter(r=>r.user_id===user.id).map(r=>r.role), chair=myRoles.includes('chairperson'), canSubmit=manager||myRoles.some(r=>['analyst','secretary','mobilizer'].includes(r)), canManage=admin;
       const balance=m=>entries.filter(x=>x.member_id===m.id&&x.status==='confirmed').reduce((s,x)=>s+(x.entry_type==='withdrawal'?-Number(x.amount):x.entry_type==='deposit'?Number(x.amount):0),0);
       const pending=entries.filter(x=>x.status==='pending'), pendingW=withdrawals.filter(x=>x.status==='pending'), approvedW=withdrawals.filter(x=>x.status==='approved');
       const memberOptions=members.map(m=>'<option value="'+m.id+'">'+esc(m.account_code)+' — '+esc(m.full_name)+'</option>').join('');
