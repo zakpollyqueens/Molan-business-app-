@@ -22,16 +22,20 @@ jobs:
           const fs = require('node:fs');
           const html = fs.readFileSync('index.html', 'utf8');
           const js = fs.readFileSync('app.js', 'utf8');
-          const pages = ['overview','tasks','products','team','announcements','customers','inventory','sales','finance','attendance','reports','council','websites','business-profile','industry-workspace','business-tools','website-studio','operations'];
+          const pages = ['overview','tasks','products','team','announcements','customers','inventory','sales','finance','attendance','reports','council','websites','business-profile','industry-workspace','business-tools','website-studio','operations','sacco'];
           for (const page of pages) {
             if (!html.includes('data-page="' + page + '"')) throw new Error('Missing navigation page: ' + page);
           }
-          for (const feature of ['accept_company_invitation','create_company_invitation','attendance_records','website_service_requests','website_service_payments','finance_transactions','inventory_items','sales_orders','sales_order_items','create_sales_order_with_items','business-gallery','gallery_images','workspace-switcher','business_operations','inventory_movements','record_inventory_movement','school_classes','school_learners','school_assessments','school_fee_entries','create-school-assessment','operation-status','copy-media-url','set-media-logo','set-media-cover','Upload website images','industry-feature-grid','Business tools & workflows','Appointments & bookings','Purchasing & procurement','Maintenance & inspections','EXTENDED WORKFLOWS']) {
+          for (const feature of ['accept_company_invitation','create_company_invitation','attendance_records','website_service_requests','website_service_payments','finance_transactions','inventory_items','sales_orders','sales_order_items','create_sales_order_with_items','business-gallery','gallery_images','workspace-switcher','business_operations','inventory_movements','record_inventory_movement','school_classes','school_learners','school_assessments','school_fee_entries','create-school-assessment','operation-status','copy-media-url','set-media-logo','set-media-cover','Upload website images','industry-feature-grid','Business tools & workflows','Appointments & bookings','Purchasing & procurement','Maintenance & inspections','EXTENDED WORKFLOWS','sacco_role_assignments','sacco_terms','sacco_members','sacco_savings_entries','sacco_withdrawal_requests','sacco_member_reviews','sacco_review_savings','sacco_review_withdrawal','sacco_record_withdrawal_payment','sacco-amount-words','sacco-review-form']) {
             if (!js.includes(feature)) throw new Error('Missing expected app integration: ' + feature);
           }
           if (!js.includes('https://rcubnewrfieqhwcnvrzs.supabase.co')) throw new Error('Default Supabase project URL is missing.');
           if (!js.includes('sb_publishable_')) throw new Error('Default Supabase publishable-key configuration is missing.');
           if (!js.includes('DEFAULT_SUPABASE_CONFIG')) throw new Error('First-time visitors must be auto-configured.');
           if (/service_role|SUPABASE_SERVICE_ROLE_KEY/i.test(js)) throw new Error('A service-role secret must never be shipped in frontend code.');
-          console.log('Frontend module, default connection, and public-key safety smoke checks passed.');
+          const migration = fs.readFileSync('supabase/migrations/20261015190000_sacco_savings_terms_withdrawals.sql', 'utf8');
+if (!migration.includes('ENABLE ROW LEVEL SECURITY') && !migration.includes('enable row level security')) throw new Error('SACCO migration must enable RLS.');
+if (!migration.includes('foreign key(company_id,member_id)')) throw new Error('SACCO records must enforce company/member tenant integrity.');
+if (!migration.includes('status=\'paid\'')) throw new Error('SACCO withdrawal payment posting must be explicit.');
+console.log('Frontend module, SACCO integration, migration RLS, and public-key safety smoke checks passed.');
           NODE
