@@ -23,6 +23,7 @@ create table if not exists public.business_cameras (
   camera_ref text,
   stream_url text,
   pairing_code_hash text,
+  pairing_code_salt text,
   status text not null default 'registered' check (status in ('registered','viewer_configured','pairing_pending','connected','disabled')),
   created_by uuid not null references auth.users(id) on delete restrict,
   created_at timestamptz not null default now(),
