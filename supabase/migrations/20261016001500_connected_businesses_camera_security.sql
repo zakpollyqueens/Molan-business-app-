@@ -35,12 +35,9 @@ create index if not exists business_cameras_location_idx on public.business_came
 
 alter table public.business_locations enable row level security;
 alter table public.business_cameras enable row level security;
-revoke all on public.business_locations from anon;
-revoke all on public.business_cameras from anon;
 grant select, insert, update, delete on public.business_locations to authenticated;
 grant select, insert, update, delete on public.business_cameras to authenticated;
 
-drop policy if exists "Active workspace members manage connected locations" on public.business_locations;
 create policy "Active workspace members manage connected locations"
 on public.business_locations for all to authenticated
 using (exists (
@@ -57,7 +54,6 @@ with check (
   )
 );
 
-drop policy if exists "Active workspace members manage connected cameras" on public.business_cameras;
 create policy "Active workspace members manage connected cameras"
 on public.business_cameras for all to authenticated
 using (exists (
