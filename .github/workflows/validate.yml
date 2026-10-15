@@ -53,6 +53,7 @@ jobs:
             if (!portalHtml.toLowerCase().includes(required)) throw new Error('Member portal is missing login/setup guidance: ' + required);
           }
           if (!portalJs.includes('/functions/v1/sacco-member-portal')) throw new Error('Member portal must use the secure Edge Function.');
+          if (!portalHtml.includes('id="savings-chart"') || !portalJs.includes('confirmed savings contributions by month') && !portalJs.includes('entry.status!=="confirmed"')) throw new Error('Member portal must display a confirmed-savings progress chart.');
           if (portalJs.includes('from("sacco_members")') || portalJs.includes("from('sacco_members')")) throw new Error('Public portal must not query private member tables directly.');
           for (const required of ['PBKDF2','sacco_member_portal_sessions','issue-enrollment-code','complete-enrollment','change-pin','update-profile']) {
             if (!portalEdge.includes(required)) throw new Error('Member portal Edge Function missing security/workflow feature: ' + required);
