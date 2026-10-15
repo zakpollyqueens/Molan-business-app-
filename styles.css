@@ -44,3 +44,16 @@ html[data-theme="dark"] .settings-tile{border-color:#26354b}
 
 .industry-toolkit .panel-head{align-items:flex-start}.industry-toolkit .eyebrow{margin-bottom:7px}.industry-shortcuts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.industry-shortcut{display:grid;grid-template-columns:32px minmax(0,1fr);column-gap:10px;align-items:center;text-align:left;padding:13px;border:1px solid #e5edf5;background:linear-gradient(135deg,#fff,#f8fcff);border-radius:12px}.industry-shortcut>span{grid-row:span 3;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:#eaf7fc;color:#2389c5;font-size:17px}.industry-shortcut strong{font-size:11px;color:var(--navy)}.industry-shortcut small{font-size:9px;color:var(--muted);line-height:1.5;margin-top:4px}.industry-shortcut b{font-size:9px;color:#2884cf;margin-top:7px}.industry-shortcut:hover{border-color:#80d8e9;background:#f4fcff}
 @media(max-width:700px){.industry-shortcuts{grid-template-columns:1fr 1fr}.industry-shortcut{padding:10px;grid-template-columns:27px minmax(0,1fr);column-gap:8px}.industry-shortcut>span{width:27px;height:27px;font-size:14px}.industry-shortcut strong{font-size:10px}.industry-shortcut small{font-size:9px}}
+
+
+/* Itemized sales order editor */
+.sale-line-editor{border:1px solid var(--line,#dce5ef);border-radius:18px;padding:16px;background:var(--surface-soft,rgba(120,150,190,.06));}
+.sale-line-editor .panel-head{align-items:center;margin-bottom:12px}
+.sale-line{padding:14px;margin:10px 0;border:1px solid var(--line,#dce5ef);border-radius:14px;background:var(--surface,#fff);gap:12px}
+.sale-line label{min-width:0}
+.sale-line input,.sale-line select{width:100%;min-width:0}
+.sale-line .remove-sale-line{justify-self:start}
+.sale-totals{display:flex;justify-content:flex-end;gap:22px;flex-wrap:wrap;padding:14px 4px 2px;font-size:.92rem}
+.sale-totals span{display:flex;gap:9px;align-items:center}
+.sale-totals strong{font-size:1.12rem}
+@media(max-width:560px){.sale-line-editor{padding:10px}.sale-line{padding:10px}.sale-totals{justify-content:space-between}}
