@@ -1,8 +1,6 @@
 const { app, BrowserWindow, shell } = require('electron');
 const path = require('node:path');
 
-const LIVE_APP_URL = 'https://zakpollyqueens.github.io/Molan-business-app-/';
-
 function createWindow() {
   const window = new BrowserWindow({
     width: 1440,
@@ -19,9 +17,9 @@ function createWindow() {
     }
   });
 
-  // Load the published HTTPS app so desktop users receive frontend updates
-  // without reinstalling the Windows package.
-  window.loadURL(LIVE_APP_URL);
+  // Bundle the exact frontend used for this installer. The in-app update
+  // manager checks GitHub Releases for newer signed/published packages.
+  window.loadFile(path.join(__dirname, '..', 'www', 'index.html'));
 
   window.webContents.setWindowOpenHandler(({ url }) => {
     if (url.startsWith('https://') || url.startsWith('mailto:')) {
