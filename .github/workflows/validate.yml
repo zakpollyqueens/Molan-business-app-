@@ -33,7 +33,7 @@ jobs:
           if (!js.includes('sb_publishable_')) throw new Error('Default Supabase publishable-key configuration is missing.');
           if (!js.includes('DEFAULT_SUPABASE_CONFIG')) throw new Error('First-time visitors must be auto-configured.');
           if (/service_role|SUPABASE_SERVICE_ROLE_KEY/i.test(js)) throw new Error('A service-role secret must never be shipped in frontend code.');
-          const migration = fs.readFileSync('supabase/migrations/20261015190000_sacco_savings_terms_withdrawals.sql', 'utf8');
+          const migration = ['20261015164105_sacco_savings_terms_withdrawals.sql','20261015164120_sacco_review_and_withdrawal_rpcs.sql','20261015164304_sacco_tenant_integrity_and_role_permissions.sql','20261015164444_sacco_withdrawal_reservations_and_payment_locking.sql'].map(name => fs.readFileSync('supabase/migrations/' + name, 'utf8')).join('\n');
           if (!migration.includes('ENABLE ROW LEVEL SECURITY') && !migration.includes('enable row level security')) throw new Error('SACCO migration must enable RLS.');
           if (!migration.includes('foreign key(company_id,member_id)')) throw new Error('SACCO records must enforce company/member tenant integrity.');
           if (!migration.includes('status=\'paid\'')) throw new Error('SACCO withdrawal payment posting must be explicit.');
