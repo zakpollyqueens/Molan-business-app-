@@ -1,7 +1,7 @@
 /* Molan Business experience enhancements: profile-specific visual identity, live release checks, and data-led mini charts. */
 (() => {
   'use strict';
-  const APP_VERSION = '1.0.0';
+  const FALLBACK_VERSION = '1.0.0';
   const RELEASE_API = 'https://api.github.com/repos/zakpollyqueens/Molan-business-app-/releases/latest';
   const RELEASE_PAGE = 'https://github.com/zakpollyqueens/Molan-business-app-/releases/latest';
   const DISMISSED_KEY = 'molan_update_dismissed_version';
@@ -87,11 +87,6 @@
         button.querySelector('small').textContent = 'Choose the installer for your device';
         return;
       }
-      if (button.dataset.downloadStarted === 'true') {
-        try { localStorage.setItem(DISMISSED_KEY, latestRelease.tag_name); } catch (_) {}
-        button.hidden = true;
-        return;
-      }
       const link = document.createElement('a');
       link.href = asset.browser_download_url;
       link.download = asset.name;
@@ -99,9 +94,8 @@
       document.body.appendChild(link);
       link.click();
       link.remove();
-      button.dataset.downloadStarted = 'true';
-      button.querySelector('strong').textContent = 'Download started';
-      button.querySelector('small').textContent = 'Tap here after the download finishes to dismiss';
+      try { localStorage.setItem(DISMISSED_KEY, latestRelease.tag_name); } catch (_) {}
+      button.hidden = true;
     });
     return button;
   }
@@ -115,7 +109,9 @@
       });
       if (!response.ok) throw new Error('Release check unavailable');
       const release = await response.json();
-      if (release.draft || release.prerelease || !release.tag_name || !isNewer(release.tag_name, APP_VERSION)) {
+      let localVersion = FALLBACK_VERSION;
+      try { const versionResponse = await fetch('version.json?_=' + Date.now(), { cache: 'no-store' }); if (versionResponse.ok) { const metadata = await versionResponse.json(); if (metadata.currentVersion) localVersion = metadata.currentVersion; } } catch (_) {}
+      if (release.draft || release.prerelease || !release.tag_name || !isNewer(release.tag_name, localVersion)) {
         button.hidden = true;
         return;
       }
