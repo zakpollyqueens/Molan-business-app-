@@ -127,8 +127,9 @@ Deno.serve(async (req: Request) => {
     if (action === "issue-enrollment-code") {
       if (!await checkAdmin(req.headers.get("authorization") || "", companyId)) return reply({ ok:false, message:"Only an authorized circle manager or chairperson can issue setup codes." }, 403);
       const memberId = clean(body.memberId, 80);
-      const { data: member, error } = await admin.from("sacco_members").select("id,company_id,account_code,full_name,status").eq("id", memberId).eq("company_id", companyId).maybeSingle();
+      const { data: member, error } = await admin.from("sacco_members").select("id,company_id,account_code,full_name,phone,status").eq("id", memberId).eq("company_id", companyId).maybeSingle();
       if (error || !member || member.status !== "active") return reply({ ok:false, message:"Active member account not found." }, 404);
+      if (!member.phone || digits(member.phone).length < 8) return reply({ ok:false, message:"Add and verify a valid phone number on this member account before issuing portal access." }, 400);
       const code = randomToken(12);
       const { error: saveError } = await admin.from("sacco_member_portal_credentials").upsert({ company_id:companyId, member_id:memberId, enrollment_code_hash:await sha256(code), enrollment_expires_at:new Date(Date.now()+24*60*60*1000).toISOString(), updated_at:new Date().toISOString() }, { onConflict:"company_id,member_id" });
       if (saveError) throw saveError;
