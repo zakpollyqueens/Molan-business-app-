@@ -156,10 +156,19 @@
       const label = item.label.replace(/[&<>"]/g, '').slice(0, 18);
       return '<g><rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + (slot * .6).toFixed(1) + '" height="' + barHeight.toFixed(1) + '" rx="5" class="molan-chart-bar"><title>' + label + ': ' + item.value.toLocaleString() + '</title></rect><text x="' + (x + slot * .3).toFixed(1) + '" y="162" text-anchor="middle">' + label.slice(0, 10) + '</text></g>';
     }).join('');
+    const total = values.reduce((sum, item) => sum + item.value, 0) || 1;
+    const circumference = 2 * Math.PI * 48;
+    let pieOffset = 0;
+    const pieSegments = values.map((item, index) => {
+      const length = (item.value / total) * circumference;
+      const segment = '<circle class="molan-pie-segment molan-pie-segment-' + (index % 6) + '" cx="60" cy="60" r="48" fill="none" stroke-width="18" stroke-dasharray="' + length.toFixed(2) + ' ' + (circumference - length).toFixed(2) + '" stroke-dashoffset="' + (-pieOffset).toFixed(2) + '"><title>' + item.label.replace(/[&<>"]/g, '').slice(0, 24) + ': ' + ((item.value / total) * 100).toFixed(1) + '%</title></circle>';
+      pieOffset += length;
+      return segment;
+    }).join('');
     const section = document.createElement('section');
     section.id = 'molan-mini-analytics';
     section.className = 'panel molan-mini-analytics';
-    section.innerHTML = '<div class="panel-head"><div><span class="section-kicker">QUICK ANALYTICS</span><h3>Workspace metrics at a glance</h3><p>Chart generated from the visible metrics already shown on this page.</p></div><span class="molan-chart-badge">Live page data</span></div><div class="molan-chart-wrap"><svg viewBox="0 0 ' + width + ' ' + height + '" role="img" aria-label="Bar chart of visible workspace metrics"><line x1="10" y1="' + bottom + '" x2="' + (width - 10) + '" y2="' + bottom + '" class="molan-chart-axis"/>' + bars + '</svg></div><div class="molan-metric-table-wrap"><table class="molan-metric-table"><thead><tr><th>Metric</th><th class="number">Value</th></tr></thead><tbody>' + values.map(item => '<tr><td>' + item.label.replace(/[&<>"]/g, '') + '</td><td class="number">' + item.value.toLocaleString() + '</td></tr>').join('') + '</tbody></table></div>';
+    section.innerHTML = '<div class="panel-head"><div><span class="section-kicker">QUICK ANALYTICS</span><h3>Workspace metrics at a glance</h3><p>Chart generated from the visible metrics already shown on this page.</p></div><span class="molan-chart-badge">Live page data</span></div><div class="molan-chart-wrap"><svg viewBox="0 0 ' + width + ' ' + height + '" role="img" aria-label="Bar chart of visible workspace metrics"><line x1="10" y1="' + bottom + '" x2="' + (width - 10) + '" y2="' + bottom + '" class="molan-chart-axis"/>' + bars + '</svg></div><div class="molan-pie-panel"><div class="molan-pie-chart"><svg viewBox="0 0 120 120" role="img" aria-label="Pie chart showing each visible metric as a share of their combined total"><circle cx="60" cy="60" r="48" fill="none" stroke="var(--line,#e7edf4)" stroke-width="18"/>' + pieSegments + '</svg></div><div class="molan-pie-legend">' + values.map((item,index)=>'<div><span class="molan-pie-dot molan-pie-segment-' + (index % 6) + '"></span><span>' + item.label.replace(/[&<>"]/g, '').slice(0,22) + '</span><strong>' + ((item.value / total) * 100).toFixed(1) + '%</strong></div>').join('') + '</div></div><div class="molan-metric-table-wrap"><table class="molan-metric-table"><thead><tr><th>Metric</th><th class="number">Value</th></tr></thead><tbody>' + values.map(item => '<tr><td>' + item.label.replace(/[&<>"]/g, '') + '</td><td class="number">' + item.value.toLocaleString() + '</td></tr>').join('') + '</tbody></table></div>';
     content.appendChild(section);
   }
 
