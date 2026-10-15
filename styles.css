@@ -65,3 +65,8 @@ html[data-theme="dark"] .settings-tile{border-color:#26354b}
 .workspace-chip select option{color:#10213b;background:#fff}
 .workspace-chip .chevron{pointer-events:none;flex-shrink:0}
 .workspace-chip.has-many{border-color:rgba(88,190,255,.45);box-shadow:0 0 0 1px rgba(88,190,255,.08)}
+
+
+/* Category-specific operations and stock movement ledger */
+.operation-row{align-items:flex-start;flex-wrap:wrap}.operation-row .row-main{min-width:180px;flex:1}.operation-row .page-actions{display:flex;gap:7px;flex-wrap:wrap}.operation-row .page-actions .button{white-space:nowrap}
+@media(max-width:640px){.operation-row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px}.operation-row>.badge{grid-column:2;justify-self:start}.operation-row .page-actions{grid-column:1/-1;width:100%}.operation-row .page-actions .button{flex:1}}
