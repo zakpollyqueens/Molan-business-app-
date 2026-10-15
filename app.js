@@ -372,7 +372,7 @@ maintenance_job:[['asset_identifier','Asset / equipment / vehicle ID','text',fal
 purchase:[['supplier_name','Supplier name','text',false],['supplier_invoice','Supplier invoice / receipt','text',false],['purchase_category','Purchase category','select:seeds,feed,fertilizer,medicine,fuel,tools,equipment,stock,other',false],['payment_status','Payment status','select:unpaid,part_paid,paid',false]],
 construction_job:[['project_or_site','Project / site name','text',true],['work_stage','Work stage','select:planning,foundation,construction,finishing,inspection,handover',true],['materials_required','Materials / equipment required','text',false],['inspection_date','Next inspection date','date',false]],
 appointment:[['service_type','Appointment / service type','text',true],['customer_reference','Customer reference (avoid sensitive details)','text',false],['reminder_status','Reminder status','select:not_sent,sent,confirmed,not_required',false]],
-school_fee:[['academic_period','Academic year / term','text',true],['fee_category','Fee category','select,tuition,boarding,transport,meals,exam,other',false]]
+school_fee:[['academic_period','Academic year / term','text',true],['fee_category','Fee category','select:tuition,boarding,transport,meals,exam,other',false]]
 };
 return fields[type]||common;
 }
