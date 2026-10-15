@@ -38,7 +38,7 @@ jobs:
           if (!migration.includes('foreign key(company_id,member_id)')) throw new Error('SACCO records must enforce company/member tenant integrity.');
           if (!migration.includes('status=\'paid\'')) throw new Error('SACCO withdrawal payment posting must be explicit.');
           const profileMigration = fs.readFileSync('supabase/migrations/20261015170000_industry_profile_settings.sql', 'utf8');
-          for (const required of ['ENABLE ROW LEVEL SECURITY','company_members','role in (\'owner\',\'admin\',\'manager\')','jsonb_typeof(settings)']) {
+          for (const required of ['enable row level security','company_members','role in (\'owner\',\'admin\',\'manager\')','jsonb_typeof(settings)']) {
             if (!profileMigration.includes(required)) throw new Error('Industry settings migration is missing security requirement: ' + required);
           }
           if (!js.includes("upsert({company_id:company.id,profile_key:profile[0],settings,updated_by:user.id")) throw new Error('Industry settings must be saved to the active tenant.');
