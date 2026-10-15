@@ -167,6 +167,37 @@
     content.appendChild(section);
   }
 
+  function addStatusPieChart() {
+    const content = $('#page-content');
+    if (!content || $('#molan-status-pie', content)) return;
+    const page = ($('#breadcrumb-page')?.textContent || '').toLowerCase();
+    if (!/(reports|analytics|inventory|sales|finance|sacco|overview)/.test(page)) return;
+    const counts = new Map();
+    content.querySelectorAll('.badge').forEach(badge => {
+      const label = (badge.textContent || '').trim();
+      if (!label || label.length > 32) return;
+      counts.set(label, (counts.get(label) || 0) + 1);
+    });
+    if (counts.size < 2) return;
+    const sorted = [...counts.entries()].sort((a,b) => b[1]-a[1]);
+    const chosen = sorted.slice(0, 5);
+    if (sorted.length > 5) chosen.push(['Other', sorted.slice(5).reduce((sum,item) => sum + item[1], 0)]);
+    const total = chosen.reduce((sum,item) => sum + item[1], 0);
+    if (total < 2) return;
+    const colors = ['#2878e5','#18a77b','#f3a54a','#9b7de3','#20b7c9','#8b9aad'];
+    let cursor = 0;
+    const slices = chosen.map((item,index) => {
+      const start = cursor;
+      cursor += item[1] / total * 100;
+      return colors[index % colors.length] + ' ' + start.toFixed(2) + '% ' + cursor.toFixed(2) + '%';
+    });
+    const section = document.createElement('section');
+    section.id = 'molan-status-pie';
+    section.className = 'panel molan-status-pie';
+    section.innerHTML = '<div class="panel-head"><div><span class="section-kicker">STATUS MIX</span><h3>Visible record distribution</h3><p>Summarized from the status badges currently displayed on this page.</p></div></div><div class="molan-pie-layout"><div class="molan-pie" role="img" aria-label="Pie chart of visible record statuses" style="background:conic-gradient(' + slices.join(',') + ')"><span>' + total + '<small>records</small></span></div><ul class="molan-pie-legend">' + chosen.map((item,index) => '<li><span class="molan-pie-dot" style="background:' + colors[index % colors.length] + '"></span><span>' + item[0].replace(/[&<>"]/g,'') + '</span><strong>' + item[1] + '</strong></li>').join('') + '</ul></div>';
+    content.appendChild(section);
+  }
+
   function refreshEnhancements() {
     const content = $('#page-content');
     if (!content) return;
@@ -175,6 +206,7 @@
     lastPageText = snapshot;
     applyProfileTheme();
     addMiniChart();
+    addStatusPieChart();
   }
 
   function start() {
