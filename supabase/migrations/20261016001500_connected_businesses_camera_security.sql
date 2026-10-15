@@ -46,14 +46,14 @@ on public.business_locations for all to authenticated
 using (exists (
   select 1 from public.company_members m
   where m.company_id = business_locations.company_id
-    and m.user_id = auth.uid() and m.status = 'active'
+    and m.user_id = auth.uid() and m.status = 'active' and m.role = 'owner'
 ))
 with check (
   created_by = auth.uid()
   and exists (
     select 1 from public.company_members m
     where m.company_id = business_locations.company_id
-      and m.user_id = auth.uid() and m.status = 'active'
+      and m.user_id = auth.uid() and m.status = 'active' and m.role = 'owner'
   )
 );
 
@@ -63,14 +63,14 @@ on public.business_cameras for all to authenticated
 using (exists (
   select 1 from public.company_members m
   where m.company_id = business_cameras.company_id
-    and m.user_id = auth.uid() and m.status = 'active'
+    and m.user_id = auth.uid() and m.status = 'active' and m.role = 'owner'
 ))
 with check (
   created_by = auth.uid()
   and exists (
     select 1 from public.company_members m
     where m.company_id = business_cameras.company_id
-      and m.user_id = auth.uid() and m.status = 'active'
+      and m.user_id = auth.uid() and m.status = 'active' and m.role = 'owner'
   )
   and exists (
     select 1 from public.business_locations l
