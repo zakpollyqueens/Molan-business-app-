@@ -30,7 +30,19 @@ for (const directory of assetDirectories) {
   }
 }
 
-for (const required of ['index.html', 'styles.css', 'app.js']) {
+const versionPath = path.join(output, 'version.json');
+if (fs.existsSync(versionPath)) {
+  const version = JSON.parse(fs.readFileSync(versionPath, 'utf8'));
+  const buildNumber = Number.parseInt(process.env.GITHUB_RUN_NUMBER || '', 10);
+  if (Number.isInteger(buildNumber) && buildNumber > 0) {
+    version.currentVersion = '1.0.' + buildNumber;
+    version.buildNumber = buildNumber;
+    version.buildCommit = process.env.GITHUB_SHA || 'local';
+  }
+  fs.writeFileSync(versionPath, JSON.stringify(version, null, 2) + '\n');
+}
+
+for (const required of ['index.html', 'styles.css', 'app.js', 'enhancements.js', 'version.json']) {
   if (!fs.existsSync(path.join(output, required))) {
     throw new Error('Required Molan Business frontend file missing: ' + required);
   }
