@@ -141,3 +141,6 @@ html[data-theme="dark"] .settings-tile{border-color:#26354b}
 .operation-metadata-summary{display:block;margin-top:5px;color:var(--muted,#64748b);font-size:12px;line-height:1.6;overflow-wrap:anywhere}
 .operation-metadata-summary b{color:var(--text,#24344d);font-weight:700}
 @media(max-width:600px){.operation-metadata-panel{padding:12px}}
+
+/* SACCO member portal sharing controls */
+.sacco-portal-link{display:flex;gap:8px;align-items:center}.sacco-portal-link input{flex:1;min-width:0}.sacco-portal-share{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.sacco-portal-share .button{white-space:normal;text-align:center}.sacco-table td .button{margin:3px 2px}@media(max-width:640px){.sacco-portal-link{align-items:stretch;flex-direction:column}.sacco-portal-link .button{width:100%}.sacco-portal-share .button{flex:1 1 135px}}
