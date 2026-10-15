@@ -23,7 +23,9 @@ New visitors are connected automatically to the configured Supabase project. The
 - ZakiTech website service requests and installment records
 - Server-side enforcement of website package prices: Starter UGX 200,000; Business UGX 300,000; Premium UGX 450,000
 - Responsive desktop and mobile hamburger navigation, display preferences, and category-based workstation shortcuts
-- A category-aware operations register for school classes/assessments/fee follow-up, healthcare appointments, farm activities/harvests, transport trips/maintenance, construction/service jobs, bookings/events, and programme activities
+- A category-aware industry workspace with an expanded module dashboard, plus an extended Business Tools page for appointments, procurement, maintenance, projects, customer follow-up, events, quality checks, equipment servicing, cases, programmes, returns, stock corrections and field/logistics work
+- Category-specific operation templates for education, healthcare, retail/wholesale/manufacturing, agriculture, transport/logistics, construction/real estate, hospitality, professional services, NGOs, faith/community groups and general businesses
+- A Website & Media Studio where owners/admins upload multiple business images from their account, copy public image URLs, reuse images as the company logo or cover, and manage the gallery; separately hosted websites still need a site integration to publish those assets automatically
 - GitHub Actions frontend syntax and module smoke checks, plus automated GitHub Pages deployment
 
 ## Supabase project and security
