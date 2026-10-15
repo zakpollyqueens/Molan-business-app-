@@ -144,3 +144,11 @@ html[data-theme="dark"] .settings-tile{border-color:#26354b}
 
 /* SACCO member portal sharing controls */
 .sacco-portal-link{display:flex;gap:8px;align-items:center}.sacco-portal-link input{flex:1;min-width:0}.sacco-portal-share{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.sacco-portal-share .button{white-space:normal;text-align:center}.sacco-table td .button{margin:3px 2px}@media(max-width:640px){.sacco-portal-link{align-items:stretch;flex-direction:column}.sacco-portal-link .button{width:100%}.sacco-portal-share .button{flex:1 1 135px}}
+
+
+/* Connected business locations and camera monitoring */
+.connected-business-grid,.camera-feed-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:14px}
+.connected-business-card,.camera-feed-card{border:1px solid var(--line);border-radius:16px;padding:16px;background:var(--white);min-width:0}
+.connected-business-card{display:flex;gap:12px;align-items:flex-start}.connected-business-icon{width:42px;height:42px;display:grid;place-items:center;flex:0 0 42px;border-radius:13px;background:#e7f5fb;color:#087e9b;font-size:21px}
+.connected-business-card h4,.camera-feed-card h4{margin:8px 0 5px;font-size:15px}.connected-business-card p,.camera-feed-card p{margin:0 0 9px;color:var(--muted);font-size:12px}.connected-business-card .button{margin-left:auto;flex-shrink:0}
+.camera-card-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.camera-viewer{position:relative;width:100%;aspect-ratio:16/9;margin:12px 0;overflow:hidden;border-radius:12px;background:#07172c}.camera-viewer iframe{width:100%;height:100%;border:0}.camera-no-feed{min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border-radius:12px;background:linear-gradient(135deg,#091d3b,#13546c);color:white;text-align:center;margin:12px 0;padding:20px}.camera-no-feed>span{font-size:28px;color:#7de4ef}.camera-no-feed small{color:#d5e9f3}.qr-scan-panel{margin-top:16px;padding:14px;border-radius:14px;background:#f2f7fb}.qr-scan-panel video{width:min(100%,480px);display:block;border-radius:12px;background:#07172c;aspect-ratio:4/3;object-fit:cover}.camera-feed-card .button{margin-bottom:4px}
