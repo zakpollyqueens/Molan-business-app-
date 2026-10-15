@@ -36,3 +36,14 @@ body[data-profile-theme="community"] .profile-detail-hero{background-image:radia
 @keyframes molan-update-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:600px){.molan-floating-update{right:12px;bottom:12px;padding:11px 13px}.molan-mini-analytics .panel-head{align-items:flex-start;gap:8px}.molan-chart-badge{font-size:10px}}
 @media(prefers-reduced-motion:reduce){.molan-floating-update,.molan-update-pulse{animation:none!important;transition:none!important}}
+
+.molan-pie-layout{display:flex;align-items:center;gap:26px;flex-wrap:wrap;padding:8px 0 2px}
+.molan-pie{width:174px;height:174px;flex:0 0 174px;border-radius:50%;display:grid;place-items:center;position:relative;box-shadow:inset 0 0 0 1px #ffffff35}
+.molan-pie::before{content:"";position:absolute;inset:28px;border-radius:50%;background:var(--white,#fff);box-shadow:0 2px 15px #10284b14}
+.molan-pie>span{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;font-size:25px;font-weight:800;color:var(--ink,#17253b)}
+.molan-pie>span small{font-size:10px;font-weight:600;color:var(--muted,#77849a);text-transform:uppercase;letter-spacing:.08em}
+.molan-pie-legend{list-style:none;padding:0;margin:0;display:grid;gap:11px;min-width:180px;flex:1}
+.molan-pie-legend li{display:grid;grid-template-columns:10px 1fr auto;gap:9px;align-items:center;font-size:12px;color:var(--ink,#17253b)}
+.molan-pie-dot{width:9px;height:9px;border-radius:3px}
+.molan-pie-legend strong{font-variant-numeric:tabular-nums}
+@media(max-width:480px){.molan-pie{width:145px;height:145px;flex-basis:145px}.molan-pie::before{inset:24px}.molan-pie-layout{gap:16px}}
