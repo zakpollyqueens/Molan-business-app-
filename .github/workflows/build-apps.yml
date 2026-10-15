@@ -81,3 +81,39 @@ jobs:
           path: dist/desktop/*.exe
           if-no-files-found: error
           retention-days: 30
+
+  publish-release:
+    name: Publish installable release
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [android-apk, windows-desktop]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download Android APK artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: molan-business-android-apk
+          path: release/android
+      - name: Download Windows installer artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: molan-business-windows-installer
+          path: release/windows
+      - name: Prepare stable release filenames
+        run: |
+          cp release/android/app-debug.apk release/Molan-Business.apk
+          installer="$(find release/windows -maxdepth 1 -type f -name '*.exe' | head -n 1)"
+          test -n "$installer"
+          cp "$installer" release/Molan-Business-Setup.exe
+          ls -lh release/Molan-Business.apk release/Molan-Business-Setup.exe
+          sha256sum release/Molan-Business.apk release/Molan-Business-Setup.exe
+      - name: Publish release assets
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          name: Molan Business v1.0.${{ github.run_number }}
+          generate_release_notes: true
+          files: |
+            release/Molan-Business.apk
+            release/Molan-Business-Setup.exe
