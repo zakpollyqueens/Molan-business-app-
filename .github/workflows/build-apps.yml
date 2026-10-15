@@ -1,0 +1,85 @@
+name: Build Molan Business apps
+
+on:
+  push:
+    branches:
+      - main
+      - 'feat/**'
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  android-apk:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Install build dependencies
+        run: npm install
+      - name: Prepare web app and generate Android project
+        run: |
+          npm run prepare:web
+          npx cap add android
+          npx cap sync android
+      - name: Build debug APK
+        working-directory: android
+        run: ./gradlew --no-daemon assembleDebug
+      - name: Verify APK and report size
+        run: |
+          test -s android/app/build/outputs/apk/debug/app-debug.apk
+          ls -lh android/app/build/outputs/apk/debug/app-debug.apk
+          sha256sum android/app/build/outputs/apk/debug/app-debug.apk
+      - name: Upload Android APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: molan-business-android-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 30
+
+  windows-desktop:
+    name: Build Windows desktop installer
+    runs-on: windows-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install dependencies
+        run: npm install
+      - name: Build Windows installer
+        run: npm run build:windows
+      - name: Verify installer and report size
+        shell: pwsh
+        run: |
+          $installer = Get-ChildItem dist/desktop -Filter *.exe | Select-Object -First 1
+          if (-not $installer) { throw 'Windows installer was not generated.' }
+          $sizeMB = [math]::Round($installer.Length / 1MB, 2)
+          Write-Output "Installer: $($installer.FullName)"
+          Write-Output "Size: $sizeMB MB"
+          Get-FileHash $installer.FullName -Algorithm SHA256
+      - name: Upload Windows installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: molan-business-windows-installer
+          path: dist/desktop/*.exe
+          if-no-files-found: error
+          retention-days: 30
