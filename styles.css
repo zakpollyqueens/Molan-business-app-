@@ -57,3 +57,11 @@ html[data-theme="dark"] .settings-tile{border-color:#26354b}
 .sale-totals span{display:flex;gap:9px;align-items:center}
 .sale-totals strong{font-size:1.12rem}
 @media(max-width:560px){.sale-line-editor{padding:10px}.sale-line{padding:10px}.sale-totals{justify-content:space-between}}
+
+
+/* Multi-business workspace selector */
+.workspace-chip{display:flex;align-items:center;gap:9px;min-width:0}
+.workspace-chip select{appearance:none;flex:1;min-width:0;width:100%;border:0;background:transparent;color:inherit;font:inherit;font-size:.88rem;font-weight:700;outline:none;cursor:pointer;padding:4px 0}
+.workspace-chip select option{color:#10213b;background:#fff}
+.workspace-chip .chevron{pointer-events:none;flex-shrink:0}
+.workspace-chip.has-many{border-color:rgba(88,190,255,.45);box-shadow:0 0 0 1px rgba(88,190,255,.08)}
