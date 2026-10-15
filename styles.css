@@ -134,3 +134,10 @@ html[data-theme="dark"] .settings-tile{border-color:#26354b}
 .profile-template-card[hidden]{display:none!important}
 @media(max-width:900px){.profile-detail-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.profile-detail-hero{align-items:flex-start}}
 @media(max-width:600px){.profile-detail-grid{grid-template-columns:minmax(0,1fr)}.profile-detail-hero{flex-direction:column;border-radius:20px}.profile-detail-symbol{width:68px;height:68px;flex-basis:68px;font-size:30px}.profile-detail-actions{width:100%}.profile-detail-actions .button{flex:1 1 100%}.profile-detail-footer{align-items:flex-start;flex-direction:column}.profile-template-actions .button{flex:1 1 100%}}
+
+/* Structured fields for industry-specific operational records */
+.operation-metadata-panel{margin:16px 0;padding:16px;border:1px solid var(--border,rgba(120,145,175,.25));border-radius:16px;background:rgba(100,140,180,.06)}
+.operation-metadata-panel .section-kicker{margin-bottom:12px;color:var(--accent,#2689c7);font-size:11px;font-weight:800;letter-spacing:.12em}
+.operation-metadata-summary{display:block;margin-top:5px;color:var(--muted,#64748b);font-size:12px;line-height:1.6;overflow-wrap:anywhere}
+.operation-metadata-summary b{color:var(--text,#24344d);font-weight:700}
+@media(max-width:600px){.operation-metadata-panel{padding:12px}}
