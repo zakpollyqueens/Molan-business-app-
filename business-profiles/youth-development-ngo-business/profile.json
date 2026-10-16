@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 391,
+  "slug": "youth-development-ngo-business",
+  "name": "Youth development NGO business",
+  "plural": "Youth development NGO business",
+  "description": "Youth development NGO business: beneficiaries, programmes, volunteers and funding reports. Manage youth development ngo workflows in a dedicated business workspace.",
+  "icon": "♡",
+  "group": "Community & nonprofit",
+  "extended": true,
+  "features": [
+    {
+      "title": "Programmes & activities",
+      "route": "operations"
+    },
+    {
+      "title": "Beneficiaries & members",
+      "route": "customers"
+    },
+    {
+      "title": "Supplies & resources",
+      "route": "inventory"
+    },
+    {
+      "title": "Volunteer tasks",
+      "route": "tasks"
+    },
+    {
+      "title": "Grants & finance",
+      "route": "finance"
+    },
+    {
+      "title": "Staff & volunteers",
+      "route": "team"
+    },
+    {
+      "title": "Announcements & updates",
+      "route": "announcements"
+    },
+    {
+      "title": "Impact reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

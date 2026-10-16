@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 371,
+  "slug": "taxi-savings-cooperative-business",
+  "name": "Taxi savings cooperative business",
+  "plural": "Taxi savings cooperative business",
+  "description": "Taxi savings cooperative business: client accounts, transactions, compliance and reports. Manage taxi savings cooperative workflows in a dedicated business workspace.",
+  "icon": "＝",
+  "group": "Finance & administration",
+  "extended": true,
+  "features": [
+    {
+      "title": "Client accounts",
+      "route": "customers"
+    },
+    {
+      "title": "Transactions & cases",
+      "route": "operations"
+    },
+    {
+      "title": "Compliance tasks",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & reconciliations",
+      "route": "finance"
+    },
+    {
+      "title": "Client documents",
+      "route": "website-studio"
+    },
+    {
+      "title": "Staff permissions",
+      "route": "team"
+    },
+    {
+      "title": "Client notices",
+      "route": "announcements"
+    },
+    {
+      "title": "Compliance reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 411,
+  "slug": "solar-installation-company-business",
+  "name": "Solar installation company business",
+  "plural": "Solar installation company business",
+  "description": "Solar installation company business: installations, service calls, assets and billing. Manage solar installation company workflows in a dedicated business workspace.",
+  "icon": "⚡",
+  "group": "Energy & utilities",
+  "extended": true,
+  "features": [
+    {
+      "title": "Installations & service jobs",
+      "route": "operations"
+    },
+    {
+      "title": "Equipment & materials",
+      "route": "inventory"
+    },
+    {
+      "title": "Customer accounts",
+      "route": "customers"
+    },
+    {
+      "title": "Maintenance schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Billing & expenses",
+      "route": "finance"
+    },
+    {
+      "title": "Technicians & teams",
+      "route": "team"
+    },
+    {
+      "title": "Service documentation",
+      "route": "website-studio"
+    },
+    {
+      "title": "Performance reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

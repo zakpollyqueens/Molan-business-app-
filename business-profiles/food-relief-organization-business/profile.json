@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 399,
+  "slug": "food-relief-organization-business",
+  "name": "Food relief organization business",
+  "plural": "Food relief organization business",
+  "description": "Food relief organization business: beneficiaries, programmes, volunteers and funding reports. Manage food relief organization workflows in a dedicated business workspace.",
+  "icon": "♡",
+  "group": "Community & nonprofit",
+  "extended": true,
+  "features": [
+    {
+      "title": "Programmes & activities",
+      "route": "operations"
+    },
+    {
+      "title": "Beneficiaries & members",
+      "route": "customers"
+    },
+    {
+      "title": "Supplies & resources",
+      "route": "inventory"
+    },
+    {
+      "title": "Volunteer tasks",
+      "route": "tasks"
+    },
+    {
+      "title": "Grants & finance",
+      "route": "finance"
+    },
+    {
+      "title": "Staff & volunteers",
+      "route": "team"
+    },
+    {
+      "title": "Announcements & updates",
+      "route": "announcements"
+    },
+    {
+      "title": "Impact reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

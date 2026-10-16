@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 380,
+  "slug": "claims-processing-service-business",
+  "name": "Claims processing service business",
+  "plural": "Claims processing service business",
+  "description": "Claims processing service business: client accounts, transactions, compliance and reports. Manage claims processing service workflows in a dedicated business workspace.",
+  "icon": "＝",
+  "group": "Finance & administration",
+  "extended": true,
+  "features": [
+    {
+      "title": "Client accounts",
+      "route": "customers"
+    },
+    {
+      "title": "Transactions & cases",
+      "route": "operations"
+    },
+    {
+      "title": "Compliance tasks",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & reconciliations",
+      "route": "finance"
+    },
+    {
+      "title": "Client documents",
+      "route": "website-studio"
+    },
+    {
+      "title": "Staff permissions",
+      "route": "team"
+    },
+    {
+      "title": "Client notices",
+      "route": "announcements"
+    },
+    {
+      "title": "Compliance reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

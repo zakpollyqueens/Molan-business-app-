@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 379,
+  "slug": "insurance-brokerage-business",
+  "name": "Insurance brokerage business",
+  "plural": "Insurance brokerage business",
+  "description": "Insurance brokerage business: client accounts, transactions, compliance and reports. Manage insurance brokerage workflows in a dedicated business workspace.",
+  "icon": "＝",
+  "group": "Finance & administration",
+  "extended": true,
+  "features": [
+    {
+      "title": "Client accounts",
+      "route": "customers"
+    },
+    {
+      "title": "Transactions & cases",
+      "route": "operations"
+    },
+    {
+      "title": "Compliance tasks",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & reconciliations",
+      "route": "finance"
+    },
+    {
+      "title": "Client documents",
+      "route": "website-studio"
+    },
+    {
+      "title": "Staff permissions",
+      "route": "team"
+    },
+    {
+      "title": "Client notices",
+      "route": "announcements"
+    },
+    {
+      "title": "Compliance reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

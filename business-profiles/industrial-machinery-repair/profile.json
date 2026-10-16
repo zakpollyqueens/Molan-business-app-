@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 362,
+  "slug": "industrial-machinery-repair",
+  "name": "Industrial machinery repair",
+  "plural": "Industrial machinery repairs",
+  "description": "Industrial machinery repair: service tickets, parts, technicians and warranty tracking. Manage industrial machinery repair workflows in a dedicated business workspace.",
+  "icon": "⚙",
+  "group": "Repair & maintenance",
+  "extended": true,
+  "features": [
+    {
+      "title": "Service tickets & jobs",
+      "route": "operations"
+    },
+    {
+      "title": "Parts & inventory",
+      "route": "inventory"
+    },
+    {
+      "title": "Customer records",
+      "route": "customers"
+    },
+    {
+      "title": "Technician schedules",
+      "route": "team"
+    },
+    {
+      "title": "Tasks & follow-up",
+      "route": "tasks"
+    },
+    {
+      "title": "Quotes & payments",
+      "route": "finance"
+    },
+    {
+      "title": "Equipment documentation",
+      "route": "website-studio"
+    },
+    {
+      "title": "Repair reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

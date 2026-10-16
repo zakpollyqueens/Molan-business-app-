@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 438,
+  "slug": "soap-manufacturing-plant",
+  "name": "Soap manufacturing plant",
+  "plural": "Soap manufacturing plants",
+  "description": "Soap manufacturing plant: production orders, raw materials, quality and shipments. Manage soap manufacturing plant workflows in a dedicated business workspace.",
+  "icon": "⚙",
+  "group": "Manufacturing & industry",
+  "extended": true,
+  "features": [
+    {
+      "title": "Production orders",
+      "route": "operations"
+    },
+    {
+      "title": "Raw materials & stock",
+      "route": "inventory"
+    },
+    {
+      "title": "Quality & inspection records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Customer orders",
+      "route": "sales"
+    },
+    {
+      "title": "Supplier records",
+      "route": "customers"
+    },
+    {
+      "title": "Production tasks",
+      "route": "tasks"
+    },
+    {
+      "title": "Costs & finance",
+      "route": "finance"
+    },
+    {
+      "title": "Output reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

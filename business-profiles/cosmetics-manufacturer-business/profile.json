@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 440,
+  "slug": "cosmetics-manufacturer-business",
+  "name": "Cosmetics manufacturer business",
+  "plural": "Cosmetics manufacturer business",
+  "description": "Cosmetics manufacturer business: production orders, raw materials, quality and shipments. Manage cosmetics manufacturer workflows in a dedicated business workspace.",
+  "icon": "⚙",
+  "group": "Manufacturing & industry",
+  "extended": true,
+  "features": [
+    {
+      "title": "Production orders",
+      "route": "operations"
+    },
+    {
+      "title": "Raw materials & stock",
+      "route": "inventory"
+    },
+    {
+      "title": "Quality & inspection records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Customer orders",
+      "route": "sales"
+    },
+    {
+      "title": "Supplier records",
+      "route": "customers"
+    },
+    {
+      "title": "Production tasks",
+      "route": "tasks"
+    },
+    {
+      "title": "Costs & finance",
+      "route": "finance"
+    },
+    {
+      "title": "Output reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

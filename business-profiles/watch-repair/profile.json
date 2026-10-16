@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 370,
+  "slug": "watch-repair",
+  "name": "Watch repair",
+  "plural": "Watch repairs",
+  "description": "Watch repair: service tickets, parts, technicians and warranty tracking. Manage watch repair workflows in a dedicated business workspace.",
+  "icon": "⚙",
+  "group": "Repair & maintenance",
+  "extended": true,
+  "features": [
+    {
+      "title": "Service tickets & jobs",
+      "route": "operations"
+    },
+    {
+      "title": "Parts & inventory",
+      "route": "inventory"
+    },
+    {
+      "title": "Customer records",
+      "route": "customers"
+    },
+    {
+      "title": "Technician schedules",
+      "route": "team"
+    },
+    {
+      "title": "Tasks & follow-up",
+      "route": "tasks"
+    },
+    {
+      "title": "Quotes & payments",
+      "route": "finance"
+    },
+    {
+      "title": "Equipment documentation",
+      "route": "website-studio"
+    },
+    {
+      "title": "Repair reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

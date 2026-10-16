@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 454,
+  "slug": "tennis-club-business",
+  "name": "Tennis club business",
+  "plural": "Tennis club business",
+  "description": "Tennis club business: members, bookings, equipment, coaching and events. Manage tennis club workflows in a dedicated business workspace.",
+  "icon": "⚽",
+  "group": "Sports & recreation",
+  "extended": true,
+  "features": [
+    {
+      "title": "Members & participants",
+      "route": "customers"
+    },
+    {
+      "title": "Bookings & events",
+      "route": "operations"
+    },
+    {
+      "title": "Equipment inventory",
+      "route": "inventory"
+    },
+    {
+      "title": "Training schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Fees & finance",
+      "route": "finance"
+    },
+    {
+      "title": "Coaches & staff",
+      "route": "team"
+    },
+    {
+      "title": "Announcements",
+      "route": "announcements"
+    },
+    {
+      "title": "Participation reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

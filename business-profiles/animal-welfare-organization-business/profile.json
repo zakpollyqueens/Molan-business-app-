@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 397,
+  "slug": "animal-welfare-organization-business",
+  "name": "Animal welfare organization business",
+  "plural": "Animal welfare organization business",
+  "description": "Animal welfare organization business: beneficiaries, programmes, volunteers and funding reports. Manage animal welfare organization workflows in a dedicated business workspace.",
+  "icon": "♡",
+  "group": "Community & nonprofit",
+  "extended": true,
+  "features": [
+    {
+      "title": "Programmes & activities",
+      "route": "operations"
+    },
+    {
+      "title": "Beneficiaries & members",
+      "route": "customers"
+    },
+    {
+      "title": "Supplies & resources",
+      "route": "inventory"
+    },
+    {
+      "title": "Volunteer tasks",
+      "route": "tasks"
+    },
+    {
+      "title": "Grants & finance",
+      "route": "finance"
+    },
+    {
+      "title": "Staff & volunteers",
+      "route": "team"
+    },
+    {
+      "title": "Announcements & updates",
+      "route": "announcements"
+    },
+    {
+      "title": "Impact reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

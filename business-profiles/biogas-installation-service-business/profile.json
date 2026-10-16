@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 420,
+  "slug": "biogas-installation-service-business",
+  "name": "Biogas installation service business",
+  "plural": "Biogas installation service business",
+  "description": "Biogas installation service business: installations, service calls, assets and billing. Manage biogas installation service workflows in a dedicated business workspace.",
+  "icon": "⚡",
+  "group": "Energy & utilities",
+  "extended": true,
+  "features": [
+    {
+      "title": "Installations & service jobs",
+      "route": "operations"
+    },
+    {
+      "title": "Equipment & materials",
+      "route": "inventory"
+    },
+    {
+      "title": "Customer accounts",
+      "route": "customers"
+    },
+    {
+      "title": "Maintenance schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Billing & expenses",
+      "route": "finance"
+    },
+    {
+      "title": "Technicians & teams",
+      "route": "team"
+    },
+    {
+      "title": "Service documentation",
+      "route": "website-studio"
+    },
+    {
+      "title": "Performance reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}
