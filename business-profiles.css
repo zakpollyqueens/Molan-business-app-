@@ -56,3 +56,10 @@ html[data-theme="dark"] .profile-secondary-settings>summary strong{color:#f0f6ff
 html[data-theme="dark"] .profile-secondary-settings>summary small{color:#c1d0e4}
 html[data-theme="dark"] .sacco-load-error{background:#30231d;border-color:#85543a}
 html[data-theme="dark"] .sacco-load-error h3,html[data-theme="dark"] .sacco-load-error ul{color:#ffd9c2}
+
+.profile-module-details{display:block;border:1px solid #d5e0ed;border-radius:18px;background:var(--panel-bg,#fff)}
+.profile-module-details>section.panel{margin:0;border:0;border-radius:0;box-shadow:none}
+.profile-module-details>section.panel+section.panel{border-top:1px solid #e2eaf3}
+.profile-module-details>section.panel .panel-head{padding-top:4px}
+html[data-theme="dark"] .profile-module-details{border-color:#355a7a;background:#10243b}
+html[data-theme="dark"] .profile-module-details>section.panel+section.panel{border-top-color:#294560}
