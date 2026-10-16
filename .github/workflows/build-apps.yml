@@ -84,7 +84,8 @@ jobs:
 
   publish-release:
     name: Publish installable release
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # Publish only from main after both platform builds pass. Manual dispatch is allowed on main too.
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
     needs: [android-apk, windows-desktop]
     runs-on: ubuntu-latest
     permissions:
