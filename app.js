@@ -575,27 +575,124 @@
 
     function businessProfileCatalog(){return window.MolanBusinessProfiles?.catalog||[];}
 function industryProfileFeatures(profile){
-const name=(profile?.[0]||'').toLowerCase();
-const slug=window.MolanBusinessProfiles?.byName?.[profile?.[0]]?.slug||'';
-const configured=window.MolanBusinessProfiles?.byName?.[profile?.[0]]?.features;
-const safeConfigured=Array.isArray(configured)?configured.filter(feature=>feature.route!=='sacco'||slug==='sacco-savings-group'):[];
-if(safeConfigured.length){
- const routeIcons={'sacco':'♧','sacco-welfare':'♡','finance':'＝','customers':'♙','reports':'▤','operations':'◈','attendance':'✓','business-tools':'✦','inventory':'▤','sales':'↗','tasks':'✓','team':'♙','announcements':'◉','website-studio':'▧'};
- return safeConfigured.map(feature=>[routeIcons[feature.route]||'◈',feature.title,profile[0]+': open the '+feature.title.toLowerCase()+' workspace.',feature.route]);
-}
-const common=[['✓','Tasks & deadlines','Assign work and track completion.','tasks'],['♙','Customers / clients','Manage the people your business serves.','customers'],['◈','Operations register','Record and track operational work.','operations','create-operation'],['＝','Finance & expenses','Review income and expense entries.','finance','create-finance'],['▤','Reports & insights','Review business performance.','reports','create-report'],['♙','Team & permissions','Review team members and invitations.','team'],['◉','Announcements','Share internal notices and updates.','announcements','create-announcement']];
-let specialized=[];
-if(slug==='sacco-savings-group') specialized=[['♧','Member savings & accounts','Member records, savings terms, balances and chairperson-reviewed withdrawals.','sacco'],['♡','Separate welfare fund','Track welfare contributions, requests, approvals and disbursements separately from personal savings.','sacco-welfare']];
-else if(/school|college|training/.test(name)) specialized=[['▦','Classes & learners','Manage classes, learner records, assessments and fees.','operations','create-school-class'],['✓','Attendance','Review staff attendance.','attendance'],['＝','School fees & finance','Track fee records and school expenses.','finance']];
-else if(/clinic|medical|dental|laboratory|pharmacy/.test(name)) specialized=[['◷','Appointments & service jobs','Record appointments and operational follow-ups.','business-tools'],['▤','Medical supplies & stock','Manage supplies, batches and stock records.','inventory'],['＝','Service finance','Track non-clinical financial records.','finance']];
-else if(/farm|agri|poultry|fish|livestock|agro/.test(name)) specialized=[['❋','Field & production operations','Track field activities, harvests and production work.','business-tools'],['▤','Inputs & inventory','Track supplies and stock movements.','inventory'],['↗','Produce sales','Record sales and orders.','sales']];
-else if(/restaurant|hotel|bar|bakery|catering|cafe/.test(name)) specialized=[['◷','Bookings & service work','Record bookings and customer service tasks.','business-tools'],['▤','Ingredients & supplies','Manage stock and purchases.','inventory'],['↗','Orders & sales','Manage sales and orders.','sales']];
-else if(/transport|taxi|boda|trucking|logistics|vehicle/.test(name)) specialized=[['⇢','Fleet & trip operations','Track dispatch, trips and delivery work.','business-tools'],['⚒','Vehicle maintenance','Track repairs and inspections.','operations','create-operation'],['↗','Collections & sales','Review orders and payments.','sales']];
-else if(/real estate|landlord|construction|contractor/.test(name)) specialized=[['▧','Properties & projects','Track site work, listings and maintenance operations.','operations','create-operation'],['▤','Materials & procurement','Manage inventory and purchases.','inventory'],['＝','Rent, contracts & finance','Review recorded financial entries.','finance']];
-else if(/ict|software|printing|consultancy|accounting|ngo|community|salon|fashion|cleaning|security/.test(name)) specialized=[['⌘','Client projects & service jobs','Track client work, deliverables and service milestones.','business-tools'],['▣','Service requests & support','Manage requests and operational follow-up.','operations','create-operation'],['▧','Website & media studio','Manage company branding and media assets.','website-studio']];
-else if(/retail|grocery|wholesale|supermarket|boutique|electronics|hardware|mobile money/.test(name)) specialized=[['▤','Products & stock control','Manage stock, reorder levels and suppliers.','inventory'],['↗','Sales & customer orders','Record sales and customer orders.','sales'],['＝','Cashflow & expenses','Review income and expense entries.','finance']];
-else specialized=[['◈','Domain operations','Manage the specialist work of this business.','operations','create-operation'],['↗','Sales & service orders','Record sales and service orders.','sales'],['＝','Finance & expenses','Review income and expense entries.','finance']];
-const profileFeatures=slug==='sacco-savings-group'?specialized:[...specialized,...common];return profileFeatures.filter((x,i,a)=>a.findIndex(y=>y[3]===x[3]&&y[4]===x[4])===i);
+ const name=String(profile?.[0]||'').toLowerCase();
+ const config=window.MolanBusinessProfiles?.byName?.[profile?.[0]]||{};
+ const slug=String(config.slug||'');
+ const configured=Array.isArray(config.features)?config.features:[];
+ const icons={overview:'▦',tasks:'✓',products:'◈',team:'♙',announcements:'◉',customers:'♙',inventory:'▤',sales:'↗',finance:'＝',attendance:'✓',reports:'▤',council:'◉',websites:'◈','business-profile':'▧','industry-workspace':'✦','business-tools':'✧','website-studio':'▧',operations:'◈',sacco:'♧','sacco-welfare':'♡','industry-profile':config.icon||'✦','industry-settings':'⚙',connections:'◉',chat:'✉',notifications:'◉'};
+ const feature=(title,description,route,icon)=>({title,description,route,icon:icon||icons[route]||'◈'});
+ const common=[
+  feature('Tasks & deadlines','Assign work, set due dates and follow completion.','tasks'),
+  feature('Customers, members & contacts','Keep the people your business serves organised.','customers'),
+  feature('Team & role permissions','Manage staff access and responsibilities.','team'),
+  feature('Finance & expenses','Review financial records available to this workspace.','finance'),
+  feature('Reports & insights','Review business performance and activity.','reports'),
+  feature('Announcements & updates','Share relevant updates with your team.','announcements')
+ ];
+ let domain=[];
+ if(slug==='sacco-savings-group'||/sacco savings group/.test(name)){
+  domain=[
+   feature('Circle overview & member dashboard','Review group membership, savings activity, approvals and recent activity.','sacco','♧'),
+   feature('Member savings & accounts','Manage member records, savings terms, balances and reviewed transactions.','sacco','♧'),
+   feature('Welfare account & loans','Manage the separate welfare fund and permitted welfare workflows.','sacco-welfare','♡'),
+   feature('Savings terms & contribution rules','Review savings frequency, terms and contribution expectations.','sacco','▤'),
+   feature('Withdrawal requests & approvals','Review withdrawal requests and record payments only after approval.','sacco','↗')
+  ];
+ }else if(/school|college|training|education|academy/.test(name)){
+  domain=[
+   feature('School overview & performance','Track enrolment, attendance, assessments and fees.','operations','▦'),
+   feature('Classes, streams & learners','Manage class structure and learner administration.','operations','♙'),
+   feature('Attendance register','Review attendance activity.','attendance','✓'),
+   feature('Assessments & examination results','Record and review assessment outcomes.','operations','▤'),
+   feature('School fees & finance','Manage fee entries and finance workflows.','finance','＝'),
+   feature('Academic reports & graphs','Review school progress and activity.','reports','▥')
+  ];
+ }else if(/ict|software|information technology|technology|computer|it services|digital service/.test(name)){
+  domain=[
+   feature('IT projects & delivery board','Track client projects, milestones and releases.','operations','⌘'),
+   feature('Support tickets & service requests','Track support requests and service delivery.','business-tools','⚙'),
+   feature('Systems, devices & inventory','Track devices, licenses and technical equipment.','inventory','▤'),
+   feature('Clients & service agreements','Manage client relationships and service work.','customers','♙'),
+   feature('Websites, apps & media studio','Organise website, app and digital media work.','website-studio','▧'),
+   feature('Technical team & access','Manage developers, engineers and permissions.','team','♙'),
+   feature('Releases & project reports','Review delivery progress and project outcomes.','reports','▥')
+  ];
+ }else if(/farm|agri|poultry|fish|livestock|orchard|dairy|crop|horticulture/.test(name)){
+  domain=[
+   feature('Farm & production overview','Track production, field activity and harvest progress.','operations','❋'),
+   feature('Crops, fields & production records','Record field activities and production cycles.','business-tools','❋'),
+   feature('Inputs, feed & inventory','Track supplies and stock movements.','inventory','▤'),
+   feature('Harvest, produce sales & buyers','Record harvests, orders and sales.','sales','↗'),
+   feature('Seasonal tasks & schedules','Organise farm work and seasonal deadlines.','tasks','✓'),
+   feature('Yield & production reports','Review production activity and outcomes.','reports','▥')
+  ];
+ }else if(/clinic|medical|dental|laboratory|pharmacy|health/.test(name)){
+  domain=[
+   feature('Appointments & service workflow','Track appointments and operational follow-up.','business-tools','◷'),
+   feature('Supplies & stock control','Manage non-sensitive supply and stock records.','inventory','▤'),
+   feature('Service operations','Track service jobs and follow-up.','operations','◈'),
+   feature('Service finance & reports','Review authorised operational finance and reports.','finance','＝')
+  ];
+ }else if(/restaurant|hotel|guesthouse|bar|bakery|catering|cafe|food|lodging/.test(name)){
+  domain=[
+   feature('Bookings, orders & service','Track bookings and customer orders.','business-tools','◷'),
+   feature('Ingredients & supplies','Manage stock and purchases.','inventory','▤'),
+   feature('Sales & daily reconciliation','Record orders, sales and reconciliation.','sales','↗'),
+   feature('Staff shifts & tasks','Organise service tasks and deadlines.','tasks','✓'),
+   feature('Hospitality performance reports','Review activity and sales summaries.','reports','▥')
+  ];
+ }else if(/transport|taxi|boda|truck|logistics|vehicle|delivery|fleet|courier/.test(name)){
+  domain=[
+   feature('Fleet, trips & dispatch','Track dispatch, trips and delivery activity.','operations','⇢'),
+   feature('Vehicle maintenance & inspections','Track repairs and maintenance follow-up.','business-tools','⚙'),
+   feature('Drivers, riders & team','Manage team responsibilities.','team','♙'),
+   feature('Collections & transport finance','Review sales, collections and expenses.','finance','＝'),
+   feature('Fleet performance reports','Review transport activity and performance.','reports','▥')
+  ];
+ }else if(/real estate|landlord|property|construction|contractor|building|engineering/.test(name)){
+  domain=[
+   feature('Properties, sites & projects','Track properties, sites and project stages.','operations','▧'),
+   feature('Materials & procurement','Manage materials and inventory.','inventory','▤'),
+   feature('Clients, tenants & contracts','Manage clients and related follow-up.','customers','♙'),
+   feature('Rent, contracts & project finance','Review authorised financial records.','finance','＝'),
+   feature('Project progress reports','Review project activity and milestones.','reports','▥')
+  ];
+ }else if(/retail|grocery|wholesale|supermarket|boutique|clothing|electronics|hardware|mobile money|shop|market|trading/.test(name)){
+  domain=[
+   feature('Products, stock & suppliers','Manage stock, suppliers and reorder activity.','inventory','▤'),
+   feature('Sales, orders & receipts','Record sales and customer orders.','sales','↗'),
+   feature('Customers & loyalty follow-up','Manage customer records and follow-up.','customers','♙'),
+   feature('Cashflow & expenses','Review income and expense records.','finance','＝'),
+   feature('Stock and sales reports','Review stock movement and sales activity.','reports','▥')
+  ];
+ }else if(/circle|investment group|cooperative|community group|association|club/.test(name)){
+  domain=[
+   feature('Group overview & membership','Review membership and group activity.','operations','♧'),
+   feature('Member register & roles','Manage member records and responsibilities.','customers','♙'),
+   feature('Contributions & group finance','Track permitted contribution and finance records.','finance','＝'),
+   feature('Meetings, tasks & decisions','Organise meetings, follow-ups and tasks.','tasks','✓'),
+   feature('Group performance reports','Review group activity and reports.','reports','▥')
+  ];
+ }else if(/ngo|charity|nonprofit|community organization/.test(name)){
+  domain=[
+   feature('Programmes & activities','Track programmes and delivery activity.','operations','♡'),
+   feature('Beneficiaries & partners','Manage beneficiary and partner records with appropriate care.','customers','♙'),
+   feature('Grants & expenditure','Review programme finance and expenses.','finance','＝'),
+   feature('Impact reports','Review activity and programme outcomes.','reports','▥')
+  ];
+ }else{
+  domain=[
+   feature('Specialist business operations','Track work specific to this business.','operations','◈'),
+   feature('Products, services & delivery','Organise products or service delivery.','business-tools','✦'),
+   feature('Sales & service orders','Record sales and service orders.','sales','↗')
+  ];
+ }
+ const normalized=[];
+ const add=(f)=>{if(!f||!f.title||!f.route)return;if((f.route==='sacco'||f.route==='sacco-welfare')&&slug!=='sacco-savings-group')return;if(!normalized.some(x=>x.route===f.route&&x.title.toLowerCase()===f.title.toLowerCase()))normalized.push(f)};
+ domain.forEach(add);
+ configured.forEach(f=>add(feature(f.title,'Open '+String(f.title).toLowerCase()+' for '+profile[0]+'.',f.route,icons[f.route])));
+ common.forEach(add);
+ return normalized.map(f=>[f.icon||icons[f.route]||'◈',f.title,f.description||('Open '+f.title.toLowerCase()+' for '+profile[0]+'.'),f.route]);
 }
 function industryProfileSettingFields(profile){
 const c=(profile?.[0]||'').toLowerCase();
