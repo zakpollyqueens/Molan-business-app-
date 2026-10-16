@@ -44,9 +44,25 @@ jobs:
             if (!fs.existsSync(ownedPage)) throw new Error('Missing profile-owned page: ' + ownedPage);
             const ownedHtml = fs.readFileSync(ownedPage, 'utf8');
             if (!ownedHtml.includes('data-profile="' + folder.name + '"')) throw new Error('Owned page identity does not match its folder: ' + ownedPage);
-            // Profile-owned pages may keep their loader inline; verify the actual page implementation.
-            if (!ownedHtml.includes('profile.json')) throw new Error('Owned page must load its folder-specific profile.json: ' + ownedPage);
-            if (!ownedHtml.includes('MolanProfileRuntime') || !ownedHtml.includes('openFeature')) throw new Error('Owned page must integrate feature buttons with the shared runtime bridge: ' + ownedPage);
+            const ownedScript = 'business-profiles/' + folder.name + '/profile.js';
+            const ownedStyle = 'business-profiles/' + folder.name + '/profile.css';
+            if (!fs.existsSync(ownedScript)) throw new Error('Missing profile-specific script: ' + ownedScript);
+            if (!fs.existsSync(ownedStyle)) throw new Error('Missing profile-specific stylesheet: ' + ownedStyle);
+            const ownedJs = fs.readFileSync(ownedScript, 'utf8');
+            const ownedRuntime = ownedHtml + '\n' + ownedJs;
+            if (!ownedRuntime.includes('MolanProfileRuntime') || !ownedRuntime.includes('openFeature')) throw new Error('Owned page/script must integrate feature buttons with the shared runtime bridge: ' + ownedPage);
+            const manifestPath = 'business-profiles/' + folder.name + '/features.json';
+            if (!fs.existsSync(manifestPath)) throw new Error('Missing profile feature manifest: ' + manifestPath);
+            const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+            if (manifest.profile !== folder.name || !Array.isArray(manifest.features) || manifest.features.length !== profile.features.length) throw new Error('Feature manifest does not match profile configuration: ' + manifestPath);
+            const featureDirectory = 'business-profiles/' + folder.name + '/pages';
+            for (const feature of profile.features) {
+              const featureSlug = String(feature.title).toLowerCase().normalize('NFKD').replace(/[^\\w\\s-]/g, '').trim().replace(/[\\s_]+/g, '-').replace(/-+/g, '-');
+              const featurePage = featureDirectory + '/feature-' + featureSlug + '/';
+              for (const required of ['index.html', 'page.js', 'page.css']) {
+                if (!fs.existsSync(featurePage + required)) throw new Error('Missing profile-owned feature file: ' + featurePage + required);
+              }
+            }
             if (profileNames.has(profile.name)) throw new Error('Duplicate profile name: ' + profile.name);
             profileNames.add(profile.name);
             for (const feature of profile.features) {
