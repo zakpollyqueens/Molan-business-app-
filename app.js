@@ -229,6 +229,11 @@
     function businessProfileCatalog(){return window.MolanBusinessProfiles?.catalog||[];}
 function industryProfileFeatures(profile){
 const c=(profile?.[0]||'').toLowerCase();
+const configured=window.MolanBusinessProfiles?.byName?.[profile?.[0]]?.features;
+if(Array.isArray(configured)&&configured.length){
+ const routeIcons={'sacco':'♧','finance':'＝','customers':'♙','reports':'▤','operations':'◈','attendance':'✓','business-tools':'✦','inventory':'▤','sales':'↗','tasks':'✓','team':'♙','announcements':'◉','website-studio':'▧'};
+ return configured.map(feature=>[routeIcons[feature.route]||'◈',feature.title,profile[0]+': open the '+feature.title.toLowerCase()+' workspace.',feature.route]);
+}
 const common=[['✓','Tasks & deadlines','Assign work and track completion.','tasks'],['♙','Customers / members','Manage the people your business serves.','customers'],['◈','Operations register','Record and track operational work.','operations','create-operation'],['＝','Finance & expenses','Review income and expense entries.','finance','create-finance'],['▤','Reports & insights','Record summaries and review performance.','reports','create-report'],['♙','Team & permissions','Review team members and invitations.','team'],['◉','Announcements','Share internal notices and updates.','announcements','create-announcement']];
 let specialized=[];
 if(/sacco|savings circle|investment group|microfinance|cooperative/.test(c)) specialized=[['♧','Savings & member accounts','Member records, savings terms, reviews and withdrawals.','sacco'],['＝','Finance ledger','Review financial entries and reports.','finance']];
