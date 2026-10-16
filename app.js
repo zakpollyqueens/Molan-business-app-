@@ -276,7 +276,6 @@
     guidedSetStep(guidedStep+1);
   });
   $('#guided-finish')?.addEventListener('click',guidedFinish);
-  $('#guided-business-type')?.addEventListener('change',()=>guidedRenderIndustryFields());
   $('#guided-add-staff')?.addEventListener('click',()=>guidedAddStaffRow());
   $('#guided-skip-staff')?.addEventListener('click',()=>{$('#guided-staff-list').innerHTML='';guidedSetStep(5);guidedSaveDraft()});
   $('#guided-staff-list')?.addEventListener('click',e=>{if(e.target.closest('.guided-remove-staff')){e.target.closest('.guided-staff-row').remove();$$('.guided-staff-row').forEach((row,i)=>row.querySelector('.guided-staff-head strong').textContent='Team member '+(i+1));if(!$$('.guided-staff-row').length)guidedAddStaffRow()}});
@@ -286,7 +285,6 @@
   $('#guided-business-type')?.addEventListener('change',()=>{guidedRenderIndustryFields();guidedSaveDraft()});
   ['guided-owner-name','guided-owner-email','guided-business-name','guided-motto','guided-website','guided-phone','guided-address','guided-school-classes','guided-academic-year','guided-school-fee-cycle','guided-school-currency','guided-school-standard-fee','guided-school-fee-policy','guided-terms'].forEach(id=>$('#'+id)?.addEventListener('change',guidedSaveDraft));
   
-  $$('[data-welcome-auth]').forEach(b=>b.addEventListener('click',()=>openWelcomeAuth(b.dataset.welcomeAuth||'signin')));
   $('#welcome-prev')?.addEventListener('click',()=>{showWelcomeSlide(welcomeIndex-1);startWelcomeAutoplay()});
   $('#welcome-next')?.addEventListener('click',()=>{showWelcomeSlide(welcomeIndex+1);startWelcomeAutoplay()});
   $$('[data-welcome-dot]').forEach(b=>b.addEventListener('click',()=>{showWelcomeSlide(Number(b.dataset.welcomeDot));startWelcomeAutoplay()}));
