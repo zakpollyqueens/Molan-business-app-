@@ -31,10 +31,14 @@
       const response = await fetch('business-profiles/extended-catalog.json', { cache: 'no-cache' });
       if (!response.ok) throw new Error('Extended business profile catalogue could not be loaded.');
       const data = await response.json();
-      if (!Array.isArray(data.profiles) || data.profiles.length !== 500) throw new Error('Extended catalogue must contain exactly 500 profiles.');
+      if (!Array.isArray(data.profiles) || data.profiles.length < 500) throw new Error('Extended catalogue must contain at least 500 profiles.');
       data.profiles.forEach(profile => {
         if (!profile || !profile.slug || !profile.name || !Array.isArray(profile.features)) return;
         profile.extended = true;
+        // Keep newly added catalogue entries plug-in ready without requiring app.js edits.
+        profile.settingsRoute = profile.settingsRoute || 'industry-settings';
+        profile.overviewRoute = profile.overviewRoute || 'industry-profile';
+        if (!profile.features.length) profile.features = [{ title:(profile.specialty || profile.name) + ' workspace', route:'business-tools' }, { title:'Tasks & follow-up', route:'tasks' }, { title:'Reports & insights', route:'reports' }];
         loaded.push({ config:profile, fallback:[profile.name,profile.plural,profile.description,profile.icon], extended:true });
       });
     } catch (error) {
