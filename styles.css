@@ -390,3 +390,12 @@ html[data-theme="dark"] input::placeholder,html[data-theme="dark"] textarea::pla
 .profile-bar-track{height:150px;display:flex;align-items:end;justify-content:center;border-radius:10px;background:var(--surface-muted,#f0f5fb);overflow:hidden}
 .profile-bar-track span{display:block;width:min(42px,65%);min-height:3px;border-radius:8px 8px 2px 2px;background:linear-gradient(180deg,#19c6e7,#147de0);transition:height .25s ease}
 @media(max-width:560px){.profile-bar-chart{gap:6px;padding-inline:0}.profile-bar-column{grid-template-rows:auto 120px auto;gap:6px}.profile-bar-track{height:120px}.profile-bar-column>small{font-size:10px}}
+
+/* Savings-circle member photos and safe image placeholders. */
+.sacco-member-identity{display:flex;align-items:center;gap:10px;min-width:180px}
+.sacco-member-identity>span:last-child{display:grid;gap:3px;min-width:0}
+.sacco-member-identity strong{overflow-wrap:anywhere}
+.sacco-member-avatar{display:inline-grid;place-items:center;width:42px;height:42px;min-width:42px;border-radius:50%;object-fit:cover;border:1px solid #d5e2f1;background:#eaf3fc;color:#0a6fa5;font-weight:800}
+.sacco-member-avatar-placeholder{font-size:20px}
+.sacco-avatar-preview{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px dashed #b7cbe0;border-radius:13px;background:#f7fbff;color:#65758b}
+.sacco-avatar-preview small{overflow-wrap:anywhere}
