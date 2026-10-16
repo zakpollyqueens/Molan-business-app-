@@ -292,3 +292,26 @@ body.learn-more-open #molan-floating-update{display:none!important}
 .chat-notification-dot{width:10px;height:10px;border-radius:50%;background:#9aa8bb;flex:0 0 10px}.chat-notification.is-unread .chat-notification-dot{background:#1685df;box-shadow:0 0 0 5px rgba(22,133,223,.13)}
 .chat-read-label{font-size:.8rem;opacity:.65}.chat-board-member{justify-content:flex-start;padding:11px 0;border-top:1px solid var(--border,#dce4ef)}.chat-board-record h4{margin:10px 0 5px}
 @media(max-width:680px){.chat-compose-form{grid-template-columns:1fr}.chat-compose-form label,.chat-compose-form button{grid-column:1}.chat-task-card,.chat-meeting-card,.chat-notification{align-items:flex-start;flex-wrap:wrap}.chat-task-card select{max-width:100%;width:100%}.chat-meeting-date{min-width:0;width:100%}}
+
+/* Higher-contrast field labels and workspace security gate */
+.sacco-form label,.form-grid label,.workspace-lock-settings-form label{color:#172b45!important;font-size:13px!important;font-weight:800!important;line-height:1.45}
+.sacco-table th{color:#243b57!important;font-size:11px!important;font-weight:850!important;background:#f1f6fb}
+.sacco-form input::placeholder,.sacco-form textarea::placeholder,.workspace-lock-settings-form input::placeholder{color:#687b91;opacity:1}
+.sacco-form input:focus,.sacco-form select:focus,.sacco-form textarea:focus,.workspace-lock-settings-form input:focus{border-color:#1689d5;box-shadow:0 0 0 3px #1689d522;outline:none}
+.workspace-security-panel{border:1px solid #b9d7ee;background:linear-gradient(145deg,#fff,#f3faff)}
+.workspace-lock-settings-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}
+.workspace-lock-settings-form label{display:grid;gap:7px}
+.workspace-lock-settings-form input{width:100%;min-width:0;padding:12px 13px;border:1px solid #cbd8e6;border-radius:10px;background:#fff;color:#17253b}
+.workspace-lock-settings-form .form-actions{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:10px}
+.workspace-lock-message{color:#17496c;font-size:13px;font-weight:750;line-height:1.6}
+.workspace-lock-shell{min-height:68vh;display:grid;place-items:center;padding:22px}
+.workspace-lock-card{width:min(100%,520px);padding:clamp(22px,5vw,38px);border:1px solid #d2e2f0;border-radius:24px;background:linear-gradient(145deg,#fff,#f1f8ff);box-shadow:0 24px 70px #12335b16}
+.workspace-lock-mark{display:grid;place-items:center;width:54px;height:54px;border-radius:17px;background:#e1f6ff;font-size:25px;margin-bottom:20px}
+.workspace-lock-card h1{margin:8px 0;font-size:clamp(25px,5vw,34px);color:#102a49;line-height:1.2}
+.workspace-lock-card>p{color:#405771;line-height:1.65}
+.workspace-lock-form{display:grid;gap:10px;margin:20px 0}
+.workspace-lock-form label{color:#172b45;font-weight:800;font-size:13px}
+.workspace-lock-form input{width:100%;padding:14px;border:1px solid #cbd8e6;border-radius:11px;background:#fff;color:#17253b}
+.workspace-lock-form input:focus{outline:3px solid #1689d522;border-color:#1689d5}
+.workspace-lock-card small{display:block;color:#536981;line-height:1.6;margin-top:16px}
+@media(max-width:620px){.workspace-lock-settings-form{grid-template-columns:1fr}.workspace-lock-settings-form .form-actions{grid-column:auto}.workspace-lock-settings-form .button{width:100%}}
