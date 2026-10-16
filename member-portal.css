@@ -69,3 +69,5 @@ body[data-theme="light"] hr{border-top-color:#dce6f0}
 @media(max-width:760px){.topbar{padding:12px;border-radius:17px}.brand{gap:10px}.mark{width:44px;height:44px;border-radius:14px}.stats{gap:9px}.stat{padding:13px}.section-title{align-items:flex-start}.section-title>.button{flex:none}}
 @media(max-width:420px){.brand h1{font-size:12px;letter-spacing:.08em}.brand p{font-size:11px;max-width:185px}.topbar{gap:8px}.topbar>.button{padding:9px 10px;font-size:12px}.title{font-size:28px}.row{padding:11px}.amount{font-size:12px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+body[data-theme="light"]{color-scheme:light}body[data-theme="light"] .form select option{color:#14263f}
