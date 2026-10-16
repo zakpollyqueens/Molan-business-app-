@@ -85,3 +85,8 @@ The subscription catalog stores full package totals separately from the monthly 
 ### Workspace privacy lock
 
 Workspace settings include a device-local passcode/password lock and optional platform fingerprint/face unlock through WebAuthn when supported by the browser and device. The lock is scoped to the signed-in user and active business on that device and prompts again after a browser/app restart. It is a privacy gate only; it does not replace Supabase Auth, RLS or server-side authorization. Clearing browser storage removes the local lock, so sensitive data must remain protected by database policies.
+
+
+## Expanded business profile catalogue
+
+The central registry now contains **550 business profile types**: the original 50 active profile configurations plus 500 additional industry-specific profiles. The extra profiles each define their own eight-feature map in `business-profiles/extended-catalog.json`; their cards and feature pages use the shared Molan Business workspace modules, scoped to the selected business workspace. The guided onboarding business-type field includes a search box that filters the dropdown, and the catalogue page supports searching and category filtering. The additional profiles are configuration-backed templates rather than 500 separately duplicated application runtimes.
