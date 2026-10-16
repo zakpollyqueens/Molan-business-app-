@@ -43,14 +43,15 @@
     catalog = loaded.map(item => [item.config.name, item.config.plural || item.config.name, item.config.description || '', item.config.icon || '◈']);
     byName = Object.create(null);
     loaded.forEach(item => { byName[item.config.name] = item.config; });
-    const select = document.getElementById('guided-business-type');
-    if (select) {
+    const bindSearchableSelect = (selectId, searchId, countId) => {
+      const select = document.getElementById(selectId);
+      if (!select) return;
       const previous = select.value;
       select.replaceChildren(new Option('Choose your business type', ''));
       catalog.forEach(profile => select.add(new Option(profile[0], profile[0])));
       if (previous && byName[previous]) select.value = previous;
-      const search = document.getElementById('guided-business-type-search');
-      const resultCount = document.getElementById('guided-business-type-results');
+      const search = document.getElementById(searchId);
+      const resultCount = document.getElementById(countId);
       const filterOptions = () => {
         const query = String(search?.value || '').trim().toLocaleLowerCase();
         let matches = 0;
@@ -70,7 +71,9 @@
         search.dataset.profileSearchBound = 'true';
       }
       filterOptions();
-    }
+    };
+    bindSearchableSelect('guided-business-type', 'guided-business-type-search', 'guided-business-type-results');
+    bindSearchableSelect('business-category', 'business-category-search', 'business-category-results');
     const counter = document.getElementById('profile-catalogue-count-number');
     if (counter) counter.textContent = String(catalog.length);
     return catalog;
