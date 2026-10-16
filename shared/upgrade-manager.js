@@ -52,6 +52,7 @@
     button.className = 'button secondary small molan-update-check';
     button.textContent = 'Check for updates ↻';
     button.setAttribute('aria-label', 'Check Molan Business for application updates');
+    button.title = 'Check for updates or download the latest app installer';
     button.addEventListener('click', () => check(true));
     actions.insertBefore(button, actions.firstChild);
   }
