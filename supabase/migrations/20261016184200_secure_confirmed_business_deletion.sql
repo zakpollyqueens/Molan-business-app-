@@ -52,7 +52,7 @@ begin
     v_status := 'active';
   elsif p_action = 'deactivate' then
     update public.company_profiles
-      set status = 'inactive', deleted_at = null
+      set status = 'suspended', deleted_at = null
       where id = p_company_id;
     v_status := 'inactive';
   else
