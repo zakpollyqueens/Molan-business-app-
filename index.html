@@ -170,26 +170,37 @@
   const menuPanel = document.getElementById('download-menu-panel');
   const menuWrap = document.getElementById('download-menu-wrap');
   if (menuTrigger && menuPanel) {
-    menuTrigger.addEventListener('click', () => {
+    const closeDownloadMenu = (restoreFocus = false) => {
+      menuPanel.hidden = true;
+      menuTrigger.setAttribute('aria-expanded', 'false');
+      menuTrigger.classList.remove('is-open');
+      if (restoreFocus) menuTrigger.focus();
+    };
+    closeDownloadMenu();
+    menuTrigger.addEventListener('click', event => {
+      event.preventDefault();
+      event.stopPropagation();
       const opening = menuPanel.hidden;
-      menuPanel.hidden = !opening;
-      menuTrigger.setAttribute('aria-expanded', String(opening));
-      menuTrigger.classList.toggle('is-open', opening);
-    });
-    document.addEventListener('click', event => {
-      if (menuWrap && !menuWrap.contains(event.target) && !menuPanel.hidden) {
-        menuPanel.hidden = true;
-        menuTrigger.setAttribute('aria-expanded', 'false');
-        menuTrigger.classList.remove('is-open');
+      if (opening) {
+        menuPanel.hidden = false;
+        menuTrigger.setAttribute('aria-expanded', 'true');
+        menuTrigger.classList.add('is-open');
+        requestAnimationFrame(() => {
+          const firstAction = menuPanel.querySelector('a,button');
+          if (firstAction && window.matchMedia('(max-width: 560px)').matches) {
+            menuPanel.scrollTop = 0;
+          }
+        });
+      } else {
+        closeDownloadMenu();
       }
+    });
+    menuPanel.addEventListener('click', event => event.stopPropagation());
+    document.addEventListener('click', event => {
+      if (menuWrap && !menuWrap.contains(event.target) && !menuPanel.hidden) closeDownloadMenu();
     });
     document.addEventListener('keydown', event => {
-      if (event.key === 'Escape' && !menuPanel.hidden) {
-        menuPanel.hidden = true;
-        menuTrigger.setAttribute('aria-expanded', 'false');
-        menuTrigger.classList.remove('is-open');
-        menuTrigger.focus();
-      }
+      if (event.key === 'Escape' && !menuPanel.hidden) closeDownloadMenu(true);
     });
   }
   const ua = navigator.userAgent || '';
