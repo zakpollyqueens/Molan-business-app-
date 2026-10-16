@@ -315,3 +315,34 @@ body.learn-more-open #molan-floating-update{display:none!important}
 .workspace-lock-form input:focus{outline:3px solid #1689d522;border-color:#1689d5}
 .workspace-lock-card small{display:block;color:#536981;line-height:1.6;margin-top:16px}
 @media(max-width:620px){.workspace-lock-settings-form{grid-template-columns:1fr}.workspace-lock-settings-form .form-actions{grid-column:auto}.workspace-lock-settings-form .button{width:100%}}
+
+
+/* Download menu: visible, touch-friendly and layered above the welcome artwork. */
+.download-menu-wrap{position:relative;z-index:120;display:flex;justify-content:center;width:min(100% - 32px,900px);margin:18px auto 28px;isolation:isolate}
+.download-menu-trigger{display:flex;align-items:center;gap:13px;width:min(100%,470px);min-height:68px;padding:12px 17px;border:1px solid #b8d5ea;border-radius:16px;background:linear-gradient(125deg,#fff,#f1f9ff);color:#102a49;text-align:left;box-shadow:0 12px 34px #09264b1a;touch-action:manipulation;cursor:pointer;transition:border-color .18s,box-shadow .18s,transform .18s}
+.download-menu-trigger:hover,.download-menu-trigger:focus-visible,.download-menu-trigger.is-open{border-color:#1689d5;box-shadow:0 15px 38px #0a64a51f;outline:none}
+.download-menu-trigger:focus-visible{outline:3px solid #1689d555;outline-offset:3px}
+.download-trigger-icon{display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;border-radius:13px;background:linear-gradient(145deg,#d9f8ff,#e5edff);color:#096eb7;font-size:24px;font-weight:900}
+.download-trigger-copy{display:grid;gap:4px;min-width:0;flex:1}
+.download-trigger-copy strong{font-size:14px;font-weight:850;color:#102a49}
+.download-trigger-copy small{font-size:11px;color:#526a83}
+.download-trigger-chevron{font-size:20px;color:#176da8;transition:transform .18s}
+.download-menu-trigger.is-open .download-trigger-chevron{transform:rotate(180deg)}
+.download-menu-panel{position:absolute;top:calc(100% + 10px);left:50%;transform:translateX(-50%);z-index:130;width:min(900px,calc(100vw - 28px));max-height:min(72vh,760px);overflow:auto;padding:clamp(17px,3vw,27px);border:1px solid #cbddec;border-radius:22px;background:rgba(255,255,255,.98);box-shadow:0 28px 85px #071b35aa;backdrop-filter:blur(20px);overscroll-behavior:contain}
+.download-menu-panel[hidden],.public-download-help[hidden]{display:none!important}
+.public-downloads-heading{margin-bottom:18px}
+.public-downloads-heading h2{margin:5px 0 8px;color:#102a49;font:800 clamp(21px,3vw,29px)/1.2 Manrope,sans-serif;letter-spacing:-.6px}
+.public-downloads-heading p{margin:0;color:#526a83;font-size:13px;line-height:1.6}
+.public-download-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.public-download-card{display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-width:0;min-height:142px;padding:16px;border:1px solid #d9e5f0;border-radius:15px;background:#fff;color:#102a49;text-decoration:none;text-align:left;cursor:pointer;touch-action:manipulation;transition:border-color .18s,background .18s,transform .18s,box-shadow .18s}
+.public-download-card:hover,.public-download-card:focus-visible{border-color:#2795d8;background:#f5fbff;box-shadow:0 8px 22px #143e6410;transform:translateY(-1px);outline:none}
+.public-download-card:focus-visible{outline:3px solid #1689d544;outline-offset:2px}
+.public-download-icon{display:grid;place-items:center;width:36px;height:36px;border-radius:11px;background:#e4f6ff;color:#0c70b8;font-size:20px}
+.public-download-card strong{font-size:13px;font-weight:850;color:#102a49;line-height:1.4}
+.public-download-card small{font-size:11px;line-height:1.5;color:#526a83}
+.public-download-card b{margin-top:auto;font-size:11px;color:#0876c4}
+.public-download-recommended{border-color:#92d7ee;background:linear-gradient(145deg,#f4fdff,#f4f7ff)}
+.public-download-help{margin:14px 0 0;padding:13px 15px;border:1px solid #b9d7ee;border-radius:12px;background:#f0f8ff;color:#183d60;font-size:12px;line-height:1.7}
+.public-download-footnote{margin:15px 0 0;color:#60748a;font-size:10px;line-height:1.6}
+@media(max-width:560px){.download-menu-wrap{width:calc(100% - 28px);margin:14px auto 22px}.download-menu-trigger{min-height:64px;padding:10px 12px}.download-trigger-copy strong{font-size:13px}.download-menu-panel{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:calc(100vw - 24px);max-height:82dvh;padding:16px;border-radius:18px}.public-download-grid{grid-template-columns:1fr;gap:9px}.public-download-card{min-height:0;padding:13px;display:grid;grid-template-columns:36px minmax(0,1fr);column-gap:11px;row-gap:4px}.public-download-icon{grid-row:1/4}.public-download-card strong,.public-download-card small,.public-download-card b{grid-column:2}.public-download-card b{margin-top:3px}}
+@media(prefers-reduced-motion:reduce){.download-menu-trigger,.download-trigger-chevron,.public-download-card{transition:none}}
