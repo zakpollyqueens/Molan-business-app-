@@ -316,7 +316,7 @@
   }
   async function updateSubscriptionPagePrices(market){
     const plans=await subscriptionPlansForMarket(market);
-    plans.forEach(p=>{const card=$('[data-subscription-plan="'+p.plan_code+'"]');if(!card)return;const labels=planPriceLabels(p,market);const monthly=$('.subscription-price',card),total=$('.subscription-total',card);if(monthly)monthly.textContent=labels.monthly;if(total)total.textContent=labels.total;const status=$('.subscription-price-status',card);if(status)status.textContent=labels.approved?'Approved price':'Reference only · checkout disabled';});
+    plans.forEach(p=>{const card=$('[data-subscription-plan="'+p.plan_code+'"]');if(!card)return;const labels=planPriceLabels(p,market);const monthly=$('.subscription-price',card),total=$('.subscription-total',card);if(monthly)monthly.textContent=labels.monthly;if(total)total.textContent=labels.total;const status=$('.subscription-price-status',card);if(status)status.textContent=labels.approved?'Approved price':'Reference only · checkout disabled';const pay=$('[data-pay-plan="'+p.plan_code+'"]',card);if(pay){pay.disabled=!(p.checkout_enabled&&labels.approved);pay.textContent=pay.disabled?'Checkout unavailable':'Upgrade with JJuma Pay →';}});
   }
 
     function renderLearnPricing(){
@@ -818,15 +818,45 @@ ownedFrame.addEventListener('load',()=>{
  '<section class="panel"><h3>Before you delete</h3><p class="muted">Confirm the correct business name before continuing. The action is recorded against this workspace and does not permanently purge stored records.</p><button class="button secondary" data-page="business-profile">Review business profile</button> <button class="button secondary" data-page="settings">Back to settings</button></section>';
 }
 
+
+  document.addEventListener('click', async e => {
+    const button = e.target.closest('[data-pay-plan]');
+    if (!button) return;
+    e.preventDefault();
+    if (!supabase || !user || !company?.id) { toast('Sign in and open your business workspace before upgrading.', true); return; }
+    if (!['owner','admin'].includes(String(membership?.role || '').toLowerCase())) { toast('Only a business owner or administrator can purchase a subscription.', true); return; }
+    const planCode = String(button.dataset.payPlan || '').toLowerCase();
+    const marketCode = String($('#subscription-country')?.value || detectLearnCountry()).toUpperCase();
+    if (!['gold','silver','premium'].includes(planCode)) { toast('That subscription plan is not valid.', true); return; }
+    button.disabled = true;
+    const originalText = button.textContent;
+    button.textContent = 'Preparing secure checkout…';
+    try {
+      const { data, error } = await supabase.functions.invoke('molan-jjuma-payments', {
+        body: { company_id: company.id, plan_code: planCode, market_code: marketCode }
+      });
+      if (error) throw error;
+      if (!data?.success || typeof data.payment_url !== 'string') throw new Error(data?.error || 'Could not start JJuma Pay checkout.');
+      const checkout = new URL(data.payment_url);
+      if (checkout.protocol !== 'https:' || checkout.hostname !== 'pay.jjuma.com') throw new Error('The payment provider returned an untrusted checkout link.');
+      toast('Opening secure JJuma Pay checkout…');
+      window.location.assign(checkout.toString());
+    } catch (error) {
+      toast(error?.message || 'Could not start payment. Please try again.', true);
+      button.disabled = false;
+      button.textContent = originalText;
+    }
+  });
+
   function renderSubscriptionPage(el){
     const country=detectLearnCountry();
     const plans=[{code:'gold',name:'Gold',months:3,summary:'Pay for 3 months; renew when the 3-month period ends.'},{code:'silver',name:'Silver',months:2,summary:'Pay for 2 months; renew when the 2-month period ends.'},{code:'premium',name:'Premium',months:1,summary:'Pay for 1 month; renew monthly.'}];
     const countryName={UG:'Uganda',KE:'Kenya',TZ:'Tanzania',RW:'Other African country (USD)',BI:'Other African country (USD)',SS:'Other African country (USD)',OTHER_AFRICA:'Other African country (USD)',EUROPE:'Europe (EUR)',ASIA:'Asia (USD)',AMERICA:'America (USD)',USD:'Default USD market',OTHER:'Other country (USD)'}[country]||'Selected market';
     el.innerHTML=head('Subscription plans & upgrades','Choose a plan duration that fits your business. Your price and payment terms must be shown before any payment is accepted.')+
     '<section class="subscription-intro panel"><span class="section-kicker">CLEAR TERMS BEFORE YOU PAY</span><h2>Three plans. Clear durations.</h2><p>Gold lasts 3 months, Silver lasts 2 months, and Premium lasts 1 month. The subscription clock should start only after a verified payment or an authorised activation.</p><p class="muted">Detected market: <strong id="subscription-country-name">'+esc(countryName)+'</strong>. If you choose Use my location, your browser asks permission and the coordinates are sent to a reverse-geocoding service to identify your country. You can instead choose a country manually.</p><button type="button" class="button secondary small" id="subscription-detect-location">Use my location</button><label class="subscription-country-label">Change country <select id="subscription-country" class="field-input"><option value="UG" '+(country==='UG'?'selected':'')+'>Uganda (UGX)</option><option value="KE" '+(country==='KE'?'selected':'')+'>Kenya (KES)</option><option value="TZ" '+(country==='TZ'?'selected':'')+'>Tanzania (TZS)</option><option value="RW" '+(country==='RW'?'selected':'')+'>Rwanda (USD)</option><option value="BI" '+(country==='BI'?'selected':'')+'>Burundi (USD)</option><option value="SS" '+(country==='SS'?'selected':'')+'>South Sudan (USD)</option><option value="OTHER_AFRICA" '+(country==='OTHER_AFRICA'?'selected':'')+'>Other African country (USD)</option><option value="EUROPE" '+(country==='EUROPE'?'selected':'')+'>Europe (EUR)</option><option value="ASIA" '+(country==='ASIA'?'selected':'')+'>Asia (USD)</option><option value="AMERICA" '+(country==='AMERICA'?'selected':'')+'>America (USD)</option><option value="USD" '+(country==='USD'?'selected':'')+'>Default USD market</option><option value="OTHER" '+(country==='OTHER'?'selected':'')+'>Other country (USD)</option></select></label></section>'+
-    '<div class="subscription-plan-grid">'+plans.map(p=>'<article class="subscription-plan-card plan-'+p.code+'" data-subscription-plan="'+p.code+'"><span class="subscription-plan-eyebrow">'+(p.code==='gold'?'LONGER COVERAGE':p.code==='silver'?'MID-LENGTH COVERAGE':'SHORT-TERM COVERAGE')+'</span><h2>'+p.name+'</h2><div class="subscription-duration">'+p.months+' '+(p.months===1?'month':'months')+'</div><p>'+p.summary+'</p><div class="subscription-price">Loading price…</div><div class="subscription-total">Checking approved rate…</div><div class="subscription-price-status">Checkout disabled until approval</div><ul><li>Subscription duration: '+p.months+' '+(p.months===1?'month':'months')+'</li><li>Renewal payment is due after '+p.months+' '+(p.months===1?'month':'months')+'</li><li>Access should expire at the end of the paid period unless renewed</li><li>Activation only after verified payment or authorised manual approval</li></ul><button class="button secondary small" type="button" disabled>Online upgrade checkout not connected</button></article>').join('')+'</div>'+
+    '<div class="subscription-plan-grid">'+plans.map(p=>'<article class="subscription-plan-card plan-'+p.code+'" data-subscription-plan="'+p.code+'"><span class="subscription-plan-eyebrow">'+(p.code==='gold'?'LONGER COVERAGE':p.code==='silver'?'MID-LENGTH COVERAGE':'SHORT-TERM COVERAGE')+'</span><h2>'+p.name+'</h2><div class="subscription-duration">'+p.months+' '+(p.months===1?'month':'months')+'</div><p>'+p.summary+'</p><div class="subscription-price">Loading price…</div><div class="subscription-total">Checking approved rate…</div><div class="subscription-price-status">Checkout disabled until approval</div><ul><li>Subscription duration: '+p.months+' '+(p.months===1?'month':'months')+'</li><li>Renewal payment is due after '+p.months+' '+(p.months===1?'month':'months')+'</li><li>Access should expire at the end of the paid period unless renewed</li><li>Activation only after verified payment or authorised manual approval</li></ul><button class="button primary small" type="button" data-pay-plan="'+p.code+'" disabled>Loading checkout…</button></article>').join('')+'</div>'+
     '<section class="panel subscription-trust"><h3>Security and business continuity</h3><p>Your workspace is designed with authenticated sign-in, workspace membership checks, permission-controlled staff access and private camera recording storage. Owners control camera setup and archived-footage deletion. Use strong passwords, grant minimum necessary access and connect only supported camera systems.</p><p><strong>Workshop Real Time requirements:</strong> owner-authorised camera claim, compatible camera/NVR/DVR or approved provider API, verified pairing, reliable power and internet, secure recording/retention setup, and explicit staff viewing permissions. QR/Bluetooth/Wi-Fi assists setup but cannot by itself guarantee a working live feed.</p><button type="button" class="button secondary" data-page="connections">Open Workshop Real Time →</button></section>'+
-    '<section class="panel subscription-billing-note"><h3>Renewal and billing status</h3><p>The displayed amount is the full package fee due again when the selected period ends: Gold every 3 months, Silver every 2 months, and Premium every month. Prices are configured by market. Payment-provider checkout, verified payment activation, automatic expiry enforcement and renewal reminders are not yet connected, so this page does not collect money or activate plans.</p></section>';
+    '<section class="panel subscription-billing-note"><h3>Secure checkout and subscription activation</h3><p>Choose Upgrade with JJuma Pay only when checkout is enabled for the selected market and plan. Your subscription activates only after the server verifies the provider payment and records the purchased period. A return to the success page alone is not proof of payment.</p><p class="muted">If checkout is unavailable for a plan, its price or merchant configuration must be reviewed before accepting payment.</p></section>';
     updateSubscriptionPagePrices(country);
     $('#subscription-country')?.addEventListener('change',e=>{
       const chosen=e.target.value,selectedName={UG:'Uganda',KE:'Kenya',TZ:'Tanzania',RW:'Other African country (USD)',BI:'Other African country (USD)',SS:'Other African country (USD)',OTHER_AFRICA:'Other African country (USD)',EUROPE:'Europe (EUR)',ASIA:'Asia (USD)',AMERICA:'America (USD)',USD:'Default USD market',OTHER:'Other country (USD)'}[chosen]||chosen;
