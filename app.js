@@ -278,7 +278,47 @@
     if(lang.endsWith('-us'))return 'USD';
     return 'OTHER';
   }
-  function renderLearnPricing(){
+
+  const DEFAULT_SUBSCRIPTION_PLANS=[
+    {plan_code:'gold',display_name:'Gold',duration_months:3,usd_monthly_reference:100,display_order:1},
+    {plan_code:'silver',display_name:'Silver',duration_months:2,usd_monthly_reference:60,display_order:2},
+    {plan_code:'premium',display_name:'Premium',duration_months:1,usd_monthly_reference:50,display_order:3}
+  ];
+  function formatPlanAmount(amount,currency){try{return new Intl.NumberFormat(undefined,{style:'currency',currency:currency||'USD',maximumFractionDigits:2}).format(Number(amount))}catch{return String(amount)+' '+String(currency||'')}}
+  async function subscriptionPlansForMarket(market){
+    let plans=DEFAULT_SUBSCRIPTION_PLANS.map(p=>({...p,price_status:market==='USD'?'proposed':'pending_configuration',currency_code:market==='USD'?'USD':null,monthly_amount:market==='USD'?p.usd_monthly_reference:null,checkout_enabled:false}));
+    if(!supabase)return plans;
+    try{
+      const [pr,prices]=await Promise.all([
+        supabase.from('subscription_plan_catalog').select('plan_code,display_name,duration_months,usd_monthly_reference,display_order').eq('is_active',true).order('display_order'),
+        supabase.from('subscription_plan_prices').select('plan_code,market_code,currency_code,monthly_amount,price_status,checkout_enabled').eq('market_code',market).eq('is_visible',true)
+      ]);
+      if(pr.error||prices.error||!Array.isArray(pr.data)||!pr.data.length)return plans;
+      return pr.data.map(p=>{const rate=(prices.data||[]).find(x=>x.plan_code===p.plan_code);return {...p,price_status:rate?.price_status||'pending_configuration',currency_code:rate?.currency_code||null,monthly_amount:rate?.monthly_amount===null||rate?.monthly_amount===undefined?null:Number(rate.monthly_amount),checkout_enabled:!!rate?.checkout_enabled};});
+    }catch{return plans}
+  }
+  function planPriceLabels(plan,market){
+    if(plan.price_status==='approved'&&plan.monthly_amount!==null&&plan.monthly_amount!==undefined){
+      const monthly=formatPlanAmount(plan.monthly_amount,plan.currency_code),total=formatPlanAmount(Number(plan.monthly_amount)*Number(plan.duration_months),plan.currency_code);
+      return {monthly:monthly+' / month',total:'Approved package total: '+total,approved:true};
+    }
+    if(market==='USD'&&plan.price_status==='proposed'&&plan.monthly_amount!==null&&plan.monthly_amount!==undefined){
+      const monthly=formatPlanAmount(plan.monthly_amount,'USD'),total=formatPlanAmount(Number(plan.monthly_amount)*Number(plan.duration_months),'USD');
+      return {monthly:monthly+' / month · proposed',total:'Proposed package total: '+total,approved:false};
+    }
+    return {monthly:'Price awaiting approval',total:'Local currency price not configured',approved:false};
+  }
+  async function renderLearnPlanCards(market){
+    const grid=$('#learn-plan-grid');if(!grid)return;
+    const plans=await subscriptionPlansForMarket(market);
+    grid.innerHTML=plans.map(p=>{const labels=planPriceLabels(p,market);return '<article class="learn-plan-card plan-'+esc(p.plan_code)+'" data-learn-plan="'+esc(p.plan_code)+'"><span class="learn-plan-name">'+esc(p.display_name)+'</span><strong>'+esc(labels.monthly)+'</strong><span class="learn-plan-duration">'+Number(p.duration_months)+' '+(Number(p.duration_months)===1?'month':'months')+'</span><p>'+esc(labels.total)+'</p></article>'}).join('');
+  }
+  async function updateSubscriptionPagePrices(market){
+    const plans=await subscriptionPlansForMarket(market);
+    plans.forEach(p=>{const card=$('[data-subscription-plan="'+p.plan_code+'"]');if(!card)return;const labels=planPriceLabels(p,market);const monthly=$('.subscription-price',card),total=$('.subscription-total',card);if(monthly)monthly.textContent=labels.monthly;if(total)total.textContent=labels.total;const status=$('.subscription-price-status',card);if(status)status.textContent=labels.approved?'Approved price':'Reference only · checkout disabled';});
+  }
+
+    function renderLearnPricing(){
     const country=$('#learn-country')?.value||'UG',out=$('#learn-pricing-result');if(!out)return;
     const names={UG:'Uganda',KE:'Kenya',TZ:'Tanzania',RW:'Rwanda',BI:'Burundi',SS:'South Sudan',OTHER_AFRICA:'other African countries',USD:'countries using USD pricing',OTHER:'your selected country'};
     const notes={
@@ -294,8 +334,7 @@
     };
     const usd=country==='USD';
     const plans=[{code:'gold',name:'Gold',months:3,monthly:100},{code:'silver',name:'Silver',months:2,monthly:60},{code:'premium',name:'Premium',months:1,monthly:50}];
-    const grid=$('#learn-plan-grid');
-    if(grid)grid.innerHTML=plans.map(p=>'<article class="learn-plan-card plan-'+p.code+'"><span class="learn-plan-name">'+p.name+'</span><strong>'+(usd?'$'+p.monthly.toLocaleString('en-US')+' <small>/ month</small>':'Price to be confirmed')+'</strong><span class="learn-plan-duration">'+p.months+' '+(p.months===1?'month':'months')+'</span>'+(usd?'<p>Proposed package total: $'+(p.monthly*p.months).toLocaleString('en-US')+'</p>':'<p>Local currency price not configured yet.</p>')+'</article>').join('');
+    renderLearnPlanCards(country);
     const extra=usd?' USD figures are the proposed monthly reference rates from the project brief; package totals are calculated from each plan duration and are not yet enabled for checkout.':' Exact prices for this market are not published in the current system yet. The app must show an approved local-currency price before accepting payment.';
     out.innerHTML='<strong>'+esc(names[country]||'Selected market')+'</strong><p>'+esc(notes[country]||notes.OTHER)+esc(extra)+'</p><div class="learn-price-status"><span>Gold · 3 months | Silver · 2 months | Premium · 1 month</span><b>Checkout not yet active</b></div>';
   }
@@ -784,14 +823,14 @@ ownedFrame.addEventListener('load',()=>{
     const usd=country==='USD';
     el.innerHTML=head('Subscription plans & upgrades','Choose a plan duration that fits your business. Your price and payment terms must be shown before any payment is accepted.')+
     '<section class="subscription-intro panel"><span class="section-kicker">CLEAR TERMS BEFORE YOU PAY</span><h2>Three plans. Clear durations.</h2><p>Gold lasts 3 months, Silver lasts 2 months, and Premium lasts 1 month. The subscription clock should start only after a verified payment or an authorised activation.</p><p class="muted">Detected market: <strong id="subscription-country-name">'+esc(countryName)+'</strong>. Country detection is an estimate; confirm your country before billing.</p><label class="subscription-country-label">Change country <select id="subscription-country" class="field-input"><option value="UG" '+(country==='UG'?'selected':'')+'>Uganda (UGX)</option><option value="KE" '+(country==='KE'?'selected':'')+'>Kenya (KES)</option><option value="TZ" '+(country==='TZ'?'selected':'')+'>Tanzania (TZS)</option><option value="RW" '+(country==='RW'?'selected':'')+'>Rwanda (RWF)</option><option value="BI" '+(country==='BI'?'selected':'')+'>Burundi (BIF)</option><option value="SS" '+(country==='SS'?'selected':'')+'>South Sudan (SSP)</option><option value="OTHER_AFRICA" '+(country==='OTHER_AFRICA'?'selected':'')+'>Other African country</option><option value="USD" '+(country==='USD'?'selected':'')+'>USD pricing market</option><option value="OTHER" '+(country==='OTHER'?'selected':'')+'>Other country</option></select></label></section>'+
-    '<div class="subscription-plan-grid">'+plans.map(p=>'<article class="subscription-plan-card plan-'+p.code+'"><span class="subscription-plan-eyebrow">'+(p.code==='gold'?'LONGER COVERAGE':p.code==='silver'?'MID-LENGTH COVERAGE':'SHORT-TERM COVERAGE')+'</span><h2>'+p.name+'</h2><div class="subscription-duration">'+p.months+' '+(p.months===1?'month':'months')+'</div><p>'+p.summary+'</p><div class="subscription-price">'+(usd?'$'+p.monthly.toLocaleString('en-US')+' / month':'Price awaiting approval')+'</div><div class="subscription-total">'+(usd?'Proposed package total: $'+(p.monthly*p.months).toLocaleString('en-US'):'Local currency: price not configured')+'</div><ul><li>Subscription duration: '+p.months+' '+(p.months===1?'month':'months')+'</li><li>Activation after verified payment or authorised manual approval</li><li>Expiry date and renewal terms shown on activation</li></ul><button class="button secondary small" type="button" disabled>Online upgrade checkout not connected</button></article>').join('')+'</div>'+
+    '<div class="subscription-plan-grid">'+plans.map(p=>'<article class="subscription-plan-card plan-'+p.code+'" data-subscription-plan="'+p.code+'"><span class="subscription-plan-eyebrow">'+(p.code==='gold'?'LONGER COVERAGE':p.code==='silver'?'MID-LENGTH COVERAGE':'SHORT-TERM COVERAGE')+'</span><h2>'+p.name+'</h2><div class="subscription-duration">'+p.months+' '+(p.months===1?'month':'months')+'</div><p>'+p.summary+'</p><div class="subscription-price">Loading price…</div><div class="subscription-total">Checking approved rate…</div><div class="subscription-price-status">Checkout disabled until approval</div><ul><li>Subscription duration: '+p.months+' '+(p.months===1?'month':'months')+'</li><li>Activation after verified payment or authorised manual approval</li><li>Expiry date and renewal terms shown on activation</li></ul><button class="button secondary small" type="button" disabled>Online upgrade checkout not connected</button></article>').join('')+'</div>'+
     '<section class="panel subscription-trust"><h3>Security and business continuity</h3><p>Your workspace is designed with authenticated sign-in, workspace membership checks, permission-controlled staff access and private camera recording storage. Owners control camera setup and archived-footage deletion. Use strong passwords, grant minimum necessary access and connect only supported camera systems.</p><p><strong>Workshop Real Time requirements:</strong> owner-authorised camera claim, compatible camera/NVR/DVR or approved provider API, verified pairing, reliable power and internet, secure recording/retention setup, and explicit staff viewing permissions. QR/Bluetooth/Wi-Fi assists setup but cannot by itself guarantee a working live feed.</p><button type="button" class="button secondary" data-page="connections">Open Workshop Real Time →</button></section>'+
     '<section class="panel subscription-billing-note"><h3>Before billing goes live</h3><p>We inspected the current repository and Supabase schema: there was no existing subscription catalog or payment-provider checkout to reuse. The USD monthly figures shown here are proposed reference rates from the project brief; local currency prices still need approval. No charge is taken and no plan is activated by this page yet.</p></section>';
+    updateSubscriptionPagePrices(country);
     $('#subscription-country')?.addEventListener('change',e=>{
       const chosen=e.target.value,selectedName={UG:'Uganda',KE:'Kenya',TZ:'Tanzania',RW:'Rwanda',BI:'Burundi',SS:'South Sudan',OTHER_AFRICA:'Other African country',USD:'USD pricing market',OTHER:'Other market'}[chosen]||chosen;
       const detected=$('#subscription-country-name');if(detected)detected.textContent=selectedName;
-      $$('.subscription-price').forEach((node,i)=>{const p=plans[i];node.textContent=chosen==='USD'?'$'+p.monthly.toLocaleString('en-US')+' / month':'Price awaiting approval'});
-      $$('.subscription-total').forEach((node,i)=>{const p=plans[i];node.textContent=chosen==='USD'?'Proposed package total: $'+(p.monthly*p.months).toLocaleString('en-US'):'Local currency: price not configured'});
+      updateSubscriptionPagePrices(chosen);
     });
   }
 
