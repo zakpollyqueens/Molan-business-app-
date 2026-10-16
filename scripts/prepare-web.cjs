@@ -35,9 +35,20 @@ if (fs.existsSync(versionPath)) {
   const version = JSON.parse(fs.readFileSync(versionPath, 'utf8'));
   const buildNumber = Number.parseInt(process.env.GITHUB_RUN_NUMBER || '', 10);
   if (Number.isInteger(buildNumber) && buildNumber > 0) {
-    version.currentVersion = '1.0.' + buildNumber;
+    // Keep the packaged frontend and its manifest on exactly the same version.
+    const buildVersion = '1.0.' + buildNumber;
+    version.currentVersion = buildVersion;
+    version.version = buildVersion;
     version.buildNumber = buildNumber;
     version.buildCommit = process.env.GITHUB_SHA || 'local';
+    const htmlPath = path.join(output, 'index.html');
+    let html = fs.readFileSync(htmlPath, 'utf8');
+    const versionAssignment = /window\.MOLAN_APP_VERSION\s*=\s*["'][^"']+["'];/;
+    if (!versionAssignment.test(html)) {
+      throw new Error('Could not inject the packaged app version into index.html.');
+    }
+    html = html.replace(versionAssignment, 'window.MOLAN_APP_VERSION = "' + buildVersion + '";');
+    fs.writeFileSync(htmlPath, html);
   }
   fs.writeFileSync(versionPath, JSON.stringify(version, null, 2) + '\n');
 }
