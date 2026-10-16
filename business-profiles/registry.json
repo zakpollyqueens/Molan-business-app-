@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "description": "Shared registry of 550 business profiles: 50 original categories and 500 additional dedicated profiles. Every profile owns its own configuration and page.",
+  "description": "Shared registry of 550 selectable business profiles: 50 original categories and 500 additional dedicated profiles. Extended profiles include profile-specific feature pages and hamburger navigation.",
   "profiles": [
     {
       "slug": "grocery-shop",
