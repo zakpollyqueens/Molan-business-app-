@@ -1,1 +1,1 @@
-{"schemaVersion":1,"source":"profile.json","mapping":"features","note":"The profile-specific feature list is maintained in this folder's profile.json."}
+{"schemaVersion":1,"source":"profile.json","mapping":"features","note":"Feature definitions are owned by this profile's profile.json."}
