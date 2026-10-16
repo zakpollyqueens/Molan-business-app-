@@ -530,6 +530,22 @@ typeInput?.addEventListener('change',renderMetadata);renderMetadata();
       if(!declared)throw new Error('This feature is not declared by the selected profile.');
       const allowed=new Set(['overview','tasks','products','team','announcements','customers','inventory','sales','finance','attendance','reports','council','websites','business-profile','industry-workspace','business-tools','website-studio','operations','sacco','control-center','profile-directory','industry-profile','industry-settings','connections','workspace-admin']);
       if(!allowed.has(declared.route))throw new Error('This destination is not an approved application route.');
+      // Profile overview buttons open the matching folder-owned feature page first.
+      // Once that page is inside the profile iframe, its Continue button opens the approved shared module.
+      const ownedFrame = document.querySelector('#profile-owned-page-frame');
+      let alreadyOnOwnedFeaturePage = false;
+      try {
+        alreadyOnOwnedFeaturePage = /\/business-profiles\/[^/]+\/pages\/feature-[^/]+\/index\.html$/.test(
+          ownedFrame?.contentWindow?.location?.pathname || ''
+        );
+      } catch (_) {}
+      if (ownedFrame && !alreadyOnOwnedFeaturePage) {
+        const featureSlug = String(feature.title).toLowerCase().normalize('NFKD')
+          .replace(/[^\w\s-]/g, '').trim().replace(/[\s_]+/g, '-').replace(/-+/g, '-');
+        ownedFrame.src = 'business-profiles/' + encodeURIComponent(profile) +
+          '/pages/feature-' + featureSlug + '/index.html';
+        return Promise.resolve({opened:'profile-owned-feature-page',profile});
+      }
       navigate(declared.route);
       return Promise.resolve({opened:declared.route,profile});
     },
