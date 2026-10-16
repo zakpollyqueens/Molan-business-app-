@@ -88,13 +88,68 @@ async function snapshot(m: any) {
   const confirmedBalance = entries.filter((x:any) => x.status === "confirmed").reduce((sum:number,x:any) => sum + (x.entry_type === "withdrawal" ? -Number(x.amount) : x.entry_type === "deposit" ? Number(x.amount) : 0), 0);
   const pendingSavings = entries.filter((x:any) => x.status === "pending" && x.entry_type === "deposit").reduce((sum:number,x:any) => sum + Number(x.amount), 0);
   const activeTerm = terms.find((t:any) => t.status === "active") || null;
+  const now = new Date().toISOString();
+  const { data: openElections, error: electionsError } = await admin.from("sacco_elections").select("id,title,starts_at,ends_at,status").eq("company_id",m.company_id).eq("status","open").lte("starts_at",now).gt("ends_at",now).order("ends_at",{ascending:true}).limit(10);
+  if (electionsError) throw electionsError;
+  const electionRows = openElections || [];
+  let memberElections:any[] = [];
+  if (electionRows.length) {
+    const electionIds = electionRows.map((e:any)=>e.id);
+    const [candidateR, voterR] = await Promise.all([
+      admin.from("sacco_election_candidates").select("id,election_id,member_id").eq("company_id",m.company_id).in("election_id",electionIds),
+      admin.from("sacco_election_votes").select("election_id").eq("company_id",m.company_id).eq("voter_member_id",m.id).in("election_id",electionIds)
+    ]);
+    if (candidateR.error) throw candidateR.error;
+    if (voterR.error) throw voterR.error;
+    const candidateRows = candidateR.data || [];
+    const candidateMemberIds = [...new Set(candidateRows.map((c:any)=>c.member_id))];
+    let candidateMembers:any[] = [];
+    if (candidateMemberIds.length) {
+      const memberR = await admin.from("sacco_members").select("id,full_name,account_code").eq("company_id",m.company_id).in("id",candidateMemberIds);
+      if (memberR.error) throw memberR.error;
+      candidateMembers = memberR.data || [];
+    }
+    const votedIds = new Set((voterR.data || []).map((v:any)=>v.election_id));
+    memberElections = electionRows.map((e:any)=>({...e,voted:votedIds.has(e.id),candidates:candidateRows.filter((c:any)=>c.election_id===e.id).map((c:any)=>{const cm=candidateMembers.find((x:any)=>x.id===c.member_id);return {id:c.id,member_id:c.member_id,full_name:cm?.full_name||"Candidate",account_code:cm?.account_code||""}})}));
+  }
   return {
     company: companyR.data || { name: "Savings circle", currency_code: "UGX" },
     member: { id:m.id, account_code:m.account_code, full_name:m.full_name, phone:m.phone, email:m.email, avatar_url:m.avatar_url, joined_on:m.joined_on },
     summary: { confirmed_balance: confirmedBalance, pending_savings: pendingSavings, confirmed_deposits: entries.filter((x:any)=>x.status==="confirmed"&&x.entry_type==="deposit").reduce((s:number,x:any)=>s+Number(x.amount),0), active_term:activeTerm, pending_withdrawals:withdrawals.filter((x:any)=>x.status==="pending").length },
-    entries, terms, withdrawals, reviews,
+    entries, terms, withdrawals, reviews, elections:memberElections,
     preferences: preferencesR.data?.preferences || { theme:"glass", wallpaper:"midnight", font_style:"system", display_density:"comfortable" }
   };
+}
+
+async function electionAdminList(companyId: string) {
+  const { data: electionRows, error: electionsError } = await admin.from("sacco_elections").select("id,company_id,title,starts_at,ends_at,status,created_by,closed_at,winner_member_id,winner_votes,created_at").eq("company_id",companyId).order("created_at",{ascending:false}).limit(50);
+  if (electionsError) throw electionsError;
+  const elections = electionRows || [];
+  if (!elections.length) return [];
+  const ids = elections.map((e:any)=>e.id);
+  const [candidateR,votesR] = await Promise.all([
+    admin.from("sacco_election_candidates").select("id,election_id,member_id").eq("company_id",companyId).in("election_id",ids),
+    admin.from("sacco_election_votes").select("election_id,candidate_id").eq("company_id",companyId).in("election_id",ids)
+  ]);
+  if (candidateR.error) throw candidateR.error;
+  if (votesR.error) throw votesR.error;
+  const candidates = candidateR.data || [], votes = votesR.data || [];
+  const memberIds = [...new Set([...candidates.map((c:any)=>c.member_id),...elections.map((e:any)=>e.winner_member_id).filter(Boolean)])];
+  let members:any[] = [];
+  if (memberIds.length) {
+    const {data,error}=await admin.from("sacco_members").select("id,full_name,account_code,status,portal_user_id").eq("company_id",companyId).in("id",memberIds);
+    if(error)throw error;
+    members=data||[];
+  }
+  return elections.map((e:any)=>{
+    const rows=candidates.filter((c:any)=>c.election_id===e.id);
+    const candidatesForElection=rows.map((c:any)=>{
+      const m=members.find((x:any)=>x.id===c.member_id);
+      return {id:c.id,member_id:c.member_id,full_name:m?.full_name||"Candidate",account_code:m?.account_code||"",status:m?.status||"unknown",votes:e.status==="closed"?votes.filter((v:any)=>v.election_id===e.id&&v.candidate_id===c.id).length:null};
+    });
+    const winner=members.find((m:any)=>m.id===e.winner_member_id);
+    return {...e,winner_name:winner?.full_name||null,total_votes:e.status==="closed"?votes.filter((v:any)=>v.election_id===e.id).length:null,candidates:candidatesForElection};
+  });
 }
 async function rateLimit(req: Request, companyId: string, accountCode: string, phone: string) {
   const ip = clean(req.headers.get("cf-connecting-ip") || req.headers.get("x-forwarded-for")?.split(",")[0] || "unknown", 100);
@@ -123,6 +178,94 @@ Deno.serve(async (req: Request) => {
     const action = clean(body.action, 40);
     const companyId = clean(body.companyId, 80);
     if (!/^[0-9a-f-]{36}$/i.test(companyId)) return reply({ ok:false, message:"The shared portal link is missing a valid circle reference." }, 400);
+
+
+    if (action === "manage-election") {
+      const operation = clean(body.operation,40);
+      const authHeader = req.headers.get("authorization") || "";
+      const token = authHeader.replace(/^Bearer\\s+/i,"").trim();
+      if (!token || token === ANON_KEY) return reply({ok:false,message:"Sign in to manage circle elections."},401);
+      const {data:authData,error:authError}=await authClient.auth.getUser(token);
+      const actor=authData?.user;
+      if(authError||!actor)return reply({ok:false,message:"Your staff session is not valid. Sign in again."},401);
+      const {data:membership,error:membershipError}=await admin.from("company_members").select("role,status").eq("company_id",companyId).eq("user_id",actor.id).maybeSingle();
+      if(membershipError||membership?.status!=="active")return reply({ok:false,message:"You are not an active member of this circle workspace."},403);
+      const canManage=await checkAdmin(authHeader,companyId);
+      if(operation!=="list"&&!canManage)return reply({ok:false,message:"Only an owner, admin, manager or assigned chairperson can manage elections."},403);
+      if(operation==="list")return reply({ok:true,elections:await electionAdminList(companyId)});
+      if(operation==="create"){
+        const title=clean(body.title,180),startsAt=clean(body.startsAt,80),endsAt=clean(body.endsAt,80);
+        const startMs=Date.parse(startsAt),endMs=Date.parse(endsAt);
+        if(title.length<3)return reply({ok:false,message:"Give the election a clear title."},400);
+        if(!Number.isFinite(startMs)||!Number.isFinite(endMs)||endMs<=startMs||endMs<=Date.now())return reply({ok:false,message:"Choose a valid future election window; the end must be after the start."},400);
+        const {data,error}=await admin.from("sacco_elections").insert({company_id:companyId,title,starts_at:new Date(startMs).toISOString(),ends_at:new Date(endMs).toISOString(),status:"draft",created_by:actor.id}).select("id").single();
+        if(error)throw error;
+        return reply({ok:true,message:"Election created as a draft. Nominate at least two active members before opening it.",elections:await electionAdminList(companyId),electionId:data.id});
+      }
+      if(operation==="nominate"){
+        const electionId=clean(body.electionId,80),memberId=clean(body.memberId,80);
+        const {data:election,error:electionError}=await admin.from("sacco_elections").select("id,status").eq("company_id",companyId).eq("id",electionId).maybeSingle();
+        if(electionError)throw electionError;
+        if(!election||election.status!=="draft")return reply({ok:false,message:"Candidates can only be added to a draft election."},400);
+        const {data:member,error:memberError}=await admin.from("sacco_members").select("id,status").eq("company_id",companyId).eq("id",memberId).maybeSingle();
+        if(memberError)throw memberError;
+        if(!member||member.status!=="active")return reply({ok:false,message:"Choose an active member of this circle."},400);
+        const {error}=await admin.from("sacco_election_candidates").insert({company_id:companyId,election_id:electionId,member_id:memberId,nominated_by:actor.id});
+        if(error&&error.code==="23505")return reply({ok:false,message:"That member is already nominated for this election."},409);
+        if(error)throw error;
+        return reply({ok:true,message:"Candidate added to the draft election.",elections:await electionAdminList(companyId)});
+      }
+      if(operation==="open"){
+        const electionId=clean(body.electionId,80);
+        const {data:election,error}=await admin.from("sacco_elections").select("id,status,starts_at,ends_at").eq("company_id",companyId).eq("id",electionId).maybeSingle();
+        if(error)throw error;
+        if(!election||election.status!=="draft")return reply({ok:false,message:"Only a draft election can be opened."},400);
+        if(new Date(election.ends_at).getTime()<=Date.now())return reply({ok:false,message:"The election end time has already passed."},400);
+        const {count,error:countError}=await admin.from("sacco_election_candidates").select("id",{count:"exact",head:true}).eq("company_id",companyId).eq("election_id",electionId);
+        if(countError)throw countError;
+        if((count||0)<2)return reply({ok:false,message:"Nominate at least two active members before opening an election."},400);
+        const {error:updateError}=await admin.from("sacco_elections").update({status:"open",updated_at:new Date().toISOString()}).eq("company_id",companyId).eq("id",electionId);
+        if(updateError)throw updateError;
+        return reply({ok:true,message:"Election opened. Eligible members can now vote once from their private member portal.",elections:await electionAdminList(companyId)});
+      }
+      if(operation==="close"){
+        const electionId=clean(body.electionId,80);
+        const {data:election,error}=await admin.from("sacco_elections").select("id,status").eq("company_id",companyId).eq("id",electionId).maybeSingle();
+        if(error)throw error;
+        if(!election||election.status!=="open")return reply({ok:false,message:"Only an open election can be closed."},400);
+        const {data:ballots,error:ballotError}=await admin.from("sacco_election_votes").select("candidate_id").eq("company_id",companyId).eq("election_id",electionId);
+        if(ballotError)throw ballotError;
+        const counts=new Map<string,number>();
+        for(const ballot of (ballots||[]))counts.set(ballot.candidate_id,(counts.get(ballot.candidate_id)||0)+1);
+        const highest=Math.max(0,...counts.values()),leaders=[...counts.entries()].filter(([,votes])=>votes===highest&&votes>0);
+        let winnerMember:any=null,chairpersonRoleUpdated=false;
+        if(leaders.length===1){
+          const {data:candidate,error:candidateError}=await admin.from("sacco_election_candidates").select("member_id").eq("company_id",companyId).eq("election_id",electionId).eq("id",leaders[0][0]).maybeSingle();
+          if(candidateError)throw candidateError;
+          if(candidate){
+            const {data:member,error:memberError}=await admin.from("sacco_members").select("id,full_name,portal_user_id").eq("company_id",companyId).eq("id",candidate.member_id).maybeSingle();
+            if(memberError)throw memberError;
+            winnerMember=member||null;
+          }
+        }
+        const {error:updateError}=await admin.from("sacco_elections").update({status:"closed",closed_at:new Date().toISOString(),winner_member_id:winnerMember?.id||null,winner_votes:leaders.length===1?highest:null,updated_at:new Date().toISOString()}).eq("company_id",companyId).eq("id",electionId);
+        if(updateError)throw updateError;
+        if(winnerMember?.portal_user_id){
+          const {data:linkedMembership}=await admin.from("company_members").select("status").eq("company_id",companyId).eq("user_id",winnerMember.portal_user_id).maybeSingle();
+          if(linkedMembership?.status==="active"){
+            const {data:existingRole,error:existingError}=await admin.from("sacco_role_assignments").select("id").eq("company_id",companyId).eq("user_id",winnerMember.portal_user_id).eq("role","chairperson").maybeSingle();
+            if(existingError)throw existingError;
+            if(!existingRole){const {error:roleInsertError}=await admin.from("sacco_role_assignments").insert({company_id:companyId,user_id:winnerMember.portal_user_id,role:"chairperson",assigned_by:actor.id});if(roleInsertError)throw roleInsertError}
+            const {error:roleDeleteError}=await admin.from("sacco_role_assignments").delete().eq("company_id",companyId).eq("role","chairperson").neq("user_id",winnerMember.portal_user_id);
+            if(roleDeleteError)throw roleDeleteError;
+            chairpersonRoleUpdated=true;
+          }
+        }
+        const message=winnerMember?(chairpersonRoleUpdated?"Election closed. "+winnerMember.full_name+" won and the chairperson role was updated.":"Election closed. "+winnerMember.full_name+" won; link their member account to an active staff login to automatically assign chairperson access."):(highest>0?"Election closed in a tie. The chairperson must resolve the tie before changing the role.":"Election closed with no votes; no chairperson role was changed.");
+        return reply({ok:true,message,elections:await electionAdminList(companyId),chairpersonRoleUpdated});
+      }
+      return reply({ok:false,message:"Unknown election operation."},400);
+    }
 
     if (action === "issue-enrollment-code") {
       if (!await checkAdmin(req.headers.get("authorization") || "", companyId)) return reply({ ok:false, message:"Only an authorized circle manager or chairperson can issue setup codes." }, 403);
@@ -174,6 +317,19 @@ Deno.serve(async (req: Request) => {
     const current = await sessionMember(token);
     if (!current || current.member.company_id !== companyId) return reply({ ok:false, message:"Your member session expired. Please sign in again." }, 401);
     const member = current.member;
+    if (action === "vote-election") {
+      const electionId=clean(body.electionId,80),candidateId=clean(body.candidateId,80),now=new Date().toISOString();
+      const {data:election,error:electionError}=await admin.from("sacco_elections").select("id,starts_at,ends_at,status").eq("company_id",companyId).eq("id",electionId).eq("status","open").lte("starts_at",now).gt("ends_at",now).maybeSingle();
+      if(electionError)throw electionError;
+      if(!election)return reply({ok:false,message:"This election is not open for voting."},400);
+      const {data:candidate,error:candidateError}=await admin.from("sacco_election_candidates").select("id").eq("company_id",companyId).eq("election_id",electionId).eq("id",candidateId).maybeSingle();
+      if(candidateError)throw candidateError;
+      if(!candidate)return reply({ok:false,message:"Choose a candidate in this election."},400);
+      const {error:voteError}=await admin.from("sacco_election_votes").insert({company_id:companyId,election_id:electionId,voter_member_id:member.id,candidate_id:candidateId});
+      if(voteError&&voteError.code==="23505")return reply({ok:false,message:"Your vote has already been recorded for this election."},409);
+      if(voteError)throw voteError;
+      return reply({ok:true,message:"Your vote has been recorded privately.",account:await snapshot(member)});
+    }
     if (action === "dashboard") return reply({ ok:true, account:await snapshot(member) });
     if (action === "logout") {
       await admin.from("sacco_member_portal_sessions").update({ revoked_at:new Date().toISOString() }).eq("id",current.session.id);
