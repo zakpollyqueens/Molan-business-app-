@@ -40,6 +40,7 @@
     const button = document.getElementById('molan-update-check');
     if (!button) return;
     button.textContent = label;
+    button.setAttribute('aria-label', hasUpdate ? 'Update Molan Business to the latest version' : 'Check Molan Business for application updates');
     button.classList.toggle('has-update', hasUpdate);
   }
 
