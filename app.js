@@ -97,7 +97,10 @@
     clearInterval(welcomeTimer);showScreen('guided-onboarding-screen');guidedSetStep(0);
     if(user){$('#guided-existing-session').classList.remove('hidden');$('#guided-account-fields').classList.add('hidden');$('#guided-owner-name').required=false;$('#guided-owner-email').required=false;$('#guided-owner-password').required=false;$('#guided-owner-confirm').required=false;}
     else{$('#guided-existing-session').classList.add('hidden');$('#guided-account-fields').classList.remove('hidden');$('#guided-owner-name').required=true;$('#guided-owner-email').required=true;$('#guided-owner-password').required=true;$('#guided-owner-confirm').required=true;}
-    guidedOnboardingId=null;guidedLoadDraft();guidedRenderIndustryFields();guidedRenderStaff();
+    guidedOnboardingId=null;$('#guided-industry-fields').innerHTML='';$('#guided-staff-list').innerHTML='';
+    let hasGuidedDraft=false;try{hasGuidedDraft=!!localStorage.getItem(GUIDED_DRAFT_KEY)}catch{}
+    if(!hasGuidedDraft){['guided-business-type','guided-owner-name','guided-owner-email','guided-owner-password','guided-owner-confirm','guided-business-name','guided-motto','guided-website','guided-phone','guided-address'].forEach(id=>{const el=$('#'+id);if(el)el.value=''});$('#guided-terms').checked=false;}
+    guidedLoadDraft();if(!$('#guided-industry-fields').children.length)guidedRenderIndustryFields();if(!$('#guided-staff-list').children.length)guidedRenderStaff();
   }
   function guidedBackToWelcome(){showScreen('welcome-screen');startWelcomeAutoplay()}
   function guidedSlug(v){return String(v||'business').toLowerCase().replace(/sacco savings group/g,'sacco-savings-group').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,100)||'business'}
@@ -147,7 +150,6 @@
   function guidedRenderStaff(saved=[]){
     const host=$('#guided-staff-list');if(!host)return;
     if(!Array.isArray(saved))saved=[];
-    if(!saved.length&&host.children.length)return;
     host.innerHTML='';
     const initial=saved.length?saved:[{name:'',email:'',role:'staff',department:''}];
     initial.forEach(row=>guidedAddStaffRow(row));
@@ -274,7 +276,7 @@
   $('#guided-finish')?.addEventListener('click',guidedFinish);
   $('#guided-business-type')?.addEventListener('change',()=>guidedRenderIndustryFields());
   $('#guided-add-staff')?.addEventListener('click',()=>guidedAddStaffRow());
-  $('#guided-skip-staff')?.addEventListener('click',()=>{guidedRenderStaff([]);guidedSetStep(5)});
+  $('#guided-skip-staff')?.addEventListener('click',()=>{$('#guided-staff-list').innerHTML='';guidedSetStep(5);guidedSaveDraft()});
   $('#guided-staff-list')?.addEventListener('click',e=>{if(e.target.closest('.guided-remove-staff')){e.target.closest('.guided-staff-row').remove();$('.guided-staff-row').forEach((row,i)=>row.querySelector('.guided-staff-head strong').textContent='Team member '+(i+1));if(!$('.guided-staff-row').length)guidedAddStaffRow()}});
   $('[data-guided-home]').forEach(b=>b.addEventListener('click',guidedBackToWelcome));
   $('[data-guided-exit]').forEach(b=>b.addEventListener('click',guidedBackToWelcome));
