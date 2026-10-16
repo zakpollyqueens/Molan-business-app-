@@ -1,6 +1,6 @@
 # Molan Business profiles
 
-This directory contains 51 business-profile modules. Every profile folder owns a dedicated `index.html` page and its business-specific feature buttons. The page loads that folder's `profile.json` and presents the profile's declared feature areas; when embedded in the authenticated application, buttons use the shared runtime bridge to open approved app routes.
+This directory contains 551 business-profile folders: 50 core catalogue profiles, 500 extended-catalog profiles, and one legacy savings-circle module. Every profile folder owns a dedicated `index.html` page and its business-specific feature buttons. The page loads that folder's `profile.json` and presents the profile's declared feature areas; when embedded in the authenticated application, buttons use the shared runtime bridge to open approved app routes.
 
 ## Folder structure
 
@@ -25,3 +25,8 @@ The profile overview embeds the selected folder's `index.html`. On iframe load, 
 The folder-owned page is a real UI entry point, but a visible button or route mapping alone does **not** prove that a specialist business workflow is complete. Each feature must still be checked against the correct tables/RPCs, tenant isolation, role permissions, validation, loading/error states, and real CRUD behavior. Any feature still using a generic module must be labelled partial until its domain-specific workflow is implemented and tested.
 
 The build-plan and CI workflow define the minimum folder contract and acceptance criteria. Production changes require review and merge; creating a branch does not deploy the app.
+
+
+## Extended catalogue folders
+
+Each of the 500 entries in `extended-catalog.json` has a dedicated folder containing its own `profile.json`, `index.html`, `profile.js`, `profile.css`, `features.json`, and profile-local `pages/` for its declared features. Feature pages and hamburger navigation are scoped to the selected business profile; shared authentication, workspace authorization, and tenant-safe data access remain in the root application. UI scaffolds and route wiring do not by themselves certify every domain-specific backend workflow as complete.
