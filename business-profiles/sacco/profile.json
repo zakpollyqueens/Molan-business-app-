@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "index": 23,
+  "slug": "sacco",
+  "name": "SACCO",
+  "plural": "SACCOs",
+  "description": "Members, savings, terms, approvals and withdrawals.",
+  "icon": "♧",
+  "features": [
+    {
+      "title": "Savings & member accounts",
+      "route": "sacco"
+    },
+    {
+      "title": "Finance ledger",
+      "route": "finance"
+    },
+    {
+      "title": "Members",
+      "route": "customers"
+    },
+    {
+      "title": "Reports",
+      "route": "reports"
+    },
+    {
+      "title": "Tasks & deadlines",
+      "route": "tasks"
+    },
+    {
+      "title": "Operations register",
+      "route": "operations"
+    },
+    {
+      "title": "Team & permissions",
+      "route": "team"
+    },
+    {
+      "title": "Announcements",
+      "route": "announcements"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}
