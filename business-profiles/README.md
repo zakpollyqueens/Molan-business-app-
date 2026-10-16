@@ -1,15 +1,27 @@
 # Molan Business profiles
 
-This directory contains the configuration for all 51 supported business profiles. Each folder has one `profile.json` file with the profile's name, description, icon, feature shortcuts, and destination route IDs.
+This directory contains 51 business-profile modules. Every profile folder owns a dedicated `index.html` page and its business-specific feature buttons. The page loads that folder's `profile.json` and presents the profile's declared feature areas; when embedded in the authenticated application, buttons use the shared runtime bridge to open approved app routes.
 
-## Architecture
+## Folder structure
 
-- `<profile-slug>/profile.json` — profile-specific configuration and shortcut destinations.
-- `../business-profiles.js` — shared loader; reads all 51 JSON files and publishes the runtime catalogue to `window.MolanBusinessProfiles`.
-- `../business-profiles.css` — shared responsive styling for profile cards.
-- `../app.js` — the application shell, shared profile overview/settings renderers, route handling, database operations, permissions, and button handlers.
-- `../index.html` — loads the shared profile stylesheet and loader before the application script.
+Each `business-profiles/<slug>/` folder contains:
+- `profile.json` — profile identity, description, icon, feature list, and route declarations.
+- `index.html` — the profile-owned page layout, summary area, feature buttons, and page styling/interaction code (some early modules also split these into `profile.js` and `profile.css`).
+- `README.md` / `features.json` — available in profiles where the detailed module contract has been added; these describe declared features and integration status.
 
-Keep shared JavaScript and CSS in the application root so fixes apply consistently across all profiles. Profile-specific changes belong in the matching `profile.json`. Every feature route must match a route rendered in `app.js`; do not add a destination unless the route exists or is implemented in the same change.
+## Shared application files outside the folders
 
-The profile loader uses a built-in catalogue as a fallback if an individual JSON file cannot be fetched, so a missing configuration does not prevent the application from opening.
+- `app.js` — authenticated application shell, session/company state, route rendering, and the narrow `window.MolanProfileRuntime` bridge.
+- `business-profiles.js` — loads the 51 profile configurations into the runtime catalogue.
+- `business-profiles.css` — shared styling for profile cards in the main app.
+- `auth.js` / shared Supabase bootstrap and tenant-safe data access belong outside the profile folders; credentials, session handling, shared authorization helpers, and generic components must not be duplicated per profile.
+
+## How the pages are connected
+
+The profile overview embeds the selected folder's `index.html`. On iframe load, the app supplies the authenticated runtime bridge. The bridge verifies that the selected profile slug matches the registered profile and that the requested feature title/route is declared by that profile before navigating through the main app shell. The main application continues to enforce workspace state, membership roles, and Supabase RLS.
+
+## Completion status
+
+The folder-owned page is a real UI entry point, but a visible button or route mapping alone does **not** prove that a specialist business workflow is complete. Each feature must still be checked against the correct tables/RPCs, tenant isolation, role permissions, validation, loading/error states, and real CRUD behavior. Any feature still using a generic module must be labelled partial until its domain-specific workflow is implemented and tested.
+
+The build-plan and CI workflow define the minimum folder contract and acceptance criteria. Production changes require review and merge; creating a branch does not deploy the app.

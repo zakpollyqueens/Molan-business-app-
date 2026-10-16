@@ -6,7 +6,7 @@
   "scripts": {
     "prepare:web": "node scripts/prepare-web.cjs",
     "build:android": "npm run prepare:web && cap sync android",
-    "build:windows": "npm run prepare:web && electron-builder --win nsis"
+    "build:windows": "npm run prepare:web && electron-builder --win nsis --publish never"
   },
   "dependencies": {
     "@capacitor/core": "6.2.1"

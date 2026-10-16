@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "profile": "grocery-shop",
+  "features": [
+    {
+      "id": "grocery-shop-1",
+      "title": "Stock & reorder levels",
+      "route": "inventory",
+      "action": "open-module",
+      "status": "connected-route-pending-domain-verification"
+    },
+    {
+      "id": "grocery-shop-2",
+      "title": "Supplier purchases",
+      "route": "inventory",
+      "action": "open-module",
+      "status": "connected-route-pending-domain-verification"
+    },
+    {
+      "id": "grocery-shop-3",
+      "title": "Daily sales",
+      "route": "sales",
+      "action": "open-module",
+      "status": "connected-route-pending-domain-verification"
+    },
+    {
+      "id": "grocery-shop-4",
+      "title": "Expiry and wastage log",
+      "route": "business-tools",
+      "action": "open-module",
+      "status": "connected-route-pending-domain-verification"
+    },
+    {
+      "id": "grocery-shop-5",
+      "title": "Cash reconciliation",
+      "route": "finance",
+      "action": "open-module",
+      "status": "connected-route-pending-domain-verification"
+    },
+    {
+      "id": "grocery-shop-6",
+      "title": "Customer accounts",
+      "route": "customers",
+      "action": "open-module",
+      "status": "connected-route-pending-domain-verification"
+    }
+  ],
+  "backendStatus": "Requires domain-by-domain verification; no action is marked backend-complete by scaffold alone."
+}

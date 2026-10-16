@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "profile": "wholesale-business",
+  "features": [
+    {
+      "id": "wholesale-business-1",
+      "title": "Bulk inventory",
+      "route": "inventory",
+      "action": "open-module",
+      "status": "connected-route-pending-domain-verification"
+    },
+    {
+      "id": "wholesale-business-2",
+      "title": "Customer price lists",
+      "route": "customers",
+      "action": "open-module",
+      "status": "connected-route-pending-domain-verification"
+    },
+    {
+      "id": "wholesale-business-3",
+      "title": "Purchase orders",
+      "route": "sales",
+      "action": "open-module",
+      "status": "connected-route-pending-domain-verification"
+    },
+    {
+      "id": "wholesale-business-4",
+      "title": "Wholesale sales",
+      "route": "sales",
+      "action": "open-module",
+      "status": "connected-route-pending-domain-verification"
+    },
+    {
+      "id": "wholesale-business-5",
+      "title": "Credit customers",
+      "route": "customers",
+      "action": "open-module",
+      "status": "connected-route-pending-domain-verification"
+    },
+    {
+      "id": "wholesale-business-6",
+      "title": "Delivery dispatch",
+      "route": "sales",
+      "action": "open-module",
+      "status": "connected-route-pending-domain-verification"
+    }
+  ],
+  "backendStatus": "Requires domain-by-domain verification; no action is marked backend-complete by scaffold alone."
+}

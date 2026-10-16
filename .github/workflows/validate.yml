@@ -1,9 +1,9 @@
 name: Validate frontend
 on:
   push:
-    branches: [main, feat/sacco-savings-withdrawals-terms, fix/connected-navigation-workspace-admin]
+    branches: [main, feat/sacco-savings-withdrawals-terms, fix/connected-navigation-workspace-admin, feat/profile-owned-pages-architecture]
   pull_request:
-    branches: [main, feat/sacco-savings-withdrawals-terms]
+    branches: [main, feat/sacco-savings-withdrawals-terms, fix/connected-navigation-workspace-admin]
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -40,6 +40,15 @@ jobs:
             if (!fs.existsSync(file)) throw new Error('Missing profile configuration: ' + file);
             const profile = JSON.parse(fs.readFileSync(file, 'utf8'));
             if (profile.slug !== folder.name || !profile.name || !Array.isArray(profile.features) || !profile.features.length) throw new Error('Invalid profile configuration: ' + file);
+            const ownedPage = 'business-profiles/' + folder.name + '/index.html';
+            if (!fs.existsSync(ownedPage)) throw new Error('Missing profile-owned page: ' + ownedPage);
+            const ownedHtml = fs.readFileSync(ownedPage, 'utf8');
+            if (!ownedHtml.includes('data-profile="' + folder.name + '"')) throw new Error('Owned page identity does not match its folder: ' + ownedPage);
+            const ownedScript = 'business-profiles/' + folder.name + '/profile.js';
+            if (!fs.existsSync(ownedScript)) throw new Error('Missing profile-specific loader/runtime: ' + ownedScript);
+            const ownedJs = fs.readFileSync(ownedScript, 'utf8');
+            if (!ownedJs.includes("fetch('profile.json'")) throw new Error('Profile-specific loader must load its folder-specific profile.json: ' + ownedScript);
+            if (!ownedJs.includes('MolanProfileRuntime') || !ownedJs.includes('openFeature')) throw new Error('Profile-specific loader must integrate with the shared runtime bridge: ' + ownedScript);
             if (profileNames.has(profile.name)) throw new Error('Duplicate profile name: ' + profile.name);
             profileNames.add(profile.name);
             for (const feature of profile.features) {
@@ -85,5 +94,5 @@ jobs:
           for (const required of ['PBKDF2','sacco_member_portal_sessions','issue-enrollment-code','complete-enrollment','change-pin','update-profile']) {
             if (!portalEdge.includes(required)) throw new Error('Member portal Edge Function missing security/workflow feature: ' + required);
           }
-          console.log('Frontend modules, persistent profile settings, secure SACCO member portal, tenant RLS, and public-key safety smoke checks passed.');
+          console.log('All 51 profile-owned pages, shared runtime navigation, persistent profile settings, secure SACCO member portal, tenant RLS, and public-key safety smoke checks passed.');
           NODE
