@@ -578,7 +578,7 @@
 function isSavingsCircleProfile(profile){
  const config=window.MolanBusinessProfiles?.byName?.[profile?.[0]]||{};
  const text=[profile?.[0],config.slug,config.group,config.name].filter(Boolean).join(' ').toLowerCase();
- return /sacco|savings circle|savings group|investment group|community savings|village savings|rotating savings|\\bcircle\\b|\\bcooperative\\b|\\bassociation\\b/.test(text)&&! /housing cooperative|school cooperative/.test(text);
+ return /sacco|savings circle|savings group|investment group|community savings|village savings|rotating savings|\bcircle\b|\bcooperative\b|\bassociation\b/.test(text)&&! /housing cooperative|school cooperative/.test(text);
 }
 function industryProfileFeatures(profile){
  const name=String(profile?.[0]||'').toLowerCase();
@@ -1032,7 +1032,7 @@ el.innerHTML=head(esc(title)+' overview','Your '+esc(title)+' dashboard, busines
   }
 
 
-  function chatIsSacco(){return /sacco|savings group|savings circle|investment group|community savings|village savings|rotating savings|\\bcircle\\b|\\bcooperative\\b|\\bassociation\\b/i.test([company?.name,company?.industry,company?.business_type,company?.category,company?.profile_type,selectedIndustryProfile?.[0],selectedIndustryProfile?.[1],selectedIndustryProfile?.name,selectedIndustryProfile?.title].filter(Boolean).join(' '))&&!/housing cooperative|school cooperative/i.test([company?.name,company?.industry,company?.business_type,company?.category,company?.profile_type,selectedIndustryProfile?.[0],selectedIndustryProfile?.[1]].filter(Boolean).join(' '))}
+  function chatIsSacco(){return /sacco|savings group|savings circle|investment group|community savings|village savings|rotating savings|\bcircle\b|\bcooperative\b|\bassociation\b/i.test([company?.name,company?.industry,company?.business_type,company?.category,company?.profile_type,selectedIndustryProfile?.[0],selectedIndustryProfile?.[1],selectedIndustryProfile?.name,selectedIndustryProfile?.title].filter(Boolean).join(' '))&&!/housing cooperative|school cooperative/i.test([company?.name,company?.industry,company?.business_type,company?.category,company?.profile_type,selectedIndustryProfile?.[0],selectedIndustryProfile?.[1]].filter(Boolean).join(' '))}
   const chatCanManage=()=>['owner','admin','manager'].includes(String(membership?.role||'').toLowerCase());
   const chatCanBoard=()=>String(membership?.role||'').toLowerCase()==='owner';
   const chatWho=id=>memberName(id)||(id===user?.id?(user.email||'You'):'Workspace member');
