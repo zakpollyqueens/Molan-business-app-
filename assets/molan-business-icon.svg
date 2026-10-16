@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#123b68"/><stop offset=".48" stop-color="#081a35"/><stop offset="1" stop-color="#040d20"/></linearGradient>
+    <linearGradient id="cyan" x1="0" y1="0" x2=".9" y2="1"><stop offset="0" stop-color="#b8f8ff"/><stop offset=".32" stop-color="#45e5ff"/><stop offset=".72" stop-color="#08a9e8"/><stop offset="1" stop-color="#0874ca"/></linearGradient>
+    <linearGradient id="white" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#b9eaff"/></linearGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity=".22"/><stop offset=".46" stop-color="#ffffff" stop-opacity=".025"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="22"/></filter>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#020817" flood-opacity=".7"/></filter>
+  </defs>
+  <rect x="32" y="32" width="960" height="960" rx="220" fill="url(#bg)"/>
+  <circle cx="765" cy="250" r="210" fill="#0dbbe9" opacity=".13" filter="url(#glow)"/>
+  <path d="M105 290 Q512 40 919 290 L919 490 Q512 300 105 490Z" fill="#54dfff" opacity=".045"/>
+  <path d="M120 760 Q512 570 904 760" fill="none" stroke="#3ddcff" stroke-opacity=".16" stroke-width="5"/>
+  <g filter="url(#shadow)">
+    <path d="M218 730V322Q218 274 260 299L512 474L764 299Q806 274 806 322V730H690V454L512 578L334 454V730Z" fill="#020a19" opacity=".55" transform="translate(0 18)"/>
+    <path d="M218 716V308Q218 260 260 285L512 460L764 285Q806 260 806 308V716H690V440L512 564L334 440V716Z" fill="url(#cyan)"/>
+    <path d="M334 440L512 564L690 440V510L512 634L334 510Z" fill="#047ab9" opacity=".65"/>
+    <path d="M260 285Q218 260 218 308V380L334 460V440Z" fill="url(#white)" opacity=".98"/>
+    <path d="M764 285Q806 260 806 308V380L690 460V440Z" fill="#e9fbff"/>
+    <path d="M334 716V440L512 564L690 440V716H580V602L512 650L444 602V716Z" fill="url(#white)"/>
+    <path d="M218 308Q218 260 260 285L512 460L764 285Q806 260 806 308" fill="none" stroke="#e9fdff" stroke-width="15" stroke-linecap="round" stroke-linejoin="round" opacity=".82"/>
+  </g>
+  <rect x="32" y="32" width="960" height="960" rx="220" fill="url(#sheen)"/>
+  <rect x="42" y="42" width="940" height="940" rx="210" fill="none" stroke="#a7edff" stroke-opacity=".28" stroke-width="4"/>
+</svg>
