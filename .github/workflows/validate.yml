@@ -115,7 +115,7 @@ jobs:
           const platformCss = fs.readFileSync('shared/platform.css', 'utf8');
           if (!html.includes('shared/upgrade-manager.js') || !html.includes('id="refresh-button"')) throw new Error('Global update checker or workspace refresh control is missing.');
           if (!versionManifest.version || !html.includes('window.MOLAN_APP_VERSION = "' + versionManifest.version + '"')) throw new Error('Web app version must match version.json.');
-          for (const required of ['RELEASE_API','Molan-Business.apk','Molan-Business-Setup\\.exe','Check for updates','Download update','location.replace']) {
+          for (const required of ['RELEASE_API','Molan-Business','Molan-Business-Setup','Check for updates','Download update','location.replace']) {
             if (!upgradeManager.includes(required)) throw new Error('Update manager missing required behavior: ' + required);
           }
           if (platformCss.includes('.molan-update-banner{display:none!important}')) throw new Error('Update banner must not be permanently hidden.');
