@@ -20,10 +20,15 @@ jobs:
         uses: actions/configure-pages@v5
         with:
           enablement: true
+      - name: Install icon-generation dependencies
+        run: npm install
       - name: Prepare public site files
         run: |
-          mkdir -p _site
+          npm run prepare:web
+          mkdir -p _site/assets
           cp index.html styles.css app.js _site/
+          cp manifest.webmanifest _site/
+          cp assets/molan-business-icon.svg assets/icon.png assets/icon-192.png assets/icon-512.png _site/assets/
           touch _site/.nojekyll
       - name: Upload static site
         uses: actions/upload-pages-artifact@v3
