@@ -1,10 +1,10 @@
 {
   "app": "Molan Business",
-  "currentVersion": "molan-2026.10.16.4",
+  "currentVersion": "molan-2026.10.16.5",
   "releaseApi": "https://api.github.com/repos/zakpollyqueens/Molan-business-app-/releases/latest",
   "releasePage": "https://github.com/zakpollyqueens/Molan-business-app-/releases/latest",
   "checkedAt": "runtime",
-  "version": "molan-2026.10.16.4",
+  "version": "molan-2026.10.16.5",
   "releasedAt": "2026-10-16",
-  "notes": "Subscription plans and durations, Supabase price catalog, secure Workshop Real Time explainer, and slide-control overlap fix."
+  "notes": "Regional subscription package pricing and renewal periods; staff chat, reactions, assigned tasks, external meeting links, notification center, and confidential Board of Governors for non-SACCO profiles."
 }
