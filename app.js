@@ -529,7 +529,9 @@
     let out='',rem=n;for(const [v,label] of [[1e9,'billion'],[1e6,'million'],[1e3,'thousand'],[1,'']]){const q=Math.floor(rem/v);if(q){out+=(out?' ':'')+chunk(q)+(label?' '+label:'');rem%=v;}}
     return 'Uganda shillings '+out+' only';
   }
+  let currentSaccoFocus = '';
   function renderSaccoPage(el, focusSection=''){
+    currentSaccoFocus=focusSection||'';
     el.innerHTML=head('SACCO & savings circles','Manage member accounts, savings approvals, withdrawals and configurable savings terms.')+'<div class="loading"><div class="spinner"></div> Loading SACCO workspace…</div>';
     (async()=>{
       const cid=company.id;
@@ -583,6 +585,24 @@
         html+=panel('Assign SACCO staff roles','Assign narrowly scoped SACCO responsibilities to existing workspace members.','<form id="sacco-role-form" class="sacco-form"><label>Workspace staff member<select name="user_id" required><option value="">Choose staff member</option>'+cache.members.filter(m=>m.status==='active').map(m=>'<option value="'+m.user_id+'">'+esc(memberName(m.user_id))+'</option>').join('')+'</select></label><label>Role<select name="role"><option value="analyst">Analyst</option><option value="secretary">Secretary</option><option value="mobilizer">Mobilizer</option><option value="chairperson">Chairperson</option></select></label><button class="button primary" type="submit">Assign role →</button></form><div class="sacco-list">'+roles.map(r=>'<div class="sacco-row"><div><strong>'+esc(memberName(r.user_id))+'</strong><small>'+esc(nice(r.role))+'</small></div><button class="button secondary small" data-sacco-action="remove-role" data-id="'+r.id+'">Remove</button></div>').join('')+'</div>');
       }
       el.innerHTML=html;
+      // Keep the main SACCO landing page focused and use the existing feature routes
+      // for detailed workflows. This prevents one screen from becoming a long form.
+      const saccoSections = {
+        '': ['Member account follow-up link','Register a member','Member accounts'],
+        'Member accounts': ['Register a member','Member accounts'],
+        'Savings terms': ['Savings terms'],
+        'Record proposed savings': ['Record proposed savings'],
+        'Pending savings approvals': ['Pending savings approvals'],
+        'Withdrawal requests': ['Withdrawal requests','Request a withdrawal'],
+        'Chairperson reviews': ['Terms & member reviews','Chairperson reviews','Write a member review'],
+        'Chairperson elections': ['Chairperson elections'],
+        'Assign SACCO staff roles': ['Assign SACCO staff roles']
+      };
+      const visibleSaccoSections = new Set(saccoSections[focusSection||''] || saccoSections['']);
+      el.querySelectorAll('.sacco-panel').forEach(section => {
+        const title = section.querySelector('.panel-head h3')?.textContent.trim() || '';
+        section.hidden = !visibleSaccoSections.has(title);
+      });
       const memberPhotoInput=$('#sacco-member-form [name="avatar_file"]');
       memberPhotoInput?.addEventListener('change',()=>{const file=memberPhotoInput.files?.[0],preview=$('#sacco-member-avatar-preview');if(!preview)return;if(!file){preview.innerHTML='<span class="sacco-member-avatar sacco-member-avatar-placeholder">♙</span><small>Member photo preview</small>';return}if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>5*1024*1024){memberPhotoInput.value='';preview.innerHTML='<span class="sacco-member-avatar sacco-member-avatar-placeholder">♙</span><small>Choose a JPG, PNG or WebP image up to 5 MB.</small>';return}const url=URL.createObjectURL(file);preview.innerHTML='<img class="sacco-member-avatar" src="'+url+'" alt="Member photo preview"><small>'+esc(file.name)+'</small>'});
       if(focusSection){const focusPanel=[...el.querySelectorAll('.sacco-panel')].find(panel=>panel.querySelector('.panel-head h3')?.textContent.trim()===focusSection);if(focusPanel)setTimeout(()=>focusPanel.scrollIntoView({behavior:'smooth',block:'start'}),60);}
@@ -591,7 +611,7 @@
       $('#sacco-deposit-form [name="amount"]')?.addEventListener('input',e=>{const out=$('#sacco-amount-words');if(out)out.textContent=ugxWords(e.target.value)});
     })().catch(err=>{el.innerHTML=head('SACCO & savings circles','Could not load the SACCO workspace.')+'<section class="panel"><p>'+esc(err.message||'Unexpected error')+'</p></section>';});
   }
-  async function saccoReload(){await renderSaccoPage($('#page-content'))}
+  async function saccoReload(){await renderSaccoPage($('#page-content'),currentSaccoFocus)}
   function formObject(form){return Object.fromEntries(new FormData(form).entries())}
   document.addEventListener('submit',async e=>{
     const form=e.target;if(!form.id?.startsWith('sacco-'))return;e.preventDefault();
