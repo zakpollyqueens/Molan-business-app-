@@ -13,6 +13,10 @@ const assert = require('node:assert/strict');
     });
     assert(response && response.ok(), 'Published app should return a successful HTTP response');
     await page.waitForSelector('#welcome-screen:not(.hidden)', { timeout: 30000 });
+    await page.waitForSelector('#molan-update-check', { timeout: 10000 });
+    assert.equal(await page.locator('#molan-update-check').count(), 1,
+      'A persistent global update-check action must be mounted for the workspace shell');
+
     assert.equal(await page.locator('[data-welcome-slide]').count(), 8, 'Welcome page should show eight introduction slides');
     assert.equal(await page.locator('[data-welcome-dot]').count(), 8, 'Every welcome slide should have a navigation dot');
 
@@ -104,7 +108,29 @@ const assert = require('node:assert/strict');
     assert.equal(await page.locator('#display-name').getAttribute('required'), '');
     await page.locator('[data-auth-mode="signin"]').click();
     assert.equal(await page.locator('#auth-title').innerText(), 'Welcome back');
-    assert.equal(pageErrors.length, 0, 'Page should not emit uncaught JavaScript errors: ' + pageErrors.join('; '));
+
+    // Verify the separate private member portal renders cleanly on a phone-sized viewport.
+    const portalPage = await browser.newPage({ viewport: { width: 390, height: 844 } });
+    portalPage.on('pageerror', error => pageErrors.push('member portal: ' + error.message));
+    const portalResponse = await portalPage.goto('https://zakpollyqueens.github.io/Molan-business-app-/member-portal.html?company=00000000-0000-0000-0000-000000000000&smoke=' + Date.now(), {
+      waitUntil: 'domcontentloaded', timeout: 30000
+    });
+    assert(portalResponse && portalResponse.ok(), 'Member portal should return a successful HTTP response');
+    await portalPage.waitForSelector('#login-form', { timeout: 10000 });
+    assert.match(await portalPage.locator('h1').first().innerText(), /MOLAN.*MEMBER PORTAL/i);
+    assert.equal(await portalPage.locator('#login-form input[name="pin"]').getAttribute('type'), 'password');
+    const portalLayout = await portalPage.evaluate(() => ({
+      radius: parseFloat(getComputedStyle(document.querySelector('.auth-card')).borderRadius),
+      width: document.documentElement.scrollWidth,
+      viewport: window.innerWidth,
+      stylesheetLoaded: [...document.styleSheets].some(sheet => (sheet.href || '').includes('member-portal.css'))
+    }));
+    assert(portalLayout.radius >= 18, 'Member portal should use the refined rounded card design');
+    assert(portalLayout.width <= portalLayout.viewport + 1, 'Member portal should not overflow horizontally on mobile');
+    assert(portalLayout.stylesheetLoaded, 'Member portal stylesheet should load');
+    await portalPage.close();
+
+    assert.equal(pageErrors.length, 0, 'Pages should not emit uncaught JavaScript errors: ' + pageErrors.join('; '));
     console.log('Browser smoke test passed: live response, eight-slide welcome, guided setup navigation, mobile layout, and auth-mode switching.');
   } finally {
     await browser.close();
