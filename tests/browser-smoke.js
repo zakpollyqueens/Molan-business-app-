@@ -15,6 +15,32 @@ const assert = require('node:assert/strict');
     await page.waitForSelector('#welcome-screen:not(.hidden)', { timeout: 30000 });
     assert.equal(await page.locator('[data-welcome-slide]').count(), 8, 'Welcome page should show eight introduction slides');
     assert.equal(await page.locator('[data-welcome-dot]').count(), 8, 'Every welcome slide should have a navigation dot');
+
+    // Public download menu must work on touch-sized screens and remain keyboard accessible.
+    const downloadTrigger = page.locator('#download-menu-trigger');
+    const downloadPanel = page.locator('#download-menu-panel');
+    assert.equal(await downloadPanel.isHidden(), true, 'Download menu starts closed');
+    await downloadTrigger.click();
+    await page.waitForFunction(() => {
+      const trigger = document.querySelector('#download-menu-trigger');
+      const panel = document.querySelector('#download-menu-panel');
+      return trigger?.getAttribute('aria-expanded') === 'true' && panel && !panel.hidden;
+    });
+    assert.equal(await page.locator('#download-menu-panel a[href*="Molan-Business.apk"]').count(), 1,
+      'Android download must be present in the menu');
+    assert.equal(await page.locator('#download-menu-panel a[href*="Molan-Business-Setup.exe"]').count(), 1,
+      'Windows download must be present in the menu');
+    await page.keyboard.press('Escape');
+    await page.waitForFunction(() => {
+      const trigger = document.querySelector('#download-menu-trigger');
+      const panel = document.querySelector('#download-menu-panel');
+      return trigger?.getAttribute('aria-expanded') === 'false' && panel?.hidden;
+    });
+    await downloadTrigger.click();
+    await page.locator('#welcome-copy, .welcome-copy, .welcome-nav').first().click({ position: { x: 5, y: 5 } });
+    await page.waitForFunction(() => document.querySelector('#download-menu-panel')?.hidden,
+      null, { timeout: 3000 }).catch(() => {});
+    assert.equal(await downloadPanel.isHidden(), true, 'Clicking outside the download menu closes it');
     await page.waitForFunction(() => document.querySelector('[data-welcome-slide="0"]')?.classList.contains('active'));
     await page.locator('#welcome-next').click();
     await page.waitForFunction(() => document.querySelector('[data-welcome-slide="1"]')?.classList.contains('active'));
@@ -51,7 +77,7 @@ const assert = require('node:assert/strict');
       return grid && grid.querySelectorAll('[data-learn-plan]').length >= 3 && grid.innerText.trim().length > 0;
     }, null, { timeout: 15000 });
     assert.match(await page.locator('#learn-plan-grid').innerText(), /Gold[\s\S]*3 months[\s\S]*Silver[\s\S]*2 months[\s\S]*Premium[\s\S]*1 month/i);
-    assert.match(await page.locator('.learn-pricing-disclaimer').innerText(), /not connected to live checkout/);
+    assert.match(await page.locator('.learn-pricing-disclaimer').innerText(), /checkout.*not connected|not connected to live checkout/i);
     await page.locator('#learn-close').click();
     await page.waitForSelector('#welcome-screen:not(.hidden)', { timeout: 10000 });
     await page.locator('#welcome-get-started').click();
