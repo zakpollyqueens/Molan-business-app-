@@ -36,6 +36,10 @@
       "route": "sacco-withdrawals"
     },
     {
+      "title": "Chairperson elections & succession",
+      "route": "sacco-elections"
+    },
+    {
       "title": "Member reviews, elections & term history",
       "route": "sacco-reviews"
     },
