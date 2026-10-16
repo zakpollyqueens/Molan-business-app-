@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 307,
+  "slug": "digital-marketing-technology",
+  "name": "Digital marketing technology",
+  "plural": "Digital marketing technologys",
+  "description": "Digital marketing technology: projects, deployments, support, assets and service records. Manage digital marketing technology workflows in a dedicated business workspace.",
+  "icon": "⌘",
+  "group": "Technology & digital",
+  "extended": true,
+  "features": [
+    {
+      "title": "Projects & releases",
+      "route": "operations"
+    },
+    {
+      "title": "Technical assets & inventory",
+      "route": "inventory"
+    },
+    {
+      "title": "Client support records",
+      "route": "customers"
+    },
+    {
+      "title": "Tasks & sprint planning",
+      "route": "tasks"
+    },
+    {
+      "title": "Service billing",
+      "route": "finance"
+    },
+    {
+      "title": "Team & permissions",
+      "route": "team"
+    },
+    {
+      "title": "Documentation & media",
+      "route": "website-studio"
+    },
+    {
+      "title": "Delivery reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

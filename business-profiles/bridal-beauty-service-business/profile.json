@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 344,
+  "slug": "bridal-beauty-service-business",
+  "name": "Bridal beauty service business",
+  "plural": "Bridal beauty service business",
+  "description": "Bridal beauty service business: appointments, service menus, staff and product stock. Manage bridal beauty service workflows in a dedicated business workspace.",
+  "icon": "✂",
+  "group": "Personal care & lifestyle",
+  "extended": true,
+  "features": [
+    {
+      "title": "Appointments & bookings",
+      "route": "business-tools"
+    },
+    {
+      "title": "Client records",
+      "route": "customers"
+    },
+    {
+      "title": "Products & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Service operations",
+      "route": "operations"
+    },
+    {
+      "title": "Staff schedules",
+      "route": "team"
+    },
+    {
+      "title": "Payments & expenses",
+      "route": "finance"
+    },
+    {
+      "title": "Tasks & reminders",
+      "route": "tasks"
+    },
+    {
+      "title": "Service reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

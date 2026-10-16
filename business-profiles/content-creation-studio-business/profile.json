@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 328,
+  "slug": "content-creation-studio-business",
+  "name": "Content creation studio business",
+  "plural": "Content creation studio business",
+  "description": "Content creation studio business: creative briefs, production stages, assets and client approvals. Manage content creation studio workflows in a dedicated business workspace.",
+  "icon": "✦",
+  "group": "Creative & media",
+  "extended": true,
+  "features": [
+    {
+      "title": "Creative briefs & projects",
+      "route": "operations"
+    },
+    {
+      "title": "Assets & equipment",
+      "route": "inventory"
+    },
+    {
+      "title": "Client approvals",
+      "route": "customers"
+    },
+    {
+      "title": "Production schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Quotes & invoices",
+      "route": "finance"
+    },
+    {
+      "title": "Team & collaborators",
+      "route": "team"
+    },
+    {
+      "title": "Portfolio & media",
+      "route": "website-studio"
+    },
+    {
+      "title": "Project reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

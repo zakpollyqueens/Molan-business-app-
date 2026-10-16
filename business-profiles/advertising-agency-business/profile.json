@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 279,
+  "slug": "advertising-agency-business",
+  "name": "Advertising agency business",
+  "plural": "Advertising agency business",
+  "description": "Advertising agency business: clients, engagements, deliverables and billing. Manage advertising agency workflows in a dedicated business workspace.",
+  "icon": "＝",
+  "group": "Professional services",
+  "extended": true,
+  "features": [
+    {
+      "title": "Client directory",
+      "route": "customers"
+    },
+    {
+      "title": "Engagements & deliverables",
+      "route": "operations"
+    },
+    {
+      "title": "Appointments & deadlines",
+      "route": "business-tools"
+    },
+    {
+      "title": "Tasks & assignments",
+      "route": "tasks"
+    },
+    {
+      "title": "Quotes & invoices",
+      "route": "finance"
+    },
+    {
+      "title": "Team & permissions",
+      "route": "team"
+    },
+    {
+      "title": "Documents & portfolio",
+      "route": "website-studio"
+    },
+    {
+      "title": "Client reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

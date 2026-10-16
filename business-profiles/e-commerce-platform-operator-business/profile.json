@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 308,
+  "slug": "e-commerce-platform-operator-business",
+  "name": "E-commerce platform operator business",
+  "plural": "E-commerce platform operator business",
+  "description": "E-commerce platform operator business: projects, deployments, support, assets and service records. Manage e-commerce platform operator workflows in a dedicated business workspace.",
+  "icon": "⌘",
+  "group": "Technology & digital",
+  "extended": true,
+  "features": [
+    {
+      "title": "Projects & releases",
+      "route": "operations"
+    },
+    {
+      "title": "Technical assets & inventory",
+      "route": "inventory"
+    },
+    {
+      "title": "Client support records",
+      "route": "customers"
+    },
+    {
+      "title": "Tasks & sprint planning",
+      "route": "tasks"
+    },
+    {
+      "title": "Service billing",
+      "route": "finance"
+    },
+    {
+      "title": "Team & permissions",
+      "route": "team"
+    },
+    {
+      "title": "Documentation & media",
+      "route": "website-studio"
+    },
+    {
+      "title": "Delivery reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 285,
+  "slug": "technical-writing-service-business",
+  "name": "Technical writing service business",
+  "plural": "Technical writing service business",
+  "description": "Technical writing service business: clients, engagements, deliverables and billing. Manage technical writing service workflows in a dedicated business workspace.",
+  "icon": "＝",
+  "group": "Professional services",
+  "extended": true,
+  "features": [
+    {
+      "title": "Client directory",
+      "route": "customers"
+    },
+    {
+      "title": "Engagements & deliverables",
+      "route": "operations"
+    },
+    {
+      "title": "Appointments & deadlines",
+      "route": "business-tools"
+    },
+    {
+      "title": "Tasks & assignments",
+      "route": "tasks"
+    },
+    {
+      "title": "Quotes & invoices",
+      "route": "finance"
+    },
+    {
+      "title": "Team & permissions",
+      "route": "team"
+    },
+    {
+      "title": "Documents & portfolio",
+      "route": "website-studio"
+    },
+    {
+      "title": "Client reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

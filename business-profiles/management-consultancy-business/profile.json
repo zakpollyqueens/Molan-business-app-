@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 282,
+  "slug": "management-consultancy-business",
+  "name": "Management consultancy business",
+  "plural": "Management consultancy business",
+  "description": "Management consultancy business: clients, engagements, deliverables and billing. Manage management consultancy workflows in a dedicated business workspace.",
+  "icon": "＝",
+  "group": "Professional services",
+  "extended": true,
+  "features": [
+    {
+      "title": "Client directory",
+      "route": "customers"
+    },
+    {
+      "title": "Engagements & deliverables",
+      "route": "operations"
+    },
+    {
+      "title": "Appointments & deadlines",
+      "route": "business-tools"
+    },
+    {
+      "title": "Tasks & assignments",
+      "route": "tasks"
+    },
+    {
+      "title": "Quotes & invoices",
+      "route": "finance"
+    },
+    {
+      "title": "Team & permissions",
+      "route": "team"
+    },
+    {
+      "title": "Documents & portfolio",
+      "route": "website-studio"
+    },
+    {
+      "title": "Client reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

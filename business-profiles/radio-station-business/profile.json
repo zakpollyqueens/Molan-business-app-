@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 321,
+  "slug": "radio-station-business",
+  "name": "Radio station business",
+  "plural": "Radio station business",
+  "description": "Radio station business: creative briefs, production stages, assets and client approvals. Manage radio station workflows in a dedicated business workspace.",
+  "icon": "✦",
+  "group": "Creative & media",
+  "extended": true,
+  "features": [
+    {
+      "title": "Creative briefs & projects",
+      "route": "operations"
+    },
+    {
+      "title": "Assets & equipment",
+      "route": "inventory"
+    },
+    {
+      "title": "Client approvals",
+      "route": "customers"
+    },
+    {
+      "title": "Production schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Quotes & invoices",
+      "route": "finance"
+    },
+    {
+      "title": "Team & collaborators",
+      "route": "team"
+    },
+    {
+      "title": "Portfolio & media",
+      "route": "website-studio"
+    },
+    {
+      "title": "Project reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

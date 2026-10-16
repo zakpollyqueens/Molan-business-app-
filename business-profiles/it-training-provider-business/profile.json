@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 309,
+  "slug": "it-training-provider-business",
+  "name": "IT training provider business",
+  "plural": "IT training provider business",
+  "description": "IT training provider business: projects, deployments, support, assets and service records. Manage it training provider workflows in a dedicated business workspace.",
+  "icon": "⌘",
+  "group": "Technology & digital",
+  "extended": true,
+  "features": [
+    {
+      "title": "Projects & releases",
+      "route": "operations"
+    },
+    {
+      "title": "Technical assets & inventory",
+      "route": "inventory"
+    },
+    {
+      "title": "Client support records",
+      "route": "customers"
+    },
+    {
+      "title": "Tasks & sprint planning",
+      "route": "tasks"
+    },
+    {
+      "title": "Service billing",
+      "route": "finance"
+    },
+    {
+      "title": "Team & permissions",
+      "route": "team"
+    },
+    {
+      "title": "Documentation & media",
+      "route": "website-studio"
+    },
+    {
+      "title": "Delivery reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

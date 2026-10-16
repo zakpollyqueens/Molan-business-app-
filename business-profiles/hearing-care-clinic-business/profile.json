@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 269,
+  "slug": "hearing-care-clinic-business",
+  "name": "Hearing care clinic business",
+  "plural": "Hearing care clinic business",
+  "description": "Hearing care clinic business: appointments, services, inventory and follow-up. Manage hearing care clinic workflows in a dedicated business workspace.",
+  "icon": "✚",
+  "group": "Healthcare & wellness",
+  "extended": true,
+  "features": [
+    {
+      "title": "Appointments & service records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Clients / patients",
+      "route": "customers"
+    },
+    {
+      "title": "Supplies & equipment",
+      "route": "inventory"
+    },
+    {
+      "title": "Clinical / service operations",
+      "route": "operations"
+    },
+    {
+      "title": "Staff schedules",
+      "route": "team"
+    },
+    {
+      "title": "Billing & expenses",
+      "route": "finance"
+    },
+    {
+      "title": "Tasks & follow-up",
+      "route": "tasks"
+    },
+    {
+      "title": "Service reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

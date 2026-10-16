@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 337,
+  "slug": "piercing-studio-business",
+  "name": "Piercing studio business",
+  "plural": "Piercing studio business",
+  "description": "Piercing studio business: appointments, service menus, staff and product stock. Manage piercing studio workflows in a dedicated business workspace.",
+  "icon": "✂",
+  "group": "Personal care & lifestyle",
+  "extended": true,
+  "features": [
+    {
+      "title": "Appointments & bookings",
+      "route": "business-tools"
+    },
+    {
+      "title": "Client records",
+      "route": "customers"
+    },
+    {
+      "title": "Products & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Service operations",
+      "route": "operations"
+    },
+    {
+      "title": "Staff schedules",
+      "route": "team"
+    },
+    {
+      "title": "Payments & expenses",
+      "route": "finance"
+    },
+    {
+      "title": "Tasks & reminders",
+      "route": "tasks"
+    },
+    {
+      "title": "Service reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

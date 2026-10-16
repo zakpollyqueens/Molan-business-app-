@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 264,
+  "slug": "medical-records-service-business",
+  "name": "Medical records service business",
+  "plural": "Medical records service business",
+  "description": "Medical records service business: appointments, services, inventory and follow-up. Manage medical records service workflows in a dedicated business workspace.",
+  "icon": "✚",
+  "group": "Healthcare & wellness",
+  "extended": true,
+  "features": [
+    {
+      "title": "Appointments & service records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Clients / patients",
+      "route": "customers"
+    },
+    {
+      "title": "Supplies & equipment",
+      "route": "inventory"
+    },
+    {
+      "title": "Clinical / service operations",
+      "route": "operations"
+    },
+    {
+      "title": "Staff schedules",
+      "route": "team"
+    },
+    {
+      "title": "Billing & expenses",
+      "route": "finance"
+    },
+    {
+      "title": "Tasks & follow-up",
+      "route": "tasks"
+    },
+    {
+      "title": "Service reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}
