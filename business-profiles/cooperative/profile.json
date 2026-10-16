@@ -1,45 +1,62 @@
 {
   "schemaVersion": 1,
-  "index": 29,
+  "index": 27,
   "slug": "cooperative",
   "name": "Cooperative",
   "plural": "Cooperatives",
-  "description": "Membership, contributions, governance and reporting.",
+  "description": "Member governance, contribution and savings workflows, approvals, member welfare, meetings, decisions, terms, and performance reporting.",
   "icon": "♙",
   "features": [
     {
-      "title": "Cooperative members",
-      "route": "customers"
+      "title": "Circle overview & member dashboard",
+      "route": "sacco-overview"
     },
     {
-      "title": "Finance ledger",
-      "route": "finance"
+      "title": "Member profiles & savings accounts",
+      "route": "sacco-members"
     },
     {
-      "title": "Member meetings & decisions",
-      "route": "council"
+      "title": "Record proposed contributions",
+      "route": "sacco-savings"
     },
     {
-      "title": "Reports",
-      "route": "reports"
+      "title": "Chairperson contribution approvals",
+      "route": "sacco-approvals"
     },
     {
-      "title": "Tasks & deadlines",
-      "route": "tasks"
+      "title": "Welfare account & assistance",
+      "route": "sacco-welfare"
     },
     {
-      "title": "Operations register",
-      "route": "operations"
+      "title": "Savings terms & contribution schedule",
+      "route": "sacco-terms"
+    },
+    {
+      "title": "Withdrawal requests & approvals",
+      "route": "sacco-withdrawals"
+    },
+    {
+      "title": "Member reviews & term history",
+      "route": "sacco-reviews"
+    },
+    {
+      "title": "Meetings & group decisions",
+      "route": "circle-meetings"
+    },
+    {
+      "title": "Group savings charts & reports",
+      "route": "circle-reports"
     },
     {
       "title": "Team & permissions",
       "route": "team"
     },
     {
-      "title": "Announcements",
+      "title": "Announcements & updates",
       "route": "announcements"
     }
   ],
   "settingsRoute": "industry-settings",
-  "overviewRoute": "industry-profile"
+  "overviewRoute": "industry-profile",
+  "group": "Savings circles & member groups"
 }
