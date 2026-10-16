@@ -302,7 +302,7 @@
   function showLearnSlide(index){
     const slides=$$('[data-learn-slide]');if(!slides.length)return;learnIndex=(index+slides.length)%slides.length;
     slides.forEach((s,i)=>{s.classList.toggle('active',i===learnIndex);s.setAttribute('aria-hidden',i===learnIndex?'false':'true')});
-    $$('[data-learn-dot]').forEach((d,i)=>{d.classList.toggle('active',i===learnIndex);if(i===learnIndex)d.setAttribute('aria-current','true');else d.removeAttribute('aria-current')});
+    $$$('[data-learn-dot]').forEach((d,i)=>{d.classList.toggle('active',i===learnIndex);if(i===learnIndex)d.setAttribute('aria-current','true');else d.removeAttribute('aria-current')});
     const fill=$('#learn-progress-fill');if(fill)fill.style.width=((learnIndex+1)/slides.length*100)+'%';
     const count=$('#learn-slide-count');if(count)count.textContent=String(learnIndex+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0');
     $('.learn-controls')?.classList.toggle('is-final',learnIndex===slides.length-1);
