@@ -1221,7 +1221,7 @@ function syncProfileNavigation(){
     ['control-center','✦','Control center']
   ];
   if(['owner','admin'].includes(String(membership?.role||'').toLowerCase()))common.push(['workspace-admin','⚙','Workspace administration']);
-  const routeIcons={overview:'▦',tasks:'✓',products:'◈',team:'♙',announcements:'◉',customers:'♙',inventory:'▤',sales:'↗',finance:'＝',attendance:'✓',reports:'▤',council:'◉',websites:'◈','business-profile':'▧','industry-workspace':'✦','business-tools':'✧','website-studio':'▧',operations:'◈',sacco:'♧','sacco-welfare':'♡','industry-profile':config.icon||'✦','industry-settings':'⚙',connections:'◉',chat:'✉',notifications:'◉'};
+  const routeIcons={overview:'▦',tasks:'✓',products:'◈',team:'♙',announcements:'◉',customers:'♙',inventory:'▤',sales:'↗',finance:'＝',attendance:'✓',reports:'▤',council:'◉',websites:'◈','business-profile':'▧','industry-workspace':'✦','business-tools':'✧','website-studio':'▧',operations:'◈',sacco:'♧','sacco-welfare':'♡','sacco-overview':'♧','sacco-members':'♙','sacco-terms':'▤','sacco-withdrawals':'↗','school-overview':'▦','school-classes':'♙','school-assessments':'▤','school-fees':'＝','school-reports':'▥','it-projects':'⌘','it-support':'⚙','it-devices':'▤','it-clients':'♙','it-websites':'▧','it-team':'♙','it-releases':'▥','circle-overview':'♧','circle-members':'♙','circle-contributions':'＝','circle-meetings':'✓','circle-reports':'▥','industry-profile':config.icon||'✦','industry-settings':'⚙',connections:'◉',chat:'✉',notifications:'◉'};
   const routes=new Map();
   common.forEach(([route,icon,title])=>routes.set(route,{route,icon,title}));
   (config.features||[]).forEach(feature=>{
@@ -1229,6 +1229,7 @@ function syncProfileNavigation(){
     if(config.slug!=='sacco-savings-group'&&['sacco','sacco-welfare'].includes(feature.route))return;
     if(!routes.has(feature.route))routes.set(feature.route,{route:feature.route,icon:routeIcons[feature.route]||'◈',title:feature.title});
   });
+  industryProfileFeatures(selectedIndustryProfile).forEach(feature=>{const route=feature[3];if(!route)return;if((route.startsWith('sacco')||route==='sacco-welfare')&&config.slug!=='sacco-savings-group')return;if(!routes.has(route))routes.set(route,{route,icon:feature[0]||routeIcons[route]||'◈',title:feature[1]});});
   if(config.overviewRoute)routes.set(config.overviewRoute,{route:config.overviewRoute,icon:config.icon||'✦',title:'Business overview'});
   if(config.settingsRoute)routes.set(config.settingsRoute,{route:config.settingsRoute,icon:'⚙',title:'Business settings'});
   nav.replaceChildren();
