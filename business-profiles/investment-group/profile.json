@@ -1,45 +1,62 @@
 {
   "schemaVersion": 1,
-  "index": 26,
+  "index": 24,
   "slug": "investment-group",
   "name": "Investment group",
   "plural": "Investment groups",
-  "description": "Member contributions, projects and investment reporting.",
+  "description": "Member-based savings and investment management with contribution submissions, approvals, terms, welfare support, investment projects, meetings, reviews and reporting.",
   "icon": "↗",
   "features": [
     {
+      "title": "Circle overview & member dashboard",
+      "route": "sacco-overview"
+    },
+    {
+      "title": "Member profiles & savings accounts",
+      "route": "sacco-members"
+    },
+    {
       "title": "Investment portfolio & projects",
       "route": "business-tools"
+    },
+    {
+      "title": "Record proposed savings",
+      "route": "sacco-savings"
+    },
+    {
+      "title": "Chairperson savings approvals",
+      "route": "sacco-approvals"
+    },
+    {
+      "title": "Welfare account & loans",
+      "route": "sacco-welfare"
+    },
+    {
+      "title": "Savings terms & contribution schedule",
+      "route": "sacco-terms"
+    },
+    {
+      "title": "Meetings & group decisions",
+      "route": "circle-meetings"
+    },
+    {
+      "title": "Member reviews & term history",
+      "route": "sacco-reviews"
+    },
+    {
+      "title": "Savings & investment reports",
+      "route": "circle-reports"
     },
     {
       "title": "Finance ledger",
       "route": "finance"
     },
     {
-      "title": "Members",
-      "route": "customers"
-    },
-    {
-      "title": "Reports",
-      "route": "reports"
-    },
-    {
-      "title": "Tasks & deadlines",
-      "route": "tasks"
-    },
-    {
-      "title": "Operations register",
-      "route": "operations"
-    },
-    {
       "title": "Team & permissions",
       "route": "team"
-    },
-    {
-      "title": "Announcements",
-      "route": "announcements"
     }
   ],
   "settingsRoute": "industry-settings",
-  "overviewRoute": "industry-profile"
+  "overviewRoute": "industry-profile",
+  "group": "Savings circles & member groups"
 }
