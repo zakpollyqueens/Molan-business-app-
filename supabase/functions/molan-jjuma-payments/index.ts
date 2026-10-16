@@ -102,7 +102,6 @@ async function createCheckout(req: Request) {
     customer_email: userData.user.email,
     external_order_id: event.id,
     idempotency_key: event.id,
-    webhook_url: webhookUrl,
     metadata: {
       product: "molan_business_subscription",
       company_id: companyId,
