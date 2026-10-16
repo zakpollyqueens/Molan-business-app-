@@ -70,6 +70,7 @@ for (const [i, p] of catalog.profiles.entries()) {
 }
 // Add the same profile-scoped hamburger to the original 50 profile folders too.
 
+const extended = new Set(catalog.profiles.map(p => p.slug));
 const primaryProfileNavSync = `<script data-primary-profile-nav-sync>(()=>{const slugify=s=>String(s||'').toLowerCase().normalize('NFKD').replace(/[^a-z0-9\\s-]/g,'').trim().replace(/[\\s_]+/g,'-').replace(/-+/g,'-');const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));fetch('profile.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('Profile config unavailable');return r.json()}).then(p=>{const nav=document.querySelector('[data-profile-menu] nav');if(!nav||!Array.isArray(p.features))return;nav.replaceChildren();const home=document.createElement('a');home.href='index.html';home.innerHTML='<span>⌂</span> Overview';nav.append(home);p.features.forEach((f,i)=>{const a=document.createElement('a');a.href='pages/'+slugify(f.title)+'/index.html';a.innerHTML='<span>'+String(i+1).padStart(2,'0')+'</span>'+esc(f.title);nav.append(a)})}).catch(e=>console.warn('[Molan Business] Profile navigation sync failed:',e.message));})();</script>
 <script data-primary-profile-feature-fallback>(()=>{const slugify=s=>String(s||'').toLowerCase().normalize('NFKD').replace(/[^a-z0-9\\s-]/g,'').trim().replace(/[\\s_]+/g,'-').replace(/-+/g,'-');document.addEventListener('click',e=>{const b=e.target.closest('#features button.feature');if(!b||typeof window.MolanProfileRuntime?.openFeature==='function')return;const title=b.querySelector('strong')?.textContent;if(!title)return;e.preventDefault();e.stopImmediatePropagation();location.href='pages/'+slugify(title)+'/index.html'},true)})();</script>`;
 let primaryFeaturePages=0, primaryProfilesUpdated=0;
@@ -102,7 +103,7 @@ for (const entry of registry.profiles) {
   }
 }
 
-const extended = new Set(catalog.profiles.map(p => p.slug));
+
 for (const entry of registry.profiles) {
   if (extended.has(entry.slug)) continue;
   const configPath = path.join(root, entry.config || `business-profiles/${entry.slug}/profile.json`);
