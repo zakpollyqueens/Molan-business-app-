@@ -462,7 +462,7 @@ ownedFrame.addEventListener('load',()=>{
             if(updated.error)throw updated.error;
           }
           const chosen=new Set([...modal.querySelectorAll('[data-permission-key]:checked')].map(x=>x.dataset.permissionKey));
-          const rows=STAFF_PERMISSION_GROUPS.map(([permission_key])=>({company_id:company.id,member_user_id:memberId,permission_key,granted:chosen.has(permission_key),granted_by:user.id,updated_at:new Date().toISOString()}));
+          const rows=STAFF_PERMISSION_GROUPS.filter(([permission_key])=>membership?.role==='owner'||chosen.has(permission_key)||existing.has(permission_key)).map(([permission_key])=>({company_id:company.id,member_user_id:memberId,permission_key,granted:chosen.has(permission_key),granted_by:user.id,updated_at:new Date().toISOString()}));
           const saved=await supabase.from('company_member_permissions').upsert(rows,{onConflict:'company_id,member_user_id,permission_key'});
           if(saved.error)throw saved.error;
           modal.remove();toast('Staff access settings saved.');await refreshData();renderPage('team');
