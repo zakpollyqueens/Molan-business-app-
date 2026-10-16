@@ -100,6 +100,10 @@ async function createCheckout(req: Request) {
     description: `Molan Business ${plan.display_name} plan (${plan.duration_months} month${plan.duration_months === 1 ? "" : "s"})`,
     customer_name: userData.user.user_metadata?.full_name || userData.user.email || "Molan Business customer",
     customer_email: userData.user.email,
+    redirect_url: `https://zakpollyqueens.github.io/Molan-business-app-/successful.html?payment_event_id=${encodeURIComponent(event.id)}`,
+    return_url: `https://zakpollyqueens.github.io/Molan-business-app-/successful.html?payment_event_id=${encodeURIComponent(event.id)}`,
+    cancel_redirect_url: `https://zakpollyqueens.github.io/Molan-business-app-/failed.html?payment_event_id=${encodeURIComponent(event.id)}`,
+    webhook_url: webhookUrl,
     external_order_id: event.id,
     idempotency_key: event.id,
     metadata: {
@@ -181,11 +185,10 @@ async function handleWebhook(req: Request) {
   }
 
   const eventPayload = JSON.parse(rawBody);
-  const eventName = String(eventPayload?.event ?? req.headers.get("X-Jjuma-Event") ?? "");
+  const eventName = String(eventPayload?.event ?? eventPayload?.event_type ?? req.headers.get("X-Jjuma-Event") ?? "");
   const data = eventPayload?.data ?? {};
   const transactionId = String(data.transaction_id ?? eventPayload.transaction_id ?? "");
   if (!transactionId) return json({ error: "Webhook has no transaction ID." }, 400);
-  if (eventName !== "payment.completed") return json({ success: true, ignored: true });
 
   const { data: paymentEvent, error: eventLookupError } = await admin
     .from("subscription_payment_events").select("*")
@@ -193,6 +196,16 @@ async function handleWebhook(req: Request) {
   if (eventLookupError) return json({ error: "Could not look up payment record." }, 500);
   if (!paymentEvent) return json({ error: "No matching payment record." }, 404);
   if (paymentEvent.status === "verified") return json({ success: true, already_processed: true });
+  if (eventName === "payment.failed" || eventName === "payment.cancelled") {
+    const failedStatus = eventName === "payment.cancelled" ? "cancelled" : "failed";
+    const { error: failureError } = await admin.from("subscription_payment_events").update({
+      status: failedStatus,
+      provider_metadata: { ...(paymentEvent.provider_metadata ?? {}), webhook_event: eventName, delivery_id: req.headers.get("X-Jjuma-Delivery-Id") },
+    }).eq("id", paymentEvent.id).eq("status", "pending");
+    if (failureError) return json({ error: "Could not record the payment outcome." }, 500);
+    return json({ success: true, payment_status: failedStatus });
+  }
+  if (eventName !== "payment.completed") return json({ success: true, ignored: true });
 
   let verification: any;
   try {
