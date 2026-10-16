@@ -405,3 +405,38 @@ html[data-theme="dark"] input::placeholder,html[data-theme="dark"] textarea::pla
 .sacco-election-actions .button{white-space:nowrap}
 .sacco-panel .sacco-form input[type="datetime-local"]{width:100%;min-width:0}
 .sacco-panel .sacco-row>div:first-child{min-width:0;overflow-wrap:anywhere}
+
+
+/* Download menu viewport correction: keep the opened panel fully visible on phones. */
+#download-menu-wrap{position:relative;z-index:10000}
+#download-menu-panel[hidden]{display:none!important}
+#download-menu-panel.download-menu-panel:not([hidden]){
+  position:fixed!important;
+  z-index:10001!important;
+  top:50%!important;
+  left:50%!important;
+  right:auto!important;
+  bottom:auto!important;
+  width:min(560px,calc(100vw - 28px))!important;
+  max-width:calc(100vw - 28px)!important;
+  max-height:calc(100dvh - 32px)!important;
+  margin:0!important;
+  transform:translate(-50%,-50%)!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  overscroll-behavior:contain;
+  box-sizing:border-box!important;
+}
+#download-menu-panel .public-download-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+#download-menu-panel .public-download-card{min-width:0;overflow-wrap:anywhere;}
+@media(max-width:520px){
+  #download-menu-panel.download-menu-panel:not([hidden]){
+    width:calc(100vw - 24px)!important;
+    max-width:calc(100vw - 24px)!important;
+    max-height:calc(100dvh - 24px)!important;
+    padding:clamp(16px,4vw,22px)!important;
+    border-radius:20px!important;
+  }
+  #download-menu-panel .public-download-grid{grid-template-columns:minmax(0,1fr)!important;gap:10px!important;}
+  #download-menu-panel .public-download-card{width:100%;min-height:0;}
+}
