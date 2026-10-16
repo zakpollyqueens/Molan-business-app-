@@ -8,8 +8,8 @@
   "icon": "♙",
   "features": [
     {
-      "title": "Savings & member accounts",
-      "route": "sacco"
+      "title": "Cooperative members",
+      "route": "customers"
     },
     {
       "title": "Finance ledger",
