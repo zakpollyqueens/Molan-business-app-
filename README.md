@@ -28,13 +28,13 @@ New visitors are connected automatically to the configured Supabase project. The
 - A Website & Media Studio where owners/admins upload multiple business images from their account, copy public image URLs, reuse images as the company logo or cover, and manage the gallery; separately hosted websites still need a site integration to publish those assets automatically
 - GitHub Actions frontend syntax and module smoke checks, plus automated GitHub Pages deployment
 
-### SACCO and savings-circle workspace
+### SACCO Savings Group workspace
 
 The SACCO workspace now includes company-scoped member account codes, configurable savings terms and reconciliation schedules, pending savings submissions, chairperson review, a withdrawal-request queue, and separate payment recording. Pending savings do not affect confirmed balances; approved withdrawals reduce savings only when an actual payment is recorded. Financial review/payment actions are performed through role-checked database RPCs, and SACCO tables use RLS plus composite tenant foreign keys.
 
-The onboarding catalogue includes 50 specific business profile categories, including SACCOs, savings circles, cooperatives, retail and service businesses.
+The onboarding catalogue contains 50 active business profile categories. SACCO, savings-circle and village-savings workflows are consolidated into the single **SACCO Savings Group** profile; the retired savings-circle folder only redirects to that workspace. The independent professional profile is included as a non-SACCO category.
 
-The current first implementation phase does not yet include the full member self-service portal, welfare fund/loan accounting, automated email/SMS notifications, online payment verification, or election workflows; these remain follow-up work before describing the full SACCO system as complete.
+The separate welfare-fund ledger and request review/payment workflow now have dedicated tables, row-level security policies and role-checked transactional RPCs in `supabase/migrations/20261016120000_sacco_welfare_fund.sql`. Apply that migration to the linked Supabase project before using the welfare screen. The full member self-service portal, automated email/SMS notifications, online payment verification, loan accounting and election workflows remain follow-up work.
 
 ## Supabase project and security
 
@@ -80,3 +80,8 @@ The subscription catalog stores full package totals separately from the monthly 
 - The business owner can create a Board of Governors, record confidential meetings, decisions and ideas, and publish selected outcomes to staff notifications. Confidential records remain restricted by database row-level security. Board members need to be linked to their authenticated staff account to receive confidential in-app access.
 - This general Board of Governors workflow is intentionally excluded from SACCO Savings Group profiles, which keep their dedicated member/governance workflows.
 - Validation note: the collaboration schema and RLS policies have been applied to Supabase. Verify role access, notification visibility, and meeting link behavior with test owner, manager, staff and board accounts before production use.
+
+
+### Workspace privacy lock
+
+Workspace settings include a device-local passcode/password lock and optional platform fingerprint/face unlock through WebAuthn when supported by the browser and device. The lock is scoped to the signed-in user and active business on that device and prompts again after a browser/app restart. It is a privacy gate only; it does not replace Supabase Auth, RLS or server-side authorization. Clearing browser storage removes the local lock, so sensitive data must remain protected by database policies.
