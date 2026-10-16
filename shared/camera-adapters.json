@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "integration_strategy": "standards-first-with-vendor-adapters",
+  "supported_onboarding_methods": [
+    "qr_code",
+    "bluetooth_assisted",
+    "wifi_or_local_network",
+    "onvif",
+    "manufacturer_cloud_api",
+    "manual_device_id"
+  ],
+  "capabilities": [
+    "device_claim",
+    "live_stream",
+    "recording_search",
+    "recording_playback",
+    "recording_ingest",
+    "events",
+    "ptz"
+  ],
+  "adapters": [
+    {
+      "id": "onvif-ip-camera",
+      "label": "ONVIF-compatible IP camera / NVR",
+      "transport": "trusted_local_bridge_or_server",
+      "profiles": [
+        "S",
+        "T",
+        "G"
+      ],
+      "capabilities": [
+        "live_stream",
+        "recording_search",
+        "recording_playback"
+      ],
+      "status": "adapter_required"
+    },
+    {
+      "id": "manufacturer-cloud-api",
+      "label": "Manufacturer cloud/API",
+      "transport": "vendor_authorized_api",
+      "capabilities": [
+        "device_claim",
+        "live_stream",
+        "recording_search",
+        "recording_playback",
+        "events"
+      ],
+      "status": "vendor_specific_adapter_required"
+    },
+    {
+      "id": "secure-recorder-relay",
+      "label": "NVR/DVR or secure recording relay",
+      "transport": "authenticated_outbound_relay",
+      "capabilities": [
+        "live_stream",
+        "recording_ingest",
+        "recording_playback"
+      ],
+      "status": "relay_required"
+    }
+  ],
+  "security": {
+    "private_recordings_bucket": "private-camera-recordings",
+    "owner_only_footage_delete": true,
+    "staff_camera_viewing_requires_permission": "camera.view",
+    "staff_camera_management_requires_permission": "camera.manage",
+    "recording_ingest": "trusted_server_only",
+    "camera_claim_must_verify_business_ownership": true
+  },
+  "notes": [
+    "QR/Bluetooth/Wi-Fi are setup methods, not universal video protocols.",
+    "No adapter should report connected until device ownership and supported capabilities are verified.",
+    "Never store camera passwords or raw RTSP credentials in browser-visible records."
+  ]
+}
