@@ -97,7 +97,7 @@
     clearInterval(welcomeTimer);showScreen('guided-onboarding-screen');guidedSetStep(0);
     if(user){$('#guided-existing-session').classList.remove('hidden');$('#guided-account-fields').classList.add('hidden');$('#guided-owner-name').required=false;$('#guided-owner-email').required=false;$('#guided-owner-password').required=false;$('#guided-owner-confirm').required=false;}
     else{$('#guided-existing-session').classList.add('hidden');$('#guided-account-fields').classList.remove('hidden');$('#guided-owner-name').required=true;$('#guided-owner-email').required=true;$('#guided-owner-password').required=true;$('#guided-owner-confirm').required=true;}
-    guidedLoadDraft();guidedRenderIndustryFields();guidedRenderStaff();
+    guidedOnboardingId=null;guidedLoadDraft();guidedRenderIndustryFields();guidedRenderStaff();
   }
   function guidedBackToWelcome(){showScreen('welcome-screen');startWelcomeAutoplay()}
   function guidedSlug(v){return String(v||'business').toLowerCase().replace(/sacco savings group/g,'sacco-savings-group').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,100)||'business'}
