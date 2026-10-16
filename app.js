@@ -275,6 +275,21 @@
   }
   let guidedInstallPrompt=null;
   window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();guidedInstallPrompt=e;$('#guided-install-pwa-wrap')?.classList.remove('hidden')});
+  const iosInstallInstructions='To install Molan Business on iPhone or iPad: 1) Open this website in Safari. 2) Tap Share. 3) Choose Add to Home Screen (use Edit Actions if it is not shown). 4) Turn on Open as Web App if offered, then tap Add. The Molan Business icon will appear on your Home Screen. This is the supported iOS web-app install; a signed native iOS package is not published yet.';
+  $('#download-apple-help')?.addEventListener('click',()=>{
+    const help=$('#public-download-help');
+    if(!help)return;
+    help.textContent=iosInstallInstructions;
+    help.hidden=false;
+    help.setAttribute('tabindex','-1');
+    help.focus();
+  });
+  $('#guided-download-ios')?.addEventListener('click',()=>{
+    const label=$('#guided-device-label'),desc=$('#guided-device-description'),primary=$('#guided-install-primary'),modal=$('#guided-complete-modal');
+    if(label)label.textContent='Install on iPhone or iPad';
+    if(desc)desc.textContent=iosInstallInstructions;
+    if(primary){primary.textContent='Continue in browser →';primary.href='#';primary.onclick=e=>{e.preventDefault();modal?.classList.add('hidden')};primary.removeAttribute('target')}
+  });
   function guidedShowCompletion(staffLinks=[]){
     const modal=$('#guided-complete-modal');if(!modal)return;
     const ua=navigator.userAgent||'',isAndroid=/Android/i.test(ua),isIOS=/iPhone|iPad|iPod/i.test(ua),isWindows=/Windows/i.test(ua),isInstalled=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
