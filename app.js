@@ -288,10 +288,18 @@ el.innerHTML=head(esc(profile[1])+' settings','Profile-specific shortcuts for '+
 '<section class="panel"><div class="panel-head"><div><h3>Operational settings shortcuts</h3><p>Open the real module for each area. Access and saving are governed by workspace permissions.</p></div></div><div class="profile-detail-grid">'+features.map(f=>'<button class="industry-feature-card" data-page="'+esc(f[3])+'"><span class="industry-feature-icon">'+f[0]+'</span><strong>'+esc(f[1])+'</strong><p>'+esc(f[2])+'</p><b>Open module →</b></button>').join('')+'</div></section><div class="profile-detail-footer"><span>Settings scope: '+(sameType?'current workspace':'profile template')+'</span><button class="button secondary small" data-industry-profile="'+esc(profile[0])+'">Back to profile overview</button></div>';
 return;
 }
-el.innerHTML=head(esc(profile[1])+' workspace','A dedicated feature map for '+esc(profile[1])+'. Use the connected modules below to open real workspace screens.')+
-'<section class="profile-detail-hero"><div class="profile-detail-symbol">'+profile[3]+'</div><div><span class="section-kicker">BUSINESS PROFILE '+String(businessProfileCatalog().findIndex(p=>p[0]===profile[0])+1).padStart(2,'0')+' / 50</span><h2>'+esc(profile[1])+'</h2><p>'+esc(profile[2])+'</p><span class="profile-state">'+(sameType?'This matches your active workspace':'Profile template · create a workspace to store separate records')+'</span><div class="profile-detail-actions"><button class="button primary" data-industry-settings="'+esc(profile[0])+'">⚙ Profile settings</button><button class="button secondary" data-page="profile-directory">← All 50 business profiles</button>'+(sameType?'<button class="button secondary" data-page="business-profile">Edit active business profile</button>':'<button class="button secondary" data-profile-category="'+esc(profile[0])+'">＋ Create workspace of this type</button>')+'</div></div></section>'+
-'<div class="control-section-heading"><div><span class="section-kicker">DEDICATED FEATURE PAGES</span><h2>Tools for '+esc(profile[1].toLowerCase())+'</h2><p>Each button opens a connected module or its relevant record form.</p></div><span class="control-section-badge">'+features.length+' feature routes</span></div><div class="profile-detail-grid">'+features.map(f=>'<button class="industry-feature-card" '+(f[4]?'data-action="'+esc(f[4])+'"':'data-page="'+esc(f[3])+'"')+'><span class="industry-feature-icon">'+f[0]+'</span><strong>'+esc(f[1])+'</strong><p>'+esc(f[2])+'</p><b>Open feature →</b></button>').join('')+'</div>'+
-'<section class="panel"><div class="panel-head"><div><h3>Profile administration</h3><p>Keep identity and access controls separate from daily operating records.</p></div></div><div class="profile-detail-grid"><button class="industry-feature-card" data-industry-settings="'+esc(profile[0])+'"><span class="industry-feature-icon">⚙</span><strong>Profile settings</strong><p>Open the profile-specific settings page and connected configuration shortcuts.</p><b>Configure profile →</b></button><button class="industry-feature-card" data-page="business-profile"><span class="industry-feature-icon">▧</span><strong>Business identity</strong><p>Update the active company name, branding and public details.</p><b>Open business profile →</b></button><button class="industry-feature-card" data-page="team"><span class="industry-feature-icon">♙</span><strong>People & permissions</strong><p>Review team membership and workspace access.</p><b>Manage team →</b></button><button class="industry-feature-card" data-page="reports"><span class="industry-feature-icon">▤</span><strong>Reports & review</strong><p>Open the reporting module for recorded business activity.</p><b>Open reports →</b></button></div></section>';
+const slug=window.MolanBusinessProfiles?.byName?.[profile[0]]?.slug;
+if(!slug) throw new Error('The selected business profile has no owned page folder.');
+el.innerHTML=head(esc(profile[1])+' workspace','Dedicated page owned by the '+esc(profile[1])+' profile folder.')+
+'<section class="profile-detail-hero"><div class="profile-detail-symbol">'+profile[3]+'</div><div><span class="section-kicker">PROFILE-OWNED PAGE</span><h2>'+esc(profile[1])+'</h2><p>'+esc(profile[2])+'</p><div class="profile-detail-actions"><button class="button primary" data-industry-settings="'+esc(profile[0])+'">⚙ Profile settings</button><button class="button secondary" data-page="profile-directory">← All business profiles</button>'+(sameType?'<button class="button secondary" data-page="business-profile">Edit active business profile</button>':'<button class="button secondary" data-profile-category="'+esc(profile[0])+'">＋ Create workspace of this type</button>')+'</div></div></section>'+
+'<section class="panel profile-owned-page-panel"><iframe id="profile-owned-page-frame" title="'+esc(profile[1])+' dedicated workspace" src="business-profiles/'+encodeURIComponent(slug)+'/index.html" loading="eager" referrerpolicy="same-origin" style="display:block;width:100%;min-height:1050px;border:0;border-radius:16px;background:transparent"></iframe></section>';
+const ownedFrame=$('#profile-owned-page-frame');
+ownedFrame.addEventListener('load',()=>{
+ try{
+  ownedFrame.contentWindow.MolanProfileRuntime=window.MolanProfileRuntime;
+  ownedFrame.contentWindow.dispatchEvent(new Event('molan:runtime-ready'));
+ }catch(error){console.warn('[Molan Business] Could not attach profile runtime bridge:',error)}
+});
 }
 
   function renderControlCenter(el){
@@ -512,6 +520,22 @@ typeInput?.addEventListener('change',renderMetadata);renderMetadata();
     e.preventDefault();e.stopImmediatePropagation();
     navigate(page);
   },true);
+  // Narrow bridge for profile-owned pages. It only opens declared routes through the authenticated app shell.
+  window.MolanProfileRuntime={
+    openFeature({profile,profileName,feature}={}){
+      if(!user||!company||!membership)throw new Error('Sign in and open an active business workspace first.');
+      const registered=window.MolanBusinessProfiles?.byName?.[profileName];
+      if(!registered||registered.slug!==profile)throw new Error('The profile identity could not be verified.');
+      const declared=(registered.features||[]).find(item=>item.title===feature?.title&&item.route===feature?.route);
+      if(!declared)throw new Error('This feature is not declared by the selected profile.');
+      const allowed=new Set(['overview','tasks','products','team','announcements','customers','inventory','sales','finance','attendance','reports','council','websites','business-profile','industry-workspace','business-tools','website-studio','operations','sacco','control-center','profile-directory','industry-profile','industry-settings','connections','workspace-admin']);
+      if(!allowed.has(declared.route))throw new Error('This destination is not an approved application route.');
+      navigate(declared.route);
+      return Promise.resolve({opened:declared.route,profile});
+    },
+    navigate(page){navigate(page)},
+    getContext(){return {companyId:company?.id||null,role:membership?.role||null,userId:user?.id||null}}
+  };
   applyPreferences();
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',()=>{if(getPreferences().theme==='system')applyPreferences()});
   if(window.MolanBusinessProfiles?.load){try{await window.MolanBusinessProfiles.load()}catch(error){console.warn('[Molan Business] Profile registry fallback:',error)}}
