@@ -81,7 +81,7 @@
   const guidedEsc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   function guidedShowStatus(message,bad=false){const el=$('#guided-status');if(!el)return;el.hidden=false;el.textContent=message;el.classList.toggle('bad',bad)}
   function guidedSetStep(index){
-    guidedStep=Math.max(0,Math.min(5,index));$('#guided-next').dataset.guidedSignin='false';
+    guidedStep=Math.max(0,Math.min(5,index));$('#guided-next').dataset.guidedSigninNext='false';
     $$('[data-guided-step]').forEach((el,i)=>el.classList.toggle('active',i===guidedStep));
     const story=guidedStory[guidedStep],image=$('#guided-story-image');
     if(image)image.style.backgroundImage="url('https://images.unsplash.com/"+story[2]+"?auto=format&fit=crop&w=1100&q=82')";
@@ -261,14 +261,14 @@
       if(error)throw error;
       if(data.session&&data.user){session=data.session;user=data.user;await bootUser();return}
       guidedShowStatus('Your account request has been submitted. Check '+draft.ownerEmail+' for the verification email. Open its link, then return here or sign in; we will use the saved setup draft to finish creating your business. The password was not saved in this browser draft.',false);
-      $('#guided-finish').classList.add('hidden');$('#guided-next').classList.remove('hidden');$('#guided-next').textContent='Go to sign in →';$('#guided-next').dataset.guidedSignin='true';
+      $('#guided-finish').classList.add('hidden');$('#guided-next').classList.remove('hidden');$('#guided-next').textContent='Go to sign in →';$('#guided-next').dataset.guidedSigninNext='true';
     }catch(err){guidedShowStatus(err.message||'We could not complete setup. Your draft is still saved; check the details and try again.',true)}finally{btn.disabled=false;btn.textContent='Create my business →'}
   }
   $('#welcome-get-started')?.addEventListener('click',guidedOpen);
   $$('[data-welcome-auth]').forEach(b=>b.addEventListener('click',()=>openWelcomeAuth(b.dataset.welcomeAuth||'signin')));
   $('#guided-back')?.addEventListener('click',()=>{guidedSaveDraft();guidedSetStep(guidedStep-1)});
   $('#guided-next')?.addEventListener('click',()=>{
-    if($('#guided-next').dataset.guidedSignin==='true'&&guidedStep===5){let d;try{d=JSON.parse(localStorage.getItem(GUIDED_DRAFT_KEY)||'null')}catch{}openWelcomeAuth('signin');if(d?.ownerEmail)$('#email').value=d.ownerEmail;return}
+    if($('#guided-next').dataset.guidedSigninNext==='true'&&guidedStep===5){let d;try{d=JSON.parse(localStorage.getItem(GUIDED_DRAFT_KEY)||'null')}catch{}openWelcomeAuth('signin');if(d?.ownerEmail)$('#email').value=d.ownerEmail;return}
     if(!guidedValidateStep(guidedStep))return;
     guidedSaveDraft();
     if(guidedStep===0)guidedRenderIndustryFields();
