@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "profile": "cafe-coffee-shop",
+  "name": "Cafe / coffee shop",
+  "features": [
+    {
+      "title": "Bookings & service work",
+      "route": "business-tools",
+      "id": "cafe-coffee-shop-1",
+      "page": "pages/feature-bookings-service-work/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Ingredients & supplies",
+      "route": "inventory",
+      "id": "cafe-coffee-shop-2",
+      "page": "pages/feature-ingredients-supplies/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Orders & sales",
+      "route": "sales",
+      "id": "cafe-coffee-shop-3",
+      "page": "pages/feature-orders-sales/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Tasks & deadlines",
+      "route": "tasks",
+      "id": "cafe-coffee-shop-4",
+      "page": "pages/feature-tasks-deadlines/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Customers / members",
+      "route": "customers",
+      "id": "cafe-coffee-shop-5",
+      "page": "pages/feature-customers-members/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Operations register",
+      "route": "operations",
+      "id": "cafe-coffee-shop-6",
+      "page": "pages/feature-operations-register/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Finance & expenses",
+      "route": "finance",
+      "id": "cafe-coffee-shop-7",
+      "page": "pages/feature-finance-expenses/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports",
+      "id": "cafe-coffee-shop-8",
+      "page": "pages/feature-reports-insights/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Team & permissions",
+      "route": "team",
+      "id": "cafe-coffee-shop-9",
+      "page": "pages/feature-team-permissions/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Announcements",
+      "route": "announcements",
+      "id": "cafe-coffee-shop-10",
+      "page": "pages/feature-announcements/index.html",
+      "status": "runtime-integration-required"
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "profile": "boutique-clothing-shop",
+  "name": "Boutique / clothing shop",
+  "features": [
+    {
+      "title": "Inventory & supplies",
+      "route": "inventory",
+      "id": "boutique-clothing-shop-1",
+      "page": "pages/feature-inventory-supplies/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Sales & orders",
+      "route": "sales",
+      "id": "boutique-clothing-shop-2",
+      "page": "pages/feature-sales-orders/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Business tools",
+      "route": "business-tools",
+      "id": "boutique-clothing-shop-3",
+      "page": "pages/feature-business-tools/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Tasks & deadlines",
+      "route": "tasks",
+      "id": "boutique-clothing-shop-4",
+      "page": "pages/feature-tasks-deadlines/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Customers / members",
+      "route": "customers",
+      "id": "boutique-clothing-shop-5",
+      "page": "pages/feature-customers-members/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Operations register",
+      "route": "operations",
+      "id": "boutique-clothing-shop-6",
+      "page": "pages/feature-operations-register/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Finance & expenses",
+      "route": "finance",
+      "id": "boutique-clothing-shop-7",
+      "page": "pages/feature-finance-expenses/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports",
+      "id": "boutique-clothing-shop-8",
+      "page": "pages/feature-reports-insights/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Team & permissions",
+      "route": "team",
+      "id": "boutique-clothing-shop-9",
+      "page": "pages/feature-team-permissions/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Announcements",
+      "route": "announcements",
+      "id": "boutique-clothing-shop-10",
+      "page": "pages/feature-announcements/index.html",
+      "status": "runtime-integration-required"
+    }
+  ]
+}

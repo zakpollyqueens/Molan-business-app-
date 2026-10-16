@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "profile": "building-contractor",
+  "name": "Building contractor",
+  "features": [
+    {
+      "title": "Properties & projects",
+      "route": "operations",
+      "id": "building-contractor-1",
+      "page": "pages/feature-properties-projects/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Materials & procurement",
+      "route": "inventory",
+      "id": "building-contractor-2",
+      "page": "pages/feature-materials-procurement/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Rent, contracts & finance",
+      "route": "finance",
+      "id": "building-contractor-3",
+      "page": "pages/feature-rent-contracts-finance/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Tasks & deadlines",
+      "route": "tasks",
+      "id": "building-contractor-4",
+      "page": "pages/feature-tasks-deadlines/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Customers / members",
+      "route": "customers",
+      "id": "building-contractor-5",
+      "page": "pages/feature-customers-members/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports",
+      "id": "building-contractor-6",
+      "page": "pages/feature-reports-insights/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Team & permissions",
+      "route": "team",
+      "id": "building-contractor-7",
+      "page": "pages/feature-team-permissions/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Announcements",
+      "route": "announcements",
+      "id": "building-contractor-8",
+      "page": "pages/feature-announcements/index.html",
+      "status": "runtime-integration-required"
+    }
+  ]
+}

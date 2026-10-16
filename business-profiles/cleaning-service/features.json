@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "profile": "cleaning-service",
+  "name": "Cleaning service",
+  "features": [
+    {
+      "title": "Appointments & service delivery",
+      "route": "business-tools",
+      "id": "cleaning-service-1",
+      "page": "pages/feature-appointments-service-delivery/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Projects & operations",
+      "route": "operations",
+      "id": "cleaning-service-2",
+      "page": "pages/feature-projects-operations/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Website & media",
+      "route": "website-studio",
+      "id": "cleaning-service-3",
+      "page": "pages/feature-website-media/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Tasks & deadlines",
+      "route": "tasks",
+      "id": "cleaning-service-4",
+      "page": "pages/feature-tasks-deadlines/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Customers / members",
+      "route": "customers",
+      "id": "cleaning-service-5",
+      "page": "pages/feature-customers-members/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Finance & expenses",
+      "route": "finance",
+      "id": "cleaning-service-6",
+      "page": "pages/feature-finance-expenses/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports",
+      "id": "cleaning-service-7",
+      "page": "pages/feature-reports-insights/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Team & permissions",
+      "route": "team",
+      "id": "cleaning-service-8",
+      "page": "pages/feature-team-permissions/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Announcements",
+      "route": "announcements",
+      "id": "cleaning-service-9",
+      "page": "pages/feature-announcements/index.html",
+      "status": "runtime-integration-required"
+    }
+  ]
+}
