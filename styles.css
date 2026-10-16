@@ -318,7 +318,7 @@ body.learn-more-open #molan-floating-update{display:none!important}
 
 
 /* Download menu: visible, touch-friendly and layered above the welcome artwork. */
-.download-menu-wrap{position:relative;z-index:10000;display:flex;justify-content:center;width:min(100% - 32px,900px);margin:18px auto 28px;isolation:isolate}
+.download-menu-wrap{position:relative;z-index:10000;display:flex;justify-content:center;width:min(100% - 32px,900px);margin:18px auto 28px;isolation:auto}
 .download-menu-trigger{display:flex;align-items:center;gap:13px;width:min(100%,470px);min-height:68px;padding:12px 17px;border:1px solid #b8d5ea;border-radius:16px;background:linear-gradient(125deg,#fff,#f1f9ff);color:#102a49;text-align:left;box-shadow:0 12px 34px #09264b1a;touch-action:manipulation;cursor:pointer;transition:border-color .18s,box-shadow .18s,transform .18s}
 .download-menu-trigger:hover,.download-menu-trigger:focus-visible,.download-menu-trigger.is-open{border-color:#1689d5;box-shadow:0 15px 38px #0a64a51f;outline:none}
 .download-menu-trigger:focus-visible{outline:3px solid #1689d555;outline-offset:3px}
