@@ -41,3 +41,7 @@ html[data-theme="dark"] label,html[data-theme="dark"] .form-stack label,html[dat
 html[data-theme="dark"] input,html[data-theme="dark"] textarea,html[data-theme="dark"] select{color:#f0f6ff}
 html[data-theme="dark"] input::placeholder,html[data-theme="dark"] textarea::placeholder{color:#b4c4d9;opacity:1}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+
+/* Sidebar workspace/business name: keep it crisp against the dark sidebar. */
+.workspace-chip #sidebar-company{color:#f4f8ff!important;font-size:12px!important;font-weight:850!important;line-height:1.4;text-shadow:0 1px 2px rgba(0,0,0,.3)}
+.workspace-chip .workspace-dot{flex-shrink:0;box-shadow:0 0 0 3px rgba(93,224,192,.13),0 0 12px rgba(93,224,192,.5)}
