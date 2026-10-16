@@ -1,49 +1,77 @@
 {
   "schemaVersion": 1,
   "profile": "supermarket",
+  "name": "Supermarket",
   "features": [
     {
       "id": "supermarket-1",
-      "title": "Departments & shelves",
-      "route": "business-tools",
-      "action": "open-module",
-      "status": "connected-route-pending-domain-verification"
+      "title": "Inventory & supplies",
+      "route": "inventory",
+      "page": "pages/feature-inventory-supplies/index.html",
+      "status": "runtime-integration-required"
     },
     {
       "id": "supermarket-2",
-      "title": "Inventory movements",
-      "route": "inventory",
-      "action": "open-module",
-      "status": "connected-route-pending-domain-verification"
+      "title": "Sales & orders",
+      "route": "sales",
+      "page": "pages/feature-sales-orders/index.html",
+      "status": "runtime-integration-required"
     },
     {
       "id": "supermarket-3",
-      "title": "POS sales",
-      "route": "sales",
-      "action": "open-module",
-      "status": "connected-route-pending-domain-verification"
+      "title": "Business tools",
+      "route": "business-tools",
+      "page": "pages/feature-business-tools/index.html",
+      "status": "runtime-integration-required"
     },
     {
       "id": "supermarket-4",
-      "title": "Cashier shifts",
-      "route": "finance",
-      "action": "open-module",
-      "status": "connected-route-pending-domain-verification"
+      "title": "Tasks & deadlines",
+      "route": "tasks",
+      "page": "pages/feature-tasks-deadlines/index.html",
+      "status": "runtime-integration-required"
     },
     {
       "id": "supermarket-5",
-      "title": "Expiry checks",
-      "route": "business-tools",
-      "action": "open-module",
-      "status": "connected-route-pending-domain-verification"
+      "title": "Customers / members",
+      "route": "customers",
+      "page": "pages/feature-customers-members/index.html",
+      "status": "runtime-integration-required"
     },
     {
       "id": "supermarket-6",
-      "title": "Daily reconciliation",
-      "route": "business-tools",
-      "action": "open-module",
-      "status": "connected-route-pending-domain-verification"
+      "title": "Operations register",
+      "route": "operations",
+      "page": "pages/feature-operations-register/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "supermarket-7",
+      "title": "Finance & expenses",
+      "route": "finance",
+      "page": "pages/feature-finance-expenses/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "supermarket-8",
+      "title": "Reports & insights",
+      "route": "reports",
+      "page": "pages/feature-reports-insights/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "supermarket-9",
+      "title": "Team & permissions",
+      "route": "team",
+      "page": "pages/feature-team-permissions/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "supermarket-10",
+      "title": "Announcements",
+      "route": "announcements",
+      "page": "pages/feature-announcements/index.html",
+      "status": "runtime-integration-required"
     }
-  ],
-  "backendStatus": "Requires domain-by-domain verification; no action is marked backend-complete by scaffold alone."
+  ]
 }

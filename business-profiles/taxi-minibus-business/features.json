@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "profile": "taxi-minibus-business",
+  "name": "Taxi / minibus business",
+  "features": [
+    {
+      "id": "taxi-minibus-business-1",
+      "title": "Fleet & trip operations",
+      "route": "business-tools",
+      "page": "pages/feature-fleet-trip-operations/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "taxi-minibus-business-2",
+      "title": "Maintenance",
+      "route": "operations",
+      "page": "pages/feature-maintenance/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "taxi-minibus-business-3",
+      "title": "Collections & sales",
+      "route": "sales",
+      "page": "pages/feature-collections-sales/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "taxi-minibus-business-4",
+      "title": "Tasks & deadlines",
+      "route": "tasks",
+      "page": "pages/feature-tasks-deadlines/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "taxi-minibus-business-5",
+      "title": "Customers / members",
+      "route": "customers",
+      "page": "pages/feature-customers-members/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "taxi-minibus-business-6",
+      "title": "Finance & expenses",
+      "route": "finance",
+      "page": "pages/feature-finance-expenses/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "taxi-minibus-business-7",
+      "title": "Reports & insights",
+      "route": "reports",
+      "page": "pages/feature-reports-insights/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "taxi-minibus-business-8",
+      "title": "Team & permissions",
+      "route": "team",
+      "page": "pages/feature-team-permissions/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "taxi-minibus-business-9",
+      "title": "Announcements",
+      "route": "announcements",
+      "page": "pages/feature-announcements/index.html",
+      "status": "runtime-integration-required"
+    }
+  ]
+}
