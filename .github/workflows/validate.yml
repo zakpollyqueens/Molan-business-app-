@@ -84,8 +84,8 @@ jobs:
           for (const required of ['status text','deleted_at','manage_company_workspace_status','security invoker','from public, anon','to authenticated']) {
             if (!lifecycleMigration.toLowerCase().includes(required.toLowerCase())) throw new Error('Workspace lifecycle migration missing: ' + required);
           }
-          const deletionMigration = fs.readFileSync('supabase/migrations/20261016184200_secure_confirmed_business_deletion.sql', 'utf8').toLowerCase();
-          for (const required of ['security definer','auth.uid() is null','set status = \'inactive\'','access_revoked','records_retained_for_audit','from public, anon','to authenticated']) {
+          const deletionMigration = fs.readFileSync('supabase/migrations/20261016185000_fix_deleted_business_membership_status.sql', 'utf8').toLowerCase();
+          for (const required of ['security definer','auth.uid() is null','set status = \'suspended\'','access_revoked','records_retained_for_audit','from public, anon','to authenticated']) {
             if (!deletionMigration.includes(required.toLowerCase())) throw new Error('Confirmed business deletion migration missing: ' + required);
           }
           if (!js.includes('requestBusinessDeletionPassword') || (js.match(/confirm\\(\'Do you/g) || []).length < 3 || !js.includes('signInWithPassword')) throw new Error('Business deletion must require password verification and three confirmations.');
