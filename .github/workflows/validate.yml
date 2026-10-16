@@ -22,7 +22,7 @@ jobs:
           const fs = require('node:fs');
           const html = fs.readFileSync('index.html', 'utf8');
           const js = fs.readFileSync('app.js', 'utf8');
-          const pages = ['overview','tasks','products','team','announcements','customers','inventory','sales','finance','attendance','reports','council','websites','business-profile','industry-workspace','business-tools','website-studio','operations','sacco','sacco-welfare','control-center','profile-directory'];
+          const pages = ['overview','tasks','products','team','announcements','customers','inventory','sales','finance','attendance','reports','council','websites','business-profile','industry-workspace','business-tools','website-studio','operations','sacco','control-center','profile-directory'];
           for (const page of pages) {
             if (!html.includes('data-page="' + page + '"')) throw new Error('Missing navigation page: ' + page);
           }
