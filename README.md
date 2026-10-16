@@ -72,3 +72,11 @@ Current regional package prices:
 - **Unspecified markets (USD default):** Gold $80; Silver $50; Premium $40.
 
 The subscription catalog stores full package totals separately from the monthly equivalent. The page can request browser location permission and use a reverse-geocoding service to suggest a country/region; users can choose a market manually. Payment-provider checkout remains disabled until the payment integration is configured. Verified payment activation has to match the exact approved package total. Automatic access locking on expiry and scheduled renewal reminders still require end-to-end implementation.
+
+
+## Staff chat, meetings and governance
+- The sidebar includes Team chat & meetings and a Notification Center. Messages support reactions; authorized managers can assign tasks; authorized staff can publish Zoom, Google Meet, Microsoft Teams or other meeting links. Molan Business shares the links but does not host the video calls.
+- Unread notification cards are highlighted per user and can be marked read. Messages, task assignments, meetings and published board outcomes can create notifications.
+- The business owner can create a Board of Governors, record confidential meetings, decisions and ideas, and publish selected outcomes to staff notifications. Confidential records remain restricted by database row-level security. Board members need to be linked to their authenticated staff account to receive confidential in-app access.
+- This general Board of Governors workflow is intentionally excluded from SACCO Savings Group profiles, which keep their dedicated member/governance workflows.
+- Validation note: the collaboration schema and RLS policies have been applied to Supabase. Verify role access, notification visibility, and meeting link behavior with test owner, manager, staff and board accounts before production use.
