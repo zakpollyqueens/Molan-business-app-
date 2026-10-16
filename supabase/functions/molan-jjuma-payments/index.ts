@@ -41,6 +41,149 @@ async function hmacHex(secret: string, message: string): Promise<string> {
   return [...new Uint8Array(signature)].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
+async function markWebsiteCheckoutFailed(paymentId: string, requestId: string, message: string) {
+  await admin.from("website_service_checkout_payments").update({
+    status: "failed",
+    provider_metadata: { checkout_created: false, provider_error: message },
+  }).eq("id", paymentId).eq("status", "pending");
+
+  const { data: request } = await admin.from("website_service_requests")
+    .select("status").eq("id", requestId).maybeSingle();
+  const patch: Record<string, unknown> = { payment_status: "failed" };
+  if (request?.status === "awaiting_payment") patch.status = "requested";
+  await admin.from("website_service_requests").update(patch).eq("id", requestId);
+}
+
+async function createWebsiteServiceCheckout(authenticatedUser: any, body: any) {
+  const companyId = typeof body?.company_id === "string" ? body.company_id : "";
+  const requestId = typeof body?.website_request_id === "string" ? body.website_request_id : "";
+  if (!companyId || !requestId) return json({ error: "company_id and website_request_id are required." }, 400);
+
+  const { data: member, error: memberError } = await admin
+    .from("company_members").select("role,status")
+    .eq("company_id", companyId).eq("user_id", authenticatedUser.id)
+    .eq("status", "active").maybeSingle();
+  if (memberError || !member || !["owner", "admin"].includes(String(member.role).toLowerCase())) {
+    return json({ error: "Only an active business owner or administrator can pay for a website package." }, 403);
+  }
+
+  const { data: request, error: requestError } = await admin
+    .from("website_service_requests")
+    .select("id,company_id,market_code,package_code,package_currency_code,package_amount,status,payment_status")
+    .eq("id", requestId).eq("company_id", companyId).maybeSingle();
+  if (requestError) return json({ error: "Could not load the website service request." }, 500);
+  if (!request) return json({ error: "The website service request was not found in this business." }, 404);
+  if (request.payment_status === "paid") return json({ error: "This website request has already been paid." }, 409);
+  if (!["requested", "awaiting_payment"].includes(String(request.status))) {
+    return json({ error: "This request is no longer available for checkout." }, 409);
+  }
+
+  const amount = Number(request.package_amount);
+  const currency = String(request.package_currency_code || "").toUpperCase();
+  if (!Number.isFinite(amount) || amount <= 0 || !["UGX", "KES", "TZS", "USD"].includes(currency)) {
+    return json({ error: "This website request has no valid server-approved package price." }, 409);
+  }
+
+  const { data: existing, error: existingError } = await admin
+    .from("website_service_checkout_payments").select("id,amount,currency_code,provider_metadata")
+    .eq("request_id", request.id).eq("status", "pending").maybeSingle();
+  if (existingError) return json({ error: "Could not check the current checkout status." }, 500);
+  if (existing) {
+    const url = existing.provider_metadata?.checkout_url;
+    if (typeof url === "string") {
+      try {
+        const parsed = new URL(url);
+        if (parsed.protocol === "https:" && parsed.hostname === "pay.jjuma.com") {
+          return json({ success: true, payment_url: parsed.toString(), amount: Number(existing.amount),
+            currency: String(existing.currency_code).toUpperCase(), status: "pending",
+            message: "Continue with the existing secure Jjuma Pay checkout." });
+        }
+      } catch (_) { /* Treat invalid stored provider URLs as unavailable. */ }
+    }
+    return json({ error: "A checkout is already pending for this request. Retry after its status has updated." }, 409);
+  }
+
+  const { data: payment, error: paymentError } = await admin
+    .from("website_service_checkout_payments")
+    .insert({
+      company_id: companyId, request_id: request.id, created_by: authenticatedUser.id,
+      provider: "jjuma", amount, currency_code: currency, status: "pending",
+      provider_metadata: {
+        product: "molan_website_service", market_code: request.market_code,
+        package_code: request.package_code, customer_user_id: authenticatedUser.id,
+      },
+    }).select("id").single();
+  if (paymentError || !payment) return json({ error: "Could not create the website checkout record. Please retry." }, 500);
+
+  const { error: awaitingError } = await admin.from("website_service_requests")
+    .update({ status: "awaiting_payment", payment_status: "pending" }).eq("id", request.id);
+  if (awaitingError) {
+    await markWebsiteCheckoutFailed(payment.id, request.id, "Could not mark request as awaiting payment.");
+    return json({ error: "Could not prepare this website request for checkout." }, 500);
+  }
+
+  const packageName = ({ starter: "Starter", premium: "Premium", business: "Business" } as Record<string, string>)[request.package_code] || "Website";
+  const webhookUrl = `${SUPABASE_URL}/functions/v1/molan-jjuma-payments?action=webhook`;
+  const redirect = `https://zakpollyqueens.github.io/Molan-business-app-/successful.html?website_payment_id=${encodeURIComponent(payment.id)}`;
+  const cancelRedirect = `https://zakpollyqueens.github.io/Molan-business-app-/failed.html?website_payment_id=${encodeURIComponent(payment.id)}`;
+  const payload = {
+    amount, currency,
+    description: `Molan Business ${packageName} website service package`,
+    customer_name: authenticatedUser.user_metadata?.full_name || authenticatedUser.email || "Molan Business customer",
+    customer_email: authenticatedUser.email,
+    redirect_url: redirect, return_url: redirect, cancel_redirect_url: cancelRedirect,
+    webhook_url: webhookUrl, external_order_id: payment.id, idempotency_key: payment.id,
+    metadata: {
+      product: "molan_website_service", company_id: companyId,
+      website_request_id: request.id, website_payment_id: payment.id,
+      package_code: request.package_code, market_code: request.market_code,
+      customer_user_id: authenticatedUser.id,
+    },
+  };
+
+  try {
+    const response = await fetch(`${API_BASE}/payments/create`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${JJUMA_PUBLIC_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const providerResponse = await response.json();
+    if (!response.ok || providerResponse?.success !== true || !providerResponse?.data?.transaction_id ||
+        typeof providerResponse?.data?.payment_url !== "string") {
+      await markWebsiteCheckoutFailed(payment.id, request.id, "Jjuma Pay rejected checkout creation.");
+      return json({ error: "Jjuma Pay could not create checkout. No website payment has been marked as paid." }, 502);
+    }
+    const checkoutUrl = new URL(providerResponse.data.payment_url);
+    if (checkoutUrl.protocol !== "https:" || checkoutUrl.hostname !== "pay.jjuma.com") {
+      await markWebsiteCheckoutFailed(payment.id, request.id, "Jjuma Pay returned an untrusted checkout URL.");
+      return json({ error: "The payment provider returned an untrusted checkout URL." }, 502);
+    }
+    const { error: providerSaveError } = await admin.from("website_service_checkout_payments").update({
+      provider_reference: String(providerResponse.data.transaction_id),
+      provider_metadata: {
+        product: "molan_website_service", package_code: request.package_code,
+        market_code: request.market_code, customer_user_id: authenticatedUser.id,
+        transaction_id: String(providerResponse.data.transaction_id),
+        provider_reference: providerResponse.data.reference ?? null,
+        checkout_url: checkoutUrl.toString(), checkout_created: true,
+      },
+    }).eq("id", payment.id).eq("status", "pending");
+    if (providerSaveError) {
+      await markWebsiteCheckoutFailed(payment.id, request.id, "Could not save the checkout reference.");
+      return json({ error: "Checkout was created but its payment record could not be saved. Contact support before paying again." }, 500);
+    }
+    return json({
+      success: true, payment_url: checkoutUrl.toString(),
+      transaction_id: providerResponse.data.transaction_id, amount, currency,
+      package: packageName, status: "pending",
+      message: "Complete Jjuma Pay checkout. Your website request proceeds after server-side payment verification.",
+    });
+  } catch (_error) {
+    await markWebsiteCheckoutFailed(payment.id, request.id, "Could not contact Jjuma Pay.");
+    return json({ error: "Could not contact Jjuma Pay. No website payment has been marked as paid." }, 502);
+  }
+}
+
 async function createCheckout(req: Request) {
   if (!JJUMA_PUBLIC_KEY) return json({ error: "Payment provider is not configured yet." }, 503);
   const auth = req.headers.get("Authorization") ?? "";
@@ -50,6 +193,9 @@ async function createCheckout(req: Request) {
   if (userError || !userData.user) return json({ error: "Your session is invalid or expired." }, 401);
 
   const body = await req.json().catch(() => null);
+  const productCode = String(body?.product ?? "molan_business_subscription").toLowerCase();
+  if (productCode === "molan_website_service") return await createWebsiteServiceCheckout(userData.user, body);
+  if (productCode !== "molan_business_subscription") return json({ error: "Unsupported checkout product." }, 400);
   const companyId = typeof body?.company_id === "string" ? body.company_id : "";
   const planCode = typeof body?.plan_code === "string" ? body.plan_code.toLowerCase() : "";
   const marketCode = typeof body?.market_code === "string" ? body.market_code.toUpperCase() : "";
@@ -163,6 +309,88 @@ async function createCheckout(req: Request) {
   }
 }
 
+async function handleWebsiteServiceWebhook(
+  websitePayment: any,
+  transactionId: string,
+  eventName: string,
+  data: any,
+  deliveryId: string | null,
+) {
+  if (websitePayment.status === "verified") return json({ success: true, already_processed: true, website_service_paid: true });
+  if (websitePayment.status === "failed") return json({ success: true, ignored: true, payment_status: "failed" });
+
+  if (eventName === "payment.failed" || eventName === "payment.cancelled") {
+    const { error: failureError } = await admin.from("website_service_checkout_payments").update({
+      status: "failed",
+      provider_metadata: { ...(websitePayment.provider_metadata ?? {}), webhook_event: eventName, delivery_id: deliveryId },
+    }).eq("id", websitePayment.id).eq("status", "pending");
+    if (failureError) return json({ error: "Could not record website payment outcome." }, 500);
+    const { data: request, error: requestReadError } = await admin.from("website_service_requests")
+      .select("status").eq("id", websitePayment.request_id).maybeSingle();
+    if (requestReadError) return json({ error: "Could not update website request payment status." }, 500);
+    const requestPatch: Record<string, unknown> = { payment_status: "failed" };
+    if (request?.status === "awaiting_payment") requestPatch.status = "requested";
+    const { error: requestUpdateError } = await admin.from("website_service_requests")
+      .update(requestPatch).eq("id", websitePayment.request_id);
+    if (requestUpdateError) return json({ error: "Could not update website request payment status." }, 500);
+    return json({ success: true, payment_status: "failed", website_service: true });
+  }
+  if (eventName !== "payment.completed") return json({ success: true, ignored: true });
+
+  let verification: any;
+  try {
+    const verifyResponse = await fetch(`${API_BASE}/payments/verify/${encodeURIComponent(transactionId)}`, {
+      headers: { Authorization: `Bearer ${JJUMA_SECRET_KEY}`, Accept: "application/json" },
+    });
+    verification = await verifyResponse.json();
+    if (!verifyResponse.ok || verification?.status !== "success" ||
+        String(verification?.data?.status ?? "").toLowerCase() !== "successful") {
+      return json({ error: "Jjuma Pay has not verified this website payment as successful." }, 409);
+    }
+  } catch (_error) {
+    return json({ error: "Could not verify website payment with Jjuma Pay." }, 502);
+  }
+
+  const verifiedData = verification.data;
+  const amount = Number(verifiedData.amount ?? data.amount);
+  const currency = String(verifiedData.currency ?? data.currency ?? "").toUpperCase();
+  if (!Number.isFinite(amount) || Math.round(amount * 100) !== Math.round(Number(websitePayment.amount) * 100) ||
+      currency !== String(websitePayment.currency_code).toUpperCase()) {
+    return json({ error: "Verified website payment amount or currency does not match the pending checkout." }, 409);
+  }
+
+  const { data: request, error: requestError } = await admin.from("website_service_requests")
+    .select("id,status").eq("id", websitePayment.request_id).maybeSingle();
+  if (requestError || !request) return json({ error: "Could not locate the website request for this payment." }, 500);
+  const requestPatch: Record<string, unknown> = {
+    payment_status: "paid",
+    paid_at: verifiedData.paid_at ?? new Date().toISOString(),
+    payment_provider_reference: transactionId,
+  };
+  if (["requested", "awaiting_payment"].includes(String(request.status))) requestPatch.status = "in_progress";
+  const { error: requestUpdateError } = await admin.from("website_service_requests")
+    .update(requestPatch).eq("id", request.id);
+  if (requestUpdateError) return json({ error: "Payment was verified but the website request could not be updated. The webhook can be retried." }, 500);
+
+  const { data: markedPayment, error: markError } = await admin.from("website_service_checkout_payments").update({
+    status: "verified",
+    verified_at: new Date().toISOString(),
+    paid_at: verifiedData.paid_at ?? new Date().toISOString(),
+    provider_metadata: {
+      ...(websitePayment.provider_metadata ?? {}),
+      webhook_event: eventName, delivery_id: deliveryId,
+      verified_transaction_id: transactionId, verified_amount: amount, verified_currency: currency,
+    },
+  }).eq("id", websitePayment.id).eq("status", "pending").select("id").maybeSingle();
+  if (markError) return json({ error: "Could not record the verified website payment." }, 500);
+  if (!markedPayment) {
+    const { data: currentPayment } = await admin.from("website_service_checkout_payments")
+      .select("status").eq("id", websitePayment.id).maybeSingle();
+    if (currentPayment?.status !== "verified") return json({ error: "Could not complete website payment verification." }, 500);
+  }
+  return json({ success: true, website_service_paid: true, request_id: request.id });
+}
+
 async function handleWebhook(req: Request) {
   if (!JJUMA_WEBHOOK_SECRET || !JJUMA_SECRET_KEY) {
     return json({ error: "Webhook verification is not configured." }, 503);
@@ -194,8 +422,18 @@ async function handleWebhook(req: Request) {
     .from("subscription_payment_events").select("*")
     .eq("provider", "jjuma").eq("provider_reference", transactionId).maybeSingle();
   if (eventLookupError) return json({ error: "Could not look up payment record." }, 500);
-  if (!paymentEvent) return json({ error: "No matching payment record." }, 404);
+  if (!paymentEvent) {
+    const { data: websitePayment, error: websiteLookupError } = await admin
+      .from("website_service_checkout_payments").select("*")
+      .eq("provider", "jjuma").eq("provider_reference", transactionId).maybeSingle();
+    if (websiteLookupError) return json({ error: "Could not look up website payment record." }, 500);
+    if (!websitePayment) return json({ error: "No matching payment record." }, 404);
+    return await handleWebsiteServiceWebhook(
+      websitePayment, transactionId, eventName, data, req.headers.get("X-Jjuma-Delivery-Id"),
+    );
+  }
   if (paymentEvent.status === "verified") return json({ success: true, already_processed: true });
+  if (paymentEvent.status === "failed") return json({ success: true, ignored: true, payment_status: "failed" });
   if (eventName === "payment.failed" || eventName === "payment.cancelled") {
     const failedStatus = "failed"; // The database status constraint uses failed for both failed and cancelled checkouts.
     const { error: failureError } = await admin.from("subscription_payment_events").update({
