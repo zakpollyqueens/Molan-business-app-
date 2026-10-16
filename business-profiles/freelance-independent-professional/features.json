@@ -1,0 +1,127 @@
+{
+  "schemaVersion": 1,
+  "profile": "freelance-independent-professional",
+  "features": [
+    {
+      "id": "freelance-client-projects",
+      "title": "Client projects & deliverables",
+      "route": "operations",
+      "dataEntities": [
+        "business_operations"
+      ],
+      "requiredRoles": [
+        "owner",
+        "admin",
+        "manager",
+        "staff"
+      ]
+    },
+    {
+      "id": "freelance-clients",
+      "title": "Client directory",
+      "route": "customers",
+      "dataEntities": [
+        "customers"
+      ],
+      "requiredRoles": [
+        "owner",
+        "admin",
+        "manager",
+        "staff"
+      ]
+    },
+    {
+      "id": "freelance-invoices",
+      "title": "Quotes, invoices & payments",
+      "route": "finance",
+      "dataEntities": [
+        "finance_transactions",
+        "sales_orders"
+      ],
+      "requiredRoles": [
+        "owner",
+        "admin",
+        "accountant"
+      ]
+    },
+    {
+      "id": "freelance-tasks",
+      "title": "Tasks & deadlines",
+      "route": "tasks",
+      "dataEntities": [
+        "tasks"
+      ],
+      "requiredRoles": [
+        "owner",
+        "admin",
+        "manager",
+        "staff"
+      ]
+    },
+    {
+      "id": "freelance-service-delivery",
+      "title": "Appointments & service delivery",
+      "route": "business-tools",
+      "dataEntities": [
+        "business_operations"
+      ],
+      "requiredRoles": [
+        "owner",
+        "admin",
+        "manager",
+        "staff"
+      ]
+    },
+    {
+      "id": "freelance-portfolio",
+      "title": "Portfolio & website media",
+      "route": "website-studio",
+      "dataEntities": [
+        "gallery_images"
+      ],
+      "requiredRoles": [
+        "owner",
+        "admin"
+      ]
+    },
+    {
+      "id": "freelance-reports",
+      "title": "Reports & insights",
+      "route": "reports",
+      "dataEntities": [
+        "finance_transactions",
+        "sales_orders"
+      ],
+      "requiredRoles": [
+        "owner",
+        "admin",
+        "accountant"
+      ]
+    },
+    {
+      "id": "freelance-team",
+      "title": "Team & collaborators",
+      "route": "team",
+      "dataEntities": [
+        "company_members"
+      ],
+      "requiredRoles": [
+        "owner",
+        "admin"
+      ]
+    },
+    {
+      "id": "freelance-announcements",
+      "title": "Announcements",
+      "route": "announcements",
+      "dataEntities": [
+        "announcements"
+      ],
+      "requiredRoles": [
+        "owner",
+        "admin",
+        "manager"
+      ]
+    }
+  ]
+}
