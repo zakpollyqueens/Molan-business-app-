@@ -233,16 +233,6 @@
       "page": "business-profiles/sacco-savings-group/index.html"
     },
     {
-      "slug": "savings-circle-village-savings-group",
-      "name": "Savings circle / village savings group",
-      "plural": "Savings circles and village savings groups",
-      "description": "Member contributions, welfare and group reconciliation.",
-      "icon": "♧",
-      "enabled": true,
-      "config": "business-profiles/savings-circle-village-savings-group/profile.json",
-      "page": "business-profiles/savings-circle-village-savings-group/index.html"
-    },
-    {
       "slug": "investment-group",
       "name": "Investment group",
       "plural": "Investment groups",
