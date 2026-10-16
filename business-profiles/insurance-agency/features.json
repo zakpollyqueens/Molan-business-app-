@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "profile": "insurance-agency",
+  "name": "Insurance agency",
+  "features": [
+    {
+      "id": "insurance-agency-1",
+      "title": "Inventory & supplies",
+      "route": "inventory",
+      "page": "pages/feature-inventory-supplies/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "insurance-agency-2",
+      "title": "Sales & orders",
+      "route": "sales",
+      "page": "pages/feature-sales-orders/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "insurance-agency-3",
+      "title": "Business tools",
+      "route": "business-tools",
+      "page": "pages/feature-business-tools/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "insurance-agency-4",
+      "title": "Tasks & deadlines",
+      "route": "tasks",
+      "page": "pages/feature-tasks-deadlines/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "insurance-agency-5",
+      "title": "Customers / members",
+      "route": "customers",
+      "page": "pages/feature-customers-members/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "insurance-agency-6",
+      "title": "Operations register",
+      "route": "operations",
+      "page": "pages/feature-operations-register/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "insurance-agency-7",
+      "title": "Finance & expenses",
+      "route": "finance",
+      "page": "pages/feature-finance-expenses/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "insurance-agency-8",
+      "title": "Reports & insights",
+      "route": "reports",
+      "page": "pages/feature-reports-insights/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "insurance-agency-9",
+      "title": "Team & permissions",
+      "route": "team",
+      "page": "pages/feature-team-permissions/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "insurance-agency-10",
+      "title": "Announcements",
+      "route": "announcements",
+      "page": "pages/feature-announcements/index.html",
+      "status": "runtime-integration-required"
+    }
+  ]
+}
