@@ -399,3 +399,9 @@ html[data-theme="dark"] input::placeholder,html[data-theme="dark"] textarea::pla
 .sacco-member-avatar-placeholder{font-size:20px}
 .sacco-avatar-preview{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px dashed #b7cbe0;border-radius:13px;background:#f7fbff;color:#65758b}
 .sacco-avatar-preview small{overflow-wrap:anywhere}
+
+/* Circle chairperson election management. */
+.sacco-election-actions{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+.sacco-election-actions .button{white-space:nowrap}
+.sacco-panel .sacco-form input[type="datetime-local"]{width:100%;min-width:0}
+.sacco-panel .sacco-row>div:first-child{min-width:0;overflow-wrap:anywhere}
