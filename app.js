@@ -1412,7 +1412,7 @@ function renderPage(page){
  const pendingKey='molan_business_pending_profile_feature_v1';
  try{
   const raw=localStorage.getItem(pendingKey);
-  if(raw&&user&&membership){
+  if(raw&&user&&membership&&Object.keys(window.MolanBusinessProfiles?.byName||{}).length){
    const pending=JSON.parse(raw),registry=window.MolanBusinessProfiles?.byName||{},registered=registry[pending.profileName];
    const declared=registered?.slug===pending.profile?(registered.features||[]).find(f=>f.title===pending.feature?.title&&f.route===pending.feature?.route):null;
    const normalize=v=>String(v||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
