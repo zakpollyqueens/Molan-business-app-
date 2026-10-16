@@ -1,0 +1,5 @@
+{
+  "schemaVersion": 1,
+  "description": "Registry for profile workspaces. Add a profile here only after its folder, profile configuration, and route pages are present.",
+  "profiles": []
+}
