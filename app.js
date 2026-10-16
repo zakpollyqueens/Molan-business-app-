@@ -597,7 +597,10 @@ function industryProfileFeatures(profile){
    feature('Member savings & accounts','Manage member records, savings terms, balances and reviewed transactions.','sacco-members','♧'),
    feature('Welfare account & loans','Manage the separate welfare fund and permitted welfare workflows.','sacco-welfare','♡'),
    feature('Savings terms & contribution rules','Review savings frequency, terms and contribution expectations.','sacco-terms','▤'),
-   feature('Withdrawal requests & approvals','Review withdrawal requests and record payments only after approval.','sacco-withdrawals','↗')
+   feature('Record proposed savings','Submit contributions for the required review before balances change.','sacco-savings','＋'),
+   feature('Savings approvals','Review and confirm or reject submitted savings entries.','sacco-approvals','✓'),
+   feature('Withdrawal requests & approvals','Review withdrawal requests and record payments only after approval.','sacco-withdrawals','↗'),
+   feature('Member reviews & term history','Review past savings terms and member review notes.','sacco-reviews','▤')
   ];
  }else if(/school|college|training|education|academy/.test(name)){
   domain=[
@@ -1256,6 +1259,7 @@ function syncProfileNavigation(){
   common.forEach(([route,icon,title])=>routes.set(route,{route,icon,title}));
   (config.features||[]).forEach(feature=>{
     if(!feature||!feature.title||!feature.route)return;
+    if(config.slug==='sacco-savings-group'&&feature.route==='sacco')return;
     if(config.slug!=='sacco-savings-group'&&['sacco','sacco-welfare'].includes(feature.route))return;
     if(!routes.has(feature.route))routes.set(feature.route,{route:feature.route,icon:routeIcons[feature.route]||'◈',title:feature.title});
   });
