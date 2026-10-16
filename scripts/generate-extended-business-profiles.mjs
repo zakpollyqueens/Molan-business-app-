@@ -43,6 +43,18 @@ function ensureProfileNavigation(file, profile, isFeaturePage = false) {
   fs.writeFileSync(file, html);
 }
 
+
+function ensureProfileFeatureLaunch(file, profile, feature) {
+  if (!fs.existsSync(file)) return;
+  let html = fs.readFileSync(file, 'utf8');
+  if (html.includes('data-profile-feature-launch')) return;
+  const route = feature.route || 'business-tools';
+  const block = '<section class="notice profile-feature-launch"><strong>' + esc(feature.title) + '</strong><p>Open this feature in the authenticated Molan Business workspace. Records remain scoped to the matching business profile.</p><button class="card" type="button" data-profile-feature-launch data-profile="' + esc(profile.slug) + '" data-profile-name="' + esc(profile.name) + '" data-feature-title="' + esc(feature.title) + '" data-feature-route="' + esc(route) + '">Open in Molan Business →</button><p data-profile-feature-status role="status">No data has been changed.</p></section>' +
+    '<script data-profile-feature-launch-script>(()=>{const b=document.querySelector("[data-profile-feature-launch]"),s=document.querySelector("[data-profile-feature-status]");if(!b)return;b.addEventListener("click",()=>{const req={profile:b.dataset.profile,profileName:b.dataset.profileName,feature:{title:b.dataset.featureTitle,route:b.dataset.featureRoute},createdAt:Date.now()};if(typeof window.MolanProfileRuntime?.openFeature==="function"){try{const result=window.MolanProfileRuntime.openFeature(req);result?.catch?.(e=>{if(s)s.textContent=e.message||"Could not open feature"});return}catch(e){if(s)s.textContent=e.message||"Could not open feature";return}}try{localStorage.setItem("molan_business_pending_profile_feature_v1",JSON.stringify(req));location.href="../../../../index.html"}catch(e){if(s)s.textContent="Open the signed-in Molan Business app and select this profile feature from its hamburger menu."}})})();</script>';
+  html = html.replace('</body>', block + '</body>');
+  fs.writeFileSync(file, html);
+}
+
 let createdFolders = 0, createdPages = 0;
 for (const [i, p] of catalog.profiles.entries()) {
   const dir = path.join(root, 'business-profiles', p.slug);
@@ -65,6 +77,7 @@ for (const [i, p] of catalog.profiles.entries()) {
       fs.writeFileSync(path.join(pageDir, 'index.html'), pageHtml);
       createdPages++;
     }
+    ensureProfileFeatureLaunch(path.join(pageDir, 'index.html'), profile, f);
   }
   ensureProfileNavigation(path.join(dir, 'index.html'), p, false);
   for (const f of (p.features || [])) ensureProfileNavigation(path.join(dir, 'pages', slugify(f.title), 'index.html'), p, true);
@@ -91,11 +104,13 @@ for (const entry of registry.profiles) {
     const pageDir = path.join(profileDir, 'pages', featureSlug);
     const pagePath = path.join(pageDir, 'index.html');
     fs.mkdirSync(pageDir, { recursive: true });
-    if (fs.existsSync(pagePath)) continue;
+    if (!fs.existsSync(pagePath)) {
     const route = feature.route || 'business-tools';
     const pageHtml = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="${esc(profile.description)}"><title>${esc(feature.title)} · ${esc(profile.name)}</title><style>:root{font-family:Inter,system-ui,sans-serif;color:#10213e;background:#f4f8fc}*{box-sizing:border-box}body{margin:0}.shell{max-width:1000px;margin:auto;padding:clamp(12px,3vw,28px)}.hero,.panel{border:1px solid #dce5f1;border-radius:20px;background:#fff;padding:22px;box-shadow:0 12px 34px #122b4f0f}.back{color:#087fbd;text-decoration:none;font-weight:800}.eyebrow{font-size:.72rem;font-weight:800;letter-spacing:.12em;color:#087fbd;margin-top:22px}h1{font-size:clamp(26px,5vw,40px);margin:8px 0}.muted{color:#65758b;line-height:1.6}.panel{margin-top:16px}.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}button,.button{border:1px solid #cbd8e8;border-radius:12px;padding:12px 15px;background:#0a8ac5;color:white;font:700 14px system-ui;text-decoration:none;cursor:pointer}.secondary{background:white;color:#10213e}footer{padding:20px 4px;color:#65758b;font-size:.85rem}</style></head><body data-profile="${esc(profile.slug)}" data-profile-name="${esc(profile.name)}"><main class="shell"><header class="hero"><a class="back" href="../../index.html">← Back to ${esc(profile.name)}</a><p class="eyebrow">${esc(profile.group || 'BUSINESS PROFILE')} · FEATURE ${i+1} / ${profile.features.length}</p><h1>${esc(feature.title)}</h1><p class="muted">${esc(profile.description || 'Dedicated business profile feature.')}</p></header><section class="panel"><h2>${esc(feature.title)}</h2><p class="muted">This page belongs exclusively to the <strong>${esc(profile.name)}</strong> profile. Live records are opened through the authenticated Molan Business workspace and remain scoped to that workspace.</p><p class="muted">Feature destination: <code>${esc(route)}</code></p><div class="actions"><button id="open-feature" data-feature-title="${esc(feature.title)}" data-feature-route="${esc(route)}">Open in Molan Business →</button><a class="button secondary" href="../../index.html">Return to profile overview</a></div><p id="feature-status" class="muted" role="status">No data has been changed.</p></section><footer>Molan Business · ${esc(profile.name)} · ${esc(profile.slug)}</footer></main><script>(()=>{const b=document.getElementById('open-feature'),s=document.getElementById('feature-status');b.addEventListener('click',()=>{const req={profile:document.body.dataset.profile,profileName:document.body.dataset.profileName,feature:{title:b.dataset.featureTitle,route:b.dataset.featureRoute},createdAt:Date.now()};if(typeof window.MolanProfileRuntime?.openFeature==='function'){try{const r=window.MolanProfileRuntime.openFeature(req);r?.catch?.(e=>s.textContent=e.message||'Could not open feature');return}catch(e){s.textContent=e.message||'Could not open feature';return}}try{localStorage.setItem('molan_business_pending_profile_feature_v1',JSON.stringify(req));location.href='../../../../index.html'}catch(e){s.textContent='Open the signed-in Molan Business app and select this profile feature from its hamburger menu.'}})})();</script></body></html>`;
     fs.writeFileSync(pagePath, pageHtml);
     primaryFeaturePages++;
+    }
+    ensureProfileFeatureLaunch(pagePath, profile, feature);
   }
   let html = fs.readFileSync(indexPath, 'utf8');
   if (!html.includes('data-primary-profile-nav-sync')) {
