@@ -100,7 +100,9 @@
     guidedOnboardingId=null;$('#guided-industry-fields').innerHTML='';$('#guided-staff-list').innerHTML='';
     let hasGuidedDraft=false;try{hasGuidedDraft=!!localStorage.getItem(GUIDED_DRAFT_KEY)}catch{}
     if(!hasGuidedDraft){['guided-business-type','guided-owner-name','guided-owner-email','guided-owner-password','guided-owner-confirm','guided-business-name','guided-motto','guided-website','guided-phone','guided-address'].forEach(id=>{const el=$('#'+id);if(el)el.value=''});$('#guided-terms').checked=false;}
-    guidedLoadDraft();if(!$('#guided-industry-fields').children.length)guidedRenderIndustryFields();if(!$('#guided-staff-list').children.length)guidedRenderStaff();
+    guidedLoadDraft();let activeGuidedDraft=false;try{activeGuidedDraft=!!localStorage.getItem(GUIDED_DRAFT_KEY)}catch{}
+    if(!activeGuidedDraft){guidedOnboardingId=null;['guided-business-type','guided-owner-name','guided-owner-email','guided-owner-password','guided-owner-confirm','guided-business-name','guided-motto','guided-website','guided-phone','guided-address'].forEach(id=>{const el=$('#'+id);if(el)el.value=''});$('#guided-terms').checked=false;$('#guided-industry-fields').innerHTML='';$('#guided-staff-list').innerHTML='';}
+    if(!$('#guided-industry-fields').children.length)guidedRenderIndustryFields();if(!$('#guided-staff-list').children.length)guidedRenderStaff();
   }
   function guidedBackToWelcome(){showScreen('welcome-screen');startWelcomeAutoplay()}
   function guidedSlug(v){return String(v||'business').toLowerCase().replace(/sacco savings group/g,'sacco-savings-group').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,100)||'business'}
