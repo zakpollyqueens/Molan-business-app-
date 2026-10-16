@@ -40,7 +40,7 @@
       "route": "sacco-elections"
     },
     {
-      "title": "Member reviews, elections & term history",
+      "title": "Member reviews & term history",
       "route": "sacco-reviews"
     },
     {
