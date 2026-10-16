@@ -93,3 +93,11 @@ body[data-profile-theme="community"] .profile-detail-hero{background-image:radia
 .download-menu-panel .public-download-card small{min-height:0}
 .download-menu-panel .public-download-footnote{font-size:10px}
 @media(max-width:460px){.download-menu-panel{padding:15px}.download-menu-panel .public-download-grid{grid-template-columns:1fr}.download-menu-panel .public-downloads-heading h2{font-size:22px}.download-menu-panel .public-download-card{display:grid;grid-template-columns:38px minmax(0,1fr);column-gap:10px;align-items:center}.download-menu-panel .public-download-icon{grid-row:span 3}.download-menu-panel .public-download-card strong,.download-menu-panel .public-download-card small,.download-menu-panel .public-download-card>b{grid-column:2}.download-menu-panel .public-download-card small{min-height:0}}
+
+
+/* Improve contrast on profile heroes, titles and supporting copy. */
+.profile-detail-hero h1,.profile-detail-hero h2,.profile-detail-hero h3{color:#fff;font-weight:850;text-shadow:0 1px 2px rgba(0,0,0,.22)}
+.profile-detail-hero p,.profile-detail-hero .muted,.profile-detail-hero small{color:#e0efff}
+.profile-detail-hero label{color:#f2f8ff;font-weight:750}
+.profile-detail-hero input::placeholder,.profile-detail-hero textarea::placeholder{color:#d0deef;opacity:1}
+.profile-detail-hero table th,.profile-detail-hero thead th{background:#16365d;color:#fff;font-weight:800;border-bottom:2px solid #4b789f}
