@@ -2,11 +2,16 @@
   "schemaVersion": 1,
   "index": 25,
   "slug": "savings-circle-village-savings-group",
-  "name": "Consolidated savings-group profile",
-  "plural": "Consolidated savings-group profiles",
-  "description": "This legacy category has been consolidated into the single SACCO Savings Group profile.",
+  "name": "Savings group legacy redirect",
+  "plural": "Savings group legacy redirects",
+  "description": "Legacy profile retired from the catalogue; savings-group workflows now live only in SACCO Savings Group.",
   "icon": "♧",
-  "features": [],
+  "features": [
+    {
+      "title": "Open the consolidated business profile",
+      "route": "industry-profile"
+    }
+  ],
   "settingsRoute": "industry-settings",
   "overviewRoute": "industry-profile",
   "retired": true
