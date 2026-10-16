@@ -13,7 +13,7 @@ const assert = require('node:assert/strict');
     });
     assert(response && response.ok(), 'Published app should return a successful HTTP response');
     await page.waitForSelector('#welcome-screen:not(.hidden)', { timeout: 30000 });
-    await page.waitForSelector('#molan-update-check', { timeout: 10000 });
+    await page.waitForFunction(() => !!document.querySelector('#molan-update-check'), null, { timeout: 10000 });
     assert.equal(await page.locator('#molan-update-check').count(), 1,
       'A persistent global update-check action must be mounted for the workspace shell');
 
