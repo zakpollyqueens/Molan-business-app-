@@ -47,7 +47,7 @@ jobs:
             const config = JSON.parse(fs.readFileSync(`business-profiles/${p.slug}/profile.json`, 'utf8'));
             if (config.slug !== p.slug || !Array.isArray(config.features) || !config.features.length) throw new Error('Invalid profile config: ' + p.slug);
             for (const f of config.features) {
-              const page = `business-profiles/${p.slug}/pages/${String(f.title).toLowerCase().normalize('NFKD').replace(/[^a-z0-9\\s-]/g, '').trim().replace(/[\\s_]+/g, '-').replace(/-+/g, '-')}/index.html`;
+              const page = `business-profiles/${p.slug}/pages/${String(f.title).toLowerCase().normalize('NFKD').replace(/[^a-z0-9\s-]/g, '').trim().replace(/[\s_]+/g, '-').replace(/-+/g, '-')}/index.html`;
               if (!fs.existsSync(page)) throw new Error('Missing feature page: ' + page);
             }
           }
