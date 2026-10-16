@@ -47,7 +47,7 @@ jobs:
             const ownedScript = 'business-profiles/' + folder.name + '/profile.js';
             if (!fs.existsSync(ownedScript)) throw new Error('Missing profile-specific loader/runtime: ' + ownedScript);
             const ownedJs = fs.readFileSync(ownedScript, 'utf8');
-            if (!/fetch\((['"])profile\.json\1/.test(ownedJs)) throw new Error('Profile-specific loader must load its folder-specific profile.json: ' + ownedScript);
+            if (!/fetch\((['"])profile\.json\1/.test(ownedJs) && !ownedJs.includes('profile-feature-manifest')) throw new Error('Profile-specific loader must load profile.json or use its embedded feature manifest: ' + ownedScript);
             if (!ownedJs.includes('MolanProfileRuntime') || !ownedJs.includes('openFeature')) throw new Error('Profile-specific loader must integrate with the shared runtime bridge: ' + ownedScript);
             if (profileNames.has(profile.name)) throw new Error('Duplicate profile name: ' + profile.name);
             profileNames.add(profile.name);
