@@ -134,6 +134,9 @@ using (
   )
 );
 
+-- Add a composite uniqueness key so recordings can enforce company/camera tenant matching.
+create unique index if not exists business_cameras_company_id_id_uidx on public.business_cameras(company_id, id);
+
 -- Recordings are metadata pointers to objects in a PRIVATE storage bucket.
 -- Never store camera credentials or expose permanent public playback URLs here.
 create table if not exists public.business_camera_recordings (
