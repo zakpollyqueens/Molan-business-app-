@@ -16610,10 +16610,10 @@
     },
     {
       "schemaVersion": 1,
-      "slug": "solar-retail-business-business",
-      "name": "Solar retail business business",
-      "plural": "Solar retail business business",
-      "description": "Solar retail business business: installations, service calls, assets and billing. Manage solar retail business workflows in a dedicated business workspace.",
+      "slug": "solar-retail-business",
+      "name": "Solar retail business",
+      "plural": "Solar retail business",
+      "description": "Solar retail business: installations, service calls, assets and billing. Manage solar retail business workflows in a dedicated business workspace.",
       "icon": "⚡",
       "group": "Energy & utilities",
       "features": [
@@ -16702,10 +16702,10 @@
     },
     {
       "schemaVersion": 1,
-      "slug": "battery-distribution-business-business",
-      "name": "Battery distribution business business",
-      "plural": "Battery distribution business business",
-      "description": "Battery distribution business business: installations, service calls, assets and billing. Manage battery distribution business workflows in a dedicated business workspace.",
+      "slug": "battery-distribution-business",
+      "name": "Battery distribution business",
+      "plural": "Battery distribution business",
+      "description": "Battery distribution business: installations, service calls, assets and billing. Manage battery distribution business workflows in a dedicated business workspace.",
       "icon": "⚡",
       "group": "Energy & utilities",
       "features": [
@@ -17254,10 +17254,10 @@
     },
     {
       "schemaVersion": 1,
-      "slug": "water-purification-business-business",
-      "name": "Water purification business business",
-      "plural": "Water purification business business",
-      "description": "Water purification business business: installations, service calls, assets and billing. Manage water purification business workflows in a dedicated business workspace.",
+      "slug": "water-purification-business",
+      "name": "Water purification business",
+      "plural": "Water purification business",
+      "description": "Water purification business: installations, service calls, assets and billing. Manage water purification business workflows in a dedicated business workspace.",
       "icon": "⚡",
       "group": "Energy & utilities",
       "features": [
@@ -19738,10 +19738,10 @@
     },
     {
       "schemaVersion": 1,
-      "slug": "car-import-business-business",
-      "name": "Car import business business",
-      "plural": "Car import business business",
-      "description": "Car import business business: vehicle inventory, parts, work orders and customer records. Manage car import business workflows in a dedicated business workspace.",
+      "slug": "car-import-business",
+      "name": "Car import business",
+      "plural": "Car import business",
+      "description": "Car import business: vehicle inventory, parts, work orders and customer records. Manage car import business workflows in a dedicated business workspace.",
       "icon": "⌁",
       "group": "Automotive & parts",
       "features": [
@@ -19784,10 +19784,10 @@
     },
     {
       "schemaVersion": 1,
-      "slug": "vehicle-auction-business-business",
-      "name": "Vehicle auction business business",
-      "plural": "Vehicle auction business business",
-      "description": "Vehicle auction business business: vehicle inventory, parts, work orders and customer records. Manage vehicle auction business workflows in a dedicated business workspace.",
+      "slug": "vehicle-auction-business",
+      "name": "Vehicle auction business",
+      "plural": "Vehicle auction business",
+      "description": "Vehicle auction business: vehicle inventory, parts, work orders and customer records. Manage vehicle auction business workflows in a dedicated business workspace.",
       "icon": "⌁",
       "group": "Automotive & parts",
       "features": [
@@ -21072,10 +21072,10 @@
     },
     {
       "schemaVersion": 1,
-      "slug": "document-storage-business-business",
-      "name": "Document storage business business",
-      "plural": "Document storage business business",
-      "description": "Document storage business business: cases, appointments, documents, deadlines and fees. Manage document storage business workflows in a dedicated business workspace.",
+      "slug": "document-storage-business",
+      "name": "Document storage business",
+      "plural": "Document storage business",
+      "description": "Document storage business: cases, appointments, documents, deadlines and fees. Manage document storage business workflows in a dedicated business workspace.",
       "icon": "§",
       "group": "Legal, civic & records",
       "features": [
@@ -21624,10 +21624,10 @@
     },
     {
       "schemaVersion": 1,
-      "slug": "forestry-management-business-business",
-      "name": "Forestry management business business",
-      "plural": "Forestry management business business",
-      "description": "Forestry management business business: projects, samples, fieldwork, compliance and findings. Manage forestry management business workflows in a dedicated business workspace.",
+      "slug": "forestry-management-business",
+      "name": "Forestry management business",
+      "plural": "Forestry management business",
+      "description": "Forestry management business: projects, samples, fieldwork, compliance and findings. Manage forestry management business workflows in a dedicated business workspace.",
       "icon": "⌕",
       "group": "Science & environment",
       "features": [
@@ -22222,10 +22222,10 @@
     },
     {
       "schemaVersion": 1,
-      "slug": "self-storage-business-business",
-      "name": "Self-storage business business",
-      "plural": "Self-storage business business",
-      "description": "Self-storage business business: bookings, service jobs, customers and payment records. Manage self-storage business workflows in a dedicated business workspace.",
+      "slug": "self-storage-business",
+      "name": "Self-storage business",
+      "plural": "Self-storage business",
+      "description": "Self-storage business: bookings, service jobs, customers and payment records. Manage self-storage business workflows in a dedicated business workspace.",
       "icon": "✧",
       "group": "Specialty & local services",
       "features": [
