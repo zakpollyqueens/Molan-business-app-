@@ -735,7 +735,7 @@ const entries=Object.entries(metadata).filter(([,v])=>v!==null&&v!==undefined&&S
 if(!entries.length)return '';
 return '<small class="operation-metadata-summary">'+entries.map(([key,value])=>'<span><b>'+esc(nice(key))+':</b> '+esc(typeof value==='object'?JSON.stringify(value):String(value))+'</span>').join(' · ')+'</small>';
 }
-function renderIndustryProfile(el,settings=false){
+async function renderIndustryProfile(el,settings=false){
 const profile=selectedIndustryProfile||businessProfileCatalog().find(p=>p[0]===company?.business_category)||businessProfileCatalog()[0],features=industryProfileFeatures(profile);
 const sameType=String(company?.business_category||'').toLowerCase()===String(profile[0]).toLowerCase();
 if(settings){
@@ -756,24 +756,39 @@ if(!sameType){
  '<section class="panel"><div class="panel-head"><div><h3>Features for '+esc(title)+'</h3><p>These tools are selected for this business type. Workspace data is kept separate from other businesses.</p></div></div><div class="profile-detail-grid">'+features.map(f=>'<button class="industry-feature-card" data-page="'+esc(f[3])+'"><span class="industry-feature-icon">'+f[0]+'</span><strong>'+esc(f[1])+'</strong><p>'+esc(f[2])+'</p><b>Open feature →</b></button>').join('')+'</div></section>';
  return;
 }
+let circleMembers=[],circleSavings=[],circleWithdrawals=[];
+if(sameType&&isSavingsCircleProfile(profile)){
+ try{
+  const [membersResult,savingsResult,withdrawalsResult]=await Promise.all([
+   supabase.from('sacco_members').select('id,status').eq('company_id',company.id).limit(1000),
+   supabase.from('sacco_savings_entries').select('id,entry_type,amount,status,transaction_date,submitted_at,created_at').eq('company_id',company.id).order('transaction_date',{ascending:true}).limit(1000),
+   supabase.from('sacco_withdrawal_requests').select('id,status').eq('company_id',company.id).limit(1000)
+  ]);
+  if(!membersResult.error)circleMembers=membersResult.data||[];
+  if(!savingsResult.error)circleSavings=savingsResult.data||[];
+  if(!withdrawalsResult.error)circleWithdrawals=withdrawalsResult.data||[];
+ }catch(error){console.warn('[Molan Business] Could not load savings-circle overview data:',error?.message||error)}
+}
 const openTasks=(cache.tasks||[]).filter(t=>!['done','cancelled'].includes(String(t.status||'').toLowerCase()));
 const isSchool=/school|college|training|education|academy/.test(name);
 const isIT=/ict|software|information technology|technology|computer/.test(name);
 const isCircle=/circle|cooperative|investment group|association|club/.test(name);
 const isFarm=/farm|agri|poultry|fish|livestock|orchard|dairy|crop|horticulture/.test(name);
-const activitySource=isSchool?[...(cache.schoolClasses||[]),...(cache.schoolLearners||[]),...(cache.schoolAssessments||[]),...(cache.schoolFees||[])]:[...(cache.tasks||[]),...(cache.operations||[]),...(cache.sales||[]),...(cache.finance||[])];
+const activitySource=isSavingsCircleProfile(profile)?circleSavings.filter(entry=>entry.entry_type==='deposit'&&entry.status==='confirmed').map(entry=>({...entry,created_at:entry.transaction_date||entry.submitted_at||entry.created_at})):isSchool?[...(cache.schoolClasses||[]),...(cache.schoolLearners||[]),...(cache.schoolAssessments||[]),...(cache.schoolFees||[])]:[...(cache.tasks||[]),...(cache.operations||[]),...(cache.sales||[]),...(cache.finance||[])];
 const now=new Date();
 const buckets=Array.from({length:6},(_,i)=>{const d=new Date(now.getFullYear(),now.getMonth()-(5-i),1);return {year:d.getFullYear(),month:d.getMonth(),label:d.toLocaleDateString(undefined,{month:'short'}),count:0}});
-activitySource.forEach(item=>{const raw=item.created_at||item.updated_at||item.event_date||item.transaction_date||item.assessment_date||item.due_date||item.submitted_at||item.sale_date;if(!raw)return;const d=new Date(raw);if(Number.isNaN(d.getTime()))return;const b=buckets.find(x=>x.year===d.getFullYear()&&x.month===d.getMonth());if(b)b.count++});
+activitySource.forEach(item=>{const raw=item.created_at||item.updated_at||item.event_date||item.transaction_date||item.assessment_date||item.due_date||item.submitted_at||item.sale_date;if(!raw)return;const d=new Date(raw);if(Number.isNaN(d.getTime()))return;const b=buckets.find(x=>x.year===d.getFullYear()&&x.month===d.getMonth());if(b)b.count+=isSavingsCircleProfile(profile)?Number(item.amount||0):1});
 const maxActivity=Math.max(1,...buckets.map(b=>b.count));
-const graphLabel=isSchool?'School records by month':slug==='sacco-savings-group'?'Workspace activity by month':isIT?'IT delivery activity by month':'Business activity by month';
+const graphLabel=isSavingsCircleProfile(profile)?'Confirmed savings contributions (UGX) by month':isSchool?'School records by month':isIT?'IT delivery activity by month':'Business activity by month';
 let metrics;
 if(isSchool){
  metrics=[stat('Classes & streams',(cache.schoolClasses||[]).length,'▦','School structure'),stat('Learners',(cache.schoolLearners||[]).length,'♙','Registered learner records'),stat('Assessments',(cache.schoolAssessments||[]).length,'▤','Assessment records'),stat('Fee entries',(cache.schoolFees||[]).length,'＝','School fee ledger')];
 }else if(isIT){
  metrics=[stat('Open tasks',openTasks.length,'✓','Work needing attention'),stat('Projects & operations',(cache.operations||[]).length,'⌘','Delivery and operations records'),stat('Products & releases',(cache.products||[]).length,'◈','Tracked products'),stat('Clients & contacts',(cache.customers||[]).length,'♙','Customer records')];
-}else if(slug==='sacco-savings-group'){
- metrics=[stat('Group member tools','Ready','♧','Member accounts and savings ledger'),stat('Savings approvals','Ready','✓','Review submitted contributions'),stat('Withdrawals','Ready','↗','Approval and payment workflow'),stat('Welfare account','Ready','♡','Separate welfare records')];
+}else if(isSavingsCircleProfile(profile)){
+ const confirmed=circleSavings.filter(entry=>entry.entry_type==='deposit'&&entry.status==='confirmed').reduce((sum,entry)=>sum+Number(entry.amount||0),0);
+ const pending=circleSavings.filter(entry=>entry.status==='pending').length;
+ metrics=[stat('Registered members',circleMembers.length,'♙','Member accounts in this circle'),stat('Confirmed savings',ugx(confirmed),'＝','Approved deposits only'),stat('Pending approvals',pending,'✓','Contributions awaiting chairperson review'),stat('Withdrawal requests',circleWithdrawals.length,'↗','Requests recorded for review')];
 }else if(isCircle){
  metrics=[stat('Group operations',(cache.operations||[]).length,'♧','Group activity records'),stat('Member contacts',(cache.customers||[]).length,'♙','Member directory records'),stat('Open tasks',openTasks.length,'✓','Meetings and follow-up'),stat('Finance records',(cache.finance||[]).length,'＝','Contribution and expense records')];
 }else if(isFarm){
@@ -781,11 +796,11 @@ if(isSchool){
 }else{
  metrics=[stat('Open tasks',openTasks.length,'✓','Work needing attention'),stat('Operations',(cache.operations||[]).length,'◈','Business activity records'),stat('Customers & members',(cache.customers||[]).length,'♙','Contact records'),stat('Finance records',(cache.finance||[]).length,'＝','Income and expense entries')];
 }
-const bars='<div class="profile-bar-chart" role="img" aria-label="'+esc(graphLabel)+'">'+buckets.map(b=>'<div class="profile-bar-column"><strong>'+b.count+'</strong><div class="profile-bar-track"><span style="height:'+Math.max(b.count?8:2,Math.round(b.count/maxActivity*100))+'%"></span></div><small>'+esc(b.label)+'</small></div>').join('')+'</div>';
+const bars='<div class="profile-bar-chart" role="img" aria-label="'+esc(graphLabel)+'">'+buckets.map(b=>'<div class="profile-bar-column"><strong>'+Math.round(b.count).toLocaleString()+'</strong><div class="profile-bar-track"><span style="height:'+Math.max(b.count?8:2,Math.round(b.count/maxActivity*100))+'%"></span></div><small>'+esc(b.label)+'</small></div>').join('')+'</div>';
 el.innerHTML=head(esc(title)+' overview','Your '+esc(title)+' dashboard, business-specific tools and recent activity.','<button class="button secondary" data-page="industry-settings">⚙ Business settings</button><button class="button secondary" data-page="business-profile">Edit business profile</button>')+
  '<section class="profile-detail-hero"><div class="profile-detail-symbol">'+profile[3]+'</div><div><span class="section-kicker">'+esc(title.toUpperCase())+' WORKSPACE</span><h2>'+esc(company.name)+'</h2><p>'+esc(profile[2])+'</p><span class="profile-state">Records and settings are scoped to this business workspace</span></div></section>'+
  '<div class="stats-grid">'+metrics.join('')+'</div>'+
- '<section class="panel"><div class="panel-head"><div><span class="section-kicker">ACTIVITY TRENDS</span><h3>'+esc(graphLabel)+'</h3><p>Monthly records available to this workspace. Empty months remain visible so trends are easy to compare.</p></div><button class="button secondary small" data-page="reports">Open reports →</button></div>'+bars+'</section>'+
+ '<section class="panel"><div class="panel-head"><div><span class="section-kicker">ACTIVITY TRENDS</span><h3>'+esc(graphLabel)+'</h3><p>'+ (isSavingsCircleProfile(profile)?'Confirmed deposits are grouped by the actual transaction date; pending submissions are shown separately.':'Monthly records available to this workspace. Empty months remain visible so trends are easy to compare.') +'</p></div><button class="button secondary small" data-page="reports">Open reports →</button></div>'+bars+'</section>'+
  '<section class="panel"><div class="panel-head"><div><span class="section-kicker">PROFILE-SPECIFIC TOOLS</span><h3>Manage '+esc(title.toLowerCase())+'</h3><p>Each card opens its relevant workspace module. Features from unrelated business types are not inserted into this profile menu.</p></div></div><div class="profile-detail-grid">'+features.map(f=>'<button class="industry-feature-card" data-page="'+esc(f[3])+'"><span class="industry-feature-icon">'+f[0]+'</span><strong>'+esc(f[1])+'</strong><p>'+esc(f[2])+'</p><b>Open feature →</b></button>').join('')+'</div></section>'+
  '<section class="panel"><div class="panel-head"><div><h3>Quick actions</h3><p>Start the next important task for this business.</p></div></div><div class="quick-actions">'+features.slice(0,4).map(f=>'<button class="quick-action" data-page="'+esc(f[3])+'"><span>'+f[0]+'</span><strong>'+esc(f[1])+'</strong><small>'+esc(f[2])+'</small></button>').join('')+'</div></section>';
 }
