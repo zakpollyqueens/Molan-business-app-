@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "profile": "cooperative",
+  "name": "Cooperative",
+  "features": [
+    {
+      "title": "Savings & member accounts",
+      "route": "sacco",
+      "id": "cooperative-1",
+      "page": "pages/feature-savings-member-accounts/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Finance ledger",
+      "route": "finance",
+      "id": "cooperative-2",
+      "page": "pages/feature-finance-ledger/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Members",
+      "route": "customers",
+      "id": "cooperative-3",
+      "page": "pages/feature-members/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Reports",
+      "route": "reports",
+      "id": "cooperative-4",
+      "page": "pages/feature-reports/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Tasks & deadlines",
+      "route": "tasks",
+      "id": "cooperative-5",
+      "page": "pages/feature-tasks-deadlines/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Operations register",
+      "route": "operations",
+      "id": "cooperative-6",
+      "page": "pages/feature-operations-register/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Team & permissions",
+      "route": "team",
+      "id": "cooperative-7",
+      "page": "pages/feature-team-permissions/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Announcements",
+      "route": "announcements",
+      "id": "cooperative-8",
+      "page": "pages/feature-announcements/index.html",
+      "status": "runtime-integration-required"
+    }
+  ]
+}

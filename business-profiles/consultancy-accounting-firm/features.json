@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "profile": "consultancy-accounting-firm",
+  "name": "Consultancy / accounting firm",
+  "features": [
+    {
+      "title": "Appointments & service delivery",
+      "route": "business-tools",
+      "id": "consultancy-accounting-firm-1",
+      "page": "pages/feature-appointments-service-delivery/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Projects & operations",
+      "route": "operations",
+      "id": "consultancy-accounting-firm-2",
+      "page": "pages/feature-projects-operations/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Website & media",
+      "route": "website-studio",
+      "id": "consultancy-accounting-firm-3",
+      "page": "pages/feature-website-media/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Tasks & deadlines",
+      "route": "tasks",
+      "id": "consultancy-accounting-firm-4",
+      "page": "pages/feature-tasks-deadlines/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Customers / members",
+      "route": "customers",
+      "id": "consultancy-accounting-firm-5",
+      "page": "pages/feature-customers-members/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Finance & expenses",
+      "route": "finance",
+      "id": "consultancy-accounting-firm-6",
+      "page": "pages/feature-finance-expenses/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports",
+      "id": "consultancy-accounting-firm-7",
+      "page": "pages/feature-reports-insights/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Team & permissions",
+      "route": "team",
+      "id": "consultancy-accounting-firm-8",
+      "page": "pages/feature-team-permissions/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Announcements",
+      "route": "announcements",
+      "id": "consultancy-accounting-firm-9",
+      "page": "pages/feature-announcements/index.html",
+      "status": "runtime-integration-required"
+    }
+  ]
+}
