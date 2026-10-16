@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 530,
+  "slug": "environmental-education-centre-business",
+  "name": "Environmental education centre business",
+  "plural": "Environmental education centre business",
+  "description": "Environmental education centre business: projects, samples, fieldwork, compliance and findings. Manage environmental education centre workflows in a dedicated business workspace.",
+  "icon": "⌕",
+  "group": "Science & environment",
+  "extended": true,
+  "features": [
+    {
+      "title": "Projects & fieldwork",
+      "route": "operations"
+    },
+    {
+      "title": "Samples & equipment",
+      "route": "inventory"
+    },
+    {
+      "title": "Clients & partners",
+      "route": "customers"
+    },
+    {
+      "title": "Inspections & tasks",
+      "route": "tasks"
+    },
+    {
+      "title": "Project funding & costs",
+      "route": "finance"
+    },
+    {
+      "title": "Research team",
+      "route": "team"
+    },
+    {
+      "title": "Reports & documentation",
+      "route": "website-studio"
+    },
+    {
+      "title": "Findings & metrics",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 547,
+  "slug": "temporary-staffing-agency-business",
+  "name": "Temporary staffing agency business",
+  "plural": "Temporary staffing agency business",
+  "description": "Temporary staffing agency business: bookings, service jobs, customers and payment records. Manage temporary staffing agency workflows in a dedicated business workspace.",
+  "icon": "✧",
+  "group": "Specialty & local services",
+  "extended": true,
+  "features": [
+    {
+      "title": "Service jobs & bookings",
+      "route": "operations"
+    },
+    {
+      "title": "Tools & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Customer directory",
+      "route": "customers"
+    },
+    {
+      "title": "Tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Quotes & payments",
+      "route": "finance"
+    },
+    {
+      "title": "Team & assignments",
+      "route": "team"
+    },
+    {
+      "title": "Service information",
+      "route": "website-studio"
+    },
+    {
+      "title": "Performance reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

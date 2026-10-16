@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 483,
+  "slug": "commercial-vehicle-sales-business",
+  "name": "Commercial vehicle sales business",
+  "plural": "Commercial vehicle sales business",
+  "description": "Commercial vehicle sales business: vehicle inventory, parts, work orders and customer records. Manage commercial vehicle sales workflows in a dedicated business workspace.",
+  "icon": "⌁",
+  "group": "Automotive & parts",
+  "extended": true,
+  "features": [
+    {
+      "title": "Vehicle / parts catalogue",
+      "route": "products"
+    },
+    {
+      "title": "Stock & parts inventory",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & service orders",
+      "route": "sales"
+    },
+    {
+      "title": "Customers & vehicle records",
+      "route": "customers"
+    },
+    {
+      "title": "Workshop operations",
+      "route": "operations"
+    },
+    {
+      "title": "Technician tasks",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & expenses",
+      "route": "finance"
+    },
+    {
+      "title": "Sales & service reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

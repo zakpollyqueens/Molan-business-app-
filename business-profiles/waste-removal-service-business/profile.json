@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 531,
+  "slug": "waste-removal-service-business",
+  "name": "Waste removal service business",
+  "plural": "Waste removal service business",
+  "description": "Waste removal service business: bookings, service jobs, customers and payment records. Manage waste removal service workflows in a dedicated business workspace.",
+  "icon": "✧",
+  "group": "Specialty & local services",
+  "extended": true,
+  "features": [
+    {
+      "title": "Service jobs & bookings",
+      "route": "operations"
+    },
+    {
+      "title": "Tools & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Customer directory",
+      "route": "customers"
+    },
+    {
+      "title": "Tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Quotes & payments",
+      "route": "finance"
+    },
+    {
+      "title": "Team & assignments",
+      "route": "team"
+    },
+    {
+      "title": "Service information",
+      "route": "website-studio"
+    },
+    {
+      "title": "Performance reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

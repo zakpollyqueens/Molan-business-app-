@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 535,
+  "slug": "security-equipment-shop-business",
+  "name": "Security equipment shop business",
+  "plural": "Security equipment shop business",
+  "description": "Security equipment shop business: bookings, service jobs, customers and payment records. Manage security equipment shop workflows in a dedicated business workspace.",
+  "icon": "✧",
+  "group": "Specialty & local services",
+  "extended": true,
+  "features": [
+    {
+      "title": "Service jobs & bookings",
+      "route": "operations"
+    },
+    {
+      "title": "Tools & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Customer directory",
+      "route": "customers"
+    },
+    {
+      "title": "Tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Quotes & payments",
+      "route": "finance"
+    },
+    {
+      "title": "Team & assignments",
+      "route": "team"
+    },
+    {
+      "title": "Service information",
+      "route": "website-studio"
+    },
+    {
+      "title": "Performance reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

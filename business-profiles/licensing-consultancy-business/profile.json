@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 497,
+  "slug": "licensing-consultancy-business",
+  "name": "Licensing consultancy business",
+  "plural": "Licensing consultancy business",
+  "description": "Licensing consultancy business: cases, appointments, documents, deadlines and fees. Manage licensing consultancy workflows in a dedicated business workspace.",
+  "icon": "§",
+  "group": "Legal, civic & records",
+  "extended": true,
+  "features": [
+    {
+      "title": "Client / case directory",
+      "route": "customers"
+    },
+    {
+      "title": "Cases & appointments",
+      "route": "operations"
+    },
+    {
+      "title": "Documents & records",
+      "route": "website-studio"
+    },
+    {
+      "title": "Deadlines & tasks",
+      "route": "tasks"
+    },
+    {
+      "title": "Fees & finance",
+      "route": "finance"
+    },
+    {
+      "title": "Staff permissions",
+      "route": "team"
+    },
+    {
+      "title": "Client notifications",
+      "route": "announcements"
+    },
+    {
+      "title": "Case reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

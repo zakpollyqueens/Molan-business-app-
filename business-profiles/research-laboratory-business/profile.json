@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 515,
+  "slug": "research-laboratory-business",
+  "name": "Research laboratory business",
+  "plural": "Research laboratory business",
+  "description": "Research laboratory business: projects, samples, fieldwork, compliance and findings. Manage research laboratory workflows in a dedicated business workspace.",
+  "icon": "⌕",
+  "group": "Science & environment",
+  "extended": true,
+  "features": [
+    {
+      "title": "Projects & fieldwork",
+      "route": "operations"
+    },
+    {
+      "title": "Samples & equipment",
+      "route": "inventory"
+    },
+    {
+      "title": "Clients & partners",
+      "route": "customers"
+    },
+    {
+      "title": "Inspections & tasks",
+      "route": "tasks"
+    },
+    {
+      "title": "Project funding & costs",
+      "route": "finance"
+    },
+    {
+      "title": "Research team",
+      "route": "team"
+    },
+    {
+      "title": "Reports & documentation",
+      "route": "website-studio"
+    },
+    {
+      "title": "Findings & metrics",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

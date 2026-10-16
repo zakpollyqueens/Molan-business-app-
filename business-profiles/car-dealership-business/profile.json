@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 471,
+  "slug": "car-dealership-business",
+  "name": "Car dealership business",
+  "plural": "Car dealership business",
+  "description": "Car dealership business: vehicle inventory, parts, work orders and customer records. Manage car dealership workflows in a dedicated business workspace.",
+  "icon": "⌁",
+  "group": "Automotive & parts",
+  "extended": true,
+  "features": [
+    {
+      "title": "Vehicle / parts catalogue",
+      "route": "products"
+    },
+    {
+      "title": "Stock & parts inventory",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & service orders",
+      "route": "sales"
+    },
+    {
+      "title": "Customers & vehicle records",
+      "route": "customers"
+    },
+    {
+      "title": "Workshop operations",
+      "route": "operations"
+    },
+    {
+      "title": "Technician tasks",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & expenses",
+      "route": "finance"
+    },
+    {
+      "title": "Sales & service reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

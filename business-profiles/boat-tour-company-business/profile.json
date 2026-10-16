@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 466,
+  "slug": "boat-tour-company-business",
+  "name": "Boat tour company business",
+  "plural": "Boat tour company business",
+  "description": "Boat tour company business: members, bookings, equipment, coaching and events. Manage boat tour company workflows in a dedicated business workspace.",
+  "icon": "⚽",
+  "group": "Sports & recreation",
+  "extended": true,
+  "features": [
+    {
+      "title": "Members & participants",
+      "route": "customers"
+    },
+    {
+      "title": "Bookings & events",
+      "route": "operations"
+    },
+    {
+      "title": "Equipment inventory",
+      "route": "inventory"
+    },
+    {
+      "title": "Training schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Fees & finance",
+      "route": "finance"
+    },
+    {
+      "title": "Coaches & staff",
+      "route": "team"
+    },
+    {
+      "title": "Announcements",
+      "route": "announcements"
+    },
+    {
+      "title": "Participation reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 499,
+  "slug": "document-translation-bureau-business",
+  "name": "Document translation bureau business",
+  "plural": "Document translation bureau business",
+  "description": "Document translation bureau business: cases, appointments, documents, deadlines and fees. Manage document translation bureau workflows in a dedicated business workspace.",
+  "icon": "§",
+  "group": "Legal, civic & records",
+  "extended": true,
+  "features": [
+    {
+      "title": "Client / case directory",
+      "route": "customers"
+    },
+    {
+      "title": "Cases & appointments",
+      "route": "operations"
+    },
+    {
+      "title": "Documents & records",
+      "route": "website-studio"
+    },
+    {
+      "title": "Deadlines & tasks",
+      "route": "tasks"
+    },
+    {
+      "title": "Fees & finance",
+      "route": "finance"
+    },
+    {
+      "title": "Staff permissions",
+      "route": "team"
+    },
+    {
+      "title": "Client notifications",
+      "route": "announcements"
+    },
+    {
+      "title": "Case reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

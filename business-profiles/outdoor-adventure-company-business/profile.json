@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 463,
+  "slug": "outdoor-adventure-company-business",
+  "name": "Outdoor adventure company business",
+  "plural": "Outdoor adventure company business",
+  "description": "Outdoor adventure company business: members, bookings, equipment, coaching and events. Manage outdoor adventure company workflows in a dedicated business workspace.",
+  "icon": "⚽",
+  "group": "Sports & recreation",
+  "extended": true,
+  "features": [
+    {
+      "title": "Members & participants",
+      "route": "customers"
+    },
+    {
+      "title": "Bookings & events",
+      "route": "operations"
+    },
+    {
+      "title": "Equipment inventory",
+      "route": "inventory"
+    },
+    {
+      "title": "Training schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Fees & finance",
+      "route": "finance"
+    },
+    {
+      "title": "Coaches & staff",
+      "route": "team"
+    },
+    {
+      "title": "Announcements",
+      "route": "announcements"
+    },
+    {
+      "title": "Participation reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

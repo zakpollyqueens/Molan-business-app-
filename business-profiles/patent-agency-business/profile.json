@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 505,
+  "slug": "patent-agency-business",
+  "name": "Patent agency business",
+  "plural": "Patent agency business",
+  "description": "Patent agency business: cases, appointments, documents, deadlines and fees. Manage patent agency workflows in a dedicated business workspace.",
+  "icon": "§",
+  "group": "Legal, civic & records",
+  "extended": true,
+  "features": [
+    {
+      "title": "Client / case directory",
+      "route": "customers"
+    },
+    {
+      "title": "Cases & appointments",
+      "route": "operations"
+    },
+    {
+      "title": "Documents & records",
+      "route": "website-studio"
+    },
+    {
+      "title": "Deadlines & tasks",
+      "route": "tasks"
+    },
+    {
+      "title": "Fees & finance",
+      "route": "finance"
+    },
+    {
+      "title": "Staff permissions",
+      "route": "team"
+    },
+    {
+      "title": "Client notifications",
+      "route": "announcements"
+    },
+    {
+      "title": "Case reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 532,
+  "slug": "moving-company-business",
+  "name": "Moving company business",
+  "plural": "Moving company business",
+  "description": "Moving company business: bookings, service jobs, customers and payment records. Manage moving company workflows in a dedicated business workspace.",
+  "icon": "✧",
+  "group": "Specialty & local services",
+  "extended": true,
+  "features": [
+    {
+      "title": "Service jobs & bookings",
+      "route": "operations"
+    },
+    {
+      "title": "Tools & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Customer directory",
+      "route": "customers"
+    },
+    {
+      "title": "Tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Quotes & payments",
+      "route": "finance"
+    },
+    {
+      "title": "Team & assignments",
+      "route": "team"
+    },
+    {
+      "title": "Service information",
+      "route": "website-studio"
+    },
+    {
+      "title": "Performance reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}
