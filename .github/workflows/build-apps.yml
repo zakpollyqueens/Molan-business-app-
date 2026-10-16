@@ -17,19 +17,15 @@ jobs:
     name: Build Android APK
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Set up Java
-        uses: actions/setup-java@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
-      - name: Install build dependencies
-        run: npm install
+      - run: npm install
       - name: Prepare web app and generate Android project
         run: |
           npm run prepare:web
@@ -39,13 +35,12 @@ jobs:
       - name: Build debug APK
         working-directory: android
         run: ./gradlew --no-daemon assembleDebug
-      - name: Verify APK and report size
+      - name: Verify APK
         run: |
           test -s android/app/build/outputs/apk/debug/app-debug.apk
           ls -lh android/app/build/outputs/apk/debug/app-debug.apk
           sha256sum android/app/build/outputs/apk/debug/app-debug.apk
-      - name: Upload Android APK
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: molan-business-android-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
@@ -56,65 +51,123 @@ jobs:
     name: Build Windows desktop installer
     runs-on: windows-latest
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Install dependencies
-        run: npm install
-      - name: Build Windows installer
-        run: npm run build:windows
-      - name: Verify installer and report size
+      - run: npm install
+      - run: npm run build:windows
+      - name: Verify Windows installer
         shell: pwsh
         run: |
           $installer = Get-ChildItem dist/desktop -Filter *.exe | Select-Object -First 1
           if (-not $installer) { throw 'Windows installer was not generated.' }
-          $sizeMB = [math]::Round($installer.Length / 1MB, 2)
-          Write-Output "Installer: $($installer.FullName)"
-          Write-Output "Size: $sizeMB MB"
+          Write-Output "Size MB: $([math]::Round($installer.Length / 1MB, 2))"
           Get-FileHash $installer.FullName -Algorithm SHA256
-      - name: Upload Windows installer
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: molan-business-windows-installer
           path: dist/desktop/*.exe
           if-no-files-found: error
           retention-days: 30
 
+  macos-desktop:
+    name: Build macOS installers (Intel and Apple Silicon)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm run build:macos
+      - name: Verify macOS installers and report sizes
+        shell: bash
+        run: |
+          shopt -s nullglob
+          files=(dist/desktop/*.dmg dist/desktop/*.zip)
+          test "${#files[@]}" -gt 0 || { echo "No macOS installer was generated"; exit 1; }
+          ls -lh "${files[@]}"
+          shasum -a 256 "${files[@]}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: molan-business-macos-installers
+          path: |
+            dist/desktop/*.dmg
+            dist/desktop/*.zip
+          if-no-files-found: error
+          retention-days: 30
+
+  linux-desktop:
+    name: Build Linux installers
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm run build:linux
+      - name: Verify Linux installers and report sizes
+        run: |
+          shopt -s nullglob
+          files=(dist/desktop/*.AppImage dist/desktop/*.deb)
+          test "${#files[@]}" -gt 0 || { echo "No Linux installer was generated"; exit 1; }
+          ls -lh "${files[@]}"
+          sha256sum "${files[@]}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: molan-business-linux-installers
+          path: |
+            dist/desktop/*.AppImage
+            dist/desktop/*.deb
+          if-no-files-found: error
+          retention-days: 30
+
   publish-release:
-    name: Publish installable release
+    name: Publish cross-platform release
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [android-apk, windows-desktop]
+    needs: [android-apk, windows-desktop, macos-desktop, linux-desktop]
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - name: Download Android APK artifact
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
           name: molan-business-android-apk
           path: release/android
-      - name: Download Windows installer artifact
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
           name: molan-business-windows-installer
           path: release/windows
-      - name: Prepare stable release filenames
+      - uses: actions/download-artifact@v4
+        with:
+          name: molan-business-macos-installers
+          path: release/macos
+      - uses: actions/download-artifact@v4
+        with:
+          name: molan-business-linux-installers
+          path: release/linux
+      - name: Prepare and verify release assets
         run: |
-          cp release/android/app-debug.apk release/Molan-Business.apk
+          set -euo pipefail
+          mkdir -p release/assets
+          cp release/android/app-debug.apk release/assets/Molan-Business.apk
           installer="$(find release/windows -maxdepth 1 -type f -name '*.exe' | head -n 1)"
           test -n "$installer"
-          cp "$installer" release/Molan-Business-Setup.exe
-          ls -lh release/Molan-Business.apk release/Molan-Business-Setup.exe
-          sha256sum release/Molan-Business.apk release/Molan-Business-Setup.exe
+          cp "$installer" release/assets/Molan-Business-Setup.exe
+          find release/macos -maxdepth 1 -type f \( -name '*.dmg' -o -name '*.zip' \) -exec cp {} release/assets/ \;
+          find release/linux -maxdepth 1 -type f \( -name '*.AppImage' -o -name '*.deb' \) -exec cp {} release/assets/ \;
+          test -s release/assets/Molan-Business.apk
+          test -s release/assets/Molan-Business-Setup.exe
+          compgen -G 'release/assets/*.dmg' >/dev/null
+          compgen -G 'release/assets/*.AppImage' >/dev/null
+          ls -lh release/assets
+          sha256sum release/assets/*
       - name: Publish release assets
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v1.0.${{ github.run_number }}
           name: Molan Business v1.0.${{ github.run_number }}
           generate_release_notes: true
-          files: |
-            release/Molan-Business.apk
-            release/Molan-Business-Setup.exe
+          files: release/assets/*
