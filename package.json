@@ -4,9 +4,10 @@
   "private": true,
   "description": "Molan Business web, Android and Windows desktop app builds",
   "scripts": {
-    "prepare:web": "node scripts/prepare-web.cjs",
+    "prepare:web": "npm run prepare:icons && node scripts/prepare-web.cjs",
     "build:android": "npm run prepare:web && cap sync android",
-    "build:windows": "npm run prepare:web && electron-builder --win nsis --publish never"
+    "build:windows": "npm run prepare:web && electron-builder --win nsis --publish never",
+    "prepare:icons": "node scripts/generate-icons.cjs"
   },
   "dependencies": {
     "@capacitor/core": "6.2.1"
@@ -15,7 +16,9 @@
     "@capacitor/android": "6.2.1",
     "@capacitor/cli": "6.2.1",
     "electron": "35.2.1",
-    "electron-builder": "26.0.12"
+    "electron-builder": "26.0.12",
+    "@capacitor/assets": "^3.0.5",
+    "sharp": "^0.34.4"
   },
   "build": {
     "appId": "com.zakmolanitech.molanbusiness",
