@@ -1,49 +1,77 @@
 {
   "schemaVersion": 1,
   "profile": "retail-shop",
+  "name": "Retail shop",
   "features": [
     {
       "id": "retail-shop-1",
-      "title": "Product catalogue",
-      "route": "products",
-      "action": "open-module",
-      "status": "connected-route-pending-domain-verification"
+      "title": "Inventory & supplies",
+      "route": "inventory",
+      "page": "pages/feature-inventory-supplies/index.html",
+      "status": "runtime-integration-required"
     },
     {
       "id": "retail-shop-2",
-      "title": "Stock & pricing",
-      "route": "inventory",
-      "action": "open-module",
-      "status": "connected-route-pending-domain-verification"
+      "title": "Sales & orders",
+      "route": "sales",
+      "page": "pages/feature-sales-orders/index.html",
+      "status": "runtime-integration-required"
     },
     {
       "id": "retail-shop-3",
-      "title": "Sales register",
-      "route": "sales",
-      "action": "open-module",
-      "status": "connected-route-pending-domain-verification"
+      "title": "Business tools",
+      "route": "business-tools",
+      "page": "pages/feature-business-tools/index.html",
+      "status": "runtime-integration-required"
     },
     {
       "id": "retail-shop-4",
-      "title": "Returns & exchanges",
-      "route": "business-tools",
-      "action": "open-module",
-      "status": "connected-route-pending-domain-verification"
+      "title": "Tasks & deadlines",
+      "route": "tasks",
+      "page": "pages/feature-tasks-deadlines/index.html",
+      "status": "runtime-integration-required"
     },
     {
       "id": "retail-shop-5",
-      "title": "Customer accounts",
+      "title": "Customers / members",
       "route": "customers",
-      "action": "open-module",
-      "status": "connected-route-pending-domain-verification"
+      "page": "pages/feature-customers-members/index.html",
+      "status": "runtime-integration-required"
     },
     {
       "id": "retail-shop-6",
-      "title": "Daily cash-up",
-      "route": "business-tools",
-      "action": "open-module",
-      "status": "connected-route-pending-domain-verification"
+      "title": "Operations register",
+      "route": "operations",
+      "page": "pages/feature-operations-register/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "retail-shop-7",
+      "title": "Finance & expenses",
+      "route": "finance",
+      "page": "pages/feature-finance-expenses/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "retail-shop-8",
+      "title": "Reports & insights",
+      "route": "reports",
+      "page": "pages/feature-reports-insights/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "retail-shop-9",
+      "title": "Team & permissions",
+      "route": "team",
+      "page": "pages/feature-team-permissions/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "retail-shop-10",
+      "title": "Announcements",
+      "route": "announcements",
+      "page": "pages/feature-announcements/index.html",
+      "status": "runtime-integration-required"
     }
-  ],
-  "backendStatus": "Requires domain-by-domain verification; no action is marked backend-complete by scaffold alone."
+  ]
 }

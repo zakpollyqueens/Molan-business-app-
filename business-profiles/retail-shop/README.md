@@ -1,25 +1,18 @@
-# Retail shop profile module
+# Retail shop — Molan Business
 
-**Slug:** `retail-shop`  
-**Status:** Page scaffold created; backend/domain completion is not yet certified.
+Profile `retail-shop`; overview `index.html`; config `profile.json`; manifest `features.json`; feature directory `pages/index.html`.
 
-## Files
-- `profile.json` — profile identity and existing app shortcut catalogue.
-- `index.html` — dedicated page layout and visible feature buttons for this business.
-- `profile.js` — profile-specific button handling and shared-runtime bridge contract.
-- `profile.css` — responsive and dark-mode styles for this profile page.
-- `features.json` — declared feature areas and destination routes.
+## Feature pages
 
-## Feature areas
-1. Product catalogue → `products` (route mapped; domain backend verification pending)
-2. Stock & pricing → `inventory` (route mapped; domain backend verification pending)
-3. Sales register → `sales` (route mapped; domain backend verification pending)
-4. Returns & exchanges → `business-tools` (route mapped; domain backend verification pending)
-5. Customer accounts → `customers` (route mapped; domain backend verification pending)
-6. Daily cash-up → `business-tools` (route mapped; domain backend verification pending)
+- [Inventory & supplies](pages/feature-inventory-supplies/index.html) — route `inventory`; backend integration must be verified.
+- [Sales & orders](pages/feature-sales-orders/index.html) — route `sales`; backend integration must be verified.
+- [Business tools](pages/feature-business-tools/index.html) — route `business-tools`; backend integration must be verified.
+- [Tasks & deadlines](pages/feature-tasks-deadlines/index.html) — route `tasks`; backend integration must be verified.
+- [Customers / members](pages/feature-customers-members/index.html) — route `customers`; backend integration must be verified.
+- [Operations register](pages/feature-operations-register/index.html) — route `operations`; backend integration must be verified.
+- [Finance & expenses](pages/feature-finance-expenses/index.html) — route `finance`; backend integration must be verified.
+- [Reports & insights](pages/feature-reports-insights/index.html) — route `reports`; backend integration must be verified.
+- [Team & permissions](pages/feature-team-permissions/index.html) — route `team`; backend integration must be verified.
+- [Announcements](pages/feature-announcements/index.html) — route `announcements`; backend integration must be verified.
 
-## Backend integration status
-The page refuses to report success when the shared application runtime is absent. Each feature still requires verification that its destination performs the correct business-specific operations, checks the active company and role, and is protected by Supabase RLS. Do not treat a mapped generic route as a fully implemented specialist workflow.
-
-## Shared responsibilities
-Authentication, session lifecycle, Supabase client setup, tenant authorization, common notifications, and navigation remain in the root application. This folder owns the business-specific page structure and interactions.
+Use authenticated shared services and server-enforced tenant/role permissions. Never expose service-role credentials in browser code. Page scaffolding does not prove CRUD completion.

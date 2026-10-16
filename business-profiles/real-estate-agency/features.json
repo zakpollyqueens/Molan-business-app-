@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "profile": "real-estate-agency",
+  "name": "Real estate agency",
+  "features": [
+    {
+      "id": "real-estate-agency-1",
+      "title": "Properties & projects",
+      "route": "operations",
+      "page": "pages/feature-properties-projects/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "real-estate-agency-2",
+      "title": "Materials & procurement",
+      "route": "inventory",
+      "page": "pages/feature-materials-procurement/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "real-estate-agency-3",
+      "title": "Rent, contracts & finance",
+      "route": "finance",
+      "page": "pages/feature-rent-contracts-finance/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "real-estate-agency-4",
+      "title": "Tasks & deadlines",
+      "route": "tasks",
+      "page": "pages/feature-tasks-deadlines/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "real-estate-agency-5",
+      "title": "Customers / members",
+      "route": "customers",
+      "page": "pages/feature-customers-members/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "real-estate-agency-6",
+      "title": "Reports & insights",
+      "route": "reports",
+      "page": "pages/feature-reports-insights/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "real-estate-agency-7",
+      "title": "Team & permissions",
+      "route": "team",
+      "page": "pages/feature-team-permissions/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "real-estate-agency-8",
+      "title": "Announcements",
+      "route": "announcements",
+      "page": "pages/feature-announcements/index.html",
+      "status": "runtime-integration-required"
+    }
+  ]
+}
