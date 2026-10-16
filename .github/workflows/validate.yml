@@ -39,7 +39,8 @@ jobs:
             }
           }
           if (!html.includes('id="guided-business-type-search"') || !html.includes('id="business-category-search"')) throw new Error('Both business type dropdowns must have a search field.');
-          if (!js.includes('bindSearchableSelect(\'guided-business-type\'') || !js.includes('bindSearchableSelect(\'business-category\'')) throw new Error('Both business type dropdowns must be populated and searchable.');
+          const profileJs = fs.readFileSync('business-profiles.js', 'utf8');
+          if (!profileJs.includes('bindSearchableSelect(\\'guided-business-type\\'') || !profileJs.includes('bindSearchableSelect(\\'business-category\\'')) throw new Error('Both business type dropdowns must be populated and searchable.');
           const pages = ['overview','tasks','products','team','announcements','customers','inventory','sales','finance','attendance','reports','council','websites','business-profile','industry-workspace','business-tools','website-studio','operations','sacco','sacco-welfare','control-center','profile-directory'];
           for (const page of pages) {
             if (!html.includes('data-page="' + page + '"')) throw new Error('Missing navigation page: ' + page);
