@@ -867,7 +867,7 @@ if(!sameType){
  '<section class="panel"><div class="panel-head"><div><h3>Features for '+esc(title)+'</h3><p>These tools are selected for this business type. Workspace data is kept separate from other businesses.</p></div></div><div class="profile-detail-grid">'+features.map(f=>'<button class="industry-feature-card" data-profile-category="'+esc(profile[0])+'"><span class="industry-feature-icon">'+f[0]+'</span><strong>'+esc(f[1])+'</strong><p>'+esc(f[2])+'</p><b>Create this workspace to open →</b></button>').join('')+'</div></section>';
  return;
 }
-let circleMembers=[],circleSavings=[],circleWithdrawals=[];
+let circleMembers=[],circleSavings=[],circleWithdrawals=[],circleLoadFailures=[];
 if(sameType&&isSavingsCircleProfile(profile)){
  try{
   const [membersResult,savingsResult,withdrawalsResult]=await Promise.all([
@@ -875,10 +875,11 @@ if(sameType&&isSavingsCircleProfile(profile)){
    supabase.from('sacco_savings_entries').select('id,entry_type,amount,status,transaction_date,submitted_at,created_at').eq('company_id',company.id).order('transaction_date',{ascending:true}).limit(1000),
    supabase.from('sacco_withdrawal_requests').select('id,status').eq('company_id',company.id).limit(1000)
   ]);
+  circleLoadFailures=[['member accounts',membersResult],['savings entries',savingsResult],['withdrawal requests',withdrawalsResult]].filter(([,result])=>result?.error).map(([label,result])=>label+': '+(result.error.message||'request failed'));
   if(!membersResult.error)circleMembers=membersResult.data||[];
   if(!savingsResult.error)circleSavings=savingsResult.data||[];
   if(!withdrawalsResult.error)circleWithdrawals=withdrawalsResult.data||[];
- }catch(error){console.warn('[Molan Business] Could not load savings-circle overview data:',error?.message||error)}
+ }catch(error){circleLoadFailures.push('workspace request: '+(error?.message||'unexpected error'));console.warn('[Molan Business] Could not load savings-circle overview data:',error?.message||error)}
 }
 const openTasks=(cache.tasks||[]).filter(t=>!['done','cancelled'].includes(String(t.status||'').toLowerCase()));
 const isSchool=/school|college|training|education|academy/.test(name);
@@ -910,6 +911,7 @@ if(isSchool){
 const bars='<div class="profile-bar-chart" role="img" aria-label="'+esc(graphLabel)+'">'+buckets.map(b=>'<div class="profile-bar-column"><strong>'+Math.round(b.count).toLocaleString()+'</strong><div class="profile-bar-track"><span style="height:'+Math.max(b.count?8:2,Math.round(b.count/maxActivity*100))+'%"></span></div><small>'+esc(b.label)+'</small></div>').join('')+'</div>';
 el.innerHTML=head(esc(title)+' overview','Your '+esc(title)+' dashboard, business-specific tools and recent activity.','<button class="button secondary" data-page="industry-settings">⚙ Business settings</button><button class="button secondary" data-page="business-profile">Edit business profile</button>')+
  '<section class="profile-detail-hero"><div class="profile-detail-symbol">'+profile[3]+'</div><div><span class="section-kicker">'+esc(title.toUpperCase())+' WORKSPACE</span><h2>'+esc(company.name)+'</h2><p>'+esc(profile[2])+'</p><span class="profile-state">Records and settings are scoped to this business workspace</span></div></section>'+
+ (circleLoadFailures.length?'<section class="panel sacco-load-error" role="alert"><div class="panel-head"><div><h3>Some savings-circle data could not load</h3><p>The overview is available, but one or more database requests failed. Retry after checking the details.</p></div><button class="button secondary small" type="button" data-page="industry-profile">Retry</button></div><ul>'+circleLoadFailures.map(message=>'<li>'+esc(message)+'</li>').join('')+'</ul></section>':'')+
  '<div class="stats-grid">'+metrics.join('')+'</div>'+
  '<section class="panel"><div class="panel-head"><div><span class="section-kicker">ACTIVITY TRENDS</span><h3>'+esc(graphLabel)+'</h3><p>'+ (isSavingsCircleProfile(profile)?'Confirmed deposits are grouped by the actual transaction date; pending submissions are shown separately.':'Monthly records available to this workspace. Empty months remain visible so trends are easy to compare.') +'</p></div><button class="button secondary small" data-page="reports">Open reports →</button></div>'+bars+'</section>'+
  '<section class="panel"><div class="panel-head"><div><span class="section-kicker">PROFILE-SPECIFIC TOOLS</span><h3>Manage '+esc(title.toLowerCase())+'</h3><p>Each card opens its relevant workspace module. Features from unrelated business types are not inserted into this profile menu.</p></div></div><div class="profile-detail-grid">'+features.map(f=>'<button class="industry-feature-card" data-page="'+esc(f[3])+'"><span class="industry-feature-icon">'+f[0]+'</span><strong>'+esc(f[1])+'</strong><p>'+esc(f[2])+'</p><b>Open feature →</b></button>').join('')+'</div></section>'+
