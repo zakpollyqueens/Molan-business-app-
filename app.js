@@ -639,13 +639,6 @@ el.innerHTML=head(esc(profile[1])+' settings','Profile-specific shortcuts for '+
 return;
 }
 const profileConfig=window.MolanBusinessProfiles?.byName?.[profile[0]];
-if(profileConfig?.extended){
- const features=industryProfileFeatures(profile);
- el.innerHTML=head(esc(profile[1])+' workspace','Dedicated '+esc(profileConfig.group||'industry')+' feature map for '+esc(profile[0])+'.')+
- '<section class="profile-detail-hero"><div class="profile-detail-symbol">'+esc(profile[3])+'</div><div><span class="section-kicker">DEDICATED BUSINESS PROFILE</span><h2>'+esc(profile[0])+'</h2><p>'+esc(profile[2])+'</p><div class="profile-detail-actions"><button class="button primary" data-industry-settings="'+esc(profile[0])+'">⚙ Profile settings</button><button class="button secondary" data-page="profile-directory">← All business profiles</button>'+(sameType?'<button class="button secondary" data-page="business-profile">Edit active business profile</button>':'<button class="button secondary" data-profile-category="'+esc(profile[0])+'">＋ Create workspace of this type</button>')+'</div></div></section>'+
- '<section class="panel"><div class="panel-head"><div><span class="section-kicker">'+esc(profileConfig.group||'INDUSTRY')+'</span><h3>'+esc(profile[0])+' features</h3><p>These tools are configured for this business type and work inside the selected workspace.</p></div><span class="badge">'+features.length+' features</span></div><div class="profile-detail-grid">'+features.map(f=>'<button class="industry-feature-card" data-page="'+esc(f[3])+'"><span class="industry-feature-icon">'+f[0]+'</span><strong>'+esc(f[1])+'</strong><p>'+esc(f[2])+'</p><b>Open feature →</b></button>').join('')+'</div></section>';
- return;
-}
 const slug=window.MolanBusinessProfiles?.byName?.[profile[0]]?.slug;
 if(!slug) throw new Error('The selected business profile has no owned page folder.');
 el.innerHTML=head(esc(profile[1])+' workspace','Dedicated page owned by the '+esc(profile[1])+' profile folder.')+
