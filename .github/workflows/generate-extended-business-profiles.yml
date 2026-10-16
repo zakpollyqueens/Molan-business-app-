@@ -62,7 +62,7 @@ jobs:
             const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
             if (!Array.isArray(config.features)) throw new Error('Missing features for profile: ' + p.slug);
             for (const f of config.features) {
-              const slug = String(f.title).toLowerCase().normalize('NFKD').replace(/[^a-z0-9\\s-]/g, '').trim().replace(/[\\s_]+/g, '-').replace(/-+/g, '-');
+              const slug = String(f.title).toLowerCase().normalize('NFKD').replace(/[^a-z0-9\s-]/g, '').trim().replace(/[\s_]+/g, '-').replace(/-+/g, '-');
               const page = `business-profiles/${p.slug}/pages/${slug}/index.html`;
               if (!fs.existsSync(page)) throw new Error('Missing profile feature page: ' + page);
             }
