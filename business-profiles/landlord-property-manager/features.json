@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "profile": "landlord-property-manager",
+  "name": "Landlord / property manager",
+  "features": [
+    {
+      "id": "landlord-property-manager-1",
+      "title": "Properties & projects",
+      "route": "operations",
+      "page": "pages/feature-properties-projects/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "landlord-property-manager-2",
+      "title": "Materials & procurement",
+      "route": "inventory",
+      "page": "pages/feature-materials-procurement/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "landlord-property-manager-3",
+      "title": "Rent, contracts & finance",
+      "route": "finance",
+      "page": "pages/feature-rent-contracts-finance/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "landlord-property-manager-4",
+      "title": "Tasks & deadlines",
+      "route": "tasks",
+      "page": "pages/feature-tasks-deadlines/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "landlord-property-manager-5",
+      "title": "Customers / members",
+      "route": "customers",
+      "page": "pages/feature-customers-members/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "landlord-property-manager-6",
+      "title": "Reports & insights",
+      "route": "reports",
+      "page": "pages/feature-reports-insights/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "landlord-property-manager-7",
+      "title": "Team & permissions",
+      "route": "team",
+      "page": "pages/feature-team-permissions/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "landlord-property-manager-8",
+      "title": "Announcements",
+      "route": "announcements",
+      "page": "pages/feature-announcements/index.html",
+      "status": "runtime-integration-required"
+    }
+  ]
+}

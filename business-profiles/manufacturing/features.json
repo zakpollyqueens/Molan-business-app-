@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "profile": "manufacturing",
+  "name": "Manufacturing",
+  "features": [
+    {
+      "id": "manufacturing-1",
+      "title": "Inventory & supplies",
+      "route": "inventory",
+      "page": "pages/feature-inventory-supplies/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "manufacturing-2",
+      "title": "Sales & orders",
+      "route": "sales",
+      "page": "pages/feature-sales-orders/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "manufacturing-3",
+      "title": "Business tools",
+      "route": "business-tools",
+      "page": "pages/feature-business-tools/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "manufacturing-4",
+      "title": "Tasks & deadlines",
+      "route": "tasks",
+      "page": "pages/feature-tasks-deadlines/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "manufacturing-5",
+      "title": "Customers / members",
+      "route": "customers",
+      "page": "pages/feature-customers-members/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "manufacturing-6",
+      "title": "Operations register",
+      "route": "operations",
+      "page": "pages/feature-operations-register/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "manufacturing-7",
+      "title": "Finance & expenses",
+      "route": "finance",
+      "page": "pages/feature-finance-expenses/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "manufacturing-8",
+      "title": "Reports & insights",
+      "route": "reports",
+      "page": "pages/feature-reports-insights/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "manufacturing-9",
+      "title": "Team & permissions",
+      "route": "team",
+      "page": "pages/feature-team-permissions/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "manufacturing-10",
+      "title": "Announcements",
+      "route": "announcements",
+      "page": "pages/feature-announcements/index.html",
+      "status": "runtime-integration-required"
+    }
+  ]
+}
