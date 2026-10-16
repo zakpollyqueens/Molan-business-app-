@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "index": 26,
+  "slug": "investment-group",
+  "name": "Investment group",
+  "plural": "Investment groups",
+  "description": "Member contributions, projects and investment reporting.",
+  "icon": "↗",
+  "features": [
+    {
+      "title": "Savings & member accounts",
+      "route": "sacco"
+    },
+    {
+      "title": "Finance ledger",
+      "route": "finance"
+    },
+    {
+      "title": "Members",
+      "route": "customers"
+    },
+    {
+      "title": "Reports",
+      "route": "reports"
+    },
+    {
+      "title": "Tasks & deadlines",
+      "route": "tasks"
+    },
+    {
+      "title": "Operations register",
+      "route": "operations"
+    },
+    {
+      "title": "Team & permissions",
+      "route": "team"
+    },
+    {
+      "title": "Announcements",
+      "route": "announcements"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}
