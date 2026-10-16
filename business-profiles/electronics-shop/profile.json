@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "index": 6,
+  "slug": "electronics-shop",
+  "name": "Electronics shop",
+  "plural": "Electronics shops",
+  "description": "Devices, serial tracking, warranties and sales.",
+  "icon": "⌁",
+  "features": [
+    {
+      "title": "Inventory & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & orders",
+      "route": "sales"
+    },
+    {
+      "title": "Business tools",
+      "route": "business-tools"
+    },
+    {
+      "title": "Tasks & deadlines",
+      "route": "tasks"
+    },
+    {
+      "title": "Customers / members",
+      "route": "customers"
+    },
+    {
+      "title": "Operations register",
+      "route": "operations"
+    },
+    {
+      "title": "Finance & expenses",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Team & permissions",
+      "route": "team"
+    },
+    {
+      "title": "Announcements",
+      "route": "announcements"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

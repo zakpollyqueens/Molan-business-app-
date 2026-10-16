@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "index": 37,
+  "slug": "clinic-medical-centre",
+  "name": "Clinic / medical centre",
+  "plural": "Clinics and medical centres",
+  "description": "Appointments, service records and operations.",
+  "icon": "✚",
+  "features": [
+    {
+      "title": "Appointments & service jobs",
+      "route": "business-tools"
+    },
+    {
+      "title": "Inventory & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Finance & expenses",
+      "route": "finance"
+    },
+    {
+      "title": "Tasks & deadlines",
+      "route": "tasks"
+    },
+    {
+      "title": "Customers / members",
+      "route": "customers"
+    },
+    {
+      "title": "Operations register",
+      "route": "operations"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Team & permissions",
+      "route": "team"
+    },
+    {
+      "title": "Announcements",
+      "route": "announcements"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

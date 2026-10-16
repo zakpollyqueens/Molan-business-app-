@@ -28,6 +28,14 @@ New visitors are connected automatically to the configured Supabase project. The
 - A Website & Media Studio where owners/admins upload multiple business images from their account, copy public image URLs, reuse images as the company logo or cover, and manage the gallery; separately hosted websites still need a site integration to publish those assets automatically
 - GitHub Actions frontend syntax and module smoke checks, plus automated GitHub Pages deployment
 
+### SACCO and savings-circle workspace
+
+The SACCO workspace now includes company-scoped member account codes, configurable savings terms and reconciliation schedules, pending savings submissions, chairperson review, a withdrawal-request queue, and separate payment recording. Pending savings do not affect confirmed balances; approved withdrawals reduce savings only when an actual payment is recorded. Financial review/payment actions are performed through role-checked database RPCs, and SACCO tables use RLS plus composite tenant foreign keys.
+
+The onboarding catalogue includes 50 specific business profile categories, including SACCOs, savings circles, cooperatives, retail and service businesses.
+
+The current first implementation phase does not yet include the full member self-service portal, welfare fund/loan accounting, automated email/SMS notifications, online payment verification, or election workflows; these remain follow-up work before describing the full SACCO system as complete.
+
 ## Supabase project and security
 
 The app connects to project reference `rcubnewrfieqhwcnvrzs`. The public browser configuration contains a Supabase publishable key only. **Never place a service-role key or other server secret in frontend code.**

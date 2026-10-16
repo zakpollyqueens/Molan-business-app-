@@ -1,9 +1,9 @@
 name: Validate frontend
 on:
   push:
-    branches: [main]
+    branches: [main, feat/sacco-savings-withdrawals-terms, fix/connected-navigation-workspace-admin, feat/profile-owned-pages-architecture]
   pull_request:
-    branches: [main]
+    branches: [main, feat/sacco-savings-withdrawals-terms, fix/connected-navigation-workspace-admin]
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -13,25 +13,86 @@ jobs:
         with:
           node-version: 20
       - name: Check JavaScript syntax
-        run: node --check app.js
+        run: node --check app.js && node --check business-profiles.js && node --check member-portal.js
       - name: Check required frontend files
-        run: test -s index.html && test -s styles.css && test -s app.js
+        run: test -s index.html && test -s styles.css && test -s app.js && test -s business-profiles.js && test -s business-profiles.css && test -s member-portal.html && test -s member-portal.css && test -s member-portal.js && test -s supabase/functions/sacco-member-portal/index.ts
       - name: Smoke-check workspace modules and public frontend safety
         run: |
           node <<'NODE'
           const fs = require('node:fs');
           const html = fs.readFileSync('index.html', 'utf8');
           const js = fs.readFileSync('app.js', 'utf8');
-          const pages = ['overview','tasks','products','team','announcements','customers','inventory','sales','finance','attendance','reports','council','websites','business-profile','industry-workspace','business-tools','website-studio','operations'];
+          const pages = ['overview','tasks','products','team','announcements','customers','inventory','sales','finance','attendance','reports','council','websites','business-profile','industry-workspace','business-tools','website-studio','operations','sacco','control-center','profile-directory'];
           for (const page of pages) {
             if (!html.includes('data-page="' + page + '"')) throw new Error('Missing navigation page: ' + page);
           }
-          for (const feature of ['accept_company_invitation','create_company_invitation','attendance_records','website_service_requests','website_service_payments','finance_transactions','inventory_items','sales_orders','sales_order_items','create_sales_order_with_items','business-gallery','gallery_images','workspace-switcher','business_operations','inventory_movements','record_inventory_movement','school_classes','school_learners','school_assessments','school_fee_entries','create-school-assessment','operation-status','copy-media-url','set-media-logo','set-media-cover','Upload website images','industry-feature-grid','Business tools & workflows','Appointments & bookings','Purchasing & procurement','Maintenance & inspections','EXTENDED WORKFLOWS']) {
+          const renderedRoutes = new Set([...js.matchAll(/(?:else )?if\(page==='([^']+)'/g)].map(match => match[1]));
+          for (const match of html.matchAll(/data-page="([^"]+)"/g)) {
+            if (!renderedRoutes.has(match[1])) throw new Error('Navigation button has no render route: ' + match[1]);
+          }
+          if (!html.includes('business-profiles.js') || !html.includes('business-profiles.css')) throw new Error('Shared profile loader/styles must be loaded by index.html.');
+          if (!js.includes('e.stopImmediatePropagation()') || !js.includes('navigate(page)')) throw new Error('Shared navigation click handler is missing.');
+          const profileFolders = fs.readdirSync('business-profiles', { withFileTypes: true }).filter(item => item.isDirectory());
+          if (profileFolders.length !== 51) throw new Error('Expected 51 business profile folders, found ' + profileFolders.length);
+          const profileNames = new Set();
+          for (const folder of profileFolders) {
+            const file = 'business-profiles/' + folder.name + '/profile.json';
+            if (!fs.existsSync(file)) throw new Error('Missing profile configuration: ' + file);
+            const profile = JSON.parse(fs.readFileSync(file, 'utf8'));
+            if (profile.slug !== folder.name || !profile.name || !Array.isArray(profile.features) || !profile.features.length) throw new Error('Invalid profile configuration: ' + file);
+            const ownedPage = 'business-profiles/' + folder.name + '/index.html';
+            if (!fs.existsSync(ownedPage)) throw new Error('Missing profile-owned page: ' + ownedPage);
+            const ownedHtml = fs.readFileSync(ownedPage, 'utf8');
+            if (!ownedHtml.includes('data-profile="' + folder.name + '"')) throw new Error('Owned page identity does not match its folder: ' + ownedPage);
+            const ownedScript = 'business-profiles/' + folder.name + '/profile.js';
+            if (!fs.existsSync(ownedScript)) throw new Error('Missing profile-specific loader/runtime: ' + ownedScript);
+            const ownedJs = fs.readFileSync(ownedScript, 'utf8');
+            if (!ownedJs.includes("fetch('profile.json'")) throw new Error('Profile-specific loader must load its folder-specific profile.json: ' + ownedScript);
+            if (!ownedJs.includes('MolanProfileRuntime') || !ownedJs.includes('openFeature')) throw new Error('Profile-specific loader must integrate with the shared runtime bridge: ' + ownedScript);
+            if (profileNames.has(profile.name)) throw new Error('Duplicate profile name: ' + profile.name);
+            profileNames.add(profile.name);
+            for (const feature of profile.features) {
+              if (!feature.title || !renderedRoutes.has(feature.route)) throw new Error('Unconnected profile feature route in ' + file + ': ' + feature.route);
+            }
+          }
+          if (profileNames.size !== 51) throw new Error('Expected 51 unique profile names.');
+          if (!js.includes('manage_company_workspace_status') || !js.includes('data-workspace-admin-action')) throw new Error('Workspace lifecycle controls are not connected.');
+          const lifecycleMigration = fs.readFileSync('supabase/migrations/20261016090000_workspace_lifecycle_controls.sql', 'utf8');
+          for (const required of ['status text','deleted_at','manage_company_workspace_status','security invoker','from public, anon','to authenticated']) {
+            if (!lifecycleMigration.toLowerCase().includes(required.toLowerCase())) throw new Error('Workspace lifecycle migration missing: ' + required);
+          }
+          for (const feature of ['accept_company_invitation','create_company_invitation','attendance_records','website_service_requests','website_service_payments','finance_transactions','inventory_items','sales_orders','sales_order_items','create_sales_order_with_items','business-gallery','gallery_images','workspace-switcher','business_operations','inventory_movements','record_inventory_movement','school_classes','school_learners','school_assessments','school_fee_entries','create-school-assessment','operation-status','copy-media-url','set-media-logo','set-media-cover','Upload website images','industry-feature-grid','Business tools & workflows','Appointments & bookings','Purchasing & procurement','Maintenance & inspections','EXTENDED WORKFLOWS','sacco_role_assignments','sacco_terms','sacco_members','sacco_savings_entries','sacco_withdrawal_requests','sacco_member_reviews','sacco_review_savings','sacco_review_withdrawal','sacco_record_withdrawal_payment','sacco-amount-words','sacco-review-form','businessProfileCatalog','profile-catalogue-grid','data-profile-category','profile-catalogue-search','profile-catalogue-group','industryProfileSettingFields','data-save-industry-settings','industry_profile_settings']) {
             if (!js.includes(feature)) throw new Error('Missing expected app integration: ' + feature);
           }
           if (!js.includes('https://rcubnewrfieqhwcnvrzs.supabase.co')) throw new Error('Default Supabase project URL is missing.');
           if (!js.includes('sb_publishable_')) throw new Error('Default Supabase publishable-key configuration is missing.');
           if (!js.includes('DEFAULT_SUPABASE_CONFIG')) throw new Error('First-time visitors must be auto-configured.');
           if (/service_role|SUPABASE_SERVICE_ROLE_KEY/i.test(js)) throw new Error('A service-role secret must never be shipped in frontend code.');
-          console.log('Frontend module, default connection, and public-key safety smoke checks passed.');
+          const migration = ['20261015164105_sacco_savings_terms_withdrawals.sql','20261015164120_sacco_review_and_withdrawal_rpcs.sql','20261015164304_sacco_tenant_integrity_and_role_permissions.sql','20261015164444_sacco_withdrawal_reservations_and_payment_locking.sql','20261015164923_sacco_chairperson_only_financial_approvals.sql'].map(name => fs.readFileSync('supabase/migrations/' + name, 'utf8')).join('\n');
+          if (!migration.includes('ENABLE ROW LEVEL SECURITY') && !migration.includes('enable row level security')) throw new Error('SACCO migration must enable RLS.');
+          if (!migration.includes('foreign key(company_id,member_id)')) throw new Error('SACCO records must enforce company/member tenant integrity.');
+          if (!migration.includes('status=\'paid\'')) throw new Error('SACCO withdrawal payment posting must be explicit.');
+          const profileMigration = fs.readFileSync('supabase/migrations/20261015170000_industry_profile_settings.sql', 'utf8');
+          for (const required of ['enable row level security','company_members','role in (\'owner\',\'admin\',\'manager\')','jsonb_typeof(settings)']) {
+            if (!profileMigration.includes(required)) throw new Error('Industry settings migration is missing security requirement: ' + required);
+          }
+          if (!js.includes("upsert({company_id:company.id,profile_key:profile[0],settings,updated_by:user.id")) throw new Error('Industry settings must be saved to the active tenant.');
+          const portalHtml = fs.readFileSync('member-portal.html', 'utf8');
+          const portalJs = fs.readFileSync('member-portal.js', 'utf8');
+          const portalEdge = fs.readFileSync('supabase/functions/sacco-member-portal/index.ts', 'utf8');
+          const portalMigration = fs.readFileSync('supabase/migrations/20261015190000_sacco_member_portal_security.sql', 'utf8').toLowerCase();
+          for (const required of ['sacco_member_portal_credentials','sacco_member_portal_sessions','sacco_member_portal_attempts','sacco_member_portal_preferences','enable row level security','revoke all','service_role','foreign key(company_id,member_id)']) {
+            if (!portalMigration.includes(required)) throw new Error('Member portal migration missing security requirement: ' + required);
+          }
+          for (const required of ['account code','registered phone number','private pin','set up pin']) {
+            if (!portalHtml.toLowerCase().includes(required)) throw new Error('Member portal is missing login/setup guidance: ' + required);
+          }
+          if (!portalJs.includes('/functions/v1/sacco-member-portal')) throw new Error('Member portal must use the secure Edge Function.');
+          if (!portalEdge.includes('.eq("account_code", accountCode)')) throw new Error('Member account lookup must use an exact account-code match.');
+          if (!portalHtml.includes('id="savings-chart"') || !portalJs.includes('confirmed savings contributions by month') && !portalJs.includes('entry.status!=="confirmed"')) throw new Error('Member portal must display a confirmed-savings progress chart.');
+          if (portalJs.includes('from("sacco_members")') || portalJs.includes("from('sacco_members')")) throw new Error('Public portal must not query private member tables directly.');
+          for (const required of ['PBKDF2','sacco_member_portal_sessions','issue-enrollment-code','complete-enrollment','change-pin','update-profile']) {
+            if (!portalEdge.includes(required)) throw new Error('Member portal Edge Function missing security/workflow feature: ' + required);
+          }
+          console.log('All 51 profile-owned pages, shared runtime navigation, persistent profile settings, secure SACCO member portal, tenant RLS, and public-key safety smoke checks passed.');
           NODE

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Departments, stock movement, sales and staff.">
+  <title>Supermarket | Molan Business</title>
+  <link rel="stylesheet" href="profile.css">
+</head>
+<body data-profile="supermarket">
+  <main class="profile-shell">
+    <header class="profile-header">
+      <a class="back-link" href="../../index.html" aria-label="Back to Molan Business">← Molan Business</a>
+      <p class="eyebrow">BUSINESS WORKSPACE · PROFILE 04 / 51</p>
+      <div class="title-row"><div><h1>Supermarket</h1><p class="intro">Departments, stock movement, sales and staff.</p></div><span class="profile-mark" aria-hidden="true">S</span></div>
+      <div class="status-strip"><span class="status-dot"></span><span id="connection-status">Checking workspace connection…</span></div>
+    </header>
+    <section class="summary-grid" aria-label="Workspace summary">
+      <article class="summary-card"><span>Profile</span><strong>Supermarket</strong><small>Dedicated business workspace</small></article>
+      <article class="summary-card"><span>Feature areas</span><strong>6</strong><small>Profile-owned page shortcuts</small></article>
+      <article class="summary-card"><span>Data connection</span><strong id="backend-state">Checking</strong><small>Secure shared backend bridge</small></article>
+    </section>
+    <section class="section-heading"><div><p class="eyebrow">YOUR WORKSPACE</p><h2>Business tools</h2><p>Open a feature below. Each action is routed through the shared application shell and tenant permissions.</p></div><button type="button" class="secondary-button" data-profile-action="refresh">↻ Refresh status</button></section>
+    <div class="feature-grid" id="feature-grid" aria-live="polite">
+      <button class="feature-card" type="button" data-feature-id="supermarket-1" data-route="business-tools"><span class="feature-number">01</span><span class="feature-copy"><strong>Departments &amp; shelves</strong><small>Open departments &amp; shelves</small></span><span class="arrow" aria-hidden="true">↗</span></button>
+      <button class="feature-card" type="button" data-feature-id="supermarket-2" data-route="inventory"><span class="feature-number">02</span><span class="feature-copy"><strong>Inventory movements</strong><small>Open inventory movements</small></span><span class="arrow" aria-hidden="true">↗</span></button>
+      <button class="feature-card" type="button" data-feature-id="supermarket-3" data-route="sales"><span class="feature-number">03</span><span class="feature-copy"><strong>POS sales</strong><small>Open pos sales</small></span><span class="arrow" aria-hidden="true">↗</span></button>
+      <button class="feature-card" type="button" data-feature-id="supermarket-4" data-route="finance"><span class="feature-number">04</span><span class="feature-copy"><strong>Cashier shifts</strong><small>Open cashier shifts</small></span><span class="arrow" aria-hidden="true">↗</span></button>
+      <button class="feature-card" type="button" data-feature-id="supermarket-5" data-route="business-tools"><span class="feature-number">05</span><span class="feature-copy"><strong>Expiry checks</strong><small>Open expiry checks</small></span><span class="arrow" aria-hidden="true">↗</span></button>
+      <button class="feature-card" type="button" data-feature-id="supermarket-6" data-route="business-tools"><span class="feature-number">06</span><span class="feature-copy"><strong>Daily reconciliation</strong><small>Open daily reconciliation</small></span><span class="arrow" aria-hidden="true">↗</span></button>
+    </div>
+    <section class="notice" id="profile-notice" role="status">This is the dedicated Supermarket page. Backend actions are enabled only when the authenticated Molan Business runtime confirms the destination and permissions.</section>
+    <footer><span>Molan Business · Supermarket</span><span>Profile module: supermarket</span></footer>
+  </main>
+  <script type="application/json" id="profile-feature-manifest">[{"id":"supermarket-1","title":"Departments & shelves","route":"business-tools","action":"open-module","status":"connected-route-pending-domain-verification"},{"id":"supermarket-2","title":"Inventory movements","route":"inventory","action":"open-module","status":"connected-route-pending-domain-verification"},{"id":"supermarket-3","title":"POS sales","route":"sales","action":"open-module","status":"connected-route-pending-domain-verification"},{"id":"supermarket-4","title":"Cashier shifts","route":"finance","action":"open-module","status":"connected-route-pending-domain-verification"},{"id":"supermarket-5","title":"Expiry checks","route":"business-tools","action":"open-module","status":"connected-route-pending-domain-verification"},{"id":"supermarket-6","title":"Daily reconciliation","route":"business-tools","action":"open-module","status":"connected-route-pending-domain-verification"}]</script>
+  <script src="profile.js" defer></script>
+</body>
+</html>

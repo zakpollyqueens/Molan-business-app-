@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "index": 30,
+  "slug": "boda-boda-business",
+  "name": "Boda-boda business",
+  "plural": "Boda-boda businesses",
+  "description": "Riders, trips, maintenance and collections.",
+  "icon": "↗",
+  "features": [
+    {
+      "title": "Fleet & trip operations",
+      "route": "business-tools"
+    },
+    {
+      "title": "Maintenance",
+      "route": "operations"
+    },
+    {
+      "title": "Collections & sales",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & deadlines",
+      "route": "tasks"
+    },
+    {
+      "title": "Customers / members",
+      "route": "customers"
+    },
+    {
+      "title": "Finance & expenses",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Team & permissions",
+      "route": "team"
+    },
+    {
+      "title": "Announcements",
+      "route": "announcements"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

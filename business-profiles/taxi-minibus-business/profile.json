@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "index": 31,
+  "slug": "taxi-minibus-business",
+  "name": "Taxi / minibus business",
+  "plural": "Taxi and minibus businesses",
+  "description": "Vehicles, routes, drivers and collections.",
+  "icon": "▤",
+  "features": [
+    {
+      "title": "Fleet & trip operations",
+      "route": "business-tools"
+    },
+    {
+      "title": "Maintenance",
+      "route": "operations"
+    },
+    {
+      "title": "Collections & sales",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & deadlines",
+      "route": "tasks"
+    },
+    {
+      "title": "Customers / members",
+      "route": "customers"
+    },
+    {
+      "title": "Finance & expenses",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Team & permissions",
+      "route": "team"
+    },
+    {
+      "title": "Announcements",
+      "route": "announcements"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Products, stock control, sales and customer records.">
+  <title>Retail shop | Molan Business</title>
+  <link rel="stylesheet" href="profile.css">
+</head>
+<body data-profile="retail-shop">
+  <main class="profile-shell">
+    <header class="profile-header">
+      <a class="back-link" href="../../index.html" aria-label="Back to Molan Business">← Molan Business</a>
+      <p class="eyebrow">BUSINESS WORKSPACE · PROFILE 02 / 51</p>
+      <div class="title-row"><div><h1>Retail shop</h1><p class="intro">Products, stock control, sales and customer records.</p></div><span class="profile-mark" aria-hidden="true">R</span></div>
+      <div class="status-strip"><span class="status-dot"></span><span id="connection-status">Checking workspace connection…</span></div>
+    </header>
+    <section class="summary-grid" aria-label="Workspace summary">
+      <article class="summary-card"><span>Profile</span><strong>Retail shop</strong><small>Dedicated business workspace</small></article>
+      <article class="summary-card"><span>Feature areas</span><strong>6</strong><small>Profile-owned page shortcuts</small></article>
+      <article class="summary-card"><span>Data connection</span><strong id="backend-state">Checking</strong><small>Secure shared backend bridge</small></article>
+    </section>
+    <section class="section-heading"><div><p class="eyebrow">YOUR WORKSPACE</p><h2>Business tools</h2><p>Open a feature below. Each action is routed through the shared application shell and tenant permissions.</p></div><button type="button" class="secondary-button" data-profile-action="refresh">↻ Refresh status</button></section>
+    <div class="feature-grid" id="feature-grid" aria-live="polite">
+      <button class="feature-card" type="button" data-feature-id="retail-shop-1" data-route="products"><span class="feature-number">01</span><span class="feature-copy"><strong>Product catalogue</strong><small>Open product catalogue</small></span><span class="arrow" aria-hidden="true">↗</span></button>
+      <button class="feature-card" type="button" data-feature-id="retail-shop-2" data-route="inventory"><span class="feature-number">02</span><span class="feature-copy"><strong>Stock &amp; pricing</strong><small>Open stock &amp; pricing</small></span><span class="arrow" aria-hidden="true">↗</span></button>
+      <button class="feature-card" type="button" data-feature-id="retail-shop-3" data-route="sales"><span class="feature-number">03</span><span class="feature-copy"><strong>Sales register</strong><small>Open sales register</small></span><span class="arrow" aria-hidden="true">↗</span></button>
+      <button class="feature-card" type="button" data-feature-id="retail-shop-4" data-route="business-tools"><span class="feature-number">04</span><span class="feature-copy"><strong>Returns &amp; exchanges</strong><small>Open returns &amp; exchanges</small></span><span class="arrow" aria-hidden="true">↗</span></button>
+      <button class="feature-card" type="button" data-feature-id="retail-shop-5" data-route="customers"><span class="feature-number">05</span><span class="feature-copy"><strong>Customer accounts</strong><small>Open customer accounts</small></span><span class="arrow" aria-hidden="true">↗</span></button>
+      <button class="feature-card" type="button" data-feature-id="retail-shop-6" data-route="business-tools"><span class="feature-number">06</span><span class="feature-copy"><strong>Daily cash-up</strong><small>Open daily cash-up</small></span><span class="arrow" aria-hidden="true">↗</span></button>
+    </div>
+    <section class="notice" id="profile-notice" role="status">This is the dedicated Retail shop page. Backend actions are enabled only when the authenticated Molan Business runtime confirms the destination and permissions.</section>
+    <footer><span>Molan Business · Retail shop</span><span>Profile module: retail-shop</span></footer>
+  </main>
+  <script type="application/json" id="profile-feature-manifest">[{"id":"retail-shop-1","title":"Product catalogue","route":"products","action":"open-module","status":"connected-route-pending-domain-verification"},{"id":"retail-shop-2","title":"Stock & pricing","route":"inventory","action":"open-module","status":"connected-route-pending-domain-verification"},{"id":"retail-shop-3","title":"Sales register","route":"sales","action":"open-module","status":"connected-route-pending-domain-verification"},{"id":"retail-shop-4","title":"Returns & exchanges","route":"business-tools","action":"open-module","status":"connected-route-pending-domain-verification"},{"id":"retail-shop-5","title":"Customer accounts","route":"customers","action":"open-module","status":"connected-route-pending-domain-verification"},{"id":"retail-shop-6","title":"Daily cash-up","route":"business-tools","action":"open-module","status":"connected-route-pending-domain-verification"}]</script>
+  <script src="profile.js" defer></script>
+</body>
+</html>

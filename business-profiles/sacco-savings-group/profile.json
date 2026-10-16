@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "index": 24,
+  "slug": "sacco-savings-group",
+  "name": "SACCO savings group",
+  "plural": "SACCO savings groups",
+  "description": "Group savings, member contributions, welfare, balances and withdrawal approvals.",
+  "icon": "♧",
+  "features": [
+    {
+      "title": "Savings & member accounts",
+      "route": "sacco"
+    },
+    {
+      "title": "Finance ledger",
+      "route": "finance"
+    },
+    {
+      "title": "Members",
+      "route": "customers"
+    },
+    {
+      "title": "Reports",
+      "route": "reports"
+    },
+    {
+      "title": "Tasks & deadlines",
+      "route": "tasks"
+    },
+    {
+      "title": "Operations register",
+      "route": "operations"
+    },
+    {
+      "title": "Team & permissions",
+      "route": "team"
+    },
+    {
+      "title": "Announcements",
+      "route": "announcements"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

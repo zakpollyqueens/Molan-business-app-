@@ -1,0 +1,15 @@
+/* Shared styles for the profile catalogue and profile workspace cards.
+   Kept outside business-profiles/ so all 51 profiles use one consistent design system. */
+.profile-catalog-grid,.industry-feature-grid,.profile-shortcut-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,245px),1fr));gap:16px}
+.profile-catalog-card,.industry-feature-card,.profile-shortcut-card{position:relative;display:flex;flex-direction:column;gap:12px;min-width:0;padding:20px;border:1px solid var(--border-color,rgba(148,163,184,.24));border-radius:20px;background:var(--panel-bg,rgba(255,255,255,.72));box-shadow:0 10px 30px rgba(15,23,42,.045);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.profile-catalog-card:hover,.industry-feature-card:hover,.profile-shortcut-card:hover{transform:translateY(-3px);border-color:var(--accent,#3985ff);box-shadow:0 16px 34px rgba(15,23,42,.09)}
+.profile-catalog-card .profile-icon,.industry-feature-card .profile-icon{display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:rgba(59,130,246,.11);font-size:22px}
+.profile-catalog-card h3,.industry-feature-card h3,.profile-shortcut-card h3{margin:0;font-size:1rem;line-height:1.35}
+.profile-catalog-card p,.industry-feature-card p,.profile-shortcut-card p{margin:0;color:var(--muted,#64748b);font-size:.9rem;line-height:1.55}
+.profile-catalog-card .profile-card-actions,.industry-feature-card .profile-card-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:4px}
+.profile-catalog-card [data-page],.industry-feature-card [data-page],.profile-shortcut-card [data-page]{cursor:pointer}
+.profile-route-badge{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;padding:5px 9px;border-radius:999px;background:rgba(100,116,139,.1);font-size:.72rem;font-weight:700;letter-spacing:.02em}
+.profile-admin-actions{display:flex;flex-wrap:wrap;gap:10px}
+.profile-admin-actions .button:disabled{opacity:.45;cursor:not-allowed}
+@media(max-width:640px){.profile-catalog-card,.industry-feature-card,.profile-shortcut-card{padding:16px;border-radius:16px}.profile-catalog-grid,.industry-feature-grid,.profile-shortcut-grid{gap:12px}}
+@media(prefers-reduced-motion:reduce){.profile-catalog-card,.industry-feature-card,.profile-shortcut-card{transition:none}.profile-catalog-card:hover,.industry-feature-card:hover,.profile-shortcut-card:hover{transform:none}}
