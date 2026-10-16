@@ -166,66 +166,145 @@
   <script src="enhancements.js" defer></script>
   <script>
 (() => {
+  'use strict';
   const menuTrigger = document.getElementById('download-menu-trigger');
   const menuPanel = document.getElementById('download-menu-panel');
   const menuWrap = document.getElementById('download-menu-wrap');
-  if (menuTrigger && menuPanel) {
-    const closeDownloadMenu = (restoreFocus = false) => {
-      menuPanel.hidden = true;
-      menuTrigger.setAttribute('aria-expanded', 'false');
-      menuTrigger.classList.remove('is-open');
-      if (restoreFocus) menuTrigger.focus();
-    };
-    closeDownloadMenu();
-    menuTrigger.addEventListener('click', event => {
-      event.preventDefault();
-      event.stopPropagation();
-      const opening = menuPanel.hidden;
-      if (opening) {
-        menuPanel.hidden = false;
-        menuTrigger.setAttribute('aria-expanded', 'true');
-        menuTrigger.classList.add('is-open');
-        requestAnimationFrame(() => {
-          const firstAction = menuPanel.querySelector('a,button');
-          if (firstAction && window.matchMedia('(max-width: 560px)').matches) {
-            menuPanel.scrollTop = 0;
-          }
-        });
-      } else {
-        closeDownloadMenu();
-      }
-    });
-    menuPanel.addEventListener('click', event => event.stopPropagation());
-    document.addEventListener('click', event => {
-      if (menuWrap && !menuWrap.contains(event.target) && !menuPanel.hidden) closeDownloadMenu();
-    });
-    document.addEventListener('keydown', event => {
-      if (event.key === 'Escape' && !menuPanel.hidden) closeDownloadMenu(true);
-    });
-  }
-  const ua = navigator.userAgent || '';
-  const android = /Android/i.test(ua);
-  const ios = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-  const windows = /Windows/i.test(ua);
   const primary = document.getElementById('download-recommended');
   const title = document.getElementById('download-recommended-title');
   const note = document.getElementById('download-recommended-note');
   const help = document.getElementById('public-download-help');
   const installButton = document.getElementById('download-install-pwa');
-  let installPrompt = null;
-  if (primary && title && note) {
-    if (android) { primary.href = 'https://github.com/zakpollyqueens/Molan-business-app-/releases/latest/download/Molan-Business.apk'; title.textContent = 'Download for Android'; note.textContent = 'Android APK installer'; }
-    else if (windows) { primary.href = 'https://github.com/zakpollyqueens/Molan-business-app-/releases/latest/download/Molan-Business-Setup.exe'; title.textContent = 'Download for Windows PC'; note.textContent = 'Windows desktop installer'; }
-    else if (ios) { primary.href = '#public-downloads'; title.textContent = 'Install on iPhone or iPad'; note.textContent = 'Use Safari’s Share menu, then Add to Home Screen'; }
-    else { primary.href = '#public-downloads'; title.textContent = 'Install from this browser'; note.textContent = 'Use the browser install option when available'; }
-  }
-  window.addEventListener('beforeinstallprompt', event => { event.preventDefault(); installPrompt = event; if (installButton) installButton.hidden = false; });
-  if (installButton) installButton.addEventListener('click', async () => {
-    if (installPrompt) { installPrompt.prompt(); await installPrompt.userChoice; installPrompt = null; return; }
-    if (help) { help.hidden = false; help.textContent = ios ? 'On your iPhone or iPad: open this site in Safari, tap Share, choose “Add to Home Screen”, then tap Add. iOS does not use APK or Windows installer files.' : 'If your browser supports app installation, open its menu and choose “Install app” or “Add to Home screen”. Otherwise, use the Windows or Android installer above, or continue in the browser.'; }
-  });
   const appleHelp = document.getElementById('download-apple-help');
-  if (appleHelp) appleHelp.addEventListener('click', () => { if (help) { help.hidden = false; help.textContent = 'On your iPhone or iPad: open Molan Business in Safari, tap the Share button, choose “Add to Home Screen”, then tap Add. There is no native iOS installer published yet, so do not download the Android APK on an iPhone.'; } });
+  const repo = 'zakpollyqueens/Molan-business-app-';
+  const releasePage = 'https://github.com/' + repo + '/releases/latest';
+  const releaseApi = 'https://api.github.com/repos/' + repo + '/releases/latest';
+  const ua = navigator.userAgent || '';
+  const android = /Android/i.test(ua);
+  const ios = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const windows = /Windows/i.test(ua);
+  let installPrompt = null;
+
+  function closeMenu(restoreFocus) {
+    if (!menuTrigger || !menuPanel) return;
+    menuPanel.hidden = true;
+    menuTrigger.setAttribute('aria-expanded', 'false');
+    menuTrigger.classList.remove('is-open');
+    if (restoreFocus) menuTrigger.focus();
+  }
+
+  if (menuTrigger && menuPanel) {
+    // Explicitly synchronize hidden and accessibility state at startup.
+    closeMenu(false);
+    menuTrigger.addEventListener('click', event => {
+      event.preventDefault();
+      event.stopPropagation();
+      const opening = menuPanel.hidden;
+      menuPanel.hidden = !opening;
+      menuTrigger.setAttribute('aria-expanded', String(opening));
+      menuTrigger.classList.toggle('is-open', opening);
+      if (opening) {
+        const firstAction = menuPanel.querySelector('a[href],button:not([disabled])');
+        if (firstAction && window.matchMedia('(max-width: 560px)').matches) {
+          menuPanel.scrollTop = 0;
+        }
+      }
+    });
+    menuPanel.addEventListener('click', event => event.stopPropagation());
+    document.addEventListener('click', event => {
+      if (menuWrap && !menuWrap.contains(event.target) && !menuPanel.hidden) closeMenu(false);
+    });
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && !menuPanel.hidden) closeMenu(true);
+    });
+    // If a card is selected, close the menu without blocking the card's action.
+    menuPanel.addEventListener('click', event => {
+      if (event.target.closest('a,button')) {
+        window.setTimeout(() => closeMenu(false), 0);
+      }
+    });
+  }
+
+  async function configureReleaseDownloads() {
+    if (!primary || !title || !note) return;
+    if (android) {
+      title.textContent = 'Download for Android';
+      note.textContent = 'Checking the latest Android installer…';
+    } else if (windows) {
+      title.textContent = 'Download for Windows PC';
+      note.textContent = 'Checking the latest Windows installer…';
+    } else if (ios) {
+      primary.href = '#public-downloads';
+      title.textContent = 'Install on iPhone or iPad';
+      note.textContent = 'Use Safari’s Share menu, then Add to Home Screen';
+      return;
+    } else {
+      primary.href = '#public-downloads';
+      title.textContent = 'Install from this browser';
+      note.textContent = 'Use the browser install option when available';
+      return;
+    }
+
+    try {
+      const response = await fetch(releaseApi + '?_=' + Date.now(), {
+        cache: 'no-store',
+        headers: { Accept: 'application/vnd.github+json' }
+      });
+      if (!response.ok) throw new Error('Release lookup failed');
+      const release = await response.json();
+      const assets = Array.isArray(release.assets) ? release.assets : [];
+      const patterns = android
+        ? [/^molan-business\.apk$/i, /^molan-business.*\.apk$/i]
+        : [/^molan-business-setup\.exe$/i, /^molan-business.*\.exe$/i];
+      const asset = assets.find(item => patterns.some(pattern => pattern.test(item.name)) && item.browser_download_url);
+      if (asset) {
+        primary.href = asset.browser_download_url;
+        primary.target = '_self';
+        primary.removeAttribute('target');
+        note.textContent = (android ? 'Android APK' : 'Windows installer') + ' · ' + (release.tag_name || release.name || 'Latest release');
+      } else {
+        primary.href = release.html_url || releasePage;
+        primary.target = '_blank';
+        primary.rel = 'noopener noreferrer';
+        note.textContent = 'No compatible installer is attached yet. Open the release page to check available files.';
+      }
+    } catch (_) {
+      primary.href = releasePage;
+      primary.target = '_blank';
+      primary.rel = 'noopener noreferrer';
+      note.textContent = 'Could not verify the latest installer right now. Open the official release page to choose an available file.';
+    }
+  }
+
+  window.addEventListener('beforeinstallprompt', event => {
+    event.preventDefault();
+    installPrompt = event;
+    if (installButton) installButton.hidden = false;
+  });
+
+  if (installButton) installButton.addEventListener('click', async () => {
+    if (installPrompt) {
+      installPrompt.prompt();
+      await installPrompt.userChoice;
+      installPrompt = null;
+      return;
+    }
+    if (help) {
+      help.hidden = false;
+      help.textContent = ios
+        ? 'On your iPhone or iPad: open this site in Safari, tap Share, choose “Add to Home Screen”, then tap Add. iOS does not use APK or Windows installer files.'
+        : 'If your browser supports app installation, open its menu and choose “Install app” or “Add to Home screen”. Otherwise, use the Windows or Android installer above, or continue in the browser.';
+    }
+  });
+
+  if (appleHelp) appleHelp.addEventListener('click', () => {
+    if (help) {
+      help.hidden = false;
+      help.textContent = 'On your iPhone or iPad: open Molan Business in Safari, tap Share, choose “Add to Home Screen”, then tap Add. There is no native iOS installer published yet, so do not download the Android APK on an iPhone.';
+    }
+  });
+
+  configureReleaseDownloads();
 })();
 </script>
 <footer class="zakmolanitech-company-footer" style="padding:18px 16px;text-align:center;font-size:13px;color:#9aa9bf;background:#071426;border-top:1px solid rgba(148,163,184,.2)"><strong style="display:block;color:#e6f7ff">Built and managed by Zakmolanitech Solutions Company</strong><span>Contacts for support via <a href="mailto:Zakmolanitechsolutions@gmail.com" style="color:#70d9f3">Zakmolanitechsolutions@gmail.com</a></span></footer>
