@@ -11,7 +11,7 @@ const excludedFiles = new Set([
   'package.json', 'package-lock.json', 'capacitor.config.json',
   'tsconfig.json'
 ]);
-const assetDirectories = ['assets', 'images', 'fonts', 'static'];
+const assetDirectories = ['assets', 'images', 'fonts', 'static', 'shared'];
 
 fs.rmSync(output, { recursive: true, force: true });
 fs.mkdirSync(output, { recursive: true });
