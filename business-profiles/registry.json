@@ -1,0 +1,516 @@
+{
+  "schemaVersion": 1,
+  "description": "Shared registry of the business profile catalogue; profile feature definitions remain in each profile's profile.json.",
+  "profiles": [
+    {
+      "slug": "grocery-shop",
+      "name": "Grocery shop",
+      "plural": "Grocery shops",
+      "description": "Daily essentials, stock, suppliers and cash sales.",
+      "icon": "▤",
+      "enabled": true,
+      "config": "business-profiles/grocery-shop/profile.json",
+      "page": "business-profiles/grocery-shop/index.html"
+    },
+    {
+      "slug": "retail-shop",
+      "name": "Retail shop",
+      "plural": "Retail shops",
+      "description": "Products, stock control, sales and customer records.",
+      "icon": "◈",
+      "enabled": true,
+      "config": "business-profiles/retail-shop/profile.json",
+      "page": "business-profiles/retail-shop/index.html"
+    },
+    {
+      "slug": "wholesale-business",
+      "name": "Wholesale business",
+      "plural": "Wholesale businesses",
+      "description": "Bulk orders, supplier pricing and inventory.",
+      "icon": "▦",
+      "enabled": true,
+      "config": "business-profiles/wholesale-business/profile.json",
+      "page": "business-profiles/wholesale-business/index.html"
+    },
+    {
+      "slug": "supermarket",
+      "name": "Supermarket",
+      "plural": "Supermarkets",
+      "description": "Departments, stock movement, sales and staff.",
+      "icon": "▤",
+      "enabled": true,
+      "config": "business-profiles/supermarket/profile.json",
+      "page": "business-profiles/supermarket/index.html"
+    },
+    {
+      "slug": "boutique-clothing-shop",
+      "name": "Boutique / clothing shop",
+      "plural": "Boutiques and clothing shops",
+      "description": "Fashion inventory, sizes, sales and suppliers.",
+      "icon": "✦",
+      "enabled": true,
+      "config": "business-profiles/boutique-clothing-shop/profile.json",
+      "page": "business-profiles/boutique-clothing-shop/index.html"
+    },
+    {
+      "slug": "electronics-shop",
+      "name": "Electronics shop",
+      "plural": "Electronics shops",
+      "description": "Devices, serial tracking, warranties and sales.",
+      "icon": "⌁",
+      "enabled": true,
+      "config": "business-profiles/electronics-shop/profile.json",
+      "page": "business-profiles/electronics-shop/index.html"
+    },
+    {
+      "slug": "hardware-shop",
+      "name": "Hardware shop",
+      "plural": "Hardware shops",
+      "description": "Building supplies, inventory and contractor orders.",
+      "icon": "▧",
+      "enabled": true,
+      "config": "business-profiles/hardware-shop/profile.json",
+      "page": "business-profiles/hardware-shop/index.html"
+    },
+    {
+      "slug": "pharmacy",
+      "name": "Pharmacy",
+      "plural": "Pharmacies",
+      "description": "Stock batches, expiry checks and sales workflows.",
+      "icon": "✚",
+      "enabled": true,
+      "config": "business-profiles/pharmacy/profile.json",
+      "page": "business-profiles/pharmacy/index.html"
+    },
+    {
+      "slug": "agricultural-input-shop",
+      "name": "Agricultural input shop",
+      "plural": "Agricultural input shops",
+      "description": "Seeds, fertilizers, farm supplies and seasonal stock.",
+      "icon": "❋",
+      "enabled": true,
+      "config": "business-profiles/agricultural-input-shop/profile.json",
+      "page": "business-profiles/agricultural-input-shop/index.html"
+    },
+    {
+      "slug": "mobile-money-airtime",
+      "name": "Mobile money / airtime",
+      "plural": "Mobile money and airtime shops",
+      "description": "Agent operations, float tracking and daily reconciliation.",
+      "icon": "↗",
+      "enabled": true,
+      "config": "business-profiles/mobile-money-airtime/profile.json",
+      "page": "business-profiles/mobile-money-airtime/index.html"
+    },
+    {
+      "slug": "restaurant",
+      "name": "Restaurant",
+      "plural": "Restaurants",
+      "description": "Menus, orders, kitchen operations and customers.",
+      "icon": "♨",
+      "enabled": true,
+      "config": "business-profiles/restaurant/profile.json",
+      "page": "business-profiles/restaurant/index.html"
+    },
+    {
+      "slug": "hotel-guesthouse",
+      "name": "Hotel / guesthouse",
+      "plural": "Hotels and guesthouses",
+      "description": "Bookings, rooms, guests and service operations.",
+      "icon": "⌂",
+      "enabled": true,
+      "config": "business-profiles/hotel-guesthouse/profile.json",
+      "page": "business-profiles/hotel-guesthouse/index.html"
+    },
+    {
+      "slug": "bar-beverage-shop",
+      "name": "Bar / beverage shop",
+      "plural": "Bars and beverage shops",
+      "description": "Beverage inventory, sales and supplier records.",
+      "icon": "◉",
+      "enabled": true,
+      "config": "business-profiles/bar-beverage-shop/profile.json",
+      "page": "business-profiles/bar-beverage-shop/index.html"
+    },
+    {
+      "slug": "bakery",
+      "name": "Bakery",
+      "plural": "Bakeries",
+      "description": "Production batches, ingredients, orders and sales.",
+      "icon": "♨",
+      "enabled": true,
+      "config": "business-profiles/bakery/profile.json",
+      "page": "business-profiles/bakery/index.html"
+    },
+    {
+      "slug": "catering-business",
+      "name": "Catering business",
+      "plural": "Catering businesses",
+      "description": "Event orders, menus, procurement and delivery.",
+      "icon": "✦",
+      "enabled": true,
+      "config": "business-profiles/catering-business/profile.json",
+      "page": "business-profiles/catering-business/index.html"
+    },
+    {
+      "slug": "cafe-coffee-shop",
+      "name": "Cafe / coffee shop",
+      "plural": "Cafés and coffee shops",
+      "description": "Menu, orders, stock and customer experience.",
+      "icon": "☕",
+      "enabled": true,
+      "config": "business-profiles/cafe-coffee-shop/profile.json",
+      "page": "business-profiles/cafe-coffee-shop/index.html"
+    },
+    {
+      "slug": "crop-farming",
+      "name": "Crop farming",
+      "plural": "Crop farming",
+      "description": "Planting cycles, inputs, harvests and sales.",
+      "icon": "❋",
+      "enabled": true,
+      "config": "business-profiles/crop-farming/profile.json",
+      "page": "business-profiles/crop-farming/index.html"
+    },
+    {
+      "slug": "livestock-farming",
+      "name": "Livestock farming",
+      "plural": "Livestock farming",
+      "description": "Herd records, feeding, health and production.",
+      "icon": "♧",
+      "enabled": true,
+      "config": "business-profiles/livestock-farming/profile.json",
+      "page": "business-profiles/livestock-farming/index.html"
+    },
+    {
+      "slug": "poultry-farming",
+      "name": "Poultry farming",
+      "plural": "Poultry farming",
+      "description": "Flock cycles, feed, eggs and mortality records.",
+      "icon": "♧",
+      "enabled": true,
+      "config": "business-profiles/poultry-farming/profile.json",
+      "page": "business-profiles/poultry-farming/index.html"
+    },
+    {
+      "slug": "fish-farming",
+      "name": "Fish farming",
+      "plural": "Fish farming",
+      "description": "Ponds, stocking, feeding, harvest and sales.",
+      "icon": "≈",
+      "enabled": true,
+      "config": "business-profiles/fish-farming/profile.json",
+      "page": "business-profiles/fish-farming/index.html"
+    },
+    {
+      "slug": "agro-processing",
+      "name": "Agro-processing",
+      "plural": "Agro-processing",
+      "description": "Raw materials, processing, batches and distribution.",
+      "icon": "⚙",
+      "enabled": true,
+      "config": "business-profiles/agro-processing/profile.json",
+      "page": "business-profiles/agro-processing/index.html"
+    },
+    {
+      "slug": "manufacturing",
+      "name": "Manufacturing",
+      "plural": "Manufacturing",
+      "description": "Production planning, materials, quality and orders.",
+      "icon": "⚙",
+      "enabled": true,
+      "config": "business-profiles/manufacturing/profile.json",
+      "page": "business-profiles/manufacturing/index.html"
+    },
+    {
+      "slug": "sacco",
+      "name": "SACCO",
+      "plural": "SACCOs",
+      "description": "Members, savings, terms, approvals and withdrawals.",
+      "icon": "♧",
+      "enabled": true,
+      "config": "business-profiles/sacco/profile.json",
+      "page": "business-profiles/sacco/index.html"
+    },
+    {
+      "slug": "sacco-savings-group",
+      "name": "SACCO savings group",
+      "plural": "SACCO savings groups",
+      "description": "Group savings, member contributions, welfare, balances and withdrawal approvals.",
+      "icon": "♧",
+      "enabled": true,
+      "config": "business-profiles/sacco-savings-group/profile.json",
+      "page": "business-profiles/sacco-savings-group/index.html"
+    },
+    {
+      "slug": "savings-circle-village-savings-group",
+      "name": "Savings circle / village savings group",
+      "plural": "Savings circles and village savings groups",
+      "description": "Member contributions, welfare and group reconciliation.",
+      "icon": "♧",
+      "enabled": true,
+      "config": "business-profiles/savings-circle-village-savings-group/profile.json",
+      "page": "business-profiles/savings-circle-village-savings-group/index.html"
+    },
+    {
+      "slug": "investment-group",
+      "name": "Investment group",
+      "plural": "Investment groups",
+      "description": "Member contributions, projects and investment reporting.",
+      "icon": "↗",
+      "enabled": true,
+      "config": "business-profiles/investment-group/profile.json",
+      "page": "business-profiles/investment-group/index.html"
+    },
+    {
+      "slug": "microfinance-business",
+      "name": "Microfinance business",
+      "plural": "Microfinance businesses",
+      "description": "Client accounts, lending workflows and repayments.",
+      "icon": "＝",
+      "enabled": true,
+      "config": "business-profiles/microfinance-business/profile.json",
+      "page": "business-profiles/microfinance-business/index.html"
+    },
+    {
+      "slug": "insurance-agency",
+      "name": "Insurance agency",
+      "plural": "Insurance agencies",
+      "description": "Clients, policies, renewals and commissions.",
+      "icon": "▣",
+      "enabled": true,
+      "config": "business-profiles/insurance-agency/profile.json",
+      "page": "business-profiles/insurance-agency/index.html"
+    },
+    {
+      "slug": "cooperative",
+      "name": "Cooperative",
+      "plural": "Cooperatives",
+      "description": "Membership, contributions, governance and reporting.",
+      "icon": "♙",
+      "enabled": true,
+      "config": "business-profiles/cooperative/profile.json",
+      "page": "business-profiles/cooperative/index.html"
+    },
+    {
+      "slug": "boda-boda-business",
+      "name": "Boda-boda business",
+      "plural": "Boda-boda businesses",
+      "description": "Riders, trips, maintenance and collections.",
+      "icon": "↗",
+      "enabled": true,
+      "config": "business-profiles/boda-boda-business/profile.json",
+      "page": "business-profiles/boda-boda-business/index.html"
+    },
+    {
+      "slug": "taxi-minibus-business",
+      "name": "Taxi / minibus business",
+      "plural": "Taxi and minibus businesses",
+      "description": "Vehicles, routes, drivers and collections.",
+      "icon": "▤",
+      "enabled": true,
+      "config": "business-profiles/taxi-minibus-business/profile.json",
+      "page": "business-profiles/taxi-minibus-business/index.html"
+    },
+    {
+      "slug": "trucking-logistics",
+      "name": "Trucking / logistics",
+      "plural": "Trucking and logistics",
+      "description": "Fleet, consignments, dispatch and delivery tracking.",
+      "icon": "⇢",
+      "enabled": true,
+      "config": "business-profiles/trucking-logistics/profile.json",
+      "page": "business-profiles/trucking-logistics/index.html"
+    },
+    {
+      "slug": "vehicle-hire-rental",
+      "name": "Vehicle hire / rental",
+      "plural": "Vehicle hire and rental",
+      "description": "Bookings, fleet availability and rental records.",
+      "icon": "⌁",
+      "enabled": true,
+      "config": "business-profiles/vehicle-hire-rental/profile.json",
+      "page": "business-profiles/vehicle-hire-rental/index.html"
+    },
+    {
+      "slug": "vehicle-repair-garage",
+      "name": "Vehicle repair garage",
+      "plural": "Vehicle repair garages",
+      "description": "Job cards, parts, technicians and customer updates.",
+      "icon": "⚙",
+      "enabled": true,
+      "config": "business-profiles/vehicle-repair-garage/profile.json",
+      "page": "business-profiles/vehicle-repair-garage/index.html"
+    },
+    {
+      "slug": "school",
+      "name": "School",
+      "plural": "Schools",
+      "description": "Learners, classes, assessments, fees and attendance.",
+      "icon": "▦",
+      "enabled": true,
+      "config": "business-profiles/school/profile.json",
+      "page": "business-profiles/school/index.html"
+    },
+    {
+      "slug": "college-training-centre",
+      "name": "College / training centre",
+      "plural": "Colleges and training centres",
+      "description": "Courses, enrolments, assessments and fees.",
+      "icon": "▦",
+      "enabled": true,
+      "config": "business-profiles/college-training-centre/profile.json",
+      "page": "business-profiles/college-training-centre/index.html"
+    },
+    {
+      "slug": "clinic-medical-centre",
+      "name": "Clinic / medical centre",
+      "plural": "Clinics and medical centres",
+      "description": "Appointments, service records and operations.",
+      "icon": "✚",
+      "enabled": true,
+      "config": "business-profiles/clinic-medical-centre/profile.json",
+      "page": "business-profiles/clinic-medical-centre/index.html"
+    },
+    {
+      "slug": "dental-practice",
+      "name": "Dental practice",
+      "plural": "Dental practices",
+      "description": "Appointments, treatment schedules and patient follow-up.",
+      "icon": "✚",
+      "enabled": true,
+      "config": "business-profiles/dental-practice/profile.json",
+      "page": "business-profiles/dental-practice/index.html"
+    },
+    {
+      "slug": "laboratory",
+      "name": "Laboratory",
+      "plural": "Laboratories",
+      "description": "Test requests, sample workflow and results tracking.",
+      "icon": "⌕",
+      "enabled": true,
+      "config": "business-profiles/laboratory/profile.json",
+      "page": "business-profiles/laboratory/index.html"
+    },
+    {
+      "slug": "real-estate-agency",
+      "name": "Real estate agency",
+      "plural": "Real estate agencies",
+      "description": "Listings, leads, viewings and property transactions.",
+      "icon": "⌂",
+      "enabled": true,
+      "config": "business-profiles/real-estate-agency/profile.json",
+      "page": "business-profiles/real-estate-agency/index.html"
+    },
+    {
+      "slug": "landlord-property-manager",
+      "name": "Landlord / property manager",
+      "plural": "Landlords and property managers",
+      "description": "Tenants, rent tracking, maintenance and leases.",
+      "icon": "⌂",
+      "enabled": true,
+      "config": "business-profiles/landlord-property-manager/profile.json",
+      "page": "business-profiles/landlord-property-manager/index.html"
+    },
+    {
+      "slug": "construction-company",
+      "name": "Construction company",
+      "plural": "Construction companies",
+      "description": "Projects, site tasks, materials and contractors.",
+      "icon": "▧",
+      "enabled": true,
+      "config": "business-profiles/construction-company/profile.json",
+      "page": "business-profiles/construction-company/index.html"
+    },
+    {
+      "slug": "building-contractor",
+      "name": "Building contractor",
+      "plural": "Hardware and building contractors",
+      "description": "Contracts, project stages, supplies and crews.",
+      "icon": "▧",
+      "enabled": true,
+      "config": "business-profiles/building-contractor/profile.json",
+      "page": "business-profiles/building-contractor/index.html"
+    },
+    {
+      "slug": "salon-barbershop",
+      "name": "Salon / barbershop",
+      "plural": "Salons and barbershops",
+      "description": "Bookings, services, staff and retail products.",
+      "icon": "✂",
+      "enabled": true,
+      "config": "business-profiles/salon-barbershop/profile.json",
+      "page": "business-profiles/salon-barbershop/index.html"
+    },
+    {
+      "slug": "fashion-tailoring",
+      "name": "Fashion / tailoring",
+      "plural": "Fashion and tailoring businesses",
+      "description": "Measurements, orders, materials and delivery dates.",
+      "icon": "✦",
+      "enabled": true,
+      "config": "business-profiles/fashion-tailoring/profile.json",
+      "page": "business-profiles/fashion-tailoring/index.html"
+    },
+    {
+      "slug": "cleaning-service",
+      "name": "Cleaning service",
+      "plural": "Cleaning services",
+      "description": "Bookings, work schedules, teams and job completion.",
+      "icon": "✧",
+      "enabled": true,
+      "config": "business-profiles/cleaning-service/profile.json",
+      "page": "business-profiles/cleaning-service/index.html"
+    },
+    {
+      "slug": "security-company",
+      "name": "Security company",
+      "plural": "Security companies",
+      "description": "Guard assignments, rosters, incidents and attendance.",
+      "icon": "◉",
+      "enabled": true,
+      "config": "business-profiles/security-company/profile.json",
+      "page": "business-profiles/security-company/index.html"
+    },
+    {
+      "slug": "consultancy-accounting-firm",
+      "name": "Consultancy / accounting firm",
+      "plural": "Consultancy and accounting firms",
+      "description": "Clients, engagements, deadlines and deliverables.",
+      "icon": "＝",
+      "enabled": true,
+      "config": "business-profiles/consultancy-accounting-firm/profile.json",
+      "page": "business-profiles/consultancy-accounting-firm/index.html"
+    },
+    {
+      "slug": "ict-software-company",
+      "name": "ICT / software company",
+      "plural": "ICT and software companies",
+      "description": "Projects, releases, support and technical teams.",
+      "icon": "⌘",
+      "enabled": true,
+      "config": "business-profiles/ict-software-company/profile.json",
+      "page": "business-profiles/ict-software-company/index.html"
+    },
+    {
+      "slug": "printing-stationery-business",
+      "name": "Printing / stationery business",
+      "plural": "Printing and stationery businesses",
+      "description": "Print jobs, stationery stock, quotes and deliveries.",
+      "icon": "▤",
+      "enabled": true,
+      "config": "business-profiles/printing-stationery-business/profile.json",
+      "page": "business-profiles/printing-stationery-business/index.html"
+    },
+    {
+      "slug": "ngo-community-organization",
+      "name": "NGO / community organization",
+      "plural": "NGOs and community organizations",
+      "description": "Programs, beneficiaries, activities and grant reporting.",
+      "icon": "♡",
+      "enabled": true,
+      "config": "business-profiles/ngo-community-organization/profile.json",
+      "page": "business-profiles/ngo-community-organization/index.html"
+    }
+  ]
+}
