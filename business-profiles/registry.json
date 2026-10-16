@@ -463,6 +463,16 @@
       "page": "business-profiles/consultancy-accounting-firm/index.html"
     },
     {
+      "slug": "freelance-independent-professional",
+      "name": "Freelance / independent professional",
+      "plural": "Freelancers and independent professionals",
+      "description": "Client projects, service delivery, quotes, invoices, portfolios and professional reporting.",
+      "icon": "✦",
+      "enabled": true,
+      "config": "business-profiles/freelance-independent-professional/profile.json",
+      "page": "business-profiles/freelance-independent-professional/index.html"
+    },
+    {
       "slug": "ict-software-company",
       "name": "ICT / software company",
       "plural": "ICT and software companies",
