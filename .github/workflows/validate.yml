@@ -22,6 +22,24 @@ jobs:
           const fs = require('node:fs');
           const html = fs.readFileSync('index.html', 'utf8');
           const js = fs.readFileSync('app.js', 'utf8');
+          const registry = JSON.parse(fs.readFileSync('business-profiles/registry.json', 'utf8'));
+          const extended = JSON.parse(fs.readFileSync('business-profiles/extended-catalog.json', 'utf8'));
+          if (registry.profiles.length !== 550) throw new Error('Expected 550 registered business profiles, found ' + registry.profiles.length);
+          if (extended.profiles.length !== 500) throw new Error('Expected exactly 500 additional profiles, found ' + extended.profiles.length);
+          const extendedSlugs = new Set();
+          const extendedNames = new Set();
+          for (const profile of extended.profiles) {
+            if (!profile.slug || !profile.name || !profile.group || !Array.isArray(profile.features) || profile.features.length < 8) throw new Error('Extended profile missing its own feature map: ' + (profile.name || profile.slug || 'unknown'));
+            if (extendedSlugs.has(profile.slug) || extendedNames.has(profile.name.toLowerCase())) throw new Error('Duplicate extended profile name or slug: ' + profile.name);
+            extendedSlugs.add(profile.slug);
+            extendedNames.add(profile.name.toLowerCase());
+            for (const feature of profile.features) {
+              if (!feature.title || !['overview','tasks','products','team','announcements','customers','inventory','sales','finance','attendance','reports','council','websites','business-profile','industry-workspace','business-tools','website-studio','operations','sacco','control-center','profile-directory','industry-profile','industry-settings','connections','workspace-admin'].includes(feature.route)) throw new Error('Invalid feature route in ' + profile.name + ': ' + feature.route);
+              if (profile.slug !== 'sacco-savings-group' && ['sacco','sacco-welfare'].includes(feature.route)) throw new Error('SACCO-only features leaked into ' + profile.name);
+            }
+          }
+          if (!html.includes('id="guided-business-type-search"') || !html.includes('id="business-category-search"')) throw new Error('Both business type dropdowns must have a search field.');
+          if (!js.includes('bindSearchableSelect(\'guided-business-type\'') || !js.includes('bindSearchableSelect(\'business-category\'')) throw new Error('Both business type dropdowns must be populated and searchable.');
           const pages = ['overview','tasks','products','team','announcements','customers','inventory','sales','finance','attendance','reports','council','websites','business-profile','industry-workspace','business-tools','website-studio','operations','sacco','control-center','profile-directory'];
           for (const page of pages) {
             if (!html.includes('data-page="' + page + '"')) throw new Error('Missing navigation page: ' + page);
@@ -97,5 +115,5 @@ jobs:
           for (const required of ['PBKDF2','sacco_member_portal_sessions','issue-enrollment-code','complete-enrollment','change-pin','update-profile']) {
             if (!portalEdge.includes(required)) throw new Error('Member portal Edge Function missing security/workflow feature: ' + required);
           }
-          console.log('All 50 profile-owned pages, shared runtime navigation, persistent profile settings, secure SACCO member portal, tenant RLS, and public-key safety smoke checks passed.');
+          console.log('All 550 business profiles (including 500 unique feature maps), searchable selectors, profile-owned pages, shared navigation, persistent settings, secure SACCO member portal, tenant RLS, and public-key safety checks passed.');
           NODE
