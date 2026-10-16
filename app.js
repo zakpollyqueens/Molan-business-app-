@@ -266,13 +266,13 @@
   }
   $('#welcome-get-started')?.addEventListener('click',guidedOpen);
   $$('[data-welcome-auth]').forEach(b=>b.addEventListener('click',()=>openWelcomeAuth(b.dataset.welcomeAuth||'signin')));
-  $('#guided-back')?.addEventListener('click',()=>guidedSetStep(guidedStep-1));
+  $('#guided-back')?.addEventListener('click',()=>{guidedSaveDraft();guidedSetStep(guidedStep-1)});
   $('#guided-next')?.addEventListener('click',()=>{
     if($('#guided-next').dataset.guidedSignin==='true'&&guidedStep===5){let d;try{d=JSON.parse(localStorage.getItem(GUIDED_DRAFT_KEY)||'null')}catch{}openWelcomeAuth('signin');if(d?.ownerEmail)$('#email').value=d.ownerEmail;return}
     if(!guidedValidateStep(guidedStep))return;
     guidedSaveDraft();
     if(guidedStep===0)guidedRenderIndustryFields();
-    if(guidedStep===3)guidedRenderStaff();
+    if(guidedStep===3&&!$('#guided-staff-list').children.length)guidedRenderStaff();
     guidedSetStep(guidedStep+1);
   });
   $('#guided-finish')?.addEventListener('click',guidedFinish);
