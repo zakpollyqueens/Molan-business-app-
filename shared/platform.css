@@ -1,3 +1,43 @@
 .molan-update-banner{position:sticky;top:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border:1px solid rgba(56,189,248,.35);border-radius:14px;background:rgba(8,26,53,.96);color:#fff;box-shadow:0 12px 32px rgba(2,8,23,.18)}.molan-update-banner[hidden]{display:none}.molan-update-banner p{margin:0;font-size:.92rem}.molan-update-banner button,.molan-update-check{cursor:pointer}.molan-update-check.is-checking{opacity:.65;pointer-events:none}.molan-update-check.has-update{border-color:#38bdf8}.molan-shared-error{padding:14px;border-radius:12px;border:1px solid #f59e0b;background:rgba(245,158,11,.09)}@media(max-width:600px){.molan-update-banner{align-items:flex-start;flex-direction:column}}
 /* User-requested: keep the release/update notice hidden in the app UI. */
 .molan-update-banner{display:none!important}
+
+
+/* Application-wide readability and contrast pass — light and dark themes. */
+:root{--molan-text-strong:#102947;--molan-text-body:#2e435d;--molan-text-muted:#536982;--molan-table-head-bg:#12345a;--molan-table-head-text:#fff;--molan-table-head-border:#42c7ed;--molan-field-label:#203b59}
+html,body{font-family:'DM Sans',Manrope,system-ui,-apple-system,'Segoe UI',sans-serif}
+body{font-size:14px;line-height:1.5;color:var(--molan-text-body)}
+/* Page titles, business names, profile names, and personal/owner names must not look washed out. */
+.page-heading h1,.page-heading h2,.panel-head h2,.panel-head h3,.profile-detail-hero h1,.profile-detail-hero h2,.profile-detail-hero h3,.profile-switch-details strong,.profile-text strong,.workspace-chip,.workspace-chip strong,.company-name,.owner-name,.member-name,.user-name,.business-name,.profile-name,.business-profile-name,[data-company-name],[data-owner-name]{font-weight:800!important;letter-spacing:-.015em;color:var(--molan-text-strong)}
+.page-heading h1,.profile-detail-hero h1{font-size:clamp(1.45rem,2.8vw,2rem)}
+.page-heading p,.panel-subtitle,.helper-text,.field-help,.empty-state p,.profile-switch-details small,.profile-state,.muted{color:var(--molan-text-muted)}
+.profile-text strong{color:#fff!important;text-shadow:0 1px 2px rgba(0,0,0,.35)}
+.profile-text span{color:#e1edf9!important;font-weight:650}
+.profile-detail-hero h1,.profile-detail-hero h2,.profile-detail-hero h3{color:#fff!important;font-weight:850!important;text-shadow:0 1px 3px rgba(0,0,0,.28)}
+.profile-detail-hero p,.profile-detail-hero small,.profile-detail-hero .muted{color:#eef6ff!important}
+.profile-detail-hero .profile-state{display:inline-flex;color:#fff!important;background:rgba(5,20,42,.32);border:1px solid rgba(255,255,255,.4);border-radius:999px;padding:5px 9px;font-weight:750}
+/* Consistent high-contrast table headings across all modules and business profiles. */
+table{border-collapse:separate;border-spacing:0;color:var(--molan-text-body)}
+thead th,table thead th,table th,[role="columnheader"],.sacco-table th,.data-table th,.table th,.records-table th,.report-table th{background:var(--molan-table-head-bg)!important;color:var(--molan-table-head-text)!important;font-size:12px!important;font-weight:850!important;letter-spacing:.035em;border-bottom:3px solid var(--molan-table-head-border)!important;text-shadow:none!important;vertical-align:middle}
+thead th:first-child,table thead th:first-child{border-top-left-radius:7px}
+thead th:last-child,table thead th:last-child{border-top-right-radius:7px}
+tbody td,table td,[role="cell"]{color:var(--molan-text-body)}
+tbody tr:nth-child(even){background-color:#f1f6fc}
+tbody tr:hover{background-color:#e4f2ff}
+/* Form labels and values, especially identity fields such as Your name, stay readable. */
+label,.form-stack label,.sacco-form label,.desktop-settings-grid>label:not(.preference-check),.gallery-upload-form>label:not(.gallery-dropzone),.sale-line label,.form-grid label,.field-label{color:var(--molan-field-label)!important;font-size:13px;font-weight:800!important}
+input,textarea,select{color:#142b47}
+input::placeholder,textarea::placeholder{color:#61758d;opacity:1}
+button,.button,.nav-item,.tab{font-weight:700}
+:focus-visible{outline:3px solid #079bd0!important;outline-offset:2px}
+html[data-theme="dark"]{--molan-text-strong:#f1f6ff;--molan-text-body:#dce7f5;--molan-text-muted:#bdcbe0;--molan-table-head-bg:#1b3a5e;--molan-table-head-text:#fff;--molan-table-head-border:#55d9f1;--molan-field-label:#e6effb}
+html[data-theme="dark"] .page-heading h1,html[data-theme="dark"] .page-heading h2,html[data-theme="dark"] .panel-head h2,html[data-theme="dark"] .panel-head h3,html[data-theme="dark"] .profile-switch-details strong,html[data-theme="dark"] .workspace-chip,html[data-theme="dark"] .workspace-chip strong,html[data-theme="dark"] .company-name,html[data-theme="dark"] .owner-name,html[data-theme="dark"] .member-name,html[data-theme="dark"] .user-name,html[data-theme="dark"] .business-name,html[data-theme="dark"] .profile-name,html[data-theme="dark"] .business-profile-name{color:var(--molan-text-strong)!important}
+html[data-theme="dark"] .page-heading p,html[data-theme="dark"] .panel-subtitle,html[data-theme="dark"] .helper-text,html[data-theme="dark"] .field-help,html[data-theme="dark"] .empty-state p,html[data-theme="dark"] .profile-switch-details small,html[data-theme="dark"] .profile-state,html[data-theme="dark"] .muted{color:var(--molan-text-muted)!important}
+html[data-theme="dark"] thead th,html[data-theme="dark"] table thead th,html[data-theme="dark"] table th,html[data-theme="dark"] [role="columnheader"],html[data-theme="dark"] .sacco-table th,html[data-theme="dark"] .data-table th,html[data-theme="dark"] .table th,html[data-theme="dark"] .records-table th,html[data-theme="dark"] .report-table th{background:var(--molan-table-head-bg)!important;color:var(--molan-table-head-text)!important;border-bottom-color:var(--molan-table-head-border)!important}
+html[data-theme="dark"] tbody td,html[data-theme="dark"] table td,html[data-theme="dark"] [role="cell"]{color:var(--molan-text-body)!important}
+html[data-theme="dark"] tbody tr:nth-child(even){background-color:#142940!important}
+html[data-theme="dark"] tbody tr:hover{background-color:#1b3a59!important}
+html[data-theme="dark"] label,html[data-theme="dark"] .form-stack label,html[data-theme="dark"] .sacco-form label,html[data-theme="dark"] .desktop-settings-grid>label:not(.preference-check),html[data-theme="dark"] .gallery-upload-form>label:not(.gallery-dropzone),html[data-theme="dark"] .sale-line label,html[data-theme="dark"] .form-grid label,html[data-theme="dark"] .field-label{color:var(--molan-field-label)!important}
+html[data-theme="dark"] input,html[data-theme="dark"] textarea,html[data-theme="dark"] select{color:#f0f6ff}
+html[data-theme="dark"] input::placeholder,html[data-theme="dark"] textarea::placeholder{color:#b4c4d9;opacity:1}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
