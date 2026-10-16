@@ -227,7 +227,7 @@
   }
   async function guidedFinish(){
     if(!guidedValidateStep(5))return;
-    const draft=guidedSaveDraft();
+    const draft=guidedSaveDraft();draft.termsAcceptedAt=new Date().toISOString();try{localStorage.setItem(GUIDED_DRAFT_KEY,JSON.stringify(draft))}catch{}
     const btn=$('#guided-finish');btn.disabled=true;btn.textContent='Creating your business…';
     try{
       if(user){await guidedCompleteWorkspace();return}
