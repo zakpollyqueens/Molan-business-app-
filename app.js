@@ -35,26 +35,66 @@
   function wirePreferences(){const p=getPreferences();const values={'pref-theme':p.theme,'pref-density':p.density,'pref-text-size':p.textSize};Object.entries(values).forEach(([id,value])=>{const el=$('#'+id);if(el)el.value=value});$('#pref-collapse-sidebar').checked=!!p.collapseSidebar;$('#pref-reduce-motion').checked=!!p.reduceMotion}
   function savePreferences(reset=false){let p=reset?{...DEFAULT_PREFERENCES}:{theme:$('#pref-theme')?.value||'system',density:$('#pref-density')?.value||'comfortable',textSize:$('#pref-text-size')?.value||'100',collapseSidebar:!!$('#pref-collapse-sidebar')?.checked,reduceMotion:!!$('#pref-reduce-motion')?.checked};try{localStorage.setItem(preferencesStorageKey(),JSON.stringify(p))}catch(e){toast('Could not save preferences in this browser.',true);return}applyPreferences(p);if(currentPage==='settings')wirePreferences();const status=$('#preferences-status');if(status)status.textContent=reset?'Defaults restored.':'Preferences saved on this device.';toast(reset?'Display preferences reset.':'PC display preferences saved.')}
   function getConfig(){try{return JSON.parse(localStorage.getItem(CONFIG_KEY)||'null')}catch{return null}}
-  function setClient(url,key){supabase=window.supabase.createClient(url,key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}})}
-  function initConfig(){
-    // First-time visitors are connected automatically. A custom browser config still takes precedence.
+  async function ensureSupabaseLibrary(){
+    if(window.supabase && typeof window.supabase.createClient==='function') return window.supabase;
+    // Some Android WebViews fail to load the first CDN script. Retry known UMD bundles
+    // before showing setup, and report a useful error instead of "createClient undefined".
+    const sources=[
+      'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
+      'https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js'
+    ];
+    for(const src of sources){
+      try{
+        await new Promise((resolve,reject)=>{
+          const script=document.createElement('script');
+          script.src=src; script.async=true;
+          script.onload=()=>resolve();
+          script.onerror=()=>{script.remove();reject(new Error('Could not load Supabase library from '+new URL(src).hostname));};
+          document.head.appendChild(script);
+        });
+        if(window.supabase && typeof window.supabase.createClient==='function') return window.supabase;
+      }catch(_){}
+    }
+    throw new Error('Supabase library could not load. Check your internet connection, then reload the app.');
+  }
+  async function setClient(url,key){
+    const library=await ensureSupabaseLibrary();
+    supabase=library.createClient(url,key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+    return supabase;
+  }
+  async function initConfig(){
     let c=getConfig();
     if(!c?.url||!c?.key){
       c=DEFAULT_SUPABASE_CONFIG;
       try{localStorage.setItem(CONFIG_KEY,JSON.stringify(c))}catch(e){}
     }
+    showScreen('welcome-screen');
     try{
-      setClient(c.url,c.key);
-      showScreen('welcome-screen');
-      supabase.auth.getSession().then(({data,error})=>{
-        if(error)throw error;
-        session=data.session;user=session?.user||null;
-        if(user)bootUser();
-      }).catch(e=>toast('Could not connect to Molan Business. Check your internet connection and reload.',true));
+      await setClient(c.url,c.key);
+      const {data,error}=await supabase.auth.getSession();
+      if(error)throw error;
+      session=data.session;user=session?.user||null;
+      if(user)bootUser();
+    }catch(e){
+      showScreen('setup-screen');
+      toast(e.message||'Could not initialize Supabase. Check your internet connection and project settings.',true);
     }
-    catch(e){localStorage.removeItem(CONFIG_KEY);showScreen('setup-screen');toast('Could not initialize Supabase. Check the project URL and key.',true)}
   }
-  $('#setup-form').addEventListener('submit',e=>{e.preventDefault();const url=$('#project-url').value.trim().replace(/\/$/,''),key=$('#publishable-key').value.trim();if(!/^https:\/\/[\w.-]+\.supabase\.co$/.test(url)){toast('Enter a valid Supabase project URL.',true);return}if(!key){toast('Enter your publishable key.',true);return}try{setClient(url,key);localStorage.setItem(CONFIG_KEY,JSON.stringify({url,key}));showScreen('auth-screen');toast('Connected. Sign in or create your account.')}catch(err){toast('Connection setup failed: '+err.message,true)}});
+  $('#setup-form').addEventListener('submit',async e=>{
+    e.preventDefault();
+    const url=$('#project-url').value.trim().replace(/\/$/,''),key=$('#publishable-key').value.trim();
+    if(!/^https:\/\/[\w.-]+\.supabase\.co$/.test(url)){toast('Enter a valid Supabase project URL.',true);return}
+    if(!key){toast('Enter your publishable key.',true);return}
+    const submit=e.currentTarget.querySelector('[type="submit"]');
+    if(submit){submit.disabled=true;submit.setAttribute('aria-busy','true')}
+    try{
+      await setClient(url,key);
+      localStorage.setItem(CONFIG_KEY,JSON.stringify({url,key}));
+      showScreen('auth-screen');toast('Connected. Sign in or create your account.');
+    }catch(err){
+      toast('Connection setup failed: '+(err.message||'Supabase library unavailable.'),true);
+    }finally{if(submit){submit.disabled=false;submit.removeAttribute('aria-busy')}}
+  });
   let welcomeIndex=0,welcomeTimer=null;
   function showWelcomeSlide(index){
     const slides=$$('[data-welcome-slide]'),dots=$$('[data-welcome-dot]');if(!slides.length)return;
