@@ -1180,5 +1180,5 @@ typeInput?.addEventListener('change',renderMetadata);renderMetadata();
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',()=>{if(getPreferences().theme==='system')applyPreferences()});
   if(window.MolanBusinessProfiles?.load){const profileLoad=window.MolanBusinessProfiles.load();profileLoad.then(()=>{if(currentPage==='profile-directory'&&company)renderPage(currentPage)}).catch(error=>console.warn('[Molan Business] Profile registry fallback:',error))}
   if(window.supabase?.createClient){supabase=null;initConfig();}else{showScreen('setup-screen');toast('Supabase library could not load. Check your internet connection.',true)}
-  if(window.supabase?.createClient)supabase?.auth.onAuthStateChange((event,newSession)=>{session=newSession;user=newSession?.user||null;if(event==='SIGNED_OUT'){showScreen('auth-screen')}});
+  if(window.supabase?.createClient)supabase?.auth.onAuthStateChange((event,newSession)=>{session=newSession;user=newSession?.user||null;if(event==='SIGNED_OUT'){workspaceUnlocked.clear();showScreen('auth-screen')}});
 })();
