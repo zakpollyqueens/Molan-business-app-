@@ -4,35 +4,43 @@
   "slug": "school",
   "name": "School",
   "plural": "Schools",
-  "description": "Learners, classes, assessments, fees and attendance.",
+  "description": "School administration for classes and streams, learner enrolment, attendance, assessments, fee accounts, learning resources, staff access and academic reporting.",
   "icon": "▦",
   "features": [
     {
-      "title": "Classes & learners",
-      "route": "operations"
+      "title": "School overview & performance",
+      "route": "school-overview"
     },
     {
-      "title": "Attendance",
+      "title": "Classes, streams & learners",
+      "route": "school-classes"
+    },
+    {
+      "title": "Attendance register",
       "route": "attendance"
     },
     {
-      "title": "Fees & finance",
-      "route": "finance"
+      "title": "Assessments & examination results",
+      "route": "school-assessments"
+    },
+    {
+      "title": "School fees & accounts",
+      "route": "school-fees"
+    },
+    {
+      "title": "Academic reports & graphs",
+      "route": "school-reports"
+    },
+    {
+      "title": "Learning materials & resources",
+      "route": "inventory"
     },
     {
       "title": "Tasks & deadlines",
       "route": "tasks"
     },
     {
-      "title": "Customers / members",
-      "route": "customers"
-    },
-    {
-      "title": "Reports & insights",
-      "route": "reports"
-    },
-    {
-      "title": "Team & permissions",
+      "title": "Staff & permissions",
       "route": "team"
     },
     {
@@ -41,5 +49,6 @@
     }
   ],
   "settingsRoute": "industry-settings",
-  "overviewRoute": "industry-profile"
+  "overviewRoute": "industry-profile",
+  "group": "Education & learning"
 }
