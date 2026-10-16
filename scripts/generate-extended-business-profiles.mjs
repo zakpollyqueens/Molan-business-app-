@@ -1,0 +1,49 @@
+import fs from 'node:fs';
+import path from 'node:path';
+
+const root = process.cwd();
+const catalogPath = path.join(root, 'business-profiles/extended-catalog.json');
+const registryPath = path.join(root, 'business-profiles/registry.json');
+const catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
+const registry = JSON.parse(fs.readFileSync(registryPath, 'utf8'));
+if (!Array.isArray(catalog.profiles) || catalog.profiles.length !== 500) {
+  throw new Error('Expected exactly 500 extended business profiles.');
+}
+const slugify = value => String(value || '').toLowerCase().normalize('NFKD')
+  .replace(/[^a-z0-9\s-]/g, '').trim().replace(/[\s_]+/g, '-').replace(/-+/g, '-');
+const esc = value => String(value ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const css = `:root{font-family:Inter,system-ui,sans-serif;color:#10213e;background:#f4f8fc}*{box-sizing:border-box}body{margin:0}.shell{max-width:1100px;margin:auto;padding:18px}.hero,.notice{border:1px solid #dce5f1;border-radius:20px;background:#fff;padding:22px;box-shadow:0 12px 34px #122b4f0f}.back{color:#087fbd;text-decoration:none;font-weight:700}.eyebrow{font-size:.72rem;font-weight:800;letter-spacing:.12em;color:#087fbd}.row{display:flex;justify-content:space-between;align-items:center;gap:14px}.mark{display:grid;place-items:center;width:58px;height:58px;border-radius:17px;background:linear-gradient(145deg,#05c8e8,#10366b);color:#fff;font-size:1.7rem}.muted{color:#65758b;line-height:1.55}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:12px;margin-top:16px}.card{display:flex;align-items:center;gap:12px;text-align:left;padding:16px;border:1px solid #dce5f1;border-radius:15px;background:#fff;color:#10213e;cursor:pointer;min-width:0;font:inherit;text-decoration:none}.card:hover{border-color:#0796d2}.num{color:#0796d2;font-weight:800}.copy{flex:1;min-width:0}.copy strong,.copy small{display:block;overflow-wrap:anywhere}.copy small{color:#65758b;margin-top:5px}.notice{margin-top:16px;color:#53657d;line-height:1.6}footer{display:flex;justify-content:space-between;gap:10px;padding:20px 4px;color:#65758b;font-size:.85rem}@media(max-width:620px){.shell{padding:10px}.hero{padding:16px}footer{flex-direction:column}}`;
+const js = `(()=>{'use strict';const slug=location.pathname.replace(/\\/$/,'').split('/').slice(-2,-1)[0],grid=document.getElementById('features'),status=document.getElementById('connection-status'),notice=document.getElementById('notice');let profile;const safe=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));const fs=s=>String(s||'').toLowerCase().normalize('NFKD').replace(/[^a-z0-9\\s-]/g,'').trim().replace(/[\\s_]+/g,'-').replace(/-+/g,'-');async function init(){try{const r=await fetch('profile.json',{cache:'no-cache'});if(!r.ok)throw Error('Profile configuration unavailable');profile=await r.json();if(profile.slug!==slug)throw Error('Profile folder and configuration do not match');document.title=profile.name+' | Molan Business';document.getElementById('profile-name').textContent=profile.name;document.getElementById('profile-description').textContent=profile.description||'';document.getElementById('profile-icon').textContent=profile.icon||'◈';grid.innerHTML=(profile.features||[]).map((f,i)=>'<a class="card" href="pages/'+fs(f.title)+'/index.html"><span class="num">'+String(i+1).padStart(2,'0')+'</span><span class="copy"><strong>'+safe(f.title)+'</strong><small>Open '+safe(f.title.toLowerCase())+'</small></span><span>↗</span></a>').join('');status.textContent='Profile loaded · '+(profile.features||[]).length+' dedicated feature pages';notice.textContent='Each feature above opens a page inside this business profile.'}catch(e){status.textContent='Could not load profile';notice.textContent=e.message;notice.dataset.state='error'}}init()})();`;
+let createdFolders = 0, createdPages = 0;
+for (const [i, p] of catalog.profiles.entries()) {
+  const dir = path.join(root, 'business-profiles', p.slug);
+  fs.mkdirSync(dir, { recursive: true });
+  const profile = { schemaVersion: 1, index: 51 + i, slug: p.slug, name: p.name, plural: p.plural || p.name,
+    description: p.description || '', icon: p.icon || '◈', group: p.group || 'Other business services',
+    extended: true, features: p.features || [], settingsRoute: p.settingsRoute || 'industry-settings',
+    overviewRoute: p.overviewRoute || 'industry-profile' };
+  fs.writeFileSync(path.join(dir, 'profile.json'), JSON.stringify(profile, null, 2) + '\n');
+  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="${esc(p.description)}"><title>${esc(p.name)} | Molan Business</title><link rel="stylesheet" href="profile.css"></head><body data-profile="${esc(p.slug)}"><main class="shell"><header class="hero"><a class="back" href="../../index.html">← Molan Business</a><p class="eyebrow">DEDICATED BUSINESS PROFILE · ${51+i} / 550</p><div class="row"><div><h1 id="profile-name">${esc(p.name)}</h1><p class="muted" id="profile-description">${esc(p.description)}</p></div><span class="mark" id="profile-icon">${esc(p.icon || '◈')}</span></div><p class="muted" id="connection-status">Loading profile configuration…</p></header><h2>Business features</h2><p class="muted">Choose a tool below. Each feature has its own page within this business profile.</p><div class="grid" id="features">${(p.features||[]).map((f,j)=>`<a class="card" href="pages/${slugify(f.title)}/index.html"><span class="num">${String(j+1).padStart(2,'0')}</span><span class="copy"><strong>${esc(f.title)}</strong><small>Open ${esc(f.title.toLowerCase())}</small></span><span>↗</span></a>`).join('')}</div><section class="notice" id="notice" role="status">Profile tools are ready.</section><footer><span>Molan Business · ${esc(p.name)}</span><span>Profile module: ${esc(p.slug)}</span></footer></main><script src="profile.js" defer></script></body></html>`;
+  fs.writeFileSync(path.join(dir, 'index.html'), html);
+  fs.writeFileSync(path.join(dir, 'profile.js'), js);
+  fs.writeFileSync(path.join(dir, 'profile.css'), css);
+  for (const [j, f] of (p.features || []).entries()) {
+    const featureSlug = slugify(f.title);
+    const pageDir = path.join(dir, 'pages', featureSlug);
+    fs.mkdirSync(pageDir, { recursive: true });
+    const pageHtml = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(f.title)} · ${esc(p.name)}</title><link rel="stylesheet" href="../../profile.css"></head><body><main class="shell"><header class="hero"><a class="back" href="../../../index.html">← Back to ${esc(p.name)}</a><p class="eyebrow">${esc(p.group || 'BUSINESS PROFILE')}</p><h1>${esc(f.title)}</h1><p class="muted">${esc(p.description)}</p></header><section class="notice"><strong>${esc(f.title)}</strong><p>This is the dedicated ${esc(f.title.toLowerCase())} page for <strong>${esc(p.name)}</strong>.</p><p>Use this area for ${esc(f.title.toLowerCase())} records and review the permissions of your active workspace before entering business data.</p><p>Workspace route: <code>${esc(f.route || 'business-tools')}</code></p></section><p><a class="card" href="../../../../index.html">Open Molan Business workspace ↗</a></p><footer><span>${esc(p.name)}</span><span>Feature ${j+1} / ${(p.features||[]).length}</span></footer></main></body></html>`;
+    fs.writeFileSync(path.join(pageDir, 'index.html'), pageHtml);
+    createdPages++;
+  }
+  createdFolders++;
+}
+const extended = new Set(catalog.profiles.map(p => p.slug));
+for (const p of registry.profiles) {
+  if (extended.has(p.slug)) {
+    p.config = `business-profiles/${p.slug}/profile.json`;
+    p.page = `business-profiles/${p.slug}/index.html`;
+    p.featureMap = `business-profiles/${p.slug}/profile.json#features`;
+  }
+}
+fs.writeFileSync(registryPath, JSON.stringify(registry, null, 2) + '\n');
+console.log(`Generated ${createdFolders} dedicated profile folders and ${createdPages} feature pages.`);
