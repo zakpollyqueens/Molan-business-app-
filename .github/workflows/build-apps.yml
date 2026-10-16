@@ -73,6 +73,7 @@ jobs:
           node-version: 20
       - run: npm install
       - name: Set desktop package version
+        shell: bash
         run: npm version "1.0.${GITHUB_RUN_NUMBER}" --no-git-tag-version --allow-same-version
       - run: npm run build:windows
       - name: Verify Windows installer
@@ -99,6 +100,7 @@ jobs:
           node-version: 20
       - run: npm install
       - name: Set desktop package version
+        shell: bash
         run: npm version "1.0.${GITHUB_RUN_NUMBER}" --no-git-tag-version --allow-same-version
       - run: npm run build:macos
       - name: Verify macOS installers and report sizes
@@ -128,6 +130,7 @@ jobs:
           node-version: 20
       - run: npm install
       - name: Set desktop package version
+        shell: bash
         run: npm version "1.0.${GITHUB_RUN_NUMBER}" --no-git-tag-version --allow-same-version
       - run: npm run build:linux
       - name: Verify Linux installers and report sizes
