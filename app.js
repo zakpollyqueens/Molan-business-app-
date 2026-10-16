@@ -10,7 +10,7 @@
   };
   let supabase = null, session = null, user = null, company = null, membership = null, currentPage = 'overview', authMode = 'signin', selectedIndustryProfile = null;
   let cache = {tasks:[],products:[],members:[],profiles:[],announcements:[],departments:[],customers:[],inventory:[],sales:[],finance:[],invitations:[],attendance:[],reports:[],council:[],websiteRequests:[],websitePayments:[],saleItems:[],workspaces:[],operations:[],inventoryMovements:[],schoolClasses:[],schoolLearners:[],schoolAssessments:[],schoolFees:[],permissions:[]};
-  const screens = ['setup-screen','auth-screen','company-screen','dashboard-screen'];
+  const screens = ['welcome-screen','setup-screen','auth-screen','company-screen','dashboard-screen'];
   const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const initials = name => (String(name||'M').trim().split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase() || 'M');
   const dateLabel = value => value ? new Date(value).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}) : 'No due date';
@@ -42,7 +42,7 @@
     }
     try{
       setClient(c.url,c.key);
-      showScreen('auth-screen');
+      showScreen('welcome-screen');
       supabase.auth.getSession().then(({data,error})=>{
         if(error)throw error;
         session=data.session;user=session?.user||null;
@@ -52,6 +52,23 @@
     catch(e){localStorage.removeItem(CONFIG_KEY);showScreen('setup-screen');toast('Could not initialize Supabase. Check the project URL and key.',true)}
   }
   $('#setup-form').addEventListener('submit',e=>{e.preventDefault();const url=$('#project-url').value.trim().replace(/\/$/,''),key=$('#publishable-key').value.trim();if(!/^https:\/\/[\w.-]+\.supabase\.co$/.test(url)){toast('Enter a valid Supabase project URL.',true);return}if(!key){toast('Enter your publishable key.',true);return}try{setClient(url,key);localStorage.setItem(CONFIG_KEY,JSON.stringify({url,key}));showScreen('auth-screen');toast('Connected. Sign in or create your account.')}catch(err){toast('Connection setup failed: '+err.message,true)}});
+  let welcomeIndex=0,welcomeTimer=null;
+  function showWelcomeSlide(index){
+    const slides=$('[data-welcome-slide]'),dots=$('[data-welcome-dot]');if(!slides.length)return;
+    welcomeIndex=(index+slides.length)%slides.length;
+    slides.forEach((s,i)=>{s.classList.toggle('active',i===welcomeIndex);s.setAttribute('aria-hidden',i===welcomeIndex?'false':'true')});
+    dots.forEach((d,i)=>{d.classList.toggle('active',i===welcomeIndex);if(i===welcomeIndex)d.setAttribute('aria-current','true');else d.removeAttribute('aria-current')});
+    const count=$('#welcome-slide-count');if(count)count.textContent=String(welcomeIndex+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0');
+  }
+  function startWelcomeAutoplay(){clearInterval(welcomeTimer);if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches)welcomeTimer=setInterval(()=>showWelcomeSlide(welcomeIndex+1),7000)}
+  function openWelcomeAuth(mode='signin'){clearInterval(welcomeTimer);showScreen('auth-screen');setAuthMode(mode);window.scrollTo({top:0,behavior:'smooth'})}
+  $('#welcome-get-started')?.addEventListener('click',()=>openWelcomeAuth('signup'));
+  $('[data-welcome-auth]').forEach(b=>b.addEventListener('click',()=>openWelcomeAuth(b.dataset.welcomeAuth||'signin')));
+  $('#welcome-prev')?.addEventListener('click',()=>{showWelcomeSlide(welcomeIndex-1);startWelcomeAutoplay()});
+  $('#welcome-next')?.addEventListener('click',()=>{showWelcomeSlide(welcomeIndex+1);startWelcomeAutoplay()});
+  $('[data-welcome-dot]').forEach(b=>b.addEventListener('click',()=>{showWelcomeSlide(Number(b.dataset.welcomeDot));startWelcomeAutoplay()}));
+  $('#welcome-security-link')?.addEventListener('click',()=>{const note=$('#welcome-security');note.hidden=!note.hidden;$('#welcome-security-link').textContent=note.hidden?'Our security approach':'Hide security note'});
+  $('#welcome-year').textContent=String(new Date().getFullYear());showWelcomeSlide(0);startWelcomeAutoplay();
   function setAuthMode(mode){authMode=mode;$$('[data-auth-mode]').forEach(b=>b.classList.toggle('active',b.dataset.authMode===mode));$('#name-field').classList.toggle('hidden',mode!=='signup');$('#display-name').required=mode==='signup';$('#auth-title').textContent=mode==='signup'?'Create your account':'Welcome back';$('#auth-subtitle').textContent=mode==='signup'?'Set up your secure sign-in to get started.':'Sign in to continue to your workspace.';$('#auth-submit').innerHTML=(mode==='signup'?'Create account':'Sign in')+' <span>→</span>';$('#reset-password').classList.toggle('hidden',mode==='signup')}
   $$('[data-auth-mode]').forEach(b=>b.addEventListener('click',()=>setAuthMode(b.dataset.authMode)));
   $('#auth-form').addEventListener('submit',async e=>{e.preventDefault();if(!supabase)return;const btn=$('#auth-submit');btn.disabled=true;btn.textContent=authMode==='signup'?'Creating account…':'Signing in…';try{const email=$('#email').value.trim(),password=$('#password').value;let result;if(authMode==='signup')result=await supabase.auth.signUp({email,password,options:{emailRedirectTo:AUTH_REDIRECT_URL,data:{display_name:$('#display-name').value.trim()}}});else result=await supabase.auth.signInWithPassword({email,password});if(result.error)throw result.error;if(authMode==='signup'&&!result.data.session){toast('Check your email to confirm your account, then sign in.');return}session=result.data.session;user=result.data.user;if(user)await bootUser()}catch(err){toast(err.message||'Authentication failed.',true)}finally{btn.disabled=false;setAuthMode(authMode)}});
