@@ -16,8 +16,8 @@
       "route": "finance"
     },
     {
-      "title": "Members",
-      "route": "customers"
+      "title": "Member meetings & decisions",
+      "route": "council"
     },
     {
       "title": "Reports",
