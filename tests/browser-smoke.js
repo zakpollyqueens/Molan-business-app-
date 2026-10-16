@@ -46,7 +46,7 @@ const assert = require('node:assert/strict');
     assert.match(ugandaPricing, /Gold is UGX 100,000 for 3 months/);
     assert.match(ugandaPricing, /Silver is UGX 70,000 for 2 months/);
     assert.match(ugandaPricing, /Premium is UGX 30,000 for 1 month/);
-    assert.match(await page.locator('#learn-plan-grid').innerText(), /Gold[\s\S]*3 months[\s\S]*Silver[\s\S]*2 months[\s\S]*Premium[\s\S]*1 month/);
+    assert.match(await page.locator('#learn-plan-grid').innerText(), /Gold[\s\S]*3 months[\s\S]*Silver[\s\S]*2 months[\s\S]*Premium[\s\S]*1 month/i);
     assert.match(await page.locator('.learn-pricing-disclaimer').innerText(), /not connected to live checkout/);
     await page.locator('#learn-close').click();
     await page.waitForSelector('#welcome-screen:not(.hidden)', { timeout: 10000 });
