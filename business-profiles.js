@@ -8,7 +8,7 @@
   let byName = Object.create(null);
   const slugify = value => String(value || '').toLowerCase().normalize('NFKD').replace(/[^\w\s-]/g, '').trim().replace(/[\s_]+/g, '-').replace(/-+/g, '-');
   async function load() {
-    const loaded = await Promise.all(fallbackCatalog.map(async fallback => {
+    const existing = await Promise.all(fallbackCatalog.map(async fallback => {
       const slug = slugify(fallback[0]);
       try {
         const response = await fetch('business-profiles/' + slug + '/profile.json', { cache: 'no-cache' });
@@ -21,21 +21,58 @@
         return { fallback, config: null };
       }
     }));
-    catalog = loaded.map(item => {
+    const loaded = existing.map(item => {
       const p = item.config;
-      if (p && p.slug !== 'sacco-savings-group') p.features = (p.features || []).filter(feature => feature.route !== 'sacco');
-      return p ? [p.name, p.plural, p.description, p.icon] : item.fallback;
+      if (p && p.slug !== 'sacco-savings-group') p.features = (p.features || []).filter(feature => feature.route !== 'sacco' && feature.route !== 'sacco-welfare');
+      const config = p || { name:item.fallback[0], slug:slugify(item.fallback[0]), plural:item.fallback[1], description:item.fallback[2], icon:item.fallback[3], features:[] };
+      return { config, fallback:item.fallback, extended:false };
     });
+    try {
+      const response = await fetch('business-profiles/extended-catalog.json', { cache: 'no-cache' });
+      if (!response.ok) throw new Error('Extended business profile catalogue could not be loaded.');
+      const data = await response.json();
+      if (!Array.isArray(data.profiles) || data.profiles.length !== 500) throw new Error('Extended catalogue must contain exactly 500 profiles.');
+      data.profiles.forEach(profile => {
+        if (!profile || !profile.slug || !profile.name || !Array.isArray(profile.features)) return;
+        profile.extended = true;
+        loaded.push({ config:profile, fallback:[profile.name,profile.plural,profile.description,profile.icon], extended:true });
+      });
+    } catch (error) {
+      console.error('[Molan Business] The 500-profile catalogue did not load:', error);
+    }
+    catalog = loaded.map(item => [item.config.name, item.config.plural || item.config.name, item.config.description || '', item.config.icon || '◈']);
     byName = Object.create(null);
-    loaded.forEach(item => {
-      const p = item.config;
-      if (p && p.slug !== 'sacco-savings-group') p.features = (p.features || []).filter(feature => feature.route !== 'sacco');
-      byName[item.fallback[0]] = p || {
-        name: item.fallback[0], slug: slugify(item.fallback[0]),
-        plural: item.fallback[1], description: item.fallback[2], icon: item.fallback[3],
-        features: []
+    loaded.forEach(item => { byName[item.config.name] = item.config; });
+    const select = document.getElementById('guided-business-type');
+    if (select) {
+      const previous = select.value;
+      select.replaceChildren(new Option('Choose your business type', ''));
+      catalog.forEach(profile => select.add(new Option(profile[0], profile[0])));
+      if (previous && byName[previous]) select.value = previous;
+      const search = document.getElementById('guided-business-type-search');
+      const resultCount = document.getElementById('guided-business-type-results');
+      const filterOptions = () => {
+        const query = String(search?.value || '').trim().toLocaleLowerCase();
+        let matches = 0;
+        [...select.options].forEach((option, index) => {
+          if (index === 0) { option.hidden = false; return; }
+          const profile = byName[option.value];
+          const haystack = [option.text, profile?.plural, profile?.description, profile?.group, profile?.specialty].join(' ').toLocaleLowerCase();
+          const show = !query || haystack.includes(query) || option.value === select.value;
+          option.hidden = !show;
+          if (show && option.value !== select.value) matches++;
+        });
+        if (resultCount) resultCount.textContent = query ? (matches + (select.value && byName[select.value] ? 1 : 0)) + ' matching business types' : catalog.length + ' business types available';
       };
-    });
+      if (search && !search.dataset.profileSearchBound) {
+        search.addEventListener('input', filterOptions);
+        select.addEventListener('change', filterOptions);
+        search.dataset.profileSearchBound = 'true';
+      }
+      filterOptions();
+    }
+    const counter = document.getElementById('profile-catalogue-count-number');
+    if (counter) counter.textContent = String(catalog.length);
     return catalog;
   }
   window.MolanBusinessProfiles = {
