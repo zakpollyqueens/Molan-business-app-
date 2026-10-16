@@ -54,12 +54,12 @@
   $('#setup-form').addEventListener('submit',e=>{e.preventDefault();const url=$('#project-url').value.trim().replace(/\/$/,''),key=$('#publishable-key').value.trim();if(!/^https:\/\/[\w.-]+\.supabase\.co$/.test(url)){toast('Enter a valid Supabase project URL.',true);return}if(!key){toast('Enter your publishable key.',true);return}try{setClient(url,key);localStorage.setItem(CONFIG_KEY,JSON.stringify({url,key}));showScreen('auth-screen');toast('Connected. Sign in or create your account.')}catch(err){toast('Connection setup failed: '+err.message,true)}});
   let welcomeIndex=0,welcomeTimer=null;
   function showWelcomeSlide(index){
-    const slides=$('[data-welcome-slide]'),dots=$('[data-welcome-dot]');if(!slides.length)return;
+    const slides=$$('[data-welcome-slide]'),dots=$$('[data-welcome-dot]');if(!slides.length)return;
     welcomeIndex=(index+slides.length)%slides.length;
     slides.forEach((s,i)=>{s.classList.toggle('active',i===welcomeIndex);s.setAttribute('aria-hidden',i===welcomeIndex?'false':'true')});
     dots.forEach((d,i)=>{d.classList.toggle('active',i===welcomeIndex);if(i===welcomeIndex)d.setAttribute('aria-current','true');else d.removeAttribute('aria-current')});
     const count=$('#welcome-slide-count');if(count)count.textContent=String(welcomeIndex+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0');
-    const scenes=$('[data-welcome-scene]');scenes.forEach((scene,i)=>scene.classList.toggle('active',i===welcomeIndex));
+    const scenes=$$('[data-welcome-scene]');scenes.forEach((scene,i)=>scene.classList.toggle('active',i===welcomeIndex));
     const sceneTitles=['Your connected workspace','Choose your industry','Create your account','Set up the business','Complete your profile','Manage your team','Add daily records','Review progress'];
     const sceneSubs=['People · Operations · Progress','A profile for your kind of work','Name and sign-in details','Company name and business type','Business details and tools','Roles and appropriate access','Customers · Stock · Sales · Tasks','Reports · Tasks · Announcements'];
     const visualTitle=$('#welcome-visual-title'),visualSubtitle=$('#welcome-visual-subtitle');if(visualTitle)visualTitle.textContent=sceneTitles[welcomeIndex]||sceneTitles[0];if(visualSubtitle)visualSubtitle.textContent=sceneSubs[welcomeIndex]||sceneSubs[0];
