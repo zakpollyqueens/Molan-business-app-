@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "profile": "bar-beverage-shop",
+  "name": "Bar / beverage shop",
+  "features": [
+    {
+      "title": "Bookings & service work",
+      "route": "business-tools",
+      "id": "bar-beverage-shop-01",
+      "page": "pages/feature-bookings-service-work/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Ingredients & supplies",
+      "route": "inventory",
+      "id": "bar-beverage-shop-02",
+      "page": "pages/feature-ingredients-supplies/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Orders & sales",
+      "route": "sales",
+      "id": "bar-beverage-shop-03",
+      "page": "pages/feature-orders-sales/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Tasks & deadlines",
+      "route": "tasks",
+      "id": "bar-beverage-shop-04",
+      "page": "pages/feature-tasks-deadlines/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Customers / members",
+      "route": "customers",
+      "id": "bar-beverage-shop-05",
+      "page": "pages/feature-customers-members/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Operations register",
+      "route": "operations",
+      "id": "bar-beverage-shop-06",
+      "page": "pages/feature-operations-register/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Finance & expenses",
+      "route": "finance",
+      "id": "bar-beverage-shop-07",
+      "page": "pages/feature-finance-expenses/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports",
+      "id": "bar-beverage-shop-08",
+      "page": "pages/feature-reports-insights/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Team & permissions",
+      "route": "team",
+      "id": "bar-beverage-shop-09",
+      "page": "pages/feature-team-permissions/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "title": "Announcements",
+      "route": "announcements",
+      "id": "bar-beverage-shop-10",
+      "page": "pages/feature-announcements/index.html",
+      "status": "runtime-integration-required"
+    }
+  ],
+  "notes": "Routes and UI are profile-owned. Backend writes must go through authenticated shared runtime and Supabase RLS."
+}

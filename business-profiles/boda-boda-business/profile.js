@@ -1,0 +1,1 @@
+(()=>{'use strict';const body=document.body;const slug=body.dataset.profile;if(!slug)return;window.addEventListener('molan:runtime-ready',()=>{body.dataset.runtime=typeof window.MolanProfileRuntime?.openFeature==='function'?'ready':'missing'});if(typeof window.MolanProfileRuntime?.openFeature==='function')body.dataset.runtime='ready';})();
