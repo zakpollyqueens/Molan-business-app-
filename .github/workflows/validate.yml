@@ -81,7 +81,7 @@ jobs:
           if (profileNames.size !== 51) throw new Error('Expected 51 unique profile folder names (including the retired redirect).');
           if (!js.includes('manage_company_workspace_status') || !js.includes('data-workspace-admin-action')) throw new Error('Workspace lifecycle controls are not connected.');
           const lifecycleMigration = fs.readFileSync('supabase/migrations/20261016090000_workspace_lifecycle_controls.sql', 'utf8');
-          for (const required of ['status text','deleted_at','manage_company_workspace_status','security invoker','from public, anon','to authenticated']) {
+          for (const required of ['status text','deleted_at','manage_company_workspace_status','security invoker','from public,anon','to authenticated']) {
             if (!lifecycleMigration.toLowerCase().includes(required.toLowerCase())) throw new Error('Workspace lifecycle migration missing: ' + required);
           }
           const deletionMigration = fs.readFileSync('supabase/migrations/20261016185000_fix_deleted_business_membership_status.sql', 'utf8').toLowerCase();
