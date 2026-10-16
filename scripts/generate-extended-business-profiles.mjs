@@ -68,7 +68,24 @@ for (const [i, p] of catalog.profiles.entries()) {
   for (const f of (p.features || [])) ensureProfileNavigation(path.join(dir, 'pages', slugify(f.title), 'index.html'), p, true);
   createdFolders++;
 }
+// Add the same profile-scoped hamburger to the original 50 profile folders too.
 const extended = new Set(catalog.profiles.map(p => p.slug));
+for (const entry of registry.profiles) {
+  if (extended.has(entry.slug)) continue;
+  const configPath = path.join(root, entry.config || `business-profiles/${entry.slug}/profile.json`);
+  const indexPath = path.join(root, entry.page || `business-profiles/${entry.slug}/index.html`);
+  if (!fs.existsSync(configPath) || !fs.existsSync(indexPath)) continue;
+  try {
+    const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    ensureProfileNavigation(indexPath, config, false);
+    for (const feature of (config.features || [])) {
+      const featurePath = path.join(root, 'business-profiles', entry.slug, 'pages', slugify(feature.title), 'index.html');
+      if (fs.existsSync(featurePath)) ensureProfileNavigation(featurePath, config, true);
+    }
+  } catch (error) {
+    console.warn('Skipping optional navigation injection for existing profile', entry.slug, error.message);
+  }
+}
 for (const p of registry.profiles) {
   if (extended.has(p.slug)) {
     p.config = `business-profiles/${p.slug}/profile.json`;
