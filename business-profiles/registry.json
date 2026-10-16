@@ -228,9 +228,10 @@
       "plural": "SACCOs",
       "description": "Members, savings, terms, approvals and withdrawals.",
       "icon": "♧",
-      "enabled": true,
+      "enabled": false,
       "config": "business-profiles/sacco/profile.json",
-      "page": "business-profiles/sacco/index.html"
+      "page": "business-profiles/sacco/index.html",
+      "disabledReason": "Replaced by SACCO Savings Group"
     },
     {
       "slug": "sacco-savings-group",
