@@ -270,3 +270,25 @@ html[data-theme="dark"] .settings-tile{border-color:#26354b}
 
 /* Keep the floating release/update widget from covering the full-screen explainer controls. */
 body.learn-more-open #molan-floating-update{display:none!important}
+
+/* Team collaboration workspace */
+.chat-workspace-tabs,.chat-quick-actions{display:flex;flex-wrap:wrap;gap:9px;margin:18px 0 22px}
+.chat-section{margin:18px 0}
+.chat-compose-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;padding:16px;margin:10px 0 20px;border:1px solid var(--border,#dce4ef);border-radius:18px;background:var(--surface-soft,rgba(128,150,180,.07))}
+.chat-compose-form label{display:grid;gap:7px;font-size:.88rem;font-weight:650}
+.chat-compose-form input,.chat-compose-form textarea,.chat-compose-form select{width:100%;min-width:0;padding:11px 12px;border:1px solid var(--border,#dce4ef);border-radius:10px;background:var(--surface,#fff);color:inherit;font:inherit}
+.chat-compose-form label:has(textarea),.chat-compose-form button{grid-column:1/-1}
+.chat-message-list,.chat-task-list,.chat-meeting-list,.chat-notification-list,.chat-board-records{display:grid;gap:12px}
+.chat-message-card,.chat-task-card,.chat-meeting-card,.chat-notification,.chat-board-record{padding:15px;border:1px solid var(--border,#dce4ef);border-radius:16px;background:var(--surface,#fff);min-width:0}
+.chat-message-head{display:flex;align-items:center;gap:10px}.chat-message-head>div{display:grid;gap:3px;flex:1;min-width:0}
+.chat-message-head small,.chat-task-card small,.chat-notification small,.chat-board-record small,.chat-board-member small{display:block;opacity:.72;font-size:.8rem;overflow-wrap:anywhere}
+.chat-message-card>p,.chat-task-card p,.chat-notification p,.chat-board-record p{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.55}
+.chat-reactions{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.chat-reaction{border:1px solid var(--border,#dce4ef);border-radius:999px;background:var(--surface-soft,rgba(128,150,180,.07));padding:6px 10px;cursor:pointer;color:inherit}.chat-reaction.selected{border-color:#4a9fe7;background:rgba(65,153,230,.15)}
+.chat-task-card,.chat-meeting-card,.chat-notification,.chat-board-member{display:flex;align-items:center;gap:14px;justify-content:space-between}
+.chat-task-card>div,.chat-meeting-copy,.chat-notification>div:nth-child(2),.chat-board-member>div{min-width:0;flex:1}
+.chat-task-card select{max-width:160px;padding:9px;border-radius:9px;border:1px solid var(--border,#dce4ef);background:var(--surface,#fff);color:inherit}
+.chat-meeting-date{font-size:.85rem;font-weight:800;min-width:150px}
+.chat-notification{justify-content:flex-start}.chat-notification.is-unread{border-color:#3c9ef3;background:linear-gradient(110deg,rgba(62,157,239,.13),var(--surface,#fff) 62%);box-shadow:inset 4px 0 #2788df}
+.chat-notification-dot{width:10px;height:10px;border-radius:50%;background:#9aa8bb;flex:0 0 10px}.chat-notification.is-unread .chat-notification-dot{background:#1685df;box-shadow:0 0 0 5px rgba(22,133,223,.13)}
+.chat-read-label{font-size:.8rem;opacity:.65}.chat-board-member{justify-content:flex-start;padding:11px 0;border-top:1px solid var(--border,#dce4ef)}.chat-board-record h4{margin:10px 0 5px}
+@media(max-width:680px){.chat-compose-form{grid-template-columns:1fr}.chat-compose-form label,.chat-compose-form button{grid-column:1}.chat-task-card,.chat-meeting-card,.chat-notification{align-items:flex-start;flex-wrap:wrap}.chat-task-card select{max-width:100%;width:100%}.chat-meeting-date{min-width:0;width:100%}}
