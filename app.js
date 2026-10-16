@@ -10,7 +10,7 @@
   };
   let supabase = null, session = null, user = null, company = null, membership = null, currentPage = 'overview', authMode = 'signin', selectedIndustryProfile = null;
   let cache = {tasks:[],products:[],members:[],profiles:[],announcements:[],departments:[],customers:[],inventory:[],sales:[],finance:[],invitations:[],attendance:[],reports:[],council:[],websiteRequests:[],websitePayments:[],saleItems:[],workspaces:[],operations:[],inventoryMovements:[],schoolClasses:[],schoolLearners:[],schoolAssessments:[],schoolFees:[],permissions:[]};
-  const screens = ['welcome-screen','setup-screen','auth-screen','company-screen','dashboard-screen'];
+  const screens = ['welcome-screen','guided-onboarding-screen','setup-screen','auth-screen','company-screen','dashboard-screen'];
   const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const initials = name => (String(name||'M').trim().split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase() || 'M');
   const dateLabel = value => value ? new Date(value).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}) : 'No due date';
@@ -66,7 +66,196 @@
   }
   function startWelcomeAutoplay(){clearInterval(welcomeTimer);if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches)welcomeTimer=setInterval(()=>showWelcomeSlide(welcomeIndex+1),7000)}
   function openWelcomeAuth(mode='signin'){clearInterval(welcomeTimer);showScreen('auth-screen');setAuthMode(mode);window.scrollTo({top:0,behavior:'smooth'})}
-  $('#welcome-get-started')?.addEventListener('click',()=>openWelcomeAuth('signup'));
+
+  const GUIDED_DRAFT_KEY='molan_guided_onboarding_draft_v1';
+  const GUIDED_COMPANY_KEY='molan_guided_onboarding_company_v1';
+  let guidedStep=0,guidedStaffCount=0;
+  const guidedStory=[
+    ['Choose the right starting point.','Pick the business type that best describes your day-to-day work.','photo-1441986300917-64674bd600d8'],
+    ['Secure your owner account.','The owner account is used to sign in and manage who can access the workspace.','photo-1521737711867-e3b97375f902'],
+    ['Name and identify your business.','Add your organization name and the contact details you want to include.','photo-1497366754035-f200968a6e72'],
+    ['Choose your first priorities.','We’ll tailor the setup questions to your industry, from school classes to stock and sales.','photo-1551288049-bebda4e38f71'],
+    ['Prepare your team.','Add staff invitations now or skip this and manage staff from the workspace later.','photo-1521737711867-e3b97375f902'],
+    ['Review, agree and create.','We’ll create your secure owner account and then set up the workspace after authentication.','photo-1497366811353-6870744d04b2']
+  ];
+  const guidedEsc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  function guidedShowStatus(message,bad=false){const el=$('#guided-status');if(!el)return;el.hidden=false;el.textContent=message;el.classList.toggle('bad',bad)}
+  function guidedSetStep(index){
+    guidedStep=Math.max(0,Math.min(5,index));
+    $('[data-guided-step]').forEach((el,i)=>el.classList.toggle('active',i===guidedStep));
+    const story=guidedStory[guidedStep],image=$('#guided-story-image');
+    if(image)image.style.backgroundImage="url('https://images.unsplash.com/"+story[2]+"?auto=format&fit=crop&w=1100&q=82')";
+    $('#guided-story-title').textContent=story[0];$('#guided-story-copy').textContent=story[1];
+    $('#guided-progress-fill').style.width=((guidedStep+1)/6*100)+'%';
+    $('#guided-progress-label').textContent='STEP '+(guidedStep+1)+' OF 6';$('#guided-step-count').textContent=(guidedStep+1)+' / 6';
+    $('#guided-back').disabled=guidedStep===0;$('#guided-next').classList.toggle('hidden',guidedStep===5);$('#guided-finish').classList.toggle('hidden',guidedStep!==5);
+    if(guidedStep===5)guidedRenderReview();
+    guidedShowStatus('',false);$('#guided-status').hidden=true;
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  function guidedOpen(){
+    clearInterval(welcomeTimer);showScreen('guided-onboarding-screen');guidedSetStep(0);
+    if(user){$('#guided-existing-session').classList.remove('hidden');$('#guided-account-fields').classList.add('hidden');$('#guided-owner-name').required=false;$('#guided-owner-email').required=false;$('#guided-owner-password').required=false;$('#guided-owner-confirm').required=false;}
+    else{$('#guided-existing-session').classList.add('hidden');$('#guided-account-fields').classList.remove('hidden');$('#guided-owner-name').required=true;$('#guided-owner-email').required=true;$('#guided-owner-password').required=true;$('#guided-owner-confirm').required=true;}
+    guidedLoadDraft();guidedRenderIndustryFields();guidedRenderStaff();
+  }
+  function guidedBackToWelcome(){showScreen('welcome-screen');startWelcomeAutoplay()}
+  function guidedSlug(v){return String(v||'business').toLowerCase().replace(/sacco savings group/g,'sacco-savings-group').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,100)||'business'}
+  function guidedGetDraft(){
+    const staff=$('.guided-staff-row').map(row=>({name:row.querySelector('[name="staff-name"]').value.trim(),email:row.querySelector('[name="staff-email"]').value.trim(),role:row.querySelector('[name="staff-role"]').value,department:row.querySelector('[name="staff-department"]').value.trim()})).filter(x=>x.name||x.email||x.department);
+    return {version:1,businessType:$('#guided-business-type').value,ownerName:$('#guided-owner-name').value.trim(),ownerEmail:$('#guided-owner-email').value.trim(),businessName:$('#guided-business-name').value.trim(),motto:$('#guided-motto').value.trim(),website:$('#guided-website').value.trim(),phone:$('#guided-phone').value.trim(),address:$('#guided-address').value.trim(),industry:guidedReadIndustryFields(),staff,termsAccepted:$('#guided-terms').checked,updatedAt:new Date().toISOString()};
+  }
+  function guidedSaveDraft(){
+    const draft=guidedGetDraft();try{localStorage.setItem(GUIDED_DRAFT_KEY,JSON.stringify(draft))}catch(e){guidedShowStatus('This browser could not save your setup draft. Keep this tab open while you continue.',true)}
+    return draft;
+  }
+  function guidedLoadDraft(){
+    let d;try{d=JSON.parse(localStorage.getItem(GUIDED_DRAFT_KEY)||'null')}catch{return}
+    if(!d||d.version!==1)return;
+    const set=(id,v)=>{const el=$('#'+id);if(el&&v!==undefined&&v!==null)el.value=v};
+    set('guided-business-type',d.businessType);set('guided-owner-name',d.ownerName);set('guided-owner-email',d.ownerEmail);set('guided-business-name',d.businessName);set('guided-motto',d.motto);set('guided-website',d.website);set('guided-phone',d.phone);set('guided-address',d.address);
+    if($('#guided-terms'))$('#guided-terms').checked=!!d.termsAccepted;
+    guidedRenderIndustryFields(d.industry||{});guidedRenderStaff(d.staff||[]);
+  }
+  function guidedReadIndustryFields(){
+    const type=$('#guided-business-type').value.toLowerCase(),read=id=>$('#'+id)?.value||'';
+    if(/school|college|training/.test(type))return {kind:'education',levels:$('[name="school-level"]:checked').map(x=>x.value),classes:read('guided-school-classes').split(',').map(x=>x.trim()).filter(Boolean),academicYear:read('guided-academic-year'),feeCycle:read('guided-school-fee-cycle'),feeCurrency:read('guided-school-currency')};
+    if(/shop|retail|wholesale|supermarket|boutique|pharmacy|hardware|electronics|inventory/.test(type))return {kind:'retail',trackStock:!!$('#guided-stock')?.checked,trackSuppliers:!!$('#guided-suppliers')?.checked,trackSales:!!$('#guided-sales')?.checked,trackExpenses:!!$('#guided-expenses')?.checked};
+    if(/restaurant|hotel|bar|bakery|catering|cafe/.test(type))return {kind:'hospitality',trackBookings:!!$('#guided-bookings')?.checked,trackStock:!!$('#guided-hospitality-stock')?.checked,trackOrders:!!$('#guided-orders')?.checked,trackStaff:!!$('#guided-hospitality-staff')?.checked};
+    if(/sacco|savings|investment|microfinance|cooperative/.test(type))return {kind:'savings-group',memberRecords:!!$('#guided-members')?.checked,trackSavings:!!$('#guided-savings')?.checked,trackLoans:!!$('#guided-loans')?.checked,financialApprovals:!!$('#guided-approvals')?.checked};
+    return {kind:'general',priorities:$('[name="business-priority"]:checked').map(x=>x.value)};
+  }
+  function guidedRenderIndustryFields(saved={}){
+    const type=$('#guided-business-type')?.value||'',host=$('#guided-industry-fields');if(!host)return;
+    const common=(title,desc,items)=>'<div class="guided-choice-block"><h3>'+title+'</h3><p>'+desc+'</p><div class="guided-choice-grid">'+items.map(x=>'<label class="guided-choice"><input type="checkbox" name="'+x[0]+'" value="'+x[1]+'" '+(saved[x[2]]?'checked':'')+'><span><b>'+x[3]+'</b><small>'+x[4]+'</small></span></label>').join('')+'</div></div>';
+    if(/school|college|training/.test(type)){
+      host.innerHTML='<div class="guided-info">For a school, start by selecting the education levels and classes you expect to manage. This is a starting plan; you can adjust it after the workspace opens.</div><div class="guided-choice-block"><h3>Education levels</h3><div class="guided-choice-grid">'+[['Nursery','Nursery'],['Primary','Primary'],['Secondary','Secondary'],['College / vocational','College / vocational']].map(x=>'<label class="guided-choice"><input type="checkbox" name="school-level" value="'+x[0]+'" '+((saved.levels||[]).includes(x[0])?'checked':'')+'><span><b>'+x[1]+'</b><small>Include this level in your setup plan</small></span></label>').join('')+'</div></div><label class="guided-label">Class / stream names, separated by commas<input id="guided-school-classes" placeholder="e.g. Baby, Middle, Top, P1, P2, P3" value="'+guidedEsc((saved.classes||[]).join(', '))+'"></label><div class="guided-two-col"><label class="guided-label">Academic year<input id="guided-academic-year" placeholder="e.g. 2027" value="'+guidedEsc(saved.academicYear||String(new Date().getFullYear()))+'"></label><label class="guided-label">Fee cycle<select id="guided-school-fee-cycle"><option value="termly">Termly</option><option value="monthly">Monthly</option><option value="annual">Annual</option></select></label></div><label class="guided-label">Fee currency<select id="guided-school-currency"><option value="UGX">UGX — Ugandan shilling</option><option value="KES">KES — Kenyan shilling</option><option value="TZS">TZS — Tanzanian shilling</option><option value="USD">USD — US dollar</option></select></label>';
+      setTimeout(()=>{if($('#guided-school-fee-cycle'))$('#guided-school-fee-cycle').value=saved.feeCycle||'termly';if($('#guided-school-currency'))$('#guided-school-currency').value=saved.feeCurrency||'UGX'},0);
+    }else if(/shop|retail|wholesale|supermarket|boutique|pharmacy|hardware|electronics|inventory/.test(type)){
+      host.innerHTML=common('What would you like to manage first?','Select the areas you expect to use.',[['guided-stock','stock','trackStock','Inventory and stock','Track quantities and restocking'],['guided-suppliers','suppliers','trackSuppliers','Suppliers','Keep supplier information organised'],['guided-sales','sales','trackSales','Sales and orders','Record sales and customer orders'],['guided-expenses','expenses','trackExpenses','Expenses','Record operating costs']]);
+    }else if(/restaurant|hotel|bar|bakery|catering|cafe/.test(type)){
+      host.innerHTML=common('Choose your first priorities','You can add more modules later.',[['guided-bookings','bookings','trackBookings','Bookings','Manage reservations and service requests'],['guided-hospitality-stock','stock','trackStock','Ingredients and supplies','Keep stock and supplies organised'],['guided-orders','orders','trackOrders','Orders and sales','Follow customer orders and sales'],['guided-hospitality-staff','staff','trackStaff','Team operations','Coordinate your staff and tasks']]);
+    }else if(/sacco|savings|investment|microfinance|cooperative/.test(type)){
+      host.innerHTML=common('Choose your first priorities','Financial permissions should be assigned carefully.',[['guided-members','members','memberRecords','Member records','Organise member details'],['guided-savings','savings','trackSavings','Savings records','Track contributions and savings'],['guided-loans','loans','trackLoans','Loan records','Track loan workflows if applicable'],['guided-approvals','approvals','financialApprovals','Financial approvals','Keep reviews restricted to authorised roles']]);
+    }else{
+      host.innerHTML=common('What do you want to organise first?','Choose the most useful starting points for your work.',[['guided-priority-customers','customers','customers','Customers and contacts','Keep client details together'],['guided-priority-tasks','tasks','tasks','Tasks and team work','Coordinate work and deadlines'],['guided-priority-finance','finance','finance','Finance and expenses','Organise financial records'],['guided-priority-reports','reports','reports','Reports and progress','Review business activity']]);
+    }
+  }
+  function guidedRenderStaff(saved=[]){
+    const host=$('#guided-staff-list');if(!host)return;
+    if(!Array.isArray(saved))saved=[];
+    if(!saved.length&&host.children.length)return;
+    host.innerHTML='';
+    const initial=saved.length?saved:[{name:'',email:'',role:'staff',department:''}];
+    initial.forEach(row=>guidedAddStaffRow(row));
+  }
+  function guidedAddStaffRow(d={}){
+    const host=$('#guided-staff-list');if(!host)return;
+    const index=host.querySelectorAll('.guided-staff-row').length+1;
+    const row=document.createElement('div');row.className='guided-staff-row';
+    row.innerHTML='<div class="guided-staff-head"><strong>Team member '+index+'</strong><button type="button" class="guided-remove-staff">Remove</button></div><label class="guided-label">Full name<input name="staff-name" maxlength="120" placeholder="Staff member name" value="'+guidedEsc(d.name||'')+'"></label><label class="guided-label">Email address<input name="staff-email" type="email" placeholder="staff@example.com" value="'+guidedEsc(d.email||'')+'"></label><div class="guided-two-col"><label class="guided-label">Workspace role<select name="staff-role"><option value="staff">Staff / teacher</option><option value="manager">Manager / head teacher</option><option value="accountant">Accountant / bursar</option><option value="sales">Sales</option><option value="admin">Administrator</option><option value="developer">Developer</option><option value="engineer">Engineer</option></select></label><label class="guided-label">Office / department<input name="staff-department" maxlength="100" placeholder="e.g. Teaching, Bursar, Reception" value="'+guidedEsc(d.department||'')+'"></label></div>';
+    host.appendChild(row);row.querySelector('[name="staff-role"]').value=d.role||'staff';
+  }
+  function guidedRenderReview(){
+    const d=guidedGetDraft(),host=$('#guided-review');if(!host)return;
+    const type=$('#guided-business-type').selectedOptions[0]?.textContent||'Not selected';
+    const staff=d.staff.filter(x=>x.name&&x.email);
+    const detail=/school|college|training/i.test(d.businessType)?(d.industry.levels||[]).join(', ')+' · '+(d.industry.classes||[]).length+' planned class/stream(s)':(d.industry.priorities||[]).join(', ')||'You can configure your tools later';
+    host.innerHTML='<div class="guided-review-row"><span>Business type</span><strong>'+guidedEsc(type)+'</strong></div><div class="guided-review-row"><span>Business name</span><strong>'+guidedEsc(d.businessName||'Not entered')+'</strong></div><div class="guided-review-row"><span>Owner</span><strong>'+guidedEsc(user?.email||d.ownerEmail||'Not entered')+'</strong></div><div class="guided-review-row"><span>Setup plan</span><strong>'+guidedEsc(detail||'Configure later')+'</strong></div><div class="guided-review-row"><span>Staff to invite</span><strong>'+staff.length+'</strong></div>';
+  }
+  function guidedValidateStep(step){
+    const required=step===0?['guided-business-type']:step===1?(user?[]:['guided-owner-name','guided-owner-email','guided-owner-password','guided-owner-confirm']):step===2?['guided-business-name']:step===5?['guided-terms']:[];
+    for(const id of required){const el=$('#'+id);if(!el||!el.value.trim()){el?.focus();guidedShowStatus('Please complete the required field before continuing.',true);return false}if(!el.checkValidity()){el.reportValidity();return false}}
+    if(step===1&&!user){if($('#guided-owner-password').value.length<8){$('#guided-owner-password').focus();guidedShowStatus('Use a password with at least 8 characters.',true);return false}if($('#guided-owner-password').value!==$('#guided-owner-confirm').value){$('#guided-owner-confirm').focus();guidedShowStatus('The passwords do not match.',true);return false}}
+    if(step===4){for(const row of $('.guided-staff-row')){const n=row.querySelector('[name="staff-name"]').value.trim(),e=row.querySelector('[name="staff-email"]').value.trim();if((n&&!e)||(!n&&e)){guidedShowStatus('For each staff invitation, enter both a name and email—or leave both blank.',true);return false}if(e&&!row.querySelector('[name="staff-email"]').checkValidity()){row.querySelector('[name="staff-email"]').reportValidity();return false}}}
+    return true;
+  }
+  async function guidedCompleteWorkspace(){
+    let draft;try{draft=JSON.parse(localStorage.getItem(GUIDED_DRAFT_KEY)||'null')}catch{}
+    if(!draft||!user||!supabase)return false;
+    if(!draft.businessName||!draft.businessType)return false;
+    let companyId=null;try{companyId=localStorage.getItem(GUIDED_COMPANY_KEY)}catch{}
+    if(!companyId){
+      const {data,error}=await supabase.rpc('create_company_for_current_user',{company_name:draft.businessName,company_motto:draft.motto||null});
+      if(error)throw error;companyId=data;try{localStorage.setItem(GUIDED_COMPANY_KEY,companyId)}catch{}
+    }
+    const {error:profileError}=await supabase.from('company_profiles').update({business_category:draft.businessType,website_url:draft.website||null,onboarding_status:'profile_complete'}).eq('id',companyId);
+    if(profileError)throw profileError;
+    if(draft.phone||draft.address){
+      const update={};if(draft.phone)update.phone=draft.phone;if(draft.address)update.address=draft.address;
+      const {error}=await supabase.from('company_profiles').update(update).eq('id',companyId);
+      if(error)console.warn('[Molan onboarding] Optional contact details were not saved:',error.message);
+    }
+    const settings={...draft.industry,onboarding_source:'guided-welcome',business_type:draft.businessType,setup_completed_at:new Date().toISOString(),planned_staff:(draft.staff||[]).filter(x=>x.name&&x.email).map(x=>({name:x.name,email:x.email,role:x.role,department:x.department}))};
+    const setting=await supabase.from('industry_profile_settings').upsert({company_id:companyId,profile_key:'guided-onboarding',settings,updated_by:user.id},{onConflict:'company_id,profile_key'});
+    if(setting.error)console.warn('[Molan onboarding] Setup preferences could not be saved:',setting.error.message);
+    if(/school|college|training/i.test(draft.businessType)){
+      const names=[...new Set((draft.industry?.classes||[]).map(x=>String(x).trim()).filter(Boolean))];
+      for(const name of names){
+        const {data:existing}=await supabase.from('school_classes').select('id').eq('company_id',companyId).eq('class_name',name).eq('academic_year',draft.industry.academicYear||String(new Date().getFullYear())).maybeSingle();
+        if(existing)continue;
+        const {error}=await supabase.from('school_classes').insert({company_id:companyId,class_name:name,academic_year:draft.industry.academicYear||String(new Date().getFullYear()),capacity:0,status:'active'});
+        if(error)console.warn('[Molan onboarding] Could not create planned class '+name+':',error.message);
+      }
+    }
+    const staffLinks=[];
+    for(const person of (draft.staff||[]).filter(x=>x.name&&x.email)){
+      let departmentId=null;
+      if(person.department){
+        const {data:existing}=await supabase.from('departments').select('id').eq('company_id',companyId).eq('name',person.department).maybeSingle();
+        if(existing)departmentId=existing.id;
+        else{const created=await supabase.from('departments').insert({company_id:companyId,name:person.department,description:'Prepared during guided onboarding'}).select('id').maybeSingle();if(!created.error)departmentId=created.data?.id;else console.warn('[Molan onboarding] Department setup skipped:',created.error.message)}
+      }
+      const token=Array.from(crypto.getRandomValues(new Uint8Array(32))).map(b=>b.toString(16).padStart(2,'0')).join('');
+      const invite=await supabase.rpc('create_company_invitation',{p_company_id:companyId,p_email:person.email,p_role:person.role,p_token:token,p_department_id:departmentId});
+      if(invite.error){console.warn('[Molan onboarding] Invitation could not be created for '+person.email+':',invite.error.message);continue}
+      staffLinks.push({name:person.name,email:person.email,url:location.origin+location.pathname+'?invite='+token});
+    }
+    try{localStorage.setItem('molan_guided_staff_links_v1',JSON.stringify(staffLinks));localStorage.setItem(ACTIVE_COMPANY_KEY,companyId);localStorage.removeItem(GUIDED_DRAFT_KEY);localStorage.removeItem(GUIDED_COMPANY_KEY)}catch{}
+    await loadCompany(companyId);
+    if(staffLinks.length){
+      const summary=staffLinks.map(x=>x.name+' ('+x.email+')\n'+x.url).join('\n\n');
+      setTimeout(()=>{try{prompt('Your workspace is ready. Copy these secure staff invitation links and send each link to the matching staff member:',summary)}catch{}},350);
+      toast('Workspace created. Staff invitation links are ready to share.');
+    }else toast('Your business workspace is ready.');
+    return true;
+  }
+  async function guidedFinish(){
+    if(!guidedValidateStep(5))return;
+    const draft=guidedSaveDraft();
+    const btn=$('#guided-finish');btn.disabled=true;btn.textContent='Creating your business…';
+    try{
+      if(user){await guidedCompleteWorkspace();return}
+      if(!supabase)throw new Error('The secure account service is not connected yet. Please use the standard sign-up screen or try again after connection.');
+      const {data,error}=await supabase.auth.signUp({email:draft.ownerEmail,password:$('#guided-owner-password').value,options:{emailRedirectTo:AUTH_REDIRECT_URL,data:{display_name:draft.ownerName}}});
+      if(error)throw error;
+      if(data.session&&data.user){session=data.session;user=data.user;await bootUser();return}
+      guidedShowStatus('Your account request has been submitted. Check '+draft.ownerEmail+' for the verification email. Open its link, then return here or sign in; we will use the saved setup draft to finish creating your business. The password was not saved in this browser draft.',false);
+      $('#guided-finish').classList.add('hidden');$('#guided-next').classList.remove('hidden');$('#guided-next').textContent='Go to sign in →';$('#guided-next').dataset.guidedSignin='true';
+    }catch(err){guidedShowStatus(err.message||'We could not complete setup. Your draft is still saved; check the details and try again.',true)}finally{btn.disabled=false;btn.textContent='Create my business →'}
+  }
+  $('#welcome-get-started')?.addEventListener('click',guidedOpen);
+  $('[data-welcome-auth]').forEach(b=>b.addEventListener('click',()=>openWelcomeAuth(b.dataset.welcomeAuth||'signin')));
+  $('#guided-back')?.addEventListener('click',()=>guidedSetStep(guidedStep-1));
+  $('#guided-next')?.addEventListener('click',()=>{
+    if($('#guided-next').dataset.guidedSignin==='true'){openWelcomeAuth('signin');return}
+    if(!guidedValidateStep(guidedStep))return;
+    guidedSaveDraft();
+    if(guidedStep===0)guidedRenderIndustryFields();
+    if(guidedStep===3)guidedRenderStaff();
+    guidedSetStep(guidedStep+1);
+  });
+  $('#guided-finish')?.addEventListener('click',guidedFinish);
+  $('#guided-business-type')?.addEventListener('change',()=>guidedRenderIndustryFields());
+  $('#guided-add-staff')?.addEventListener('click',()=>guidedAddStaffRow());
+  $('#guided-skip-staff')?.addEventListener('click',()=>{guidedRenderStaff([]);guidedSetStep(5)});
+  $('#guided-staff-list')?.addEventListener('click',e=>{if(e.target.closest('.guided-remove-staff')){e.target.closest('.guided-staff-row').remove();$('.guided-staff-row').forEach((row,i)=>row.querySelector('.guided-staff-head strong').textContent='Team member '+(i+1));if(!$('.guided-staff-row').length)guidedAddStaffRow()}});
+  $('[data-guided-home]').forEach(b=>b.addEventListener('click',guidedBackToWelcome));
+  $('[data-guided-exit]').forEach(b=>b.addEventListener('click',guidedBackToWelcome));
+  $('[data-guided-signin]').forEach(b=>b.addEventListener('click',()=>openWelcomeAuth('signin')));
+  $('#guided-business-type')?.addEventListener('change',()=>{guidedRenderIndustryFields();guidedSaveDraft()});
+  ['guided-owner-name','guided-owner-email','guided-business-name','guided-motto','guided-website','guided-phone','guided-address','guided-school-classes','guided-academic-year','guided-school-fee-cycle','guided-school-currency','guided-terms'].forEach(id=>$('#'+id)?.addEventListener('change',guidedSaveDraft));
+  
   $('[data-welcome-auth]').forEach(b=>b.addEventListener('click',()=>openWelcomeAuth(b.dataset.welcomeAuth||'signin')));
   $('#welcome-prev')?.addEventListener('click',()=>{showWelcomeSlide(welcomeIndex-1);startWelcomeAutoplay()});
   $('#welcome-next')?.addEventListener('click',()=>{showWelcomeSlide(welcomeIndex+1);startWelcomeAutoplay()});
@@ -77,7 +266,7 @@
   $$('[data-auth-mode]').forEach(b=>b.addEventListener('click',()=>setAuthMode(b.dataset.authMode)));
   $('#auth-form').addEventListener('submit',async e=>{e.preventDefault();if(!supabase)return;const btn=$('#auth-submit');btn.disabled=true;btn.textContent=authMode==='signup'?'Creating account…':'Signing in…';try{const email=$('#email').value.trim(),password=$('#password').value;let result;if(authMode==='signup')result=await supabase.auth.signUp({email,password,options:{emailRedirectTo:AUTH_REDIRECT_URL,data:{display_name:$('#display-name').value.trim()}}});else result=await supabase.auth.signInWithPassword({email,password});if(result.error)throw result.error;if(authMode==='signup'&&!result.data.session){toast('Check your email to confirm your account, then sign in.');return}session=result.data.session;user=result.data.user;if(user)await bootUser()}catch(err){toast(err.message||'Authentication failed.',true)}finally{btn.disabled=false;setAuthMode(authMode)}});
   $('#reset-password').addEventListener('click',async()=>{if(!supabase)return;const email=$('#email').value.trim();if(!email){toast('Enter your email address first.',true);return}const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:AUTH_REDIRECT_URL});if(error)toast(error.message,true);else toast('If that account exists, a password reset email has been sent.')});
-  async function bootUser(){showScreen('dashboard-screen');$('#profile-email').textContent=user.email||'Signed in';let profileName=user.user_metadata?.display_name||user.user_metadata?.full_name||user.email?.split('@')[0]||'Member';const prof=await supabase.from('user_profiles').upsert({user_id:user.id,display_name:profileName},{onConflict:'user_id'}).select().maybeSingle();if(prof.data?.display_name)profileName=prof.data.display_name;$('#profile-name').textContent=profileName;$('#avatar').textContent=initials(profileName);$('#top-avatar').textContent=initials(profileName);$('#today-label').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});const inviteToken=new URLSearchParams(location.search).get('invite');if(inviteToken){const accepted=await supabase.rpc('accept_company_invitation',{p_token:inviteToken});if(accepted.error)toast(accepted.error.message,true);else{try{localStorage.setItem(ACTIVE_COMPANY_KEY,accepted.data)}catch(e){}toast('Invitation accepted. Welcome to the workspace.');history.replaceState({},'',location.pathname)}}await loadCompany()}
+  async function bootUser(){showScreen('dashboard-screen');$('#profile-email').textContent=user.email||'Signed in';let profileName=user.user_metadata?.display_name||user.user_metadata?.full_name||user.email?.split('@')[0]||'Member';const prof=await supabase.from('user_profiles').upsert({user_id:user.id,display_name:profileName},{onConflict:'user_id'}).select().maybeSingle();if(prof.data?.display_name)profileName=prof.data.display_name;try{if(localStorage.getItem(GUIDED_DRAFT_KEY))await guidedCompleteWorkspace()}catch(err){console.error('[Molan onboarding] Resume failed:',err);toast('You are signed in, but your guided setup could not finish: '+(err.message||'please try again'),true)}$('#profile-name').textContent=profileName;$('#avatar').textContent=initials(profileName);$('#top-avatar').textContent=initials(profileName);$('#today-label').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});const inviteToken=new URLSearchParams(location.search).get('invite');if(inviteToken){const accepted=await supabase.rpc('accept_company_invitation',{p_token:inviteToken});if(accepted.error)toast(accepted.error.message,true);else{try{localStorage.setItem(ACTIVE_COMPANY_KEY,accepted.data)}catch(e){}toast('Invitation accepted. Welcome to the workspace.');history.replaceState({},'',location.pathname)}}await loadCompany()}
   async function loadCompany(preferredId=null){const {data:members,error}=await supabase.from('company_members').select('*, company_profiles(*)').eq('user_id',user.id).eq('status','active').order('created_at',{ascending:true}).limit(100);if(error){toast('Could not load your workspaces: '+error.message,true);return}cache.workspaces=members||[];const picker=$('#workspace-switcher');if(!members?.length){company=null;membership=null;if(picker)picker.innerHTML='<option value="">No workspace</option>';showScreen('company-screen');return}const saved=preferredId||localStorage.getItem(ACTIVE_COMPANY_KEY);membership=members.find(m=>m.company_id===saved)||members[0];company=membership.company_profiles;if(!company){const c=await supabase.from('company_profiles').select('*').eq('id',membership.company_id).maybeSingle();company=c.data}if(!company){showScreen('company-screen');return}try{localStorage.setItem(ACTIVE_COMPANY_KEY,company.id)}catch(e){}if(picker){picker.innerHTML=members.map(m=>'<option value="'+m.company_id+'">'+esc(m.company_profiles?.name||'Business workspace')+'</option>').join('');picker.value=company.id;picker.closest('.workspace-chip')?.classList.toggle('has-many',members.length>1)}if($('#sidebar-company'))$('#sidebar-company').textContent=company.name;if((company.status||'active')!=='active'&&!['owner','admin'].includes(membership?.role)){currentPage='workspace-suspended';renderPage(currentPage);return}await refreshData();renderPage(currentPage)}
   async function refreshData(){if(!company)return;const id=company.id;const pr=await supabase.from('company_member_permissions').select('permission_key,granted').eq('company_id',id).eq('member_user_id',user.id).eq('granted',true);cache.permissions=pr.data||[];const queries=await Promise.all([
     supabase.from('staff_tasks').select('*').eq('company_id',id).order('created_at',{ascending:false}).limit(100),
