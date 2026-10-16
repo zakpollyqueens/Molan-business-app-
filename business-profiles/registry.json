@@ -223,17 +223,6 @@
       "page": "business-profiles/manufacturing/index.html"
     },
     {
-      "slug": "sacco",
-      "name": "SACCO",
-      "plural": "SACCOs",
-      "description": "Members, savings, terms, approvals and withdrawals.",
-      "icon": "♧",
-      "enabled": false,
-      "config": "business-profiles/sacco/profile.json",
-      "page": "business-profiles/sacco/index.html",
-      "disabledReason": "Replaced by SACCO Savings Group"
-    },
-    {
       "slug": "sacco-savings-group",
       "name": "SACCO savings group",
       "plural": "SACCO savings groups",
