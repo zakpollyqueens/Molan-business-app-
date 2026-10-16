@@ -1,6 +1,9 @@
 .molan-update-banner{position:sticky;top:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border:1px solid rgba(56,189,248,.35);border-radius:14px;background:rgba(8,26,53,.96);color:#fff;box-shadow:0 12px 32px rgba(2,8,23,.18)}.molan-update-banner[hidden]{display:none}.molan-update-banner p{margin:0;font-size:.92rem}.molan-update-banner button,.molan-update-check{cursor:pointer}.molan-update-check.is-checking{opacity:.65;pointer-events:none}.molan-update-check.has-update{border-color:#38bdf8}.molan-shared-error{padding:14px;border-radius:12px;border:1px solid #f59e0b;background:rgba(245,158,11,.09)}@media(max-width:600px){.molan-update-banner{align-items:flex-start;flex-direction:column}}
-/* User-requested: keep the release/update notice hidden in the app UI. */
-.molan-update-banner{display:none!important}
+/* Update notices remain hidden until a newer release is detected. */
+.molan-update-banner[hidden]{display:none!important}
+.molan-update-banner{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 12px;padding:14px 18px;border:1px solid #67e8f980;border-radius:16px;background:linear-gradient(110deg,#071a35f5,#0b3854f5);color:#f5fbff;box-shadow:0 14px 36px #06152c22}
+.molan-update-copy{min-width:0}.molan-update-copy strong{display:block;font-size:14px;letter-spacing:.01em}.molan-update-copy p{margin:5px 0 0;color:#c2d8ed;font-size:12px;line-height:1.55}.molan-update-banner .button{flex:none}.molan-update-check{white-space:nowrap}.molan-update-check.has-update{background:linear-gradient(120deg,#087e9c,#2563eb);border-color:#67e8f9;color:#fff;box-shadow:0 6px 18px #0891b233}.molan-update-check:disabled{opacity:.7;cursor:wait}
+@media(max-width:600px){.molan-update-banner{align-items:stretch;flex-direction:column;padding:13px;border-radius:14px}.molan-update-banner .button{width:100%}.molan-update-check{font-size:11px;padding:9px 10px}}
 
 
 /* Application-wide readability and contrast pass — light and dark themes. */
