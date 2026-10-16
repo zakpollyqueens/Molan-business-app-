@@ -10,7 +10,7 @@
   };
   let supabase = null, session = null, user = null, company = null, membership = null, currentPage = 'overview', authMode = 'signin', selectedIndustryProfile = null;
   let cache = {tasks:[],products:[],members:[],profiles:[],announcements:[],departments:[],customers:[],inventory:[],sales:[],finance:[],invitations:[],attendance:[],reports:[],council:[],websiteRequests:[],websitePayments:[],saleItems:[],workspaces:[],operations:[],inventoryMovements:[],schoolClasses:[],schoolLearners:[],schoolAssessments:[],schoolFees:[],permissions:[]};
-  const screens = ['welcome-screen','guided-onboarding-screen','setup-screen','auth-screen','company-screen','dashboard-screen'];
+  const screens = ['welcome-screen','learn-more-screen','guided-onboarding-screen','setup-screen','auth-screen','company-screen','dashboard-screen'];
   const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const initials = name => (String(name||'M').trim().split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase() || 'M');
   const dateLabel = value => value ? new Date(value).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}) : 'No due date';
