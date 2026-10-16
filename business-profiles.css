@@ -32,3 +32,27 @@ html[data-theme="dark"] .profile-catalog-card p,html[data-theme="dark"] .industr
 html[data-theme="dark"] .profile-catalog-card h1,html[data-theme="dark"] .profile-catalog-card h2,html[data-theme="dark"] .profile-catalog-card h3,html[data-theme="dark"] .industry-feature-card h1,html[data-theme="dark"] .industry-feature-card h2,html[data-theme="dark"] .industry-feature-card h3,html[data-theme="dark"] .profile-shortcut-card h1,html[data-theme="dark"] .profile-shortcut-card h2,html[data-theme="dark"] .profile-shortcut-card h3{color:#f0f6ff!important}
 html[data-theme="dark"] .profile-catalog-card p,html[data-theme="dark"] .industry-feature-card p,html[data-theme="dark"] .profile-shortcut-card p{color:#cbd8e9!important}
 html[data-theme="dark"] .profile-route-badge{color:#e5f3ff!important;background:#1b3652!important;border-color:#355a7a}
+
+
+/* Collapsible secondary settings keep profile pages focused without removing workflows. */
+.profile-secondary-settings{padding:0;overflow:hidden}
+.profile-secondary-settings>summary{display:flex;align-items:center;justify-content:space-between;gap:16px;list-style:none;cursor:pointer;padding:18px 20px}
+.profile-secondary-settings>summary::-webkit-details-marker{display:none}
+.profile-secondary-settings>summary:after{content:"";width:8px;height:8px;flex:0 0 8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);transition:transform .16s ease}
+.profile-secondary-settings[open]>summary:after{transform:rotate(225deg)}
+.profile-secondary-settings>summary>span:first-child{display:grid;gap:4px}
+.profile-secondary-settings>summary strong{color:#173451;font-size:.98rem;font-weight:850}
+.profile-secondary-settings>summary small{color:#526984;font-size:.82rem;font-weight:500}
+.profile-secondary-settings .profile-settings-toggle{color:#176ab5;font-size:.78rem;font-weight:800;white-space:nowrap}
+.profile-secondary-settings>p{padding:0 20px;margin:0 0 12px}
+.profile-secondary-settings>.profile-detail-grid{padding:0 20px 20px}
+.sacco-load-error{border:1px solid #efc6a8;background:#fffaf5}
+.sacco-load-error h3{color:#853c16}
+.sacco-load-error ul{margin:0;padding:0 20px 18px 42px;color:#713b20;overflow-wrap:anywhere}
+.sacco-load-error li+li{margin-top:6px}
+.sacco-load-error .panel-head{align-items:flex-start}
+@media(max-width:640px){.profile-secondary-settings>summary{padding:15px;gap:10px}.profile-secondary-settings>.profile-detail-grid{padding:0 15px 15px}.sacco-load-error .panel-head{flex-direction:column}}
+html[data-theme="dark"] .profile-secondary-settings>summary strong{color:#f0f6ff}
+html[data-theme="dark"] .profile-secondary-settings>summary small{color:#c1d0e4}
+html[data-theme="dark"] .sacco-load-error{background:#30231d;border-color:#85543a}
+html[data-theme="dark"] .sacco-load-error h3,html[data-theme="dark"] .sacco-load-error ul{color:#ffd9c2}
