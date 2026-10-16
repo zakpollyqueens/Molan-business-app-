@@ -32,6 +32,7 @@ jobs:
           }
           if (!html.includes('business-profiles.js') || !html.includes('business-profiles.css')) throw new Error('Shared profile loader/styles must be loaded by index.html.');
           if (!js.includes('e.stopImmediatePropagation()') || !js.includes('navigate(page)')) throw new Error('Shared navigation click handler is missing.');
+          if (!js.includes('profile-owned-feature-page') || !js.includes('pages/feature-')) throw new Error('Profile feature buttons must open their folder-owned feature pages before the shared module.');
           const profileFolders = fs.readdirSync('business-profiles', { withFileTypes: true }).filter(item => item.isDirectory());
           if (profileFolders.length !== 51) throw new Error('Expected 51 business profile folders, found ' + profileFolders.length);
           const profileNames = new Set();
