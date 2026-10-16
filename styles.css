@@ -267,3 +267,6 @@ html[data-theme="dark"] .settings-tile{border-color:#26354b}
 .subscription-plan-card{padding:22px;box-shadow:0 16px 36px #07162b10}.subscription-plan-card h2{font-size:27px;margin:10px 0 5px}.subscription-duration{font-size:13px;color:#078ba7;font-weight:900}.subscription-plan-card>p{font-size:12px;line-height:1.65;min-height:44px}.subscription-price{font-size:22px;font-weight:900;margin:17px 0 4px}.subscription-total{font-size:11px;font-weight:800;color:#087d91}.subscription-plan-card ul{padding-left:18px;font-size:11px;line-height:1.8;color:var(--muted)}.subscription-plan-card button[disabled]{width:100%;opacity:.72;white-space:normal;margin-top:9px}.subscription-trust,.subscription-billing-note{margin-top:18px}.subscription-trust p,.subscription-billing-note p{font-size:12px;line-height:1.8}
 .plan-gold{border-top:3px solid #e9bd59}.plan-silver{border-top:3px solid #aab7c9}.plan-premium{border-top:3px solid #6bd5e7}
 @media(max-width:800px){.learn-plan-grid,.subscription-plan-grid{grid-template-columns:1fr}.learn-plan-card{padding:10px}.learn-plan-card strong{font-size:17px}.subscription-plan-card{padding:17px}.subscription-plan-card>p{min-height:0}}
+
+/* Keep the floating release/update widget from covering the full-screen explainer controls. */
+body.learn-more-open #molan-floating-update{display:none!important}
