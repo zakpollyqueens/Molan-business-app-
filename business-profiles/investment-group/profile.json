@@ -8,8 +8,8 @@
   "icon": "↗",
   "features": [
     {
-      "title": "Savings & member accounts",
-      "route": "sacco"
+      "title": "Investment portfolio & projects",
+      "route": "operations"
     },
     {
       "title": "Finance ledger",
