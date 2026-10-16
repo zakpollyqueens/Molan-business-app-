@@ -4,18 +4,51 @@
   "slug": "sacco-savings-group",
   "name": "SACCO savings group",
   "plural": "SACCO savings groups",
-  "description": "Member savings accounts, chairperson-reviewed contributions and withdrawals, a separate welfare fund, member account follow-up, and group savings terms.",
+  "description": "Savings-circle management with member photos and profiles, contribution schedules, chairperson-reviewed savings, withdrawals, welfare assistance, loans, elections, term history and member follow-up.",
   "icon": "♧",
   "features": [
     {
-      "title": "Member savings, accounts & approvals",
-      "route": "sacco"
+      "title": "Circle overview & member dashboard",
+      "route": "sacco-overview"
     },
     {
-      "title": "View Welfare Account & Loans",
+      "title": "Member profiles, photos & savings accounts",
+      "route": "sacco-members"
+    },
+    {
+      "title": "Welfare account, assistance & loans",
       "route": "sacco-welfare"
+    },
+    {
+      "title": "Savings terms & contribution schedule",
+      "route": "sacco-terms"
+    },
+    {
+      "title": "Record proposed savings",
+      "route": "sacco-savings"
+    },
+    {
+      "title": "Chairperson savings approvals",
+      "route": "sacco-approvals"
+    },
+    {
+      "title": "Withdrawal requests & payment approvals",
+      "route": "sacco-withdrawals"
+    },
+    {
+      "title": "Member reviews, elections & term history",
+      "route": "sacco-reviews"
+    },
+    {
+      "title": "Circle meetings & decisions",
+      "route": "circle-meetings"
+    },
+    {
+      "title": "Circle savings charts & reports",
+      "route": "circle-reports"
     }
   ],
   "settingsRoute": "industry-settings",
-  "overviewRoute": "industry-profile"
+  "overviewRoute": "industry-profile",
+  "group": "Savings circles & member groups"
 }
