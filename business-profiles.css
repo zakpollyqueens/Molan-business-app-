@@ -22,3 +22,13 @@
 .profile-catalog-card,.industry-feature-card,.profile-shortcut-card{border-color:#d5e0ed}
 html[data-theme="dark"] .profile-catalog-card h2,html[data-theme="dark"] .profile-catalog-card h3,html[data-theme="dark"] .industry-feature-card h2,html[data-theme="dark"] .industry-feature-card h3,html[data-theme="dark"] .profile-shortcut-card h2,html[data-theme="dark"] .profile-shortcut-card h3{color:#eff6ff}
 html[data-theme="dark"] .profile-catalog-card p,html[data-theme="dark"] .industry-feature-card p,html[data-theme="dark"] .profile-shortcut-card p{color:#c1d0e4}
+
+
+/* Keep business-profile catalogues and feature cards legible in every profile. */
+.profile-catalog-card h1,.profile-catalog-card h2,.profile-catalog-card h3,.industry-feature-card h1,.industry-feature-card h2,.industry-feature-card h3,.profile-shortcut-card h1,.profile-shortcut-card h2,.profile-shortcut-card h3{color:#102947!important;font-weight:850!important;line-height:1.35}
+.profile-catalog-card p,.industry-feature-card p,.profile-shortcut-card p{color:#3d536e!important;font-weight:500;line-height:1.65}
+.profile-route-badge{color:#173d61!important;background:#e5f2fc!important;font-weight:850!important;border:1px solid #c2dff2}
+.profile-catalog-card,.industry-feature-card,.profile-shortcut-card{border-color:#cbd9e8}
+html[data-theme="dark"] .profile-catalog-card h1,html[data-theme="dark"] .profile-catalog-card h2,html[data-theme="dark"] .profile-catalog-card h3,html[data-theme="dark"] .industry-feature-card h1,html[data-theme="dark"] .industry-feature-card h2,html[data-theme="dark"] .industry-feature-card h3,html[data-theme="dark"] .profile-shortcut-card h1,html[data-theme="dark"] .profile-shortcut-card h2,html[data-theme="dark"] .profile-shortcut-card h3{color:#f0f6ff!important}
+html[data-theme="dark"] .profile-catalog-card p,html[data-theme="dark"] .industry-feature-card p,html[data-theme="dark"] .profile-shortcut-card p{color:#cbd8e9!important}
+html[data-theme="dark"] .profile-route-badge{color:#e5f3ff!important;background:#1b3652!important;border-color:#355a7a}
