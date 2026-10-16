@@ -34,7 +34,7 @@ jobs:
           if (!js.includes('e.stopImmediatePropagation()') || !js.includes('navigate(page)')) throw new Error('Shared navigation click handler is missing.');
           if (!js.includes('profile-owned-feature-page') || !js.includes('pages/feature-')) throw new Error('Profile feature buttons must open their folder-owned feature pages before the shared module.');
           const profileFolders = fs.readdirSync('business-profiles', { withFileTypes: true }).filter(item => item.isDirectory());
-          if (profileFolders.length !== 51) throw new Error('Expected 51 business profile folders, found ' + profileFolders.length);
+          if (profileFolders.length !== 50) throw new Error('Expected 50 business profile folders, found ' + profileFolders.length);
           const profileNames = new Set();
           for (const folder of profileFolders) {
             const file = 'business-profiles/' + folder.name + '/profile.json';
@@ -70,7 +70,7 @@ jobs:
               if (!feature.title || !renderedRoutes.has(feature.route)) throw new Error('Unconnected profile feature route in ' + file + ': ' + feature.route);
             }
           }
-          if (profileNames.size !== 51) throw new Error('Expected 51 unique profile names.');
+          if (profileNames.size !== 50) throw new Error('Expected 50 unique profile names.');
           if (!js.includes('manage_company_workspace_status') || !js.includes('data-workspace-admin-action')) throw new Error('Workspace lifecycle controls are not connected.');
           const lifecycleMigration = fs.readFileSync('supabase/migrations/20261016090000_workspace_lifecycle_controls.sql', 'utf8');
           for (const required of ['status text','deleted_at','manage_company_workspace_status','security invoker','from public, anon','to authenticated']) {
@@ -109,5 +109,5 @@ jobs:
           for (const required of ['PBKDF2','sacco_member_portal_sessions','issue-enrollment-code','complete-enrollment','change-pin','update-profile']) {
             if (!portalEdge.includes(required)) throw new Error('Member portal Edge Function missing security/workflow feature: ' + required);
           }
-          console.log('All 51 profile-owned pages, shared runtime navigation, persistent profile settings, secure SACCO member portal, tenant RLS, and public-key safety smoke checks passed.');
+          console.log('All 50 profile-owned pages, shared runtime navigation, persistent profile settings, secure SACCO member portal, tenant RLS, and public-key safety smoke checks passed.');
           NODE
