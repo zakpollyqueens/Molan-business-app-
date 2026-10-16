@@ -59,6 +59,10 @@
     slides.forEach((s,i)=>{s.classList.toggle('active',i===welcomeIndex);s.setAttribute('aria-hidden',i===welcomeIndex?'false':'true')});
     dots.forEach((d,i)=>{d.classList.toggle('active',i===welcomeIndex);if(i===welcomeIndex)d.setAttribute('aria-current','true');else d.removeAttribute('aria-current')});
     const count=$('#welcome-slide-count');if(count)count.textContent=String(welcomeIndex+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0');
+    const scenes=$('[data-welcome-scene]');scenes.forEach((scene,i)=>scene.classList.toggle('active',i===welcomeIndex));
+    const sceneTitles=['Your connected workspace','Choose your industry','Create your account','Set up the business','Complete your profile','Manage your team','Add daily records','Review progress'];
+    const sceneSubs=['People · Operations · Progress','A profile for your kind of work','Name and sign-in details','Company name and business type','Business details and tools','Roles and appropriate access','Customers · Stock · Sales · Tasks','Reports · Tasks · Announcements'];
+    const visualTitle=$('#welcome-visual-title'),visualSubtitle=$('#welcome-visual-subtitle');if(visualTitle)visualTitle.textContent=sceneTitles[welcomeIndex]||sceneTitles[0];if(visualSubtitle)visualSubtitle.textContent=sceneSubs[welcomeIndex]||sceneSubs[0];
   }
   function startWelcomeAutoplay(){clearInterval(welcomeTimer);if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches)welcomeTimer=setInterval(()=>showWelcomeSlide(welcomeIndex+1),7000)}
   function openWelcomeAuth(mode='signin'){clearInterval(welcomeTimer);showScreen('auth-screen');setAuthMode(mode);window.scrollTo({top:0,behavior:'smooth'})}
