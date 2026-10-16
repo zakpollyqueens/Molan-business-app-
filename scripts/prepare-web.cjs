@@ -5,7 +5,7 @@ const root = path.resolve(__dirname, '..');
 const output = path.join(root, 'www');
 const fileExtensions = new Set([
   '.html', '.css', '.js', '.png', '.jpg', '.jpeg', '.webp',
-  '.svg', '.ico', '.json', '.woff', '.woff2', '.ttf'
+  '.svg', '.ico', '.json', '.webmanifest', '.woff', '.woff2', '.ttf'
 ]);
 const excludedFiles = new Set([
   'package.json', 'package-lock.json', 'capacitor.config.json',
