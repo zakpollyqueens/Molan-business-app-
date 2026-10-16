@@ -9,6 +9,7 @@ on:
       - '.github/workflows/generate-extended-business-profiles.yml'
       - 'business-profiles/extended-catalog.json'
       - 'business-profiles/registry.json'
+      - 'business-profiles/**/profile.json'
       - 'scripts/generate-extended-business-profiles.mjs'
   workflow_dispatch:
 
@@ -54,7 +55,19 @@ jobs:
           }
           const indexed = registry.profiles.filter(p => catalog.profiles.some(c => c.slug === p.slug));
           if (indexed.length !== 500) throw new Error('Registry does not include all 500 extended profiles');
-          console.log('Validated 500 profile folders and their feature pages.');
+          for (const p of registry.profiles) {
+            const configPath = p.config || `business-profiles/${p.slug}/profile.json`;
+            const indexPath = p.page || `business-profiles/${p.slug}/index.html`;
+            if (!fs.existsSync(configPath) || !fs.existsSync(indexPath)) throw new Error('Missing primary profile configuration/page: ' + p.slug);
+            const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+            if (!Array.isArray(config.features)) throw new Error('Missing features for profile: ' + p.slug);
+            for (const f of config.features) {
+              const slug = String(f.title).toLowerCase().normalize('NFKD').replace(/[^a-z0-9\\s-]/g, '').trim().replace(/[\\s_]+/g, '-').replace(/-+/g, '-');
+              const page = `business-profiles/${p.slug}/pages/${slug}/index.html`;
+              if (!fs.existsSync(page)) throw new Error('Missing profile feature page: ' + page);
+            }
+          }
+          console.log('Validated 550 business profile folders and every declared feature page.');
           NODE
       - name: Commit generated profiles to main
         run: |
