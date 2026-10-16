@@ -1,4 +1,5 @@
 name: Generate 500 dedicated business profiles
+# Generate missing profile pages and add profile-scoped navigation.
 
 on:
   push:
