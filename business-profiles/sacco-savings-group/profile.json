@@ -12,6 +12,10 @@
       "route": "sacco"
     },
     {
+      "title": "Separate welfare fund ledger",
+      "route": "sacco-welfare"
+    },
+    {
       "title": "Finance ledger",
       "route": "finance"
     },
