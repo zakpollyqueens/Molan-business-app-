@@ -54,6 +54,9 @@ jobs:
             for (const feature of profile.features) {
               if (!feature.title || !renderedRoutes.has(feature.route)) throw new Error('Unconnected profile feature route in ' + file + ': ' + feature.route);
             }
+            if (folder.name !== 'sacco-savings-group' && profile.features.some(feature => ['sacco','sacco-welfare'].includes(feature.route))) {
+              throw new Error('SACCO-only workflow leaked into non-SACCO profile: ' + file);
+            }
           }
           if (profileNames.size !== 51) throw new Error('Expected 51 unique profile folder names (including the retired redirect).');
           if (!js.includes('manage_company_workspace_status') || !js.includes('data-workspace-admin-action')) throw new Error('Workspace lifecycle controls are not connected.');
