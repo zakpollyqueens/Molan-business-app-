@@ -32,8 +32,10 @@ for (const [i, p] of catalog.profiles.entries()) {
     const pageDir = path.join(dir, 'pages', featureSlug);
     fs.mkdirSync(pageDir, { recursive: true });
     const pageHtml = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(f.title)} · ${esc(p.name)}</title><link rel="stylesheet" href="../../profile.css"></head><body><main class="shell"><header class="hero"><a class="back" href="../../index.html">← Back to ${esc(p.name)}</a><p class="eyebrow">${esc(p.group || 'BUSINESS PROFILE')}</p><h1>${esc(f.title)}</h1><p class="muted">${esc(p.description)}</p></header><section class="notice"><strong>${esc(f.title)}</strong><p>This is the dedicated ${esc(f.title.toLowerCase())} page for <strong>${esc(p.name)}</strong>.</p><p>Use this area for ${esc(f.title.toLowerCase())} records and review the permissions of your active workspace before entering business data.</p><p>Workspace route: <code>${esc(f.route || 'business-tools')}</code></p></section><p><a class="card" href="../../../../index.html">Open Molan Business workspace ↗</a></p><footer><span>${esc(p.name)}</span><span>Feature ${j+1} / ${(p.features||[]).length}</span></footer></main></body></html>`;
-    fs.writeFileSync(path.join(pageDir, 'index.html'), pageHtml);
-    createdPages++;
+    if (!fs.existsSync(path.join(pageDir, 'index.html'))) {
+      fs.writeFileSync(path.join(pageDir, 'index.html'), pageHtml);
+      createdPages++;
+    }
   }
   createdFolders++;
 }
