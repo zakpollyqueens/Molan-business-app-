@@ -1,9 +1,9 @@
 name: Validate frontend
 on:
   push:
-    branches: [main, feat/sacco-savings-withdrawals-terms, fix/connected-navigation-workspace-admin]
+    branches: [main, feat/sacco-savings-withdrawals-terms, fix/connected-navigation-workspace-admin, feat/profile-owned-pages-architecture]
   pull_request:
-    branches: [main, feat/sacco-savings-withdrawals-terms]
+    branches: [main, feat/sacco-savings-withdrawals-terms, fix/connected-navigation-workspace-admin]
 jobs:
   validate:
     runs-on: ubuntu-latest
