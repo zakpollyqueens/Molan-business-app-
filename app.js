@@ -280,16 +280,16 @@
   $('#guided-add-staff')?.addEventListener('click',()=>guidedAddStaffRow());
   $('#guided-skip-staff')?.addEventListener('click',()=>{$('#guided-staff-list').innerHTML='';guidedSetStep(5);guidedSaveDraft()});
   $('#guided-staff-list')?.addEventListener('click',e=>{if(e.target.closest('.guided-remove-staff')){e.target.closest('.guided-staff-row').remove();$$('.guided-staff-row').forEach((row,i)=>row.querySelector('.guided-staff-head strong').textContent='Team member '+(i+1));if(!$$('.guided-staff-row').length)guidedAddStaffRow()}});
-  $('[data-guided-home]').forEach(b=>b.addEventListener('click',guidedBackToWelcome));
-  $('[data-guided-exit]').forEach(b=>b.addEventListener('click',guidedBackToWelcome));
-  $('[data-guided-signin]').forEach(b=>b.addEventListener('click',()=>openWelcomeAuth('signin')));
+  $$('[data-guided-home]').forEach(b=>b.addEventListener('click',guidedBackToWelcome));
+  $$('[data-guided-exit]').forEach(b=>b.addEventListener('click',guidedBackToWelcome));
+  $$('[data-guided-signin]').forEach(b=>b.addEventListener('click',()=>openWelcomeAuth('signin')));
   $('#guided-business-type')?.addEventListener('change',()=>{guidedRenderIndustryFields();guidedSaveDraft()});
   ['guided-owner-name','guided-owner-email','guided-business-name','guided-motto','guided-website','guided-phone','guided-address','guided-school-classes','guided-academic-year','guided-school-fee-cycle','guided-school-currency','guided-school-standard-fee','guided-school-fee-policy','guided-terms'].forEach(id=>$('#'+id)?.addEventListener('change',guidedSaveDraft));
   
   $$('[data-welcome-auth]').forEach(b=>b.addEventListener('click',()=>openWelcomeAuth(b.dataset.welcomeAuth||'signin')));
   $('#welcome-prev')?.addEventListener('click',()=>{showWelcomeSlide(welcomeIndex-1);startWelcomeAutoplay()});
   $('#welcome-next')?.addEventListener('click',()=>{showWelcomeSlide(welcomeIndex+1);startWelcomeAutoplay()});
-  $('[data-welcome-dot]').forEach(b=>b.addEventListener('click',()=>{showWelcomeSlide(Number(b.dataset.welcomeDot));startWelcomeAutoplay()}));
+  $$('[data-welcome-dot]').forEach(b=>b.addEventListener('click',()=>{showWelcomeSlide(Number(b.dataset.welcomeDot));startWelcomeAutoplay()}));
   $('#welcome-security-link')?.addEventListener('click',()=>{const note=$('#welcome-security');note.hidden=!note.hidden;$('#welcome-security-link').textContent=note.hidden?'Our security approach':'Hide security note'});
   $('#welcome-year').textContent=String(new Date().getFullYear());showWelcomeSlide(0);startWelcomeAutoplay();
   function setAuthMode(mode){authMode=mode;$$('[data-auth-mode]').forEach(b=>b.classList.toggle('active',b.dataset.authMode===mode));$('#name-field').classList.toggle('hidden',mode!=='signup');$('#display-name').required=mode==='signup';$('#auth-title').textContent=mode==='signup'?'Create your account':'Welcome back';$('#auth-subtitle').textContent=mode==='signup'?'Set up your secure sign-in to get started.':'Sign in to continue to your workspace.';$('#auth-submit').innerHTML=(mode==='signup'?'Create account':'Sign in')+' <span>→</span>';$('#reset-password').classList.toggle('hidden',mode==='signup')}
