@@ -12,7 +12,7 @@
       "route": "sacco"
     },
     {
-      "title": "Separate welfare fund & requests",
+      "title": "View Welfare Account & Loans",
       "route": "sacco-welfare"
     }
   ],
