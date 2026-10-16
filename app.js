@@ -1366,7 +1366,7 @@ function renderProfileFeaturePage(el,requestedPage){
    const pending=entries.filter(x=>x.status==='pending');
    const total=confirmed.reduce((sum,x)=>sum+Number(x.amount||0),0);
    const now=new Date(),buckets=Array.from({length:6},(_,i)=>{const d=new Date(now.getFullYear(),now.getMonth()-(5-i),1);return {year:d.getFullYear(),month:d.getMonth(),label:d.toLocaleDateString(undefined,{month:'short'}),value:0}});
-   confirmed.forEach(x=>{const d=new Date((x.transaction_date||x.submitted_at||'')+'T00:00:00');if(Number.isNaN(d.getTime()))return;const b=buckets.find(y=>y.year===d.getFullYear()&&y.month===d.getMonth());if(b)b.value+=Number(x.amount||0)});
+   confirmed.forEach(x=>{const d=new Date(x.transaction_date||x.submitted_at||'');if(Number.isNaN(d.getTime()))return;const b=buckets.find(y=>y.year===d.getFullYear()&&y.month===d.getMonth());if(b)b.value+=Number(x.amount||0)});
    const max=Math.max(1,...buckets.map(x=>x.value));
    const bars='<div class="profile-bar-chart" role="img" aria-label="Confirmed savings contributions by month">'+buckets.map(x=>'<div class="profile-bar-column"><strong>'+Math.round(x.value).toLocaleString()+'</strong><div class="profile-bar-track"><span style="height:'+Math.max(x.value?8:2,Math.round(x.value/max*100))+'%"></span></div><small>'+esc(x.label)+'</small></div>').join('')+'</div>';
    el.innerHTML=head('Circle savings charts & reports','Review confirmed contributions, pending approvals, member participation and withdrawals.','<button class="button secondary" data-page="sacco-overview">← Circle overview</button>')+
