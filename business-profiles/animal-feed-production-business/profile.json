@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 79,
+  "slug": "animal-feed-production-business",
+  "name": "Animal feed production business",
+  "plural": "Animal feed production business",
+  "description": "Animal feed production business: herd records, feeding, veterinary schedules and production. Manage animal feed production workflows in a dedicated business workspace.",
+  "icon": "♧",
+  "group": "Animal production",
+  "extended": true,
+  "features": [
+    {
+      "title": "Herd / flock records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Feed & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Health & treatment schedule",
+      "route": "operations"
+    },
+    {
+      "title": "Production records",
+      "route": "reports"
+    },
+    {
+      "title": "Sales & deliveries",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & reminders",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & expenses",
+      "route": "finance"
+    },
+    {
+      "title": "Customers & suppliers",
+      "route": "customers"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 115,
+  "slug": "sports-equipment-shop-business",
+  "name": "Sports equipment shop business",
+  "plural": "Sports equipment shop business",
+  "description": "Sports equipment shop business: catalogue, suppliers, stock, pricing and sales. Manage sports equipment shop workflows in a dedicated business workspace.",
+  "icon": "◈",
+  "group": "Retail & trade",
+  "extended": true,
+  "features": [
+    {
+      "title": "Product catalogue",
+      "route": "products"
+    },
+    {
+      "title": "Stock & purchasing",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & orders",
+      "route": "sales"
+    },
+    {
+      "title": "Customer records",
+      "route": "customers"
+    },
+    {
+      "title": "Supplier operations",
+      "route": "operations"
+    },
+    {
+      "title": "Tasks & follow-up",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & expenses",
+      "route": "finance"
+    },
+    {
+      "title": "Sales reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

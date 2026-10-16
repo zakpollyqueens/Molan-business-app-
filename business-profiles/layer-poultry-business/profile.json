@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 85,
+  "slug": "layer-poultry-business",
+  "name": "Layer poultry business",
+  "plural": "Layer poultry business",
+  "description": "Layer poultry business: herd records, feeding, veterinary schedules and production. Manage layer poultry workflows in a dedicated business workspace.",
+  "icon": "♧",
+  "group": "Animal production",
+  "extended": true,
+  "features": [
+    {
+      "title": "Herd / flock records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Feed & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Health & treatment schedule",
+      "route": "operations"
+    },
+    {
+      "title": "Production records",
+      "route": "reports"
+    },
+    {
+      "title": "Sales & deliveries",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & reminders",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & expenses",
+      "route": "finance"
+    },
+    {
+      "title": "Customers & suppliers",
+      "route": "customers"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

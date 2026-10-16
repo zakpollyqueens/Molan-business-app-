@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 65,
+  "slug": "herb-farming",
+  "name": "Herb farming",
+  "plural": "Herb farmings",
+  "description": "Herb farming: crop cycles, field activities and harvest records. Manage herb farming workflows in a dedicated business workspace.",
+  "icon": "❋",
+  "group": "Agriculture & farming",
+  "extended": true,
+  "features": [
+    {
+      "title": "Farm operations",
+      "route": "operations"
+    },
+    {
+      "title": "Crop & field records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Inventory & inputs",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & produce orders",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & seasonal schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & costs",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & yields",
+      "route": "reports"
+    },
+    {
+      "title": "Customers & buyers",
+      "route": "customers"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

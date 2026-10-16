@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 92,
+  "slug": "dairy-processing-business",
+  "name": "Dairy processing business",
+  "plural": "Dairy processing business",
+  "description": "Dairy processing business: recipes, batches, ingredients, quality and orders. Manage dairy processing workflows in a dedicated business workspace.",
+  "icon": "♨",
+  "group": "Food production",
+  "extended": true,
+  "features": [
+    {
+      "title": "Production batches",
+      "route": "operations"
+    },
+    {
+      "title": "Ingredients & stock",
+      "route": "inventory"
+    },
+    {
+      "title": "Quality checks",
+      "route": "business-tools"
+    },
+    {
+      "title": "Orders & fulfilment",
+      "route": "sales"
+    },
+    {
+      "title": "Supplier directory",
+      "route": "customers"
+    },
+    {
+      "title": "Tasks & production schedule",
+      "route": "tasks"
+    },
+    {
+      "title": "Costs & finance",
+      "route": "finance"
+    },
+    {
+      "title": "Production reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

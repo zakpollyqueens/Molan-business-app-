@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 91,
+  "slug": "snack-production-business",
+  "name": "Snack production business",
+  "plural": "Snack production business",
+  "description": "Snack production business: recipes, batches, ingredients, quality and orders. Manage snack production workflows in a dedicated business workspace.",
+  "icon": "♨",
+  "group": "Food production",
+  "extended": true,
+  "features": [
+    {
+      "title": "Production batches",
+      "route": "operations"
+    },
+    {
+      "title": "Ingredients & stock",
+      "route": "inventory"
+    },
+    {
+      "title": "Quality checks",
+      "route": "business-tools"
+    },
+    {
+      "title": "Orders & fulfilment",
+      "route": "sales"
+    },
+    {
+      "title": "Supplier directory",
+      "route": "customers"
+    },
+    {
+      "title": "Tasks & production schedule",
+      "route": "tasks"
+    },
+    {
+      "title": "Costs & finance",
+      "route": "finance"
+    },
+    {
+      "title": "Production reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 88,
+  "slug": "quail-farming-business",
+  "name": "Quail farming business",
+  "plural": "Quail farming business",
+  "description": "Quail farming business: herd records, feeding, veterinary schedules and production. Manage quail farming workflows in a dedicated business workspace.",
+  "icon": "♧",
+  "group": "Animal production",
+  "extended": true,
+  "features": [
+    {
+      "title": "Herd / flock records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Feed & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Health & treatment schedule",
+      "route": "operations"
+    },
+    {
+      "title": "Production records",
+      "route": "reports"
+    },
+    {
+      "title": "Sales & deliveries",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & reminders",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & expenses",
+      "route": "finance"
+    },
+    {
+      "title": "Customers & suppliers",
+      "route": "customers"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

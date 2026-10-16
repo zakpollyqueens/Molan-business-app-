@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 133,
+  "slug": "pharmaceutical-distribution",
+  "name": "Pharmaceutical distribution",
+  "plural": "Pharmaceutical distributions",
+  "description": "Pharmaceutical distribution: bulk orders, warehouses, suppliers and deliveries. Manage pharmaceutical distribution workflows in a dedicated business workspace.",
+  "icon": "▦",
+  "group": "Wholesale & distribution",
+  "extended": true,
+  "features": [
+    {
+      "title": "Bulk orders",
+      "route": "sales"
+    },
+    {
+      "title": "Warehouse inventory",
+      "route": "inventory"
+    },
+    {
+      "title": "Suppliers & buyers",
+      "route": "customers"
+    },
+    {
+      "title": "Dispatch & deliveries",
+      "route": "operations"
+    },
+    {
+      "title": "Tasks & routes",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & credit records",
+      "route": "finance"
+    },
+    {
+      "title": "Team access",
+      "route": "team"
+    },
+    {
+      "title": "Distribution reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

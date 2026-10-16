@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 157,
+  "slug": "conference-services-business",
+  "name": "Conference services business",
+  "plural": "Conference services business",
+  "description": "Conference services business: reservations, guest services, schedules and event orders. Manage conference services workflows in a dedicated business workspace.",
+  "icon": "⌂",
+  "group": "Hospitality & events",
+  "extended": true,
+  "features": [
+    {
+      "title": "Bookings & reservations",
+      "route": "business-tools"
+    },
+    {
+      "title": "Guest / client records",
+      "route": "customers"
+    },
+    {
+      "title": "Events & service operations",
+      "route": "operations"
+    },
+    {
+      "title": "Supplies & inventory",
+      "route": "inventory"
+    },
+    {
+      "title": "Tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Payments & expenses",
+      "route": "finance"
+    },
+    {
+      "title": "Team coordination",
+      "route": "team"
+    },
+    {
+      "title": "Bookings & revenue reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}
