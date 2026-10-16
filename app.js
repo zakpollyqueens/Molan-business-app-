@@ -264,6 +264,58 @@
       $('#guided-finish').classList.add('hidden');$('#guided-next').classList.remove('hidden');$('#guided-next').textContent='Go to sign in →';$('#guided-next').dataset.guidedSigninNext='true';
     }catch(err){guidedShowStatus(err.message||'We could not complete setup. Your draft is still saved; check the details and try again.',true)}finally{btn.disabled=false;btn.textContent='Create my business →'}
   }
+
+  let learnIndex=0;
+  function detectLearnCountry(){
+    const tz=Intl.DateTimeFormat().resolvedOptions().timeZone||'',lang=(navigator.language||'').toLowerCase();
+    if(tz==='Africa/Kampala'||lang.endsWith('-ug'))return 'UG';
+    if(tz==='Africa/Nairobi'||lang.endsWith('-ke'))return 'KE';
+    if(tz==='Africa/Dar_es_Salaam'||lang.endsWith('-tz'))return 'TZ';
+    if(tz==='Africa/Kigali'||lang.endsWith('-rw'))return 'RW';
+    if(tz==='Africa/Bujumbura'||lang.endsWith('-bi'))return 'BI';
+    if(tz==='Africa/Juba'||lang.endsWith('-ss'))return 'SS';
+    if(tz.startsWith('Africa/'))return 'OTHER_AFRICA';
+    if(lang.endsWith('-us'))return 'USD';
+    return 'OTHER';
+  }
+  function renderLearnPricing(){
+    const country=$('#learn-country')?.value||'UG',out=$('#learn-pricing-result');if(!out)return;
+    const names={UG:'Uganda',KE:'Kenya',TZ:'Tanzania',RW:'Rwanda',BI:'Burundi',SS:'South Sudan',OTHER_AFRICA:'other African countries',USD:'countries using USD pricing',OTHER:'your selected country'};
+    const notes={
+      UG:'Uganda: the intended policy is to keep existing Uganda prices unchanged. The current repository does not publish exact Silver, Gold and Premium prices, so no new UGX amounts are invented here.',
+      KE:'Kenya: display prices in Kenyan shillings (KES), with a modest regional adjustment above Uganda pricing once the approved Uganda base prices are configured.',
+      TZ:'Tanzania: display prices in Tanzanian shillings (TZS), with a modest regional adjustment above Uganda pricing once the approved Uganda base prices are configured.',
+      RW:'Rwanda: display prices in Rwandan francs (RWF), with a modest regional adjustment above Uganda pricing once the approved Uganda base prices are configured.',
+      BI:'Burundi: display prices in Burundian francs (BIF), with a modest regional adjustment above Uganda pricing once the approved Uganda base prices are configured.',
+      SS:'South Sudan: display prices in South Sudanese pounds (SSP), with a modest regional adjustment above Uganda pricing once the approved Uganda base prices are configured.',
+      OTHER_AFRICA:'Other African countries: apply a country-specific local currency and a higher rate than the East African schedule after the rate table and exchange rules are approved.',
+      USD:'Your suggested international reference figures are Gold: $100/month, Silver: $60/month and Premium: $50/month. These are examples from your instruction, not activated billing prices.',
+      OTHER:'Use the selected country’s supported currency and an approved international rate. A confirmed currency/price table is required before billing can be enabled.'
+    };
+    out.innerHTML='<strong>'+esc(names[country]||'Selected market')+'</strong><p>'+esc(notes[country]||notes.OTHER)+'</p><div class="learn-price-status"><span>Silver · Gold · Premium</span><b>Checkout not yet active</b></div>';
+  }
+  function showLearnSlide(index){
+    const slides=$('[data-learn-slide]');if(!slides.length)return;learnIndex=(index+slides.length)%slides.length;
+    slides.forEach((s,i)=>{s.classList.toggle('active',i===learnIndex);s.setAttribute('aria-hidden',i===learnIndex?'false':'true')});
+    $('[data-learn-dot]').forEach((d,i)=>{d.classList.toggle('active',i===learnIndex);if(i===learnIndex)d.setAttribute('aria-current','true');else d.removeAttribute('aria-current')});
+    const fill=$('#learn-progress-fill');if(fill)fill.style.width=((learnIndex+1)/slides.length*100)+'%';
+    const count=$('#learn-slide-count');if(count)count.textContent=String(learnIndex+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0');
+    $('.learn-controls')?.classList.toggle('is-final',learnIndex===slides.length-1);
+  }
+  function openLearnMore(){clearInterval(welcomeTimer);showScreen('learn-more-screen');const country=$('#learn-country');if(country&&!country.dataset.initialized){country.value=detectLearnCountry();country.dataset.initialized='true';renderLearnPricing()}showLearnSlide(0);window.scrollTo({top:0,behavior:'smooth'})}
+  function closeLearnMore(){showScreen('welcome-screen');startWelcomeAutoplay();window.scrollTo({top:0,behavior:'smooth'})}
+  $('#welcome-learn-more')?.addEventListener('click',openLearnMore);
+  $('#learn-close')?.addEventListener('click',closeLearnMore);
+  $('#learn-back-home')?.addEventListener('click',closeLearnMore);
+  $('#learn-next-arrow')?.addEventListener('click',()=>showLearnSlide(learnIndex+1));
+  $('#learn-prev-arrow')?.addEventListener('click',()=>showLearnSlide(learnIndex-1));
+  $('#learn-prev')?.addEventListener('click',()=>showLearnSlide(learnIndex-1));
+  $('#learn-start-setup')?.addEventListener('click',guidedOpen);
+  $('[data-learn-next]').forEach(b=>b.addEventListener('click',()=>showLearnSlide(learnIndex+1)));
+  $('[data-learn-dot]').forEach(b=>b.addEventListener('click',()=>showLearnSlide(Number(b.dataset.learnDot))));
+  $('#learn-country')?.addEventListener('change',renderLearnPricing);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#learn-more-screen')?.classList.contains('hidden'))closeLearnMore();if($('#learn-more-screen')&&!$('#learn-more-screen').classList.contains('hidden')){if(e.key==='ArrowRight')showLearnSlide(learnIndex+1);if(e.key==='ArrowLeft')showLearnSlide(learnIndex-1)}});
+
   $('#welcome-get-started')?.addEventListener('click',guidedOpen);
   $$('[data-welcome-auth]').forEach(b=>b.addEventListener('click',()=>openWelcomeAuth(b.dataset.welcomeAuth||'signin')));
   $('#guided-back')?.addEventListener('click',()=>{guidedSaveDraft();guidedSetStep(guidedStep-1)});
