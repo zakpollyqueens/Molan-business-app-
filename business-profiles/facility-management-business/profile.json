@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 221,
+  "slug": "facility-management-business",
+  "name": "Facility management business",
+  "plural": "Facility management business",
+  "description": "Facility management business: properties, leases, tenants, maintenance and payments. Manage facility management workflows in a dedicated business workspace.",
+  "icon": "⌂",
+  "group": "Property & facilities",
+  "extended": true,
+  "features": [
+    {
+      "title": "Property portfolio",
+      "route": "business-tools"
+    },
+    {
+      "title": "Tenants & clients",
+      "route": "customers"
+    },
+    {
+      "title": "Leases & service jobs",
+      "route": "operations"
+    },
+    {
+      "title": "Maintenance supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Rent & expenses",
+      "route": "finance"
+    },
+    {
+      "title": "Tasks & inspections",
+      "route": "tasks"
+    },
+    {
+      "title": "Team access",
+      "route": "team"
+    },
+    {
+      "title": "Occupancy reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

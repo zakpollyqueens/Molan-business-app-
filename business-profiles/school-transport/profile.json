@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 176,
+  "slug": "school-transport",
+  "name": "School transport",
+  "plural": "School transports",
+  "description": "School transport: fleet, drivers, routes, trips and maintenance. Manage school transport workflows in a dedicated business workspace.",
+  "icon": "⇢",
+  "group": "Transport & mobility",
+  "extended": true,
+  "features": [
+    {
+      "title": "Fleet & vehicle records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Trips & dispatch",
+      "route": "operations"
+    },
+    {
+      "title": "Maintenance & parts",
+      "route": "inventory"
+    },
+    {
+      "title": "Customer bookings",
+      "route": "customers"
+    },
+    {
+      "title": "Tasks & driver schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Collections & expenses",
+      "route": "finance"
+    },
+    {
+      "title": "Staff & drivers",
+      "route": "team"
+    },
+    {
+      "title": "Fleet reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

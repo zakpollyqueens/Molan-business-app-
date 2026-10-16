@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 193,
+  "slug": "bridge-construction",
+  "name": "Bridge construction",
+  "plural": "Bridge constructions",
+  "description": "Bridge construction: projects, estimates, materials, crews and inspections. Manage bridge construction workflows in a dedicated business workspace.",
+  "icon": "▧",
+  "group": "Construction & trades",
+  "extended": true,
+  "features": [
+    {
+      "title": "Projects & work orders",
+      "route": "operations"
+    },
+    {
+      "title": "Materials & inventory",
+      "route": "inventory"
+    },
+    {
+      "title": "Clients & contractors",
+      "route": "customers"
+    },
+    {
+      "title": "Site tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Quotes & project costs",
+      "route": "finance"
+    },
+    {
+      "title": "Team & crews",
+      "route": "team"
+    },
+    {
+      "title": "Project documents",
+      "route": "website-studio"
+    },
+    {
+      "title": "Project reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 257,
+  "slug": "counselling-centre-business",
+  "name": "Counselling centre business",
+  "plural": "Counselling centre business",
+  "description": "Counselling centre business: appointments, services, inventory and follow-up. Manage counselling centre workflows in a dedicated business workspace.",
+  "icon": "✚",
+  "group": "Healthcare & wellness",
+  "extended": true,
+  "features": [
+    {
+      "title": "Appointments & service records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Clients / patients",
+      "route": "customers"
+    },
+    {
+      "title": "Supplies & equipment",
+      "route": "inventory"
+    },
+    {
+      "title": "Clinical / service operations",
+      "route": "operations"
+    },
+    {
+      "title": "Staff schedules",
+      "route": "team"
+    },
+    {
+      "title": "Billing & expenses",
+      "route": "finance"
+    },
+    {
+      "title": "Tasks & follow-up",
+      "route": "tasks"
+    },
+    {
+      "title": "Service reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

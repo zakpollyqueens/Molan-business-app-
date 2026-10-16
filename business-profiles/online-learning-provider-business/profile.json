@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 240,
+  "slug": "online-learning-provider-business",
+  "name": "Online learning provider business",
+  "plural": "Online learning provider business",
+  "description": "Online learning provider business: learners, courses, schedules, assessments and fees. Manage online learning provider workflows in a dedicated business workspace.",
+  "icon": "▤",
+  "group": "Education & learning",
+  "extended": true,
+  "features": [
+    {
+      "title": "Learners & enrolments",
+      "route": "customers"
+    },
+    {
+      "title": "Courses & class operations",
+      "route": "operations"
+    },
+    {
+      "title": "Learning materials",
+      "route": "inventory"
+    },
+    {
+      "title": "Assessments & schedules",
+      "route": "business-tools"
+    },
+    {
+      "title": "Fees & finance",
+      "route": "finance"
+    },
+    {
+      "title": "Staff & permissions",
+      "route": "team"
+    },
+    {
+      "title": "Tasks & announcements",
+      "route": "announcements"
+    },
+    {
+      "title": "Learning reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

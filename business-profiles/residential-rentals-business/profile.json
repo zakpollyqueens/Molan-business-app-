@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 215,
+  "slug": "residential-rentals-business",
+  "name": "Residential rentals business",
+  "plural": "Residential rentals business",
+  "description": "Residential rentals business: properties, leases, tenants, maintenance and payments. Manage residential rentals workflows in a dedicated business workspace.",
+  "icon": "⌂",
+  "group": "Property & facilities",
+  "extended": true,
+  "features": [
+    {
+      "title": "Property portfolio",
+      "route": "business-tools"
+    },
+    {
+      "title": "Tenants & clients",
+      "route": "customers"
+    },
+    {
+      "title": "Leases & service jobs",
+      "route": "operations"
+    },
+    {
+      "title": "Maintenance supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Rent & expenses",
+      "route": "finance"
+    },
+    {
+      "title": "Tasks & inspections",
+      "route": "tasks"
+    },
+    {
+      "title": "Team access",
+      "route": "team"
+    },
+    {
+      "title": "Occupancy reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

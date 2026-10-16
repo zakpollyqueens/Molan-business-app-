@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 173,
+  "slug": "last-mile-delivery-business",
+  "name": "Last-mile delivery business",
+  "plural": "Last-mile delivery business",
+  "description": "Last-mile delivery business: fleet, drivers, routes, trips and maintenance. Manage last-mile delivery workflows in a dedicated business workspace.",
+  "icon": "⇢",
+  "group": "Transport & mobility",
+  "extended": true,
+  "features": [
+    {
+      "title": "Fleet & vehicle records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Trips & dispatch",
+      "route": "operations"
+    },
+    {
+      "title": "Maintenance & parts",
+      "route": "inventory"
+    },
+    {
+      "title": "Customer bookings",
+      "route": "customers"
+    },
+    {
+      "title": "Tasks & driver schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Collections & expenses",
+      "route": "finance"
+    },
+    {
+      "title": "Staff & drivers",
+      "route": "team"
+    },
+    {
+      "title": "Fleet reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 242,
+  "slug": "exam-preparation-centre-business",
+  "name": "Exam preparation centre business",
+  "plural": "Exam preparation centre business",
+  "description": "Exam preparation centre business: learners, courses, schedules, assessments and fees. Manage exam preparation centre workflows in a dedicated business workspace.",
+  "icon": "▤",
+  "group": "Education & learning",
+  "extended": true,
+  "features": [
+    {
+      "title": "Learners & enrolments",
+      "route": "customers"
+    },
+    {
+      "title": "Courses & class operations",
+      "route": "operations"
+    },
+    {
+      "title": "Learning materials",
+      "route": "inventory"
+    },
+    {
+      "title": "Assessments & schedules",
+      "route": "business-tools"
+    },
+    {
+      "title": "Fees & finance",
+      "route": "finance"
+    },
+    {
+      "title": "Staff & permissions",
+      "route": "team"
+    },
+    {
+      "title": "Tasks & announcements",
+      "route": "announcements"
+    },
+    {
+      "title": "Learning reports",
+      "route": "reports"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}
