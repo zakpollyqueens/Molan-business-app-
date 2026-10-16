@@ -2,11 +2,13 @@
   "name": "molan-business-app",
   "version": "1.0.0",
   "private": true,
-  "description": "Molan Business web, Android and Windows desktop app builds",
+  "description": "Molan Business web, Android, Windows, macOS and Linux desktop app builds",
   "scripts": {
     "prepare:web": "npm run prepare:icons && node scripts/prepare-web.cjs",
     "build:android": "npm run prepare:web && cap sync android",
     "build:windows": "npm run prepare:web && electron-builder --win nsis --publish never",
+    "build:macos": "npm run prepare:web && electron-builder --mac dmg zip --publish never",
+    "build:linux": "npm run prepare:web && electron-builder --linux AppImage deb --publish never",
     "prepare:icons": "node scripts/generate-icons.cjs"
   },
   "dependencies": {
@@ -47,6 +49,43 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "category": "public.app-category.business"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "category": "Office",
+      "synopsis": "Molan Business management workspace"
     }
   },
   "main": "desktop/main.cjs"
