@@ -12,7 +12,19 @@ const assert = require('node:assert/strict');
       timeout: 60000
     });
     assert(response && response.ok(), 'Published app should return a successful HTTP response');
-    await page.waitForSelector('#auth-screen:not(.hidden)', { timeout: 30000 });
+    await page.waitForSelector('#welcome-screen:not(.hidden)', { timeout: 30000 });
+    assert.equal(await page.locator('[data-welcome-slide]').count(), 8, 'Welcome page should show eight introduction slides');
+    assert.equal(await page.locator('[data-welcome-dot]').count(), 8, 'Every welcome slide should have a navigation dot');
+    await page.locator('#welcome-get-started').click();
+    await page.waitForSelector('#guided-onboarding-screen:not(.hidden)', { timeout: 10000 });
+    assert.equal(await page.locator('[data-guided-step]').count(), 6, 'Guided setup should have six steps');
+    assert.equal(await page.locator('#guided-business-type').isVisible(), true);
+    await page.locator('#guided-business-type').selectOption({ label: 'Schools' }).catch(async () => page.locator('#guided-business-type').selectOption('School'));
+    await page.locator('#guided-next').click();
+    assert.equal(await page.locator('[data-guided-step="1"]').evaluate(el => el.classList.contains('active')), true,
+      'Guided setup should advance to the owner account step');
+    await page.locator('[data-guided-signin]').click();
+    await page.waitForSelector('#auth-screen:not(.hidden)', { timeout: 10000 });
     assert.equal(await page.locator('#setup-screen').evaluate(el => el.classList.contains('hidden')), true,
       'First-time visitors should not be asked to configure Supabase manually');
     assert.equal(await page.locator('#auth-title').innerText(), 'Welcome back');
@@ -23,7 +35,7 @@ const assert = require('node:assert/strict');
     await page.locator('[data-auth-mode="signin"]').click();
     assert.equal(await page.locator('#auth-title').innerText(), 'Welcome back');
     assert.equal(pageErrors.length, 0, 'Page should not emit uncaught JavaScript errors: ' + pageErrors.join('; '));
-    console.log('Browser smoke test passed: live response, automatic connection screen, mobile layout, and auth-mode switching.');
+    console.log('Browser smoke test passed: live response, eight-slide welcome, guided setup navigation, mobile layout, and auth-mode switching.');
   } finally {
     await browser.close();
   }
