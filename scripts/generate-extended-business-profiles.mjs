@@ -14,6 +14,33 @@ const slugify = value => String(value || '').toLowerCase().normalize('NFKD')
 const esc = value => String(value ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const css = `:root{font-family:Inter,system-ui,sans-serif;color:#10213e;background:#f4f8fc}*{box-sizing:border-box}body{margin:0}.shell{max-width:1100px;margin:auto;padding:18px}.hero,.notice{border:1px solid #dce5f1;border-radius:20px;background:#fff;padding:22px;box-shadow:0 12px 34px #122b4f0f}.back{color:#087fbd;text-decoration:none;font-weight:700}.eyebrow{font-size:.72rem;font-weight:800;letter-spacing:.12em;color:#087fbd}.row{display:flex;justify-content:space-between;align-items:center;gap:14px}.mark{display:grid;place-items:center;width:58px;height:58px;border-radius:17px;background:linear-gradient(145deg,#05c8e8,#10366b);color:#fff;font-size:1.7rem}.muted{color:#65758b;line-height:1.55}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:12px;margin-top:16px}.card{display:flex;align-items:center;gap:12px;text-align:left;padding:16px;border:1px solid #dce5f1;border-radius:15px;background:#fff;color:#10213e;cursor:pointer;min-width:0;font:inherit;text-decoration:none}.card:hover{border-color:#0796d2}.num{color:#0796d2;font-weight:800}.copy{flex:1;min-width:0}.copy strong,.copy small{display:block;overflow-wrap:anywhere}.copy small{color:#65758b;margin-top:5px}.notice{margin-top:16px;color:#53657d;line-height:1.6}footer{display:flex;justify-content:space-between;gap:10px;padding:20px 4px;color:#65758b;font-size:.85rem}@media(max-width:620px){.shell{padding:10px}.hero{padding:16px}footer{flex-direction:column}}`;
 const js = `(()=>{'use strict';const slug=location.pathname.replace(/\\/$/,'').split('/').slice(-2,-1)[0],grid=document.getElementById('features'),status=document.getElementById('connection-status'),notice=document.getElementById('notice');let profile;const safe=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));const fs=s=>String(s||'').toLowerCase().normalize('NFKD').replace(/[^a-z0-9\\s-]/g,'').trim().replace(/[\\s_]+/g,'-').replace(/-+/g,'-');async function init(){try{const r=await fetch('profile.json',{cache:'no-cache'});if(!r.ok)throw Error('Profile configuration unavailable');profile=await r.json();if(profile.slug!==slug)throw Error('Profile folder and configuration do not match');document.title=profile.name+' | Molan Business';document.getElementById('profile-name').textContent=profile.name;document.getElementById('profile-description').textContent=profile.description||'';document.getElementById('profile-icon').textContent=profile.icon||'◈';grid.innerHTML=(profile.features||[]).map((f,i)=>'<a class="card" href="pages/'+fs(f.title)+'/index.html"><span class="num">'+String(i+1).padStart(2,'0')+'</span><span class="copy"><strong>'+safe(f.title)+'</strong><small>Open '+safe(f.title.toLowerCase())+'</small></span><span>↗</span></a>').join('');status.textContent='Profile loaded · '+(profile.features||[]).length+' dedicated feature pages';notice.textContent='Each feature above opens a page inside this business profile.'}catch(e){status.textContent='Could not load profile';notice.textContent=e.message;notice.dataset.state='error'}}init()})();`;
+
+function ensureProfileNavigation(file, profile, isFeaturePage = false) {
+  if (!fs.existsSync(file)) return;
+  let html = fs.readFileSync(file, 'utf8');
+  if (html.includes('data-profile-hamburger')) return;
+  const featureLinks = (profile.features || []).map((f, i) => {
+    const href = isFeaturePage ? '../' + slugify(f.title) + '/index.html' : 'pages/' + slugify(f.title) + '/index.html';
+    return '<a href="' + href + '"><span>' + String(i + 1).padStart(2, '0') + '</span>' + esc(f.title) + '</a>';
+  }).join('');
+  const overviewHref = isFeaturePage ? '../../index.html' : 'index.html';
+  const appHref = isFeaturePage ? '../../../../index.html' : '../../index.html';
+  const nav = '<button class="profile-menu-toggle" type="button" data-profile-hamburger aria-label="Open ' + esc(profile.name) + ' navigation" aria-expanded="false">☰ <span>Menu</span></button>' +
+    '<div class="profile-menu-backdrop" data-profile-menu-backdrop hidden></div>' +
+    '<aside class="profile-menu" data-profile-menu hidden aria-label="' + esc(profile.name) + ' navigation">' +
+    '<div class="profile-menu-head"><div><small>BUSINESS PROFILE</small><strong>' + esc(profile.name) + '</strong></div><button type="button" data-profile-menu-close aria-label="Close menu">×</button></div>' +
+    '<nav><a href="' + overviewHref + '"><span>⌂</span> Overview</a>' + featureLinks + '</nav>' +
+    '<a class="profile-menu-app" href="' + appHref + '">← Molan Business app</a></aside>';
+  const styles = '<style data-profile-nav-styles>.profile-menu-toggle{position:sticky;top:10px;z-index:20;display:flex;align-items:center;gap:9px;margin:0 0 14px auto;padding:11px 15px;border:1px solid #cbd8e8;border-radius:13px;background:#fff;color:#10213e;font:700 14px system-ui;box-shadow:0 8px 24px #10213e12;cursor:pointer}.profile-menu-backdrop{position:fixed;inset:0;z-index:40;background:#07152bcc}.profile-menu{position:fixed;inset:0 auto 0 0;z-index:41;width:min(360px,88vw);overflow:auto;padding:18px;background:#f7faff;color:#10213e;box-shadow:18px 0 48px #07152b35}.profile-menu[hidden],.profile-menu-backdrop[hidden]{display:none}.profile-menu-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 2px 18px;border-bottom:1px solid #dce5f1}.profile-menu-head small,.profile-menu-head strong{display:block}.profile-menu-head small{font-size:10px;letter-spacing:.14em;color:#0787bf;font-weight:800}.profile-menu-head strong{margin-top:5px;font-size:18px}.profile-menu-head button{border:0;border-radius:10px;background:#e6eef8;padding:7px 12px;font-size:24px;cursor:pointer}.profile-menu nav{display:grid;gap:7px;padding:16px 0}.profile-menu nav a,.profile-menu-app{display:flex;align-items:center;gap:10px;padding:11px 12px;border:1px solid #e0e8f2;border-radius:11px;background:#fff;color:#10213e;text-decoration:none;font-size:14px}.profile-menu nav a:hover,.profile-menu-app:hover{border-color:#0787bf}.profile-menu nav a span{min-width:24px;color:#0787bf;font-weight:800}.profile-menu-app{font-weight:750;margin-top:8px}@media(min-width:900px){.profile-menu-toggle{position:fixed;top:18px;right:20px}}</style>';
+  const script = '<script data-profile-nav-script>(()=>{const t=document.querySelector("[data-profile-hamburger]"),m=document.querySelector("[data-profile-menu]"),b=document.querySelector("[data-profile-menu-backdrop]"),c=document.querySelector("[data-profile-menu-close]");if(!t||!m||!b)return;const open=()=>{m.hidden=false;b.hidden=false;t.setAttribute("aria-expanded","true");c?.focus()};const close=()=>{m.hidden=true;b.hidden=true;t.setAttribute("aria-expanded","false");t.focus()};t.addEventListener("click",open);c?.addEventListener("click",close);b.addEventListener("click",close);document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!m.hidden)close()});})();</script>';
+  const mainTag = /<main\\b[^>]*>/i;
+  if (!mainTag.test(html)) return;
+  html = html.replace('</head>', styles + '</head>');
+  html = html.replace(mainTag, match => match + nav);
+  html = html.replace('</body>', script + '</body>');
+  fs.writeFileSync(file, html);
+}
+
 let createdFolders = 0, createdPages = 0;
 for (const [i, p] of catalog.profiles.entries()) {
   const dir = path.join(root, 'business-profiles', p.slug);
@@ -37,6 +64,8 @@ for (const [i, p] of catalog.profiles.entries()) {
       createdPages++;
     }
   }
+  ensureProfileNavigation(path.join(dir, 'index.html'), p, false);
+  for (const f of (p.features || [])) ensureProfileNavigation(path.join(dir, 'pages', slugify(f.title), 'index.html'), p, true);
   createdFolders++;
 }
 const extended = new Set(catalog.profiles.map(p => p.slug));
