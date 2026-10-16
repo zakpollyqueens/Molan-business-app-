@@ -13,7 +13,7 @@ jobs:
         with:
           node-version: 20
       - name: Check JavaScript syntax
-        run: node --check app.js && node --check business-profiles.js && node --check member-portal.js
+        run: node --check app.js && node --check business-profiles.js && node --check member-portal.js && node --check shared/upgrade-manager.js && node --check scripts/prepare-web.cjs
       - name: Check required frontend files
         run: test -s index.html && test -s styles.css && test -s app.js && test -s business-profiles.js && test -s business-profiles.css && test -s member-portal.html && test -s member-portal.css && test -s member-portal.js && test -s supabase/functions/sacco-member-portal/index.ts && test -s supabase/functions/sacco-savings-approval-email/index.ts
       - name: Smoke-check workspace modules and public frontend safety
@@ -110,6 +110,19 @@ jobs:
             if (!profileMigration.includes(required)) throw new Error('Industry settings migration is missing security requirement: ' + required);
           }
           if (!js.includes("upsert({company_id:company.id,profile_key:profile[0],settings,updated_by:user.id")) throw new Error('Industry settings must be saved to the active tenant.');
+          const versionManifest = JSON.parse(fs.readFileSync('version.json', 'utf8'));
+          const upgradeManager = fs.readFileSync('shared/upgrade-manager.js', 'utf8');
+          const platformCss = fs.readFileSync('shared/platform.css', 'utf8');
+          if (!html.includes('shared/upgrade-manager.js') || !html.includes('id="refresh-button"')) throw new Error('Global update checker or workspace refresh control is missing.');
+          if (!versionManifest.version || !html.includes('window.MOLAN_APP_VERSION = "' + versionManifest.version + '"')) throw new Error('Web app version must match version.json.');
+          for (const required of ['RELEASE_API','Molan-Business.apk','Molan-Business-Setup\\.exe','Check for updates','Download update','location.replace']) {
+            if (!upgradeManager.includes(required)) throw new Error('Update manager missing required behavior: ' + required);
+          }
+          if (platformCss.includes('.molan-update-banner{display:none!important}')) throw new Error('Update banner must not be permanently hidden.');
+          const portalCss = fs.readFileSync('member-portal.css', 'utf8');
+          for (const required of ['body[data-theme="light"] .card','@media(max-width:420px)','focus-visible','prefers-reduced-motion']) {
+            if (!portalCss.includes(required)) throw new Error('Member portal accessibility/responsive styling missing: ' + required);
+          }
           const portalHtml = fs.readFileSync('member-portal.html', 'utf8');
           const portalJs = fs.readFileSync('member-portal.js', 'utf8');
           const portalEdge = fs.readFileSync('supabase/functions/sacco-member-portal/index.ts', 'utf8');
