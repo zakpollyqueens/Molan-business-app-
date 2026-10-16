@@ -16,8 +16,8 @@
       "route": "finance"
     },
     {
-      "title": "Members",
-      "route": "customers"
+      "title": "Loan repayment operations",
+      "route": "business-tools"
     },
     {
       "title": "Reports",
