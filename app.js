@@ -736,21 +736,50 @@ el.innerHTML=head(esc(profile[1])+' settings','Profile-specific shortcuts for '+
 '<section class="panel"><div class="panel-head"><div><h3>Operational settings shortcuts</h3><p>Open the real module for each area. Access and saving are governed by workspace permissions.</p></div></div><div class="profile-detail-grid">'+features.map(f=>'<button class="industry-feature-card" data-page="'+esc(f[3])+'"><span class="industry-feature-icon">'+f[0]+'</span><strong>'+esc(f[1])+'</strong><p>'+esc(f[2])+'</p><b>Open module →</b></button>').join('')+'</div></section><div class="profile-detail-footer"><span>Settings scope: '+(sameType?'current workspace':'profile template')+'</span><button class="button secondary small" data-industry-profile="'+esc(profile[0])+'">Back to profile overview</button></div>';
 return;
 }
-const profileConfig=window.MolanBusinessProfiles?.byName?.[profile[0]];
-const slug=window.MolanBusinessProfiles?.byName?.[profile[0]]?.slug;
-if(!slug) throw new Error('The selected business profile has no owned page folder.');
-el.innerHTML=head(esc(profile[1])+' workspace','Dedicated page owned by the '+esc(profile[1])+' profile folder.')+
-'<section class="profile-detail-hero"><div class="profile-detail-symbol">'+profile[3]+'</div><div><span class="section-kicker">PROFILE-OWNED PAGE</span><h2>'+esc(profile[1])+'</h2><p>'+esc(profile[2])+'</p><div class="profile-detail-actions"><button class="button primary" data-industry-settings="'+esc(profile[0])+'">⚙ Profile settings</button><button class="button secondary" data-page="profile-directory">← All business profiles</button>'+(sameType?'<button class="button secondary" data-page="business-profile">Edit active business profile</button>':'<button class="button secondary" data-profile-category="'+esc(profile[0])+'">＋ Create workspace of this type</button>')+'</div></div></section>'+
-'<section class="panel profile-owned-page-panel"><iframe id="profile-owned-page-frame" title="'+esc(profile[1])+' dedicated workspace" src="business-profiles/'+encodeURIComponent(slug)+'/index.html" loading="eager" referrerpolicy="same-origin" style="display:block;width:100%;min-height:1050px;border:0;border-radius:16px;background:transparent"></iframe></section>';
-const ownedFrame=$('#profile-owned-page-frame');
-ownedFrame.addEventListener('load',()=>{
- try{
-  ownedFrame.contentWindow.MolanProfileRuntime=window.MolanProfileRuntime;
-  ownedFrame.contentWindow.dispatchEvent(new Event('molan:runtime-ready'));
- }catch(error){console.warn('[Molan Business] Could not attach profile runtime bridge:',error)}
-});
+const profileConfig=window.MolanBusinessProfiles?.byName?.[profile[0]]||{};
+const slug=profileConfig.slug||'';
+const title=profile[1]||profile[0];
+const name=String(profile[0]||'').toLowerCase();
+if(!sameType){
+ el.innerHTML=head(esc(title)+' workspace template','Review the tools designed for '+esc(title)+'. Create a workspace to keep its records and settings separate.')+
+ '<section class="profile-detail-hero"><div class="profile-detail-symbol">'+profile[3]+'</div><div><span class="section-kicker">BUSINESS-SPECIFIC WORKSPACE</span><h2>'+esc(title)+'</h2><p>'+esc(profile[2])+'</p><div class="profile-detail-actions"><button class="button primary" data-profile-category="'+esc(profile[0])+'">＋ Create this business workspace</button><button class="button secondary" data-page="profile-directory">← All business profiles</button></div></div></section>'+
+ '<section class="panel"><div class="panel-head"><div><h3>Features for '+esc(title)+'</h3><p>These tools are selected for this business type. Workspace data is kept separate from other businesses.</p></div></div><div class="profile-detail-grid">'+features.map(f=>'<button class="industry-feature-card" data-page="'+esc(f[3])+'"><span class="industry-feature-icon">'+f[0]+'</span><strong>'+esc(f[1])+'</strong><p>'+esc(f[2])+'</p><b>Open feature →</b></button>').join('')+'</div></section>';
+ return;
 }
-
+const openTasks=(cache.tasks||[]).filter(t=>!['done','cancelled'].includes(String(t.status||'').toLowerCase()));
+const isSchool=/school|college|training|education|academy/.test(name);
+const isIT=/ict|software|information technology|technology|computer/.test(name);
+const isCircle=/circle|cooperative|investment group|association|club/.test(name);
+const isFarm=/farm|agri|poultry|fish|livestock|orchard|dairy|crop|horticulture/.test(name);
+const activitySource=isSchool?[...(cache.schoolClasses||[]),...(cache.schoolLearners||[]),...(cache.schoolAssessments||[]),...(cache.schoolFees||[])]:[...(cache.tasks||[]),...(cache.operations||[]),...(cache.sales||[]),...(cache.finance||[])];
+const now=new Date();
+const buckets=Array.from({length:6},(_,i)=>{const d=new Date(now.getFullYear(),now.getMonth()-(5-i),1);return {year:d.getFullYear(),month:d.getMonth(),label:d.toLocaleDateString(undefined,{month:'short'}),count:0}});
+activitySource.forEach(item=>{const raw=item.created_at||item.updated_at||item.event_date||item.transaction_date||item.assessment_date||item.due_date||item.submitted_at||item.sale_date;if(!raw)return;const d=new Date(raw);if(Number.isNaN(d.getTime()))return;const b=buckets.find(x=>x.year===d.getFullYear()&&x.month===d.getMonth());if(b)b.count++});
+const maxActivity=Math.max(1,...buckets.map(b=>b.count));
+const graphLabel=isSchool?'School records by month':slug==='sacco-savings-group'?'Workspace activity by month':isIT?'IT delivery activity by month':'Business activity by month';
+let metrics;
+if(isSchool){
+ metrics=[stat('Classes & streams',(cache.schoolClasses||[]).length,'▦','School structure'),stat('Learners',(cache.schoolLearners||[]).length,'♙','Registered learner records'),stat('Assessments',(cache.schoolAssessments||[]).length,'▤','Assessment records'),stat('Fee entries',(cache.schoolFees||[]).length,'＝','School fee ledger')];
+}else if(isIT){
+ metrics=[stat('Open tasks',openTasks.length,'✓','Work needing attention'),stat('Projects & operations',(cache.operations||[]).length,'⌘','Delivery and operations records'),stat('Products & releases',(cache.products||[]).length,'◈','Tracked products'),stat('Clients & contacts',(cache.customers||[]).length,'♙','Customer records')];
+}else if(slug==='sacco-savings-group'){
+ metrics=[stat('Group member tools','Ready','♧','Member accounts and savings ledger'),stat('Savings approvals','Ready','✓','Review submitted contributions'),stat('Withdrawals','Ready','↗','Approval and payment workflow'),stat('Welfare account','Ready','♡','Separate welfare records')];
+}else if(isCircle){
+ metrics=[stat('Group operations',(cache.operations||[]).length,'♧','Group activity records'),stat('Member contacts',(cache.customers||[]).length,'♙','Member directory records'),stat('Open tasks',openTasks.length,'✓','Meetings and follow-up'),stat('Finance records',(cache.finance||[]).length,'＝','Contribution and expense records')];
+}else if(isFarm){
+ metrics=[stat('Production operations',(cache.operations||[]).length,'❋','Field and production records'),stat('Inventory & inputs',(cache.inventory||[]).length,'▤','Supplies and stock'),stat('Sales & produce',(cache.sales||[]).length,'↗','Sales records'),stat('Seasonal tasks',openTasks.length,'✓','Open work and schedules')];
+}else{
+ metrics=[stat('Open tasks',openTasks.length,'✓','Work needing attention'),stat('Operations',(cache.operations||[]).length,'◈','Business activity records'),stat('Customers & members',(cache.customers||[]).length,'♙','Contact records'),stat('Finance records',(cache.finance||[]).length,'＝','Income and expense entries')];
+}
+const bars='<div class="profile-bar-chart" role="img" aria-label="'+esc(graphLabel)+'">'+buckets.map(b=>'<div class="profile-bar-column"><strong>'+b.count+'</strong><div class="profile-bar-track"><span style="height:'+Math.max(b.count?8:2,Math.round(b.count/maxActivity*100))+'%"></span></div><small>'+esc(b.label)+'</small></div>').join('')+'</div>';
+el.innerHTML=head(esc(title)+' overview','Your '+esc(title)+' dashboard, business-specific tools and recent activity.','<button class="button secondary" data-page="industry-settings">⚙ Business settings</button><button class="button secondary" data-page="business-profile">Edit business profile</button>')+
+ '<section class="profile-detail-hero"><div class="profile-detail-symbol">'+profile[3]+'</div><div><span class="section-kicker">'+esc(title.toUpperCase())+' WORKSPACE</span><h2>'+esc(company.name)+'</h2><p>'+esc(profile[2])+'</p><span class="profile-state">Records and settings are scoped to this business workspace</span></div></section>'+
+ '<div class="stats-grid">'+metrics.join('')+'</div>'+
+ '<section class="panel"><div class="panel-head"><div><span class="section-kicker">ACTIVITY TRENDS</span><h3>'+esc(graphLabel)+'</h3><p>Monthly records available to this workspace. Empty months remain visible so trends are easy to compare.</p></div><button class="button secondary small" data-page="reports">Open reports →</button></div>'+bars+'</section>'+
+ '<section class="panel"><div class="panel-head"><div><span class="section-kicker">PROFILE-SPECIFIC TOOLS</span><h3>Manage '+esc(title.toLowerCase())+'</h3><p>Each card opens its relevant workspace module. Features from unrelated business types are not inserted into this profile menu.</p></div></div><div class="profile-detail-grid">'+features.map(f=>'<button class="industry-feature-card" data-page="'+esc(f[3])+'"><span class="industry-feature-icon">'+f[0]+'</span><strong>'+esc(f[1])+'</strong><p>'+esc(f[2])+'</p><b>Open feature →</b></button>').join('')+'</div></section>'+
+ '<section class="panel"><div class="panel-head"><div><h3>Quick actions</h3><p>Start the next important task for this business.</p></div></div><div class="quick-actions">'+features.slice(0,4).map(f=>'<button class="quick-action" data-page="'+esc(f[3])+'"><span>'+f[0]+'</span><strong>'+esc(f[1])+'</strong><small>'+esc(f[2])+'</small></button>').join('')+'</div></section>';
+}
+  
   function renderControlCenter(el){
  const workspaces=(cache.workspaces||[]).filter(w=>w.company_profiles).map(w=>({id:w.company_id,role:w.role,company:w.company_profiles})); 
  const active=company.business_category||'Business';
