@@ -579,7 +579,7 @@ function industryProfileFeatures(profile){
  const config=window.MolanBusinessProfiles?.byName?.[profile?.[0]]||{};
  const slug=String(config.slug||'');
  const configured=Array.isArray(config.features)?config.features:[];
- const icons={overview:'▦',tasks:'✓',products:'◈',team:'♙',announcements:'◉',customers:'♙',inventory:'▤',sales:'↗',finance:'＝',attendance:'✓',reports:'▤',council:'◉',websites:'◈','business-profile':'▧','industry-workspace':'✦','business-tools':'✧','website-studio':'▧',operations:'◈',sacco:'♧','sacco-welfare':'♡','industry-profile':config.icon||'✦','industry-settings':'⚙',connections:'◉',chat:'✉',notifications:'◉'};
+ const icons={overview:'▦',tasks:'✓',products:'◈',team:'♙',announcements:'◉',customers:'♙',inventory:'▤',sales:'↗',finance:'＝',attendance:'✓',reports:'▤',council:'◉',websites:'◈','business-profile':'▧','industry-workspace':'✦','business-tools':'✧','website-studio':'▧',operations:'◈',sacco:'♧','sacco-welfare':'♡','sacco-overview':'♧','sacco-members':'♙','sacco-terms':'▤','sacco-withdrawals':'↗','school-overview':'▦','school-classes':'♙','school-assessments':'▤','school-fees':'＝','school-reports':'▥','it-projects':'⌘','it-support':'⚙','it-devices':'▤','it-clients':'♙','it-websites':'▧','it-team':'♙','it-releases':'▥','circle-overview':'♧','circle-members':'♙','circle-contributions':'＝','circle-meetings':'✓','circle-reports':'▥','industry-profile':config.icon||'✦','industry-settings':'⚙',connections:'◉',chat:'✉',notifications:'◉'};
  const feature=(title,description,route,icon)=>({title,description,route,icon:icon||icons[route]||'◈'});
  const common=[
   feature('Tasks & deadlines','Assign work, set due dates and follow completion.','tasks'),
@@ -592,30 +592,30 @@ function industryProfileFeatures(profile){
  let domain=[];
  if(slug==='sacco-savings-group'||/sacco savings group/.test(name)){
   domain=[
-   feature('Circle overview & member dashboard','Review group membership, savings activity, approvals and recent activity.','sacco','♧'),
-   feature('Member savings & accounts','Manage member records, savings terms, balances and reviewed transactions.','sacco','♧'),
+   feature('Circle overview & member dashboard','Review group membership, savings activity, approvals and recent activity.','sacco-overview','♧'),
+   feature('Member savings & accounts','Manage member records, savings terms, balances and reviewed transactions.','sacco-members','♧'),
    feature('Welfare account & loans','Manage the separate welfare fund and permitted welfare workflows.','sacco-welfare','♡'),
-   feature('Savings terms & contribution rules','Review savings frequency, terms and contribution expectations.','sacco','▤'),
-   feature('Withdrawal requests & approvals','Review withdrawal requests and record payments only after approval.','sacco','↗')
+   feature('Savings terms & contribution rules','Review savings frequency, terms and contribution expectations.','sacco-terms','▤'),
+   feature('Withdrawal requests & approvals','Review withdrawal requests and record payments only after approval.','sacco-withdrawals','↗')
   ];
  }else if(/school|college|training|education|academy/.test(name)){
   domain=[
-   feature('School overview & performance','Track enrolment, attendance, assessments and fees.','operations','▦'),
-   feature('Classes, streams & learners','Manage class structure and learner administration.','operations','♙'),
+   feature('School overview & performance','Track enrolment, attendance, assessments and fees.','school-overview','▦'),
+   feature('Classes, streams & learners','Manage class structure and learner administration.','school-classes','♙'),
    feature('Attendance register','Review attendance activity.','attendance','✓'),
-   feature('Assessments & examination results','Record and review assessment outcomes.','operations','▤'),
-   feature('School fees & finance','Manage fee entries and finance workflows.','finance','＝'),
-   feature('Academic reports & graphs','Review school progress and activity.','reports','▥')
+   feature('Assessments & examination results','Record and review assessment outcomes.','school-assessments','▤'),
+   feature('School fees & finance','Manage fee entries and finance workflows.','school-fees','＝'),
+   feature('Academic reports & graphs','Review school progress and activity.','school-reports','▥')
   ];
  }else if(/ict|software|information technology|technology|computer|it services|digital service/.test(name)){
   domain=[
-   feature('IT projects & delivery board','Track client projects, milestones and releases.','operations','⌘'),
-   feature('Support tickets & service requests','Track support requests and service delivery.','business-tools','⚙'),
-   feature('Systems, devices & inventory','Track devices, licenses and technical equipment.','inventory','▤'),
-   feature('Clients & service agreements','Manage client relationships and service work.','customers','♙'),
-   feature('Websites, apps & media studio','Organise website, app and digital media work.','website-studio','▧'),
-   feature('Technical team & access','Manage developers, engineers and permissions.','team','♙'),
-   feature('Releases & project reports','Review delivery progress and project outcomes.','reports','▥')
+   feature('IT projects & delivery board','Track client projects, milestones and releases.','it-projects','⌘'),
+   feature('Support tickets & service requests','Track support requests and service delivery.','it-support','⚙'),
+   feature('Systems, devices & inventory','Track devices, licenses and technical equipment.','it-devices','▤'),
+   feature('Clients & service agreements','Manage client relationships and service work.','it-clients','♙'),
+   feature('Websites, apps & media studio','Organise website, app and digital media work.','it-websites','▧'),
+   feature('Technical team & access','Manage developers, engineers and permissions.','it-team','♙'),
+   feature('Releases & project reports','Review delivery progress and project outcomes.','it-releases','▥')
   ];
  }else if(/farm|agri|poultry|fish|livestock|orchard|dairy|crop|horticulture/.test(name)){
   domain=[
@@ -667,11 +667,11 @@ function industryProfileFeatures(profile){
   ];
  }else if(/circle|investment group|cooperative|community group|association|club/.test(name)){
   domain=[
-   feature('Group overview & membership','Review membership and group activity.','operations','♧'),
-   feature('Member register & roles','Manage member records and responsibilities.','customers','♙'),
-   feature('Contributions & group finance','Track permitted contribution and finance records.','finance','＝'),
-   feature('Meetings, tasks & decisions','Organise meetings, follow-ups and tasks.','tasks','✓'),
-   feature('Group performance reports','Review group activity and reports.','reports','▥')
+   feature('Group overview & membership','Review membership and group activity.','circle-overview','♧'),
+   feature('Member register & roles','Manage member records and responsibilities.','circle-members','♙'),
+   feature('Contributions & group finance','Track permitted contribution and finance records.','circle-contributions','＝'),
+   feature('Meetings, tasks & decisions','Organise meetings, follow-ups and tasks.','circle-meetings','✓'),
+   feature('Group performance reports','Review group activity and reports.','circle-reports','▥')
   ];
  }else if(/ngo|charity|nonprofit|community organization/.test(name)){
   domain=[
