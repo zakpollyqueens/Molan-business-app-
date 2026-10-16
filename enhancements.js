@@ -215,9 +215,10 @@
   }
 
   function start() {
-    ensureUpdateButton();
+    // Updates are available from the public downloads area; never cover the workspace with a floating banner.
+    const floatingUpdate = $('#molan-floating-update');
+    if (floatingUpdate) floatingUpdate.remove();
     refreshEnhancements();
-    checkForUpdates();
     const observer = new MutationObserver(() => {
       window.requestAnimationFrame(refreshEnhancements);
     });
@@ -225,7 +226,6 @@
     if (content) observer.observe(content, { childList: true, subtree: true, characterData: true });
     const breadcrumb = $('#breadcrumb-page');
     if (breadcrumb) new MutationObserver(refreshEnhancements).observe(breadcrumb, { childList: true, subtree: true, characterData: true });
-    window.setInterval(checkForUpdates, 5 * 60 * 1000);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });
