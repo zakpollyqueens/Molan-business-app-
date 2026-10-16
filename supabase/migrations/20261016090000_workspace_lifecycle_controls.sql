@@ -39,7 +39,7 @@ begin
     raise exception 'Authentication required';
   end if;
 
-  if p_action not in ('activate','deactivate','delete') then
+  if p_action is null or p_action not in ('activate','deactivate','delete') then
     raise exception 'Unsupported workspace action';
   end if;
 
