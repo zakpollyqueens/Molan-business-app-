@@ -93,7 +93,7 @@
     guidedShowStatus('',false);$('#guided-status').hidden=true;
     window.scrollTo({top:0,behavior:'smooth'});
   }
-  function guidedOpen(){
+  function guidedOpen(){document.body.classList.remove('learn-more-open');
     clearInterval(welcomeTimer);showScreen('guided-onboarding-screen');guidedSetStep(0);
     if(user){$('#guided-existing-session').classList.remove('hidden');$('#guided-account-fields').classList.add('hidden');$('#guided-owner-name').required=false;$('#guided-owner-email').required=false;$('#guided-owner-password').required=false;$('#guided-owner-confirm').required=false;}
     else{$('#guided-existing-session').classList.add('hidden');$('#guided-account-fields').classList.remove('hidden');$('#guided-owner-name').required=true;$('#guided-owner-email').required=true;$('#guided-owner-password').required=true;$('#guided-owner-confirm').required=true;}
@@ -104,7 +104,7 @@
     if(!activeGuidedDraft){guidedOnboardingId=null;['guided-business-type','guided-owner-name','guided-owner-email','guided-owner-password','guided-owner-confirm','guided-business-name','guided-motto','guided-website','guided-phone','guided-address'].forEach(id=>{const el=$('#'+id);if(el)el.value=''});$('#guided-terms').checked=false;$('#guided-industry-fields').innerHTML='';$('#guided-staff-list').innerHTML='';}
     if(!$('#guided-industry-fields').children.length)guidedRenderIndustryFields();if(!$('#guided-staff-list').children.length)guidedRenderStaff();
   }
-  function guidedBackToWelcome(){showScreen('welcome-screen');startWelcomeAutoplay()}
+  function guidedBackToWelcome(){document.body.classList.remove('learn-more-open');showScreen('welcome-screen');startWelcomeAutoplay()}
   function guidedSlug(v){return String(v||'business').toLowerCase().replace(/sacco savings group/g,'sacco-savings-group').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,100)||'business'}
   function guidedGetDraft(){
     const staff=$$('.guided-staff-row').map(row=>({name:row.querySelector('[name="staff-name"]').value.trim(),email:row.querySelector('[name="staff-email"]').value.trim(),role:row.querySelector('[name="staff-role"]').value,department:row.querySelector('[name="staff-department"]').value.trim()})).filter(x=>x.name||x.email||x.department);
