@@ -575,6 +575,11 @@
   });
 
     function businessProfileCatalog(){return window.MolanBusinessProfiles?.catalog||[];}
+function isSavingsCircleProfile(profile){
+ const config=window.MolanBusinessProfiles?.byName?.[profile?.[0]]||{};
+ const text=[profile?.[0],config.slug,config.group,config.name].filter(Boolean).join(' ').toLowerCase();
+ return /sacco|savings circle|savings group|investment group|community savings|village savings|rotating savings|\\bcircle\\b|\\bcooperative\\b|\\bassociation\\b/.test(text)&&! /housing cooperative|school cooperative/.test(text);
+}
 function industryProfileFeatures(profile){
  const name=String(profile?.[0]||'').toLowerCase();
  const config=window.MolanBusinessProfiles?.byName?.[profile?.[0]]||{};
@@ -591,16 +596,18 @@ function industryProfileFeatures(profile){
   feature('Announcements & updates','Share relevant updates with your team.','announcements')
  ];
  let domain=[];
- if(slug==='sacco-savings-group'||/sacco savings group/.test(name)){
+ if(isSavingsCircleProfile(profile)){
   domain=[
-   feature('Circle overview & member dashboard','Review group membership, savings activity, approvals and recent activity.','sacco-overview','♧'),
-   feature('Member savings & accounts','Manage member records, savings terms, balances and reviewed transactions.','sacco-members','♧'),
-   feature('Welfare account & loans','Manage the separate welfare fund and permitted welfare workflows.','sacco-welfare','♡'),
-   feature('Savings terms & contribution rules','Review savings frequency, terms and contribution expectations.','sacco-terms','▤'),
-   feature('Record proposed savings','Submit contributions for the required review before balances change.','sacco-savings','＋'),
-   feature('Savings approvals','Review and confirm or reject submitted savings entries.','sacco-approvals','✓'),
-   feature('Withdrawal requests & approvals','Review withdrawal requests and record payments only after approval.','sacco-withdrawals','↗'),
-   feature('Member reviews & term history','Review past savings terms and member review notes.','sacco-reviews','▤')
+   feature('Circle overview & member dashboard','Review circle membership, savings activity, approvals and recent activity.','sacco-overview','♧'),
+   feature('Member profiles, photos & savings accounts','Manage member photos, account codes, contacts, balances and reviewed transactions.','sacco-members','♙'),
+   feature('Welfare account, assistance & loans','Manage the separate welfare fund, support requests, loans and repayments.','sacco-welfare','♡'),
+   feature('Savings terms & contribution schedule','Configure daily, weekly or monthly contributions, reconciliation and term history.','sacco-terms','▤'),
+   feature('Record proposed savings','Submit a contribution with the actual transaction date and amount-in-words for review.','sacco-savings','＋'),
+   feature('Chairperson savings approvals','Approve or reject pending contributions before the member balance changes.','sacco-approvals','✓'),
+   feature('Withdrawal requests & payment approvals','Review online/offline requests, approve withdrawals and track payment.','sacco-withdrawals','↗'),
+   feature('Member reviews, elections & term history','Review member comments, chairperson elections and end-of-term choices.','sacco-reviews','▤'),
+   feature('Circle meetings & decisions','Schedule meetings and track decisions and follow-up tasks.','circle-meetings','✓'),
+   feature('Circle savings charts & reports','Review savings activity, contribution history and group performance.','circle-reports','▥')
   ];
  }else if(/school|college|training|education|academy/.test(name)){
   domain=[
@@ -692,7 +699,7 @@ function industryProfileFeatures(profile){
   ];
  }
  const normalized=[];
- const add=(f)=>{if(!f||!f.title||!f.route)return;if((f.route==='sacco'||f.route==='sacco-welfare')&&slug!=='sacco-savings-group')return;if(!normalized.some(x=>x.route===f.route&&x.title.toLowerCase()===f.title.toLowerCase()))normalized.push(f)};
+ const add=(f)=>{if(!f||!f.title||!f.route)return;const circle=isSavingsCircleProfile(profile);if((/^sacco(?:-|$)|^circle-/.test(f.route))&&!circle)return;if(!circle&&(/^sacco(?:-|$)/.test(f.route)))return;if(!normalized.some(x=>x.route===f.route))normalized.push(f)};
  domain.forEach(add);
  configured.forEach(f=>add(feature(f.title,'Open '+String(f.title).toLowerCase()+' for '+profile[0]+'.',f.route,icons[f.route])));
  common.forEach(add);
@@ -1025,7 +1032,7 @@ el.innerHTML=head(esc(title)+' overview','Your '+esc(title)+' dashboard, busines
   }
 
 
-  function chatIsSacco(){return /sacco|savings group/i.test([company?.name,company?.industry,company?.business_type,company?.category,company?.profile_type,selectedIndustryProfile?.name,selectedIndustryProfile?.title].filter(Boolean).join(' '))}
+  function chatIsSacco(){return /sacco|savings group|savings circle|investment group|community savings|village savings|rotating savings|\\bcircle\\b|\\bcooperative\\b|\\bassociation\\b/i.test([company?.name,company?.industry,company?.business_type,company?.category,company?.profile_type,selectedIndustryProfile?.[0],selectedIndustryProfile?.[1],selectedIndustryProfile?.name,selectedIndustryProfile?.title].filter(Boolean).join(' '))&&!/housing cooperative|school cooperative/i.test([company?.name,company?.industry,company?.business_type,company?.category,company?.profile_type,selectedIndustryProfile?.[0],selectedIndustryProfile?.[1]].filter(Boolean).join(' '))}
   const chatCanManage=()=>['owner','admin','manager'].includes(String(membership?.role||'').toLowerCase());
   const chatCanBoard=()=>String(membership?.role||'').toLowerCase()==='owner';
   const chatWho=id=>memberName(id)||(id===user?.id?(user.email||'You'):'Workspace member');
@@ -1247,11 +1254,10 @@ function syncProfileNavigation(){
   if(!config||!Array.isArray(config.features)||!config.features.length)return;
   selectedIndustryProfile=catalogue.find(p=>p[0]===config.name)||[config.name,config.plural||config.name,config.description||'',config.icon||'◈'];
   const common=[
-    ['overview','▦','Overview'],
+    ['overview','▦','Business overview'],
     ['business-profile','▧','Business profile'],
-    ['profile-directory','▦','Business profile catalogue'],
-    ['subscriptions','◇','Subscription plans & upgrades'],
-    ['control-center','✦','Control center']
+    ['industry-settings','⚙','Business settings'],
+    ['profile-directory','▦','Add / switch business profile']
   ];
   if(['owner','admin'].includes(String(membership?.role||'').toLowerCase()))common.push(['workspace-admin','⚙','Workspace administration']);
   const routeIcons={overview:'▦',tasks:'✓',products:'◈',team:'♙',announcements:'◉',customers:'♙',inventory:'▤',sales:'↗',finance:'＝',attendance:'✓',reports:'▤',council:'◉',websites:'◈','business-profile':'▧','industry-workspace':'✦','business-tools':'✧','website-studio':'▧',operations:'◈',sacco:'♧','sacco-welfare':'♡','sacco-overview':'♧','sacco-members':'♙','sacco-terms':'▤','sacco-withdrawals':'↗','school-overview':'▦','school-classes':'♙','school-assessments':'▤','school-fees':'＝','school-reports':'▥','it-projects':'⌘','it-support':'⚙','it-devices':'▤','it-clients':'♙','it-websites':'▧','it-team':'♙','it-releases':'▥','circle-overview':'♧','circle-members':'♙','circle-contributions':'＝','circle-meetings':'✓','circle-reports':'▥','industry-profile':config.icon||'✦','industry-settings':'⚙',connections:'◉',chat:'✉',notifications:'◉'};
@@ -1259,11 +1265,12 @@ function syncProfileNavigation(){
   common.forEach(([route,icon,title])=>routes.set(route,{route,icon,title}));
   (config.features||[]).forEach(feature=>{
     if(!feature||!feature.title||!feature.route)return;
-    if(config.slug==='sacco-savings-group'&&feature.route==='sacco')return;
-    if(config.slug!=='sacco-savings-group'&&['sacco','sacco-welfare'].includes(feature.route))return;
+    const circleProfile=isSavingsCircleProfile(selectedIndustryProfile);
+    if(circleProfile&&feature.route==='sacco')return;
+    if(!circleProfile&&(/^sacco(?:-|$)|^circle-/.test(feature.route)))return;
     if(!routes.has(feature.route))routes.set(feature.route,{route:feature.route,icon:routeIcons[feature.route]||'◈',title:feature.title});
   });
-  industryProfileFeatures(selectedIndustryProfile).forEach(feature=>{const route=feature[3];if(!route)return;if((route.startsWith('sacco')||route==='sacco-welfare')&&config.slug!=='sacco-savings-group')return;if(!routes.has(route))routes.set(route,{route,icon:feature[0]||routeIcons[route]||'◈',title:feature[1]});});
+  industryProfileFeatures(selectedIndustryProfile).forEach(feature=>{const route=feature[3];if(!route)return;const circleProfile=isSavingsCircleProfile(selectedIndustryProfile);if((/^sacco(?:-|$)|^circle-/.test(route))&&!circleProfile)return;if(!routes.has(route))routes.set(route,{route,icon:feature[0]||routeIcons[route]||'◈',title:feature[1]});});
   if(config.overviewRoute)routes.set(config.overviewRoute,{route:config.overviewRoute,icon:config.icon||'✦',title:'Business overview'});
   if(config.settingsRoute)routes.set(config.settingsRoute,{route:config.settingsRoute,icon:'⚙',title:'Business settings'});
   nav.replaceChildren();
