@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "profile": "poultry-farming",
+  "name": "Poultry farming",
+  "features": [
+    {
+      "id": "poultry-farming-1",
+      "title": "Field & farm operations",
+      "route": "business-tools",
+      "page": "pages/feature-field-farm-operations/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "poultry-farming-2",
+      "title": "Inputs & inventory",
+      "route": "inventory",
+      "page": "pages/feature-inputs-inventory/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "poultry-farming-3",
+      "title": "Produce sales",
+      "route": "sales",
+      "page": "pages/feature-produce-sales/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "poultry-farming-4",
+      "title": "Tasks & deadlines",
+      "route": "tasks",
+      "page": "pages/feature-tasks-deadlines/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "poultry-farming-5",
+      "title": "Customers / members",
+      "route": "customers",
+      "page": "pages/feature-customers-members/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "poultry-farming-6",
+      "title": "Operations register",
+      "route": "operations",
+      "page": "pages/feature-operations-register/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "poultry-farming-7",
+      "title": "Finance & expenses",
+      "route": "finance",
+      "page": "pages/feature-finance-expenses/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "poultry-farming-8",
+      "title": "Reports & insights",
+      "route": "reports",
+      "page": "pages/feature-reports-insights/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "poultry-farming-9",
+      "title": "Team & permissions",
+      "route": "team",
+      "page": "pages/feature-team-permissions/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "poultry-farming-10",
+      "title": "Announcements",
+      "route": "announcements",
+      "page": "pages/feature-announcements/index.html",
+      "status": "runtime-integration-required"
+    }
+  ]
+}

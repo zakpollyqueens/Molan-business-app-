@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "profile": "microfinance-business",
+  "name": "Microfinance business",
+  "features": [
+    {
+      "id": "microfinance-business-1",
+      "title": "Savings & member accounts",
+      "route": "sacco",
+      "page": "pages/feature-savings-member-accounts/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "microfinance-business-2",
+      "title": "Finance ledger",
+      "route": "finance",
+      "page": "pages/feature-finance-ledger/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "microfinance-business-3",
+      "title": "Members",
+      "route": "customers",
+      "page": "pages/feature-members/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "microfinance-business-4",
+      "title": "Reports",
+      "route": "reports",
+      "page": "pages/feature-reports/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "microfinance-business-5",
+      "title": "Tasks & deadlines",
+      "route": "tasks",
+      "page": "pages/feature-tasks-deadlines/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "microfinance-business-6",
+      "title": "Operations register",
+      "route": "operations",
+      "page": "pages/feature-operations-register/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "microfinance-business-7",
+      "title": "Team & permissions",
+      "route": "team",
+      "page": "pages/feature-team-permissions/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "microfinance-business-8",
+      "title": "Announcements",
+      "route": "announcements",
+      "page": "pages/feature-announcements/index.html",
+      "status": "runtime-integration-required"
+    }
+  ]
+}

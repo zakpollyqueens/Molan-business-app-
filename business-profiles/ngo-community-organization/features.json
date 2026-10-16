@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "profile": "ngo-community-organization",
+  "name": "NGO / community organization",
+  "features": [
+    {
+      "id": "ngo-community-organization-1",
+      "title": "Appointments & service delivery",
+      "route": "business-tools",
+      "page": "pages/feature-appointments-service-delivery/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "ngo-community-organization-2",
+      "title": "Projects & operations",
+      "route": "operations",
+      "page": "pages/feature-projects-operations/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "ngo-community-organization-3",
+      "title": "Website & media",
+      "route": "website-studio",
+      "page": "pages/feature-website-media/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "ngo-community-organization-4",
+      "title": "Tasks & deadlines",
+      "route": "tasks",
+      "page": "pages/feature-tasks-deadlines/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "ngo-community-organization-5",
+      "title": "Customers / members",
+      "route": "customers",
+      "page": "pages/feature-customers-members/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "ngo-community-organization-6",
+      "title": "Finance & expenses",
+      "route": "finance",
+      "page": "pages/feature-finance-expenses/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "ngo-community-organization-7",
+      "title": "Reports & insights",
+      "route": "reports",
+      "page": "pages/feature-reports-insights/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "ngo-community-organization-8",
+      "title": "Team & permissions",
+      "route": "team",
+      "page": "pages/feature-team-permissions/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "ngo-community-organization-9",
+      "title": "Announcements",
+      "route": "announcements",
+      "page": "pages/feature-announcements/index.html",
+      "status": "runtime-integration-required"
+    }
+  ]
+}
