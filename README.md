@@ -56,3 +56,9 @@ Email confirmation behavior depends on Supabase Auth settings. If email confirma
 ## Local development
 
 Serve this folder with a static HTTP server, or use GitHub Pages. The app loads Supabase JavaScript v2 from its CDN.
+
+## Subscription plan schedule and billing status
+
+The customer-facing plan durations are **Gold — 3 months**, **Silver — 2 months**, and **Premium — 1 month**. The subscription catalog and payment-event tables are managed in Supabase. The proposed USD monthly reference amounts are Gold $100, Silver $60, and Premium $50, producing proposed package totals of $300, $120, and $50 respectively. These are not live checkout prices until approved and enabled.
+
+No approved Uganda UGX price list or other local-currency rate card was found in the existing repository/database. Uganda pricing rows are therefore left unconfigured so existing prices are not accidentally changed. Regional prices and checkout remain disabled until the owner approves the exact rates and a provider integration verifies payment. Subscription activation must only occur after verified payment or a separately authorised manual activation.
