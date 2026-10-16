@@ -82,7 +82,7 @@
   function guidedShowStatus(message,bad=false){const el=$('#guided-status');if(!el)return;el.hidden=false;el.textContent=message;el.classList.toggle('bad',bad)}
   function guidedSetStep(index){
     guidedStep=Math.max(0,Math.min(5,index));$('#guided-next').dataset.guidedSignin='false';
-    $('[data-guided-step]').forEach((el,i)=>el.classList.toggle('active',i===guidedStep));
+    $$('[data-guided-step]').forEach((el,i)=>el.classList.toggle('active',i===guidedStep));
     const story=guidedStory[guidedStep],image=$('#guided-story-image');
     if(image)image.style.backgroundImage="url('https://images.unsplash.com/"+story[2]+"?auto=format&fit=crop&w=1100&q=82')";
     $('#guided-story-title').textContent=story[0];$('#guided-story-copy').textContent=story[1];
@@ -107,7 +107,7 @@
   function guidedBackToWelcome(){showScreen('welcome-screen');startWelcomeAutoplay()}
   function guidedSlug(v){return String(v||'business').toLowerCase().replace(/sacco savings group/g,'sacco-savings-group').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,100)||'business'}
   function guidedGetDraft(){
-    const staff=$('.guided-staff-row').map(row=>({name:row.querySelector('[name="staff-name"]').value.trim(),email:row.querySelector('[name="staff-email"]').value.trim(),role:row.querySelector('[name="staff-role"]').value,department:row.querySelector('[name="staff-department"]').value.trim()})).filter(x=>x.name||x.email||x.department);
+    const staff=$$('.guided-staff-row').map(row=>({name:row.querySelector('[name="staff-name"]').value.trim(),email:row.querySelector('[name="staff-email"]').value.trim(),role:row.querySelector('[name="staff-role"]').value,department:row.querySelector('[name="staff-department"]').value.trim()})).filter(x=>x.name||x.email||x.department);
     if(!guidedOnboardingId)guidedOnboardingId=(crypto.randomUUID?crypto.randomUUID():('onb-'+Date.now()+'-'+Math.random().toString(36).slice(2)));
     return {version:1,onboardingId:guidedOnboardingId,businessType:$('#guided-business-type').value,ownerName:$('#guided-owner-name').value.trim(),ownerEmail:$('#guided-owner-email').value.trim(),businessName:$('#guided-business-name').value.trim(),motto:$('#guided-motto').value.trim(),website:$('#guided-website').value.trim(),phone:$('#guided-phone').value.trim(),address:$('#guided-address').value.trim(),industry:guidedReadIndustryFields(),staff,termsAccepted:$('#guided-terms').checked,updatedAt:new Date().toISOString()};
   }
@@ -131,7 +131,7 @@
     if(/shop|retail|wholesale|supermarket|boutique|pharmacy|hardware|electronics|inventory/.test(type))return {kind:'retail',trackStock:!!$('#guided-stock')?.checked,trackSuppliers:!!$('#guided-suppliers')?.checked,trackSales:!!$('#guided-sales')?.checked,trackExpenses:!!$('#guided-expenses')?.checked};
     if(/restaurant|hotel|bar|bakery|catering|cafe/.test(type))return {kind:'hospitality',trackBookings:!!$('#guided-bookings')?.checked,trackStock:!!$('#guided-hospitality-stock')?.checked,trackOrders:!!$('#guided-orders')?.checked,trackStaff:!!$('#guided-hospitality-staff')?.checked};
     if(/sacco|savings|investment|microfinance|cooperative/.test(type))return {kind:'savings-group',memberRecords:!!$('#guided-members')?.checked,trackSavings:!!$('#guided-savings')?.checked,trackLoans:!!$('#guided-loans')?.checked,financialApprovals:!!$('#guided-approvals')?.checked};
-    return {kind:'general',priorities:$('[name="business-priority"]:checked').map(x=>x.value)};
+    return {kind:'general',priorities:$$('[name="business-priority"]:checked').map(x=>x.value)};
   }
   function guidedRenderIndustryFields(saved={}){
     const type=$('#guided-business-type')?.value||'',host=$('#guided-industry-fields');if(!host)return;
@@ -175,7 +175,7 @@
     for(const id of required){const el=$('#'+id);if(!el||!el.value.trim()){el?.focus();guidedShowStatus('Please complete the required field before continuing.',true);return false}if(!el.checkValidity()){el.reportValidity();return false}}
     if(step===5&&!$('#guided-terms').checked){$('#guided-terms').focus();guidedShowStatus('Please agree to the terms and privacy notice before creating the workspace.',true);return false}
     if(step===1&&!user){if($('#guided-owner-password').value.length<8){$('#guided-owner-password').focus();guidedShowStatus('Use a password with at least 8 characters.',true);return false}if($('#guided-owner-password').value!==$('#guided-owner-confirm').value){$('#guided-owner-confirm').focus();guidedShowStatus('The passwords do not match.',true);return false}}
-    if(step===4){for(const row of $('.guided-staff-row')){const n=row.querySelector('[name="staff-name"]').value.trim(),e=row.querySelector('[name="staff-email"]').value.trim();if((n&&!e)||(!n&&e)){guidedShowStatus('For each staff invitation, enter both a name and email—or leave both blank.',true);return false}if(e&&!row.querySelector('[name="staff-email"]').checkValidity()){row.querySelector('[name="staff-email"]').reportValidity();return false}}}
+    if(step===4){for(const row of $$('.guided-staff-row')){const n=row.querySelector('[name="staff-name"]').value.trim(),e=row.querySelector('[name="staff-email"]').value.trim();if((n&&!e)||(!n&&e)){guidedShowStatus('For each staff invitation, enter both a name and email—or leave both blank.',true);return false}if(e&&!row.querySelector('[name="staff-email"]').checkValidity()){row.querySelector('[name="staff-email"]').reportValidity();return false}}}
     return true;
   }
   async function guidedCompleteWorkspace(){if(guidedCompletionPromise)return guidedCompletionPromise;guidedCompletionPromise=guidedCompleteWorkspaceInner();try{return await guidedCompletionPromise}finally{guidedCompletionPromise=null}}
@@ -248,7 +248,7 @@
   }
   $('#guided-complete-close')?.addEventListener('click',()=>$('#guided-complete-modal').classList.add('hidden'));
   $('#guided-open-browser')?.addEventListener('click',()=>$('#guided-complete-modal').classList.add('hidden'));
-  $('#guided-copy-staff-links')?.addEventListener('click',async()=>{const links=$('.guided-staff-link-row').map(row=>row.innerText).join('\n');try{await navigator.clipboard.writeText(links);toast('Staff invitation links copied.')}catch{prompt('Copy the staff invitation links:',links)}});
+  $('#guided-copy-staff-links')?.addEventListener('click',async()=>{const links=$$('.guided-staff-link-row').map(row=>row.innerText).join('\n');try{await navigator.clipboard.writeText(links);toast('Staff invitation links copied.')}catch{prompt('Copy the staff invitation links:',links)}});
   $('#guided-install-pwa')?.addEventListener('click',async()=>{if(!guidedInstallPrompt)return;guidedInstallPrompt.prompt();await guidedInstallPrompt.userChoice;guidedInstallPrompt=null;$('#guided-install-pwa-wrap').classList.add('hidden')});
   async function guidedFinish(){
     if(!guidedValidateStep(5))return;
@@ -279,7 +279,7 @@
   $('#guided-business-type')?.addEventListener('change',()=>guidedRenderIndustryFields());
   $('#guided-add-staff')?.addEventListener('click',()=>guidedAddStaffRow());
   $('#guided-skip-staff')?.addEventListener('click',()=>{$('#guided-staff-list').innerHTML='';guidedSetStep(5);guidedSaveDraft()});
-  $('#guided-staff-list')?.addEventListener('click',e=>{if(e.target.closest('.guided-remove-staff')){e.target.closest('.guided-staff-row').remove();$('.guided-staff-row').forEach((row,i)=>row.querySelector('.guided-staff-head strong').textContent='Team member '+(i+1));if(!$('.guided-staff-row').length)guidedAddStaffRow()}});
+  $('#guided-staff-list')?.addEventListener('click',e=>{if(e.target.closest('.guided-remove-staff')){e.target.closest('.guided-staff-row').remove();$$('.guided-staff-row').forEach((row,i)=>row.querySelector('.guided-staff-head strong').textContent='Team member '+(i+1));if(!$$('.guided-staff-row').length)guidedAddStaffRow()}});
   $('[data-guided-home]').forEach(b=>b.addEventListener('click',guidedBackToWelcome));
   $('[data-guided-exit]').forEach(b=>b.addEventListener('click',guidedBackToWelcome));
   $('[data-guided-signin]').forEach(b=>b.addEventListener('click',()=>openWelcomeAuth('signin')));
