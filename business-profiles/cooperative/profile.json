@@ -9,39 +9,39 @@
   "features": [
     {
       "title": "Circle overview & member dashboard",
-      "route": "sacco-overview"
+      "route": "circle-overview"
     },
     {
       "title": "Member profiles & savings accounts",
-      "route": "sacco-members"
+      "route": "circle-members"
     },
     {
       "title": "Record proposed contributions",
-      "route": "sacco-savings"
+      "route": "circle-contributions"
     },
     {
       "title": "Chairperson contribution approvals",
-      "route": "sacco-approvals"
+      "route": "circle-contributions"
     },
     {
       "title": "Chairperson elections & succession",
-      "route": "sacco-elections"
+      "route": "circle-meetings"
     },
     {
       "title": "Welfare account & assistance",
-      "route": "sacco-welfare"
+      "route": "finance"
     },
     {
       "title": "Savings terms & contribution schedule",
-      "route": "sacco-terms"
+      "route": "circle-contributions"
     },
     {
       "title": "Withdrawal requests & approvals",
-      "route": "sacco-withdrawals"
+      "route": "circle-contributions"
     },
     {
       "title": "Member reviews & term history",
-      "route": "sacco-reviews"
+      "route": "circle-reports"
     },
     {
       "title": "Meetings & group decisions",
