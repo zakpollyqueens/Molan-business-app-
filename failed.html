@@ -30,5 +30,20 @@
     <p class="notice">A failed or cancelled checkout does not prove that no charge occurred. Check with your payment provider if you are unsure.</p>
     <footer>Built and managed by Zakmolanitech Solutions Company</footer>
   </main>
+<script>
+    (function(){
+      if(!new URLSearchParams(window.location.search).has('website_payment_id')) return;
+      document.title='Website checkout not completed | Molan Business';
+      const heading=document.querySelector('main h1');
+      if(heading) heading.textContent='Website checkout was not completed';
+      const paragraphs=document.querySelectorAll('main > p');
+      if(paragraphs[0]) paragraphs[0].textContent='Jjuma Pay did not return a confirmed payment. Your website request has not been marked as paid by this page.';
+      if(paragraphs[1]) paragraphs[1].textContent='Return to the Website services page and use Pay with Jjuma Pay to retry. Check your mobile money or bank account first if you may have been charged.';
+      const status=document.querySelector('.status span:last-child');
+      if(status) status.textContent='Website payment not yet verified';
+      const notice=document.querySelector('.notice');
+      if(notice) notice.textContent='A return or cancellation page cannot confirm the final payment status. Contact support before retrying if you believe you were charged.';
+    })();
+  </script>
 </body>
 </html>
