@@ -15,7 +15,7 @@ jobs:
       - name: Check JavaScript syntax
         run: node --check app.js && node --check business-profiles.js && node --check member-portal.js
       - name: Check required frontend files
-        run: test -s index.html && test -s styles.css && test -s app.js && test -s business-profiles.js && test -s business-profiles.css && test -s member-portal.html && test -s member-portal.css && test -s member-portal.js && test -s supabase/functions/sacco-member-portal/index.ts
+        run: test -s index.html && test -s styles.css && test -s app.js && test -s business-profiles.js && test -s business-profiles.css && test -s member-portal.html && test -s member-portal.css && test -s member-portal.js && test -s supabase/functions/sacco-member-portal/index.ts && test -s supabase/functions/sacco-savings-approval-email/index.ts
       - name: Smoke-check workspace modules and public frontend safety
         run: |
           node <<'NODE'
@@ -91,7 +91,7 @@ jobs:
           if (!js.includes('sb_publishable_')) throw new Error('Default Supabase publishable-key configuration is missing.');
           if (!js.includes('DEFAULT_SUPABASE_CONFIG')) throw new Error('First-time visitors must be auto-configured.');
           if (/service_role|SUPABASE_SERVICE_ROLE_KEY/i.test(js)) throw new Error('A service-role secret must never be shipped in frontend code.');
-          const migration = ['20261015164105_sacco_savings_terms_withdrawals.sql','20261015164120_sacco_review_and_withdrawal_rpcs.sql','20261015164304_sacco_tenant_integrity_and_role_permissions.sql','20261015164444_sacco_withdrawal_reservations_and_payment_locking.sql','20261015164923_sacco_chairperson_only_financial_approvals.sql','20261016120000_sacco_welfare_fund.sql'].map(name => fs.readFileSync('supabase/migrations/' + name, 'utf8')).join('\n');
+          const migration = ['20261015164105_sacco_savings_terms_withdrawals.sql','20261015164120_sacco_review_and_withdrawal_rpcs.sql','20261015164304_sacco_tenant_integrity_and_role_permissions.sql','20261015164444_sacco_withdrawal_reservations_and_payment_locking.sql','20261015164923_sacco_chairperson_only_financial_approvals.sql','20261016120000_sacco_welfare_fund.sql','20261016152815_sacco_welfare_loans_and_dated_repayments.sql','20261016152827_sacco_welfare_entry_company_scope_fix.sql','20261016153101_sacco_welfare_repayment_date_reallocation.sql'].map(name => fs.readFileSync('supabase/migrations/' + name, 'utf8')).join('\n');
           if (!migration.includes('ENABLE ROW LEVEL SECURITY') && !migration.includes('enable row level security')) throw new Error('SACCO migration must enable RLS.');
           if (!migration.includes('foreign key(company_id,member_id)')) throw new Error('SACCO records must enforce company/member tenant integrity.');
           if (!migration.includes('status=\'paid\'')) throw new Error('SACCO withdrawal payment posting must be explicit.');
