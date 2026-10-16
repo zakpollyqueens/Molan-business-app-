@@ -350,3 +350,33 @@ body.learn-more-open #molan-floating-update{display:none!important}
 
 /* Multi-business workspace switcher and add-profile control */
 .workspace-switcher-row{display:flex;align-items:center;gap:8px;margin:0 14px 18px}.workspace-switcher-row .workspace-chip{flex:1;min-width:0;margin:0}.workspace-add-button{flex:0 0 38px;width:38px;height:38px;border:1px solid rgba(103,216,245,.42);border-radius:12px;background:linear-gradient(145deg,rgba(35,190,226,.18),rgba(18,42,77,.92));color:#8be8ff;font-size:24px;line-height:1;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.16)}.workspace-add-button:hover,.workspace-add-button:focus-visible{background:rgba(35,190,226,.28);outline:2px solid rgba(103,216,245,.5);outline-offset:2px}.sidebar #main-nav .nav-item{white-space:normal;min-height:42px;height:auto;text-align:left;}
+
+
+/* Global readability pass: stronger labels, names, table headers and secondary text. */
+:root{--muted:#53657d;--line:#d8e2ee}
+body{font-size:14px;line-height:1.5}
+.page-heading h1,.panel-head h3,.control-section-heading h2,.profile-detail-hero h1,.profile-detail-hero h2{font-weight:800;letter-spacing:-.025em}
+.page-heading p,.muted,.panel-subtitle,.empty-state p,.helper-text,.field-help,.profile-detail-grid small,.profile-detail-grid span{color:#53657d}
+.profile-text strong{font-size:13px;font-weight:800;line-height:1.35;color:#fff;text-shadow:0 1px 0 rgba(0,0,0,.12)}
+.profile-text span{font-size:11px;font-weight:600;color:#c0d1e7}
+.form-stack label,.sacco-form label,.desktop-settings-grid>label:not(.preference-check),.gallery-upload-form>label:not(.gallery-dropzone),.sale-line label{font-size:13px;font-weight:750;color:#263b56}
+input::placeholder,textarea::placeholder{color:#65758b;opacity:1}
+input,textarea,select,button{font-family:inherit}
+table{color:#24364e}
+thead th,table thead th,table th,[role="columnheader"],.sacco-table th{background:#eaf1f8;color:#183454;font-size:12px;font-weight:800;letter-spacing:.035em;text-transform:none;border-bottom:2px solid #c8d8e9}
+tbody td,table td{color:#33465e}
+tbody tr:nth-child(even){background-color:#f7faff}
+tbody tr:hover{background-color:#edf6ff}
+.profile-detail-grid strong,.profile-switch-details strong,.row-main strong,.item-card strong,.stat-number{font-weight:800}
+.profile-switch-details strong{font-size:13px;color:#17304f}
+.profile-switch-details small,.profile-state{font-size:11px;font-weight:600;color:#53657d}
+.button,.nav-item,.tab,.workspace-chip{font-weight:700}
+:focus-visible{outline:3px solid #0b9ed0;outline-offset:2px}
+html[data-theme="dark"]{--muted:#b3c3d8;--line:#33465f}
+html[data-theme="dark"] .page-heading p,html[data-theme="dark"] .muted,html[data-theme="dark"] .panel-subtitle,html[data-theme="dark"] .empty-state p,html[data-theme="dark"] .helper-text,html[data-theme="dark"] .field-help,html[data-theme="dark"] .profile-detail-grid small,html[data-theme="dark"] .profile-detail-grid span,html[data-theme="dark"] .profile-switch-details small,html[data-theme="dark"] .profile-state{color:#bdcbe0}
+html[data-theme="dark"] .form-stack label,html[data-theme="dark"] .sacco-form label,html[data-theme="dark"] .desktop-settings-grid>label:not(.preference-check),html[data-theme="dark"] .gallery-upload-form>label:not(.gallery-dropzone),html[data-theme="dark"] .sale-line label{color:#e0eafa}
+html[data-theme="dark"] thead th,html[data-theme="dark"] table thead th,html[data-theme="dark"] table th,html[data-theme="dark"] [role="columnheader"],html[data-theme="dark"] .sacco-table th{background:#1b304b;color:#f0f6ff;border-bottom:2px solid #405976}
+html[data-theme="dark"] table,html[data-theme="dark"] tbody td,html[data-theme="dark"] table td{color:#dce7f6}
+html[data-theme="dark"] tbody tr:nth-child(even){background-color:#13243a}
+html[data-theme="dark"] tbody tr:hover{background-color:#1c3552}
+html[data-theme="dark"] input::placeholder,html[data-theme="dark"] textarea::placeholder{color:#a9bad1}
