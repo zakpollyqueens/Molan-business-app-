@@ -183,7 +183,7 @@ Deno.serve(async (req: Request) => {
     if (action === "manage-election") {
       const operation = clean(body.operation,40);
       const authHeader = req.headers.get("authorization") || "";
-      const token = authHeader.replace(/^Bearer\\s+/i,"").trim();
+      const token = authHeader.replace(/^Bearer\s+/i,"").trim();
       if (!token || token === ANON_KEY) return reply({ok:false,message:"Sign in to manage circle elections."},401);
       const {data:authData,error:authError}=await authClient.auth.getUser(token);
       const actor=authData?.user;
