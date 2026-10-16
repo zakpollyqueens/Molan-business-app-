@@ -4,44 +4,16 @@
   "slug": "sacco-savings-group",
   "name": "SACCO savings group",
   "plural": "SACCO savings groups",
-  "description": "Group savings, member contributions, welfare, balances and withdrawal approvals.",
+  "description": "Member savings accounts, chairperson-reviewed contributions and withdrawals, a separate welfare fund, member account follow-up, and group savings terms.",
   "icon": "♧",
   "features": [
     {
-      "title": "Savings & member accounts",
+      "title": "Member savings, accounts & approvals",
       "route": "sacco"
     },
     {
-      "title": "Separate welfare fund ledger",
+      "title": "Separate welfare fund & requests",
       "route": "sacco-welfare"
-    },
-    {
-      "title": "Finance ledger",
-      "route": "finance"
-    },
-    {
-      "title": "Members",
-      "route": "customers"
-    },
-    {
-      "title": "Reports",
-      "route": "reports"
-    },
-    {
-      "title": "Tasks & deadlines",
-      "route": "tasks"
-    },
-    {
-      "title": "Operations register",
-      "route": "operations"
-    },
-    {
-      "title": "Team & permissions",
-      "route": "team"
-    },
-    {
-      "title": "Announcements",
-      "route": "announcements"
     }
   ],
   "settingsRoute": "industry-settings",
