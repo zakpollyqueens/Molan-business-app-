@@ -44,11 +44,9 @@ jobs:
             if (!fs.existsSync(ownedPage)) throw new Error('Missing profile-owned page: ' + ownedPage);
             const ownedHtml = fs.readFileSync(ownedPage, 'utf8');
             if (!ownedHtml.includes('data-profile="' + folder.name + '"')) throw new Error('Owned page identity does not match its folder: ' + ownedPage);
-            const ownedScript = 'business-profiles/' + folder.name + '/profile.js';
-            if (!fs.existsSync(ownedScript)) throw new Error('Missing profile-specific loader/runtime: ' + ownedScript);
-            const ownedJs = fs.readFileSync(ownedScript, 'utf8');
-            if (!ownedJs.includes("fetch('profile.json'")) throw new Error('Profile-specific loader must load its folder-specific profile.json: ' + ownedScript);
-            if (!ownedJs.includes('MolanProfileRuntime') || !ownedJs.includes('openFeature')) throw new Error('Profile-specific loader must integrate with the shared runtime bridge: ' + ownedScript);
+            // Profile-owned pages may keep their loader inline; verify the actual page implementation.
+            if (!ownedHtml.includes('profile.json')) throw new Error('Owned page must load its folder-specific profile.json: ' + ownedPage);
+            if (!ownedHtml.includes('MolanProfileRuntime') || !ownedHtml.includes('openFeature')) throw new Error('Owned page must integrate feature buttons with the shared runtime bridge: ' + ownedPage);
             if (profileNames.has(profile.name)) throw new Error('Duplicate profile name: ' + profile.name);
             profileNames.add(profile.name);
             for (const feature of profile.features) {
