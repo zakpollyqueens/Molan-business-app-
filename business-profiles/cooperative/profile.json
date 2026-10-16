@@ -24,6 +24,10 @@
       "route": "sacco-approvals"
     },
     {
+      "title": "Chairperson elections & succession",
+      "route": "sacco-elections"
+    },
+    {
       "title": "Welfare account & assistance",
       "route": "sacco-welfare"
     },
