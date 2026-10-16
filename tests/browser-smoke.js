@@ -7,7 +7,7 @@ const assert = require('node:assert/strict');
   const pageErrors = [];
   page.on('pageerror', error => pageErrors.push(error.message));
   try {
-    const response = await page.goto('https://zakpollyqueens.github.io/Molan-business-app-/', {
+    const response = await page.goto('https://zakpollyqueens.github.io/Molan-business-app-/?smoke=' + Date.now(), {
       waitUntil: 'domcontentloaded',
       timeout: 60000
     });
@@ -19,9 +19,14 @@ const assert = require('node:assert/strict');
     await page.waitForSelector('#guided-onboarding-screen:not(.hidden)', { timeout: 10000 });
     assert.equal(await page.locator('[data-guided-step]').count(), 6, 'Guided setup should have six steps');
     assert.equal(await page.locator('#guided-business-type').isVisible(), true);
-    await page.locator('#guided-business-type').selectOption({ label: 'Schools' }).catch(async () => page.locator('#guided-business-type').selectOption('School'));
+    await page.locator('#guided-business-type').selectOption('School');
+    await page.waitForFunction(() => document.querySelector('#guided-business-type')?.value === 'School');
     await page.locator('#guided-next').click();
-    assert.equal(await page.locator('[data-guided-step="1"]').evaluate(el => el.classList.contains('active')), true,
+    await page.waitForFunction(() => document.querySelector('[data-guided-step="1"]')?.classList.contains('active'), null, { timeout: 5000 }).catch(async () => {
+      const status = await page.locator('#guided-status').innerText().catch(() => '(status unavailable)');
+      throw new Error('Guided setup did not advance after selecting School. Status: ' + status);
+    });
+    assert.equal(await page.locator('#guided-progress-label').innerText(), 'STEP 2 OF 6',
       'Guided setup should advance to the owner account step');
     await page.locator('[data-guided-signin]').click();
     await page.waitForSelector('#auth-screen:not(.hidden)', { timeout: 10000 });
