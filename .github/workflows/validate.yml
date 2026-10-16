@@ -57,7 +57,7 @@ jobs:
             if (manifest.profile !== folder.name || !Array.isArray(manifest.features) || manifest.features.length !== profile.features.length) throw new Error('Feature manifest does not match profile configuration: ' + manifestPath);
             const featureDirectory = 'business-profiles/' + folder.name + '/pages';
             for (const feature of profile.features) {
-              const featureSlug = String(feature.title).toLowerCase().normalize('NFKD').replace(/[^\\w\\s-]/g, '').trim().replace(/[\\s_]+/g, '-').replace(/-+/g, '-');
+              const featureSlug = String(feature.title).toLowerCase().normalize('NFKD').replace(/[^\w\s-]/g, '').trim().replace(/[\s_]+/g, '-').replace(/-+/g, '-');
               const featurePage = featureDirectory + '/feature-' + featureSlug + '/';
               for (const required of ['index.html', 'page.js', 'page.css']) {
                 if (!fs.existsSync(featurePage + required)) throw new Error('Missing profile-owned feature file: ' + featurePage + required);
