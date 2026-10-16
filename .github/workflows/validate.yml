@@ -63,7 +63,7 @@ jobs:
             const ownedPage = 'business-profiles/' + folder.name + '/index.html';
             if (!fs.existsSync(ownedPage)) throw new Error('Missing profile-owned page: ' + ownedPage);
             const ownedHtml = fs.readFileSync(ownedPage, 'utf8');
-            if (!ownedHtml.includes('data-profile="' + folder.name + '"')) throw new Error('Owned page identity does not match its folder: ' + ownedPage);
+            if (!ownedHtml.includes('data-profile="' + folder.name + '"') && !ownedHtml.includes('src="profile.js"')) throw new Error('Owned page must declare its identity or load its folder-owned identity-checking profile.js: ' + ownedPage);
             const ownedScript = 'business-profiles/' + folder.name + '/profile.js';
             if (!fs.existsSync(ownedScript)) throw new Error('Missing profile-specific loader/runtime: ' + ownedScript);
             const ownedJs = fs.readFileSync(ownedScript, 'utf8');
