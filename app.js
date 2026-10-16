@@ -69,7 +69,7 @@
 
   const GUIDED_DRAFT_KEY='molan_guided_onboarding_draft_v1';
   const GUIDED_COMPANY_KEY='molan_guided_onboarding_company_v1';
-  let guidedStep=0,guidedStaffCount=0,guidedCompletionPromise=null;
+  let guidedStep=0,guidedStaffCount=0,guidedCompletionPromise=null,guidedOnboardingId=null;
   const guidedStory=[
     ['Choose the right starting point.','Pick the business type that best describes your day-to-day work.','photo-1441986300917-64674bd600d8'],
     ['Secure your owner account.','The owner account is used to sign in and manage who can access the workspace.','photo-1521737711867-e3b97375f902'],
@@ -103,7 +103,8 @@
   function guidedSlug(v){return String(v||'business').toLowerCase().replace(/sacco savings group/g,'sacco-savings-group').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,100)||'business'}
   function guidedGetDraft(){
     const staff=$('.guided-staff-row').map(row=>({name:row.querySelector('[name="staff-name"]').value.trim(),email:row.querySelector('[name="staff-email"]').value.trim(),role:row.querySelector('[name="staff-role"]').value,department:row.querySelector('[name="staff-department"]').value.trim()})).filter(x=>x.name||x.email||x.department);
-    return {version:1,businessType:$('#guided-business-type').value,ownerName:$('#guided-owner-name').value.trim(),ownerEmail:$('#guided-owner-email').value.trim(),businessName:$('#guided-business-name').value.trim(),motto:$('#guided-motto').value.trim(),website:$('#guided-website').value.trim(),phone:$('#guided-phone').value.trim(),address:$('#guided-address').value.trim(),industry:guidedReadIndustryFields(),staff,termsAccepted:$('#guided-terms').checked,updatedAt:new Date().toISOString()};
+    if(!guidedOnboardingId)guidedOnboardingId=(crypto.randomUUID?crypto.randomUUID():('onb-'+Date.now()+'-'+Math.random().toString(36).slice(2)));
+    return {version:1,onboardingId:guidedOnboardingId,businessType:$('#guided-business-type').value,ownerName:$('#guided-owner-name').value.trim(),ownerEmail:$('#guided-owner-email').value.trim(),businessName:$('#guided-business-name').value.trim(),motto:$('#guided-motto').value.trim(),website:$('#guided-website').value.trim(),phone:$('#guided-phone').value.trim(),address:$('#guided-address').value.trim(),industry:guidedReadIndustryFields(),staff,termsAccepted:$('#guided-terms').checked,updatedAt:new Date().toISOString()};
   }
   function guidedSaveDraft(){
     const draft=guidedGetDraft();try{localStorage.setItem(GUIDED_DRAFT_KEY,JSON.stringify(draft))}catch(e){guidedShowStatus('This browser could not save your setup draft. Keep this tab open while you continue.',true)}
@@ -113,6 +114,7 @@
     let d;try{d=JSON.parse(localStorage.getItem(GUIDED_DRAFT_KEY)||'null')}catch{return}
     if(!d||d.version!==1)return;
     if(user&&d.ownerEmail&&user.email&&d.ownerEmail.toLowerCase()!==user.email.toLowerCase()){try{localStorage.removeItem(GUIDED_DRAFT_KEY)}catch{}return;}
+    guidedOnboardingId=d.onboardingId||null;
     const set=(id,v)=>{const el=$('#'+id);if(el&&v!==undefined&&v!==null)el.value=v};
     set('guided-business-type',d.businessType);set('guided-owner-name',d.ownerName);set('guided-owner-email',d.ownerEmail);set('guided-business-name',d.businessName);set('guided-motto',d.motto);set('guided-website',d.website);set('guided-phone',d.phone);set('guided-address',d.address);
     if($('#guided-terms'))$('#guided-terms').checked=!!d.termsAccepted;
@@ -177,12 +179,12 @@
     let draft;try{draft=JSON.parse(localStorage.getItem(GUIDED_DRAFT_KEY)||'null')}catch{}
     if(!user||!supabase)return false;
     if(draft&&draft.ownerEmail&&user.email&&draft.ownerEmail.toLowerCase()!==user.email.toLowerCase())draft=null;
-    if(!draft){const remote=user.user_metadata?.molan_guided_onboarding;if(remote&&remote.ownerEmail&&user.email&&remote.ownerEmail.toLowerCase()===user.email.toLowerCase())draft={...remote,staff:[],termsAccepted:!!remote.termsAcceptedAt};}
+    if(!draft){const remote=user.user_metadata?.molan_guided_onboarding;if(remote&&!user.user_metadata?.molan_guided_onboarding_completed&&remote.ownerEmail&&user.email&&remote.ownerEmail.toLowerCase()===user.email.toLowerCase())draft={...remote,staff:[],termsAccepted:!!remote.termsAcceptedAt};}
     if(!draft||!draft.businessName||!draft.businessType)return false;
-    let companyId=null;try{companyId=localStorage.getItem(GUIDED_COMPANY_KEY+':'+user.id)}catch{}
+    let companyId=null;const companyStorageKey=GUIDED_COMPANY_KEY+':'+user.id+':'+(draft.onboardingId||'legacy');try{companyId=localStorage.getItem(companyStorageKey)}catch{}
     if(!companyId){
       const {data,error}=await supabase.rpc('create_company_for_current_user',{company_name:draft.businessName,company_motto:draft.motto||null});
-      if(error)throw error;companyId=data;try{localStorage.setItem(GUIDED_COMPANY_KEY+':'+user.id,companyId)}catch{}
+      if(error)throw error;companyId=data;try{localStorage.setItem(companyStorageKey,companyId)}catch{}
     }
     const {error:profileError}=await supabase.from('company_profiles').update({business_category:draft.businessType,website_url:draft.website||null,onboarding_status:'profile_complete'}).eq('id',companyId);
     if(profileError)throw profileError;
@@ -216,7 +218,8 @@
       if(invite.error){console.warn('[Molan onboarding] Invitation could not be created for '+person.email+':',invite.error.message);continue}
       staffLinks.push({name:person.name,email:person.email,url:location.origin+location.pathname+'?invite='+token});
     }
-    try{localStorage.setItem('molan_guided_staff_links_v1',JSON.stringify(staffLinks));localStorage.setItem(ACTIVE_COMPANY_KEY,companyId);localStorage.removeItem(GUIDED_DRAFT_KEY);localStorage.removeItem(GUIDED_COMPANY_KEY+':'+user.id)}catch{}
+    try{localStorage.setItem('molan_guided_staff_links_v1',JSON.stringify(staffLinks));localStorage.setItem(ACTIVE_COMPANY_KEY,companyId);localStorage.removeItem(GUIDED_DRAFT_KEY)}catch{}
+    try{const updated=await supabase.auth.updateUser({data:{molan_guided_onboarding_completed:true}});if(!updated.error)user={...user,user_metadata:{...(user.user_metadata||{}),molan_guided_onboarding_completed:true}};else console.warn('[Molan onboarding] Completion marker could not be saved:',updated.error.message)}catch(err){console.warn('[Molan onboarding] Completion marker could not be saved:',err.message)}
     await loadCompany(companyId);
     if(staffLinks.length){
       const summary=staffLinks.map(x=>x.name+' ('+x.email+')\n'+x.url).join('\n\n');
@@ -232,7 +235,7 @@
     try{
       if(user){await guidedCompleteWorkspace();return}
       if(!supabase)throw new Error('The secure account service is not connected yet. Please use the standard sign-up screen or try again after connection.');
-      const {data,error}=await supabase.auth.signUp({email:draft.ownerEmail,password:$('#guided-owner-password').value,options:{emailRedirectTo:AUTH_REDIRECT_URL,data:{display_name:draft.ownerName,molan_guided_onboarding:{version:1,ownerEmail:draft.ownerEmail,ownerName:draft.ownerName,businessType:draft.businessType,businessName:draft.businessName,motto:draft.motto,website:draft.website,phone:draft.phone,address:draft.address,industry:draft.industry,termsAcceptedAt:new Date().toISOString()}}}});
+      const {data,error}=await supabase.auth.signUp({email:draft.ownerEmail,password:$('#guided-owner-password').value,options:{emailRedirectTo:AUTH_REDIRECT_URL,data:{display_name:draft.ownerName,molan_guided_onboarding:{version:1,onboardingId:draft.onboardingId,ownerEmail:draft.ownerEmail,ownerName:draft.ownerName,businessType:draft.businessType,businessName:draft.businessName,motto:draft.motto,website:draft.website,phone:draft.phone,address:draft.address,industry:draft.industry,termsAcceptedAt:draft.termsAcceptedAt||new Date().toISOString()}}}});
       if(error)throw error;
       if(data.session&&data.user){session=data.session;user=data.user;await bootUser();return}
       guidedShowStatus('Your account request has been submitted. Check '+draft.ownerEmail+' for the verification email. Open its link, then return here or sign in; we will use the saved setup draft to finish creating your business. The password was not saved in this browser draft.',false);
@@ -298,7 +301,7 @@
   ]);const keys=['tasks','products','members','announcements','departments','customers','inventory','inventoryMovements','operations','schoolClasses','schoolLearners','schoolAssessments','schoolFees','sales','finance','invitations','attendance','reports','council','websiteRequests','websitePayments'];queries.forEach((r,i)=>{if(r.error)console.warn('Molan query',keys[i],r.error.message);cache[keys[i]]=r.data||[]});const saleIds=cache.sales.map(x=>x.id);if(saleIds.length){const si=await supabase.from('sales_order_items').select('*').in('order_id',saleIds);if(si.error)console.warn('Molan query saleItems',si.error.message);cache.saleItems=si.data||[]}else cache.saleItems=[];const ids=[...new Set(cache.members.map(m=>m.user_id))];if(ids.length){const p=await supabase.from('user_profiles').select('*').in('user_id',ids);cache.profiles=p.data||[]}else cache.profiles=[];$('#task-count').textContent=cache.tasks.filter(t=>t.status!=='done'&&t.status!=='cancelled').length}
   $('#cancel-create-workspace')?.addEventListener('click',()=>{showScreen('dashboard-screen');navigate('profile-directory')});
   $('#company-form').addEventListener('submit',async e=>{e.preventDefault();const btn=$('button[type="submit"]',e.currentTarget);btn.disabled=true;btn.textContent='Creating workspace…';try{const {data,error}=await supabase.rpc('create_company_for_current_user',{company_name:$('#company-name').value.trim(),company_motto:$('#company-motto').value.trim()||null});if(error)throw error;const companyId=data;try{localStorage.setItem(ACTIVE_COMPANY_KEY,companyId)}catch(e){}const profileUpdate=await supabase.from('company_profiles').update({business_category:$('#business-category').value,website_url:$('#website-url').value.trim()||null,onboarding_status:'profile_complete'}).eq('id',companyId);if(profileUpdate.error)throw profileUpdate.error;toast('Workspace created successfully.');await loadCompany(companyId)}catch(err){toast(err.message||'Could not create workspace.',true)}finally{btn.disabled=false;btn.innerHTML='Create workspace <span>→</span>'}});
-  $('#signout').addEventListener('click',async()=>{if(!supabase)return;const signedOutUserId=user?.id;const {error}=await supabase.auth.signOut();if(error){toast(error.message,true);return}session=null;user=null;company=null;membership=null;cache.workspaces=[];try{localStorage.removeItem(ACTIVE_COMPANY_KEY);localStorage.removeItem(GUIDED_DRAFT_KEY);if(signedOutUserId)localStorage.removeItem(GUIDED_COMPANY_KEY+':'+signedOutUserId)}catch(e){}showScreen('auth-screen');toast('You have signed out.')});
+  $('#signout').addEventListener('click',async()=>{if(!supabase)return;const signedOutUserId=user?.id;const {error}=await supabase.auth.signOut();if(error){toast(error.message,true);return}session=null;user=null;company=null;membership=null;cache.workspaces=[];try{localStorage.removeItem(ACTIVE_COMPANY_KEY);localStorage.removeItem(GUIDED_DRAFT_KEY);if(signedOutUserId)Object.keys(localStorage).filter(k=>k.startsWith(GUIDED_COMPANY_KEY+':'+signedOutUserId+':')).forEach(k=>localStorage.removeItem(k))}catch(e){}showScreen('auth-screen');toast('You have signed out.')});
   $('#refresh-button').addEventListener('click',async()=>{if(!company)return;$('#refresh-button').textContent='↻ Loading…';await refreshData();renderPage(currentPage);$('#refresh-button').textContent='↻ Refresh';toast('Workspace refreshed')});
   $('#settings-button').addEventListener('click',()=>navigate('settings'));
   $('#workspace-switcher')?.addEventListener('change',e=>{const id=e.target.value;if(id&&id!==company?.id){try{localStorage.setItem(ACTIVE_COMPANY_KEY,id)}catch(err){}membership=null;company=null;currentPage='overview';loadCompany(id).then(()=>toast('Switched business workspace.'))}});
