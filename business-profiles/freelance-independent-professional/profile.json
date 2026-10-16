@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "index": 51,
+  "slug": "freelance-independent-professional",
+  "name": "Freelance / independent professional",
+  "plural": "Freelancers and independent professionals",
+  "description": "Client projects, service delivery, quotes, invoices, portfolios and professional reporting.",
+  "icon": "✦",
+  "features": [
+    {
+      "title": "Client projects & deliverables",
+      "route": "operations"
+    },
+    {
+      "title": "Client directory",
+      "route": "customers"
+    },
+    {
+      "title": "Quotes, invoices & payments",
+      "route": "finance"
+    },
+    {
+      "title": "Tasks & deadlines",
+      "route": "tasks"
+    },
+    {
+      "title": "Appointments & service delivery",
+      "route": "business-tools"
+    },
+    {
+      "title": "Portfolio & website media",
+      "route": "website-studio"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Team & collaborators",
+      "route": "team"
+    },
+    {
+      "title": "Announcements",
+      "route": "announcements"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}
