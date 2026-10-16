@@ -5,12 +5,14 @@ All 51 business profile folders must own the business-specific user experienceâ€
 
 ## Target folder contract
 Each `business-profiles/<slug>/` folder will contain:
-- `profile.json`: identity, route, capabilities, and feature metadata.
-- `index.html`: the profile's page entry point and its own semantic layout.
-- `profile.js`: profile-specific rendering, interactions, form validation, and orchestration.
-- `profile.css`: profile-specific responsive layout and visual treatment.
-- `features.json`: the explicit inventory of page sections, controls, data entities, and backend actions.
-- `README.md`: scope, page map, permissions, backend dependencies, and implementation status.
+- `profile.json`: identity, slug, description, and feature metadata.
+- `index.html`: the profile's own landing/overview page.
+- `profile.js` and `profile.css`: profile-specific overview interactions and styling (or equivalent inline code only as a temporary scaffold).
+- `features.json`: feature inventory, data entities, permission requirements, and backend actions.
+- `pages/<feature-slug>/index.html`: an actual page for each feature declared by this profileâ€”not just a link to a generic page outside the folder.
+- `pages/<feature-slug>/page.js` and `page.css`: feature-specific interactions, validation, loading/error/empty states, and styling.
+- `backend.js` (or domain-specific adapters): maps the profile's UI actions to approved shared data-access functions and real tables/RPCs.
+- `README.md`: page map, role requirements, backend dependencies, and implementation status.
 
 ## Shared files that stay outside profile folders
 - `auth.js` / Supabase bootstrap: sign-in, session persistence, sign-out, and client initialization.
@@ -20,7 +22,7 @@ Each `business-profiles/<slug>/` folder will contain:
 
 ## Delivery phases
 1. **Inventory and contract:** validate all 51 slugs, profile names, unique route IDs, data entities, capability declarations, role requirements, and current backend tables/RPCs. Produce a coverage matrix; flag any feature that has no real backend operation.
-2. **Folder-owned page skeletons:** create all profile-owned page entry points, markup, JS, CSS, feature manifests and READMEs. Each page must render its own business-specific sections and buttons; do not treat a route name alone as an implemented feature.
+2. **Folder-owned page skeletons:** create a dedicated profile landing page in all 51 folders (initial scaffold completed). Next, create an actual folder-owned page for every declared feature under `pages/<feature-slug>/`, with profile-specific JS/CSS and a feature manifest. A button must open the local feature page, not jump straight to a generic shared module.
 3. **Shared secure bridge:** expose a narrow shared API for auth/session, active company, permissions, safe data access, notifications, and navigation. Profile scripts call this contract rather than duplicating credentials or bypassing RLS.
 4. **Backend wiring by domain:** connect each profile's buttons/forms to existing tables/RPCs where those truly fit; add migrations/RPCs only when the domain needs new data or transactional guarantees. Never point unrelated profiles at a generic page and call it complete.
 5. **Feature completion:** implement domain-specific workflows and validation, including meaningful empty/loading/error/success states, list/detail/create/edit actions, search/filtering, and reporting where appropriate.
@@ -28,8 +30,9 @@ Each `business-profiles/<slug>/` folder will contain:
 7. **Integration and acceptance:** connect profile cards, overview/dashboard, hamburger, and settings to the correct folder-owned page. Test each route, button, permissions, tenant isolation, responsive layouts, and key CRUD workflows. Report completed, partial, and blocked features separately.
 
 ## Acceptance criteria
-- Exactly 51 profile folders exist and every folder has all six target files.
-- Each folder owns its page layout and profile-specific event handlers.
+- Exactly 51 profile folders exist and each has its own overview plus a local page for every declared feature.
+- Every profile feature button opens a page inside that same profile folder.
+- Each folder owns its page layout, profile-specific event handlers, and business-domain adapters.
 - All visible controls have a defined action and an implemented, permission-checked destination.
 - Each backend action has a documented table/RPC mapping and tenant/RLS protection.
 - No fake success messages, inert buttons, guessed database columns, or false claims that a generic module is a complete specialist workflow.
@@ -46,3 +49,6 @@ The current profile implementation is configuration-led: folders mainly contain 
 - The bridge validates the selected profile slug, confirms the requested feature title and route are declared in that profile, and then routes through the main application shell. The existing application still owns authentication, active workspace state, permissions and database access.
 - CI now checks that each profile folder has an `index.html`, its `data-profile` identity matches the folder slug, it loads `profile.json`, and it declares runtime bridge integration.
 - **Not yet complete:** the 51 pages are currently dedicated page scaffolds and feature entry points. Not every profile has its own fully independent specialist data workflows, and some profile-specific CSS/JS is inline in its `index.html` while early modules split those assets into files. The next build phase must normalize the per-folder asset contract, implement profile-specific CRUD and validations, verify table/RPC mappings and tenant/RLS protections, and test all controls on a real browser/device. Do not call the app backend-complete until those checks pass.
+
+## Immediate next build phase: feature-page ownership
+The current implementation creates the profile overview entry page in every folder and embeds it in the main app. Its feature buttons still route through existing shared app routes. This is only the first milestone, not the final requested architecture. The next phase must materialize each feature as a local page within its own profile folder and then wire its domain operations. Shared modules may provide common services/components, but must not replace the profile-owned feature pages themselves.
