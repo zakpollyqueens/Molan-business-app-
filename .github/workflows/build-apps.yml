@@ -34,6 +34,7 @@ jobs:
         run: |
           npm run prepare:web
           npx cap add android
+          npx capacitor-assets generate --android
           npx cap sync android
       - name: Build debug APK
         working-directory: android
