@@ -4,46 +4,51 @@
   "slug": "ict-software-company",
   "name": "ICT / software company",
   "plural": "ICT and software companies",
-  "description": "Projects, releases, support and technical teams.",
+  "description": "IT service delivery for projects, technical support, devices and licences, client agreements, websites, applications, engineering teams, releases and reports.",
   "icon": "⌘",
   "features": [
     {
-      "title": "Appointments & service delivery",
-      "route": "business-tools"
+      "title": "IT projects & delivery board",
+      "route": "it-projects"
     },
     {
-      "title": "Projects & operations",
-      "route": "operations"
+      "title": "Support tickets & service requests",
+      "route": "it-support"
     },
     {
-      "title": "Website & media",
-      "route": "website-studio"
+      "title": "Technical assets & devices",
+      "route": "it-devices"
     },
     {
-      "title": "Tasks & deadlines",
+      "title": "Clients & service agreements",
+      "route": "it-clients"
+    },
+    {
+      "title": "Websites, applications & digital studio",
+      "route": "it-websites"
+    },
+    {
+      "title": "Technical team & access",
+      "route": "it-team"
+    },
+    {
+      "title": "Releases & delivery reports",
+      "route": "it-releases"
+    },
+    {
+      "title": "Tasks & sprint planning",
       "route": "tasks"
     },
     {
-      "title": "Customers / members",
-      "route": "customers"
-    },
-    {
-      "title": "Finance & expenses",
+      "title": "Service billing & expenses",
       "route": "finance"
     },
     {
-      "title": "Reports & insights",
-      "route": "reports"
-    },
-    {
-      "title": "Team & permissions",
-      "route": "team"
-    },
-    {
-      "title": "Announcements",
+      "title": "Announcements & updates",
       "route": "announcements"
     }
   ],
   "settingsRoute": "industry-settings",
-  "overviewRoute": "industry-profile"
+  "overviewRoute": "industry-profile",
+  "group": "Technology & digital"
 }
