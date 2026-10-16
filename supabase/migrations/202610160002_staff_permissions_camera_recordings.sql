@@ -187,9 +187,18 @@ on public.business_camera_recordings for update to authenticated
 using (public.has_company_permission(company_id, 'camera.manage'))
 with check (public.has_company_permission(company_id, 'camera.manage'));
 drop policy if exists "Camera managers delete recording metadata" on public.business_camera_recordings;
-create policy "Camera managers delete recording metadata"
+drop policy if exists "Only business owner deletes recording metadata" on public.business_camera_recordings;
+create policy "Only business owner deletes recording metadata"
 on public.business_camera_recordings for delete to authenticated
-using (public.has_company_permission(company_id, 'camera.manage'));
+using (
+  exists (
+    select 1 from public.company_members owner_member
+    where owner_member.company_id = business_camera_recordings.company_id
+      and owner_member.user_id = (select auth.uid())
+      and owner_member.role = 'owner'
+      and owner_member.status = 'active'
+  )
+);
 
 -- Replace broad owner/admin camera policies with the new explicit camera permissions.
 drop policy if exists "Workspace owners and admins read connected cameras" on public.business_cameras;
@@ -236,3 +245,56 @@ on public.business_locations for delete to authenticated
 using (public.has_company_permission(company_id, 'camera.manage'));
 
 -- Owner always has all access. Seed no permissions for staff: the owner must grant each permission explicitly.
+
+-- Private bucket for recording segments. Recording ingestion is performed by a trusted provider/relay,
+-- never by granting browser clients unrestricted access to storage.
+insert into storage.buckets (id, name, public)
+values ('private-camera-recordings', 'private-camera-recordings', false)
+on conflict (id) do update set public = false;
+
+drop policy if exists "Authorized staff read private camera recordings" on storage.objects;
+create policy "Authorized staff read private camera recordings"
+on storage.objects for select to authenticated
+using (
+  bucket_id = 'private-camera-recordings'
+  and (storage.foldername(name))[1] ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+  and public.has_company_permission(((storage.foldername(name))[1])::uuid, 'camera.view')
+);
+
+drop policy if exists "Only business owner deletes private camera recordings" on storage.objects;
+create policy "Only business owner deletes private camera recordings"
+on storage.objects for delete to authenticated
+using (
+  bucket_id = 'private-camera-recordings'
+  and (storage.foldername(name))[1] ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+  and exists (
+    select 1 from public.company_members owner_member
+    where owner_member.company_id = ((storage.foldername(name))[1])::uuid
+      and owner_member.user_id = (select auth.uid())
+      and owner_member.role = 'owner'
+      and owner_member.status = 'active'
+  )
+);
+
+drop policy if exists "Camera manager uploads recordings" on storage.objects;
+create policy "Camera manager uploads recordings"
+on storage.objects for insert to authenticated
+with check (
+  bucket_id = 'private-camera-recordings'
+  and (storage.foldername(name))[1] ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+  and public.has_company_permission(((storage.foldername(name))[1])::uuid, 'camera.manage')
+);
+
+drop policy if exists "Camera manager updates recordings" on storage.objects;
+create policy "Camera manager updates recordings"
+on storage.objects for update to authenticated
+using (
+  bucket_id = 'private-camera-recordings'
+  and (storage.foldername(name))[1] ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+  and public.has_company_permission(((storage.foldername(name))[1])::uuid, 'camera.manage')
+)
+with check (
+  bucket_id = 'private-camera-recordings'
+  and (storage.foldername(name))[1] ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+  and public.has_company_permission(((storage.foldername(name))[1])::uuid, 'camera.manage')
+);
