@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "profile": "school",
+  "name": "School",
+  "features": [
+    {
+      "id": "school-1",
+      "title": "Classes & learners",
+      "route": "operations",
+      "page": "pages/feature-classes-learners/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "school-2",
+      "title": "Attendance",
+      "route": "attendance",
+      "page": "pages/feature-attendance/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "school-3",
+      "title": "Fees & finance",
+      "route": "finance",
+      "page": "pages/feature-fees-finance/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "school-4",
+      "title": "Savings & SACCO",
+      "route": "sacco",
+      "page": "pages/feature-savings-sacco/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "school-5",
+      "title": "Tasks & deadlines",
+      "route": "tasks",
+      "page": "pages/feature-tasks-deadlines/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "school-6",
+      "title": "Customers / members",
+      "route": "customers",
+      "page": "pages/feature-customers-members/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "school-7",
+      "title": "Reports & insights",
+      "route": "reports",
+      "page": "pages/feature-reports-insights/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "school-8",
+      "title": "Team & permissions",
+      "route": "team",
+      "page": "pages/feature-team-permissions/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "school-9",
+      "title": "Announcements",
+      "route": "announcements",
+      "page": "pages/feature-announcements/index.html",
+      "status": "runtime-integration-required"
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "profile": "salon-barbershop",
+  "name": "Salon / barbershop",
+  "features": [
+    {
+      "id": "salon-barbershop-1",
+      "title": "Bookings & service work",
+      "route": "business-tools",
+      "page": "pages/feature-bookings-service-work/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "salon-barbershop-2",
+      "title": "Ingredients & supplies",
+      "route": "inventory",
+      "page": "pages/feature-ingredients-supplies/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "salon-barbershop-3",
+      "title": "Orders & sales",
+      "route": "sales",
+      "page": "pages/feature-orders-sales/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "salon-barbershop-4",
+      "title": "Tasks & deadlines",
+      "route": "tasks",
+      "page": "pages/feature-tasks-deadlines/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "salon-barbershop-5",
+      "title": "Customers / members",
+      "route": "customers",
+      "page": "pages/feature-customers-members/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "salon-barbershop-6",
+      "title": "Operations register",
+      "route": "operations",
+      "page": "pages/feature-operations-register/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "salon-barbershop-7",
+      "title": "Finance & expenses",
+      "route": "finance",
+      "page": "pages/feature-finance-expenses/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "salon-barbershop-8",
+      "title": "Reports & insights",
+      "route": "reports",
+      "page": "pages/feature-reports-insights/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "salon-barbershop-9",
+      "title": "Team & permissions",
+      "route": "team",
+      "page": "pages/feature-team-permissions/index.html",
+      "status": "runtime-integration-required"
+    },
+    {
+      "id": "salon-barbershop-10",
+      "title": "Announcements",
+      "route": "announcements",
+      "page": "pages/feature-announcements/index.html",
+      "status": "runtime-integration-required"
+    }
+  ]
+}
