@@ -96,6 +96,13 @@
   menuBackdrop?.addEventListener('click',closeMobileMenu);
   document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMobileMenu()});
   function navigate(page){currentPage=page;$('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===page));renderPage(page);closeMobileMenu();window.scrollTo({top:0,behavior:'smooth'})}
+  // Shared platform bridge: keep authentication/session ownership in this main app.
+  window.MolanNavigate=(page)=>navigate(page);
+  window.MolanAppContext=Object.freeze({
+    getClient:()=>supabase, getUser:()=>user, getCompany:()=>company, getMembership:()=>membership,
+    refresh:()=>refreshData(), renderPage:(page)=>renderPage(page), navigate:(page)=>navigate(page),
+    toast:(message,bad=false)=>toast(message,bad)
+  });
   function head(title,sub,action=''){return '<div class="page-heading"><div><div class="section-kicker">MOLAN WORKSPACE</div><h1>'+esc(title)+'</h1><p>'+esc(sub)+'</p></div>'+action+'</div>'}
   function btn(label,action='create-task'){return '<button class="button primary" data-action="'+action+'">'+esc(label)+' <span>＋</span></button>'}
   function empty(icon,title,desc){return '<div class="empty-state"><div class="empty-symbol">'+icon+'</div><strong>'+esc(title)+'</strong><br>'+esc(desc)+'</div>'}
