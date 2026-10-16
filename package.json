@@ -7,7 +7,7 @@
     "prepare:web": "npm run prepare:icons && node scripts/prepare-web.cjs",
     "build:android": "npm run prepare:web && cap sync android",
     "build:windows": "npm run prepare:web && electron-builder --win nsis --publish never",
-    "build:macos": "npm run prepare:web && electron-builder --mac dmg zip --publish never",
+    "build:macos": "npm run prepare:web && electron-builder --mac dmg zip --x64 --publish never && electron-builder --mac dmg zip --arm64 --publish never",
     "build:linux": "npm run prepare:web && electron-builder --linux AppImage deb --publish never",
     "prepare:icons": "node scripts/generate-icons.cjs"
   },
