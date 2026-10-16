@@ -85,8 +85,14 @@
         }
       ],
       "category": "Office",
-      "synopsis": "Molan Business management workspace"
+      "synopsis": "Molan Business management workspace",
+      "maintainer": "Zakmolanitech Solutions <zakpollyqueens@gmail.com>",
+      "icon": "assets/icon.png"
     }
   },
-  "main": "desktop/main.cjs"
+  "main": "desktop/main.cjs",
+  "author": {
+    "name": "Zakmolanitech Solutions",
+    "email": "zakpollyqueens@gmail.com"
+  }
 }
