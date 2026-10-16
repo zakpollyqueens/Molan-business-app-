@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "profile": "retail-shop",
+  "features": [
+    {
+      "id": "retail-shop-1",
+      "title": "Product catalogue",
+      "route": "products",
+      "action": "open-module",
+      "status": "connected-route-pending-domain-verification"
+    },
+    {
+      "id": "retail-shop-2",
+      "title": "Stock & pricing",
+      "route": "inventory",
+      "action": "open-module",
+      "status": "connected-route-pending-domain-verification"
+    },
+    {
+      "id": "retail-shop-3",
+      "title": "Sales register",
+      "route": "sales",
+      "action": "open-module",
+      "status": "connected-route-pending-domain-verification"
+    },
+    {
+      "id": "retail-shop-4",
+      "title": "Returns & exchanges",
+      "route": "business-tools",
+      "action": "open-module",
+      "status": "connected-route-pending-domain-verification"
+    },
+    {
+      "id": "retail-shop-5",
+      "title": "Customer accounts",
+      "route": "customers",
+      "action": "open-module",
+      "status": "connected-route-pending-domain-verification"
+    },
+    {
+      "id": "retail-shop-6",
+      "title": "Daily cash-up",
+      "route": "business-tools",
+      "action": "open-module",
+      "status": "connected-route-pending-domain-verification"
+    }
+  ],
+  "backendStatus": "Requires domain-by-domain verification; no action is marked backend-complete by scaffold alone."
+}

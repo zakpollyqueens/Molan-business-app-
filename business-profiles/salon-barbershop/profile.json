@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "index": 44,
+  "slug": "salon-barbershop",
+  "name": "Salon / barbershop",
+  "plural": "Salons and barbershops",
+  "description": "Bookings, services, staff and retail products.",
+  "icon": "✂",
+  "features": [
+    {
+      "title": "Bookings & service work",
+      "route": "business-tools"
+    },
+    {
+      "title": "Ingredients & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Orders & sales",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & deadlines",
+      "route": "tasks"
+    },
+    {
+      "title": "Customers / members",
+      "route": "customers"
+    },
+    {
+      "title": "Operations register",
+      "route": "operations"
+    },
+    {
+      "title": "Finance & expenses",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Team & permissions",
+      "route": "team"
+    },
+    {
+      "title": "Announcements",
+      "route": "announcements"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

@@ -1,0 +1,10 @@
+{
+  "app": "Molan Business",
+  "currentVersion": "molan-2026.10.16.2",
+  "releaseApi": "https://api.github.com/repos/zakpollyqueens/Molan-business-app-/releases/latest",
+  "releasePage": "https://github.com/zakpollyqueens/Molan-business-app-/releases/latest",
+  "checkedAt": "runtime",
+  "version": "molan-2026.10.16.2",
+  "releasedAt": "2026-10-16",
+  "notes": "Shared profile architecture and central update checker."
+}

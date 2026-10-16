@@ -1,0 +1,50 @@
+{
+  "name": "molan-business-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Molan Business web, Android and Windows desktop app builds",
+  "scripts": {
+    "prepare:web": "node scripts/prepare-web.cjs",
+    "build:android": "npm run prepare:web && cap sync android",
+    "build:windows": "npm run prepare:web && electron-builder --win nsis --publish never"
+  },
+  "dependencies": {
+    "@capacitor/core": "6.2.1"
+  },
+  "devDependencies": {
+    "@capacitor/android": "6.2.1",
+    "@capacitor/cli": "6.2.1",
+    "electron": "35.2.1",
+    "electron-builder": "26.0.12"
+  },
+  "build": {
+    "appId": "com.zakmolanitech.molanbusiness",
+    "productName": "Molan Business",
+    "directories": {
+      "output": "dist/desktop"
+    },
+    "files": [
+      "www/**/*",
+      "desktop/main.cjs",
+      "package.json"
+    ],
+    "asar": true,
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  },
+  "main": "desktop/main.cjs"
+}

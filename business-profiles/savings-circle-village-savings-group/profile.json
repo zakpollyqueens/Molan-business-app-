@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "index": 25,
+  "slug": "savings-circle-village-savings-group",
+  "name": "Savings circle / village savings group",
+  "plural": "Savings circles and village savings groups",
+  "description": "Member contributions, welfare and group reconciliation.",
+  "icon": "♧",
+  "features": [
+    {
+      "title": "Savings & member accounts",
+      "route": "sacco"
+    },
+    {
+      "title": "Finance ledger",
+      "route": "finance"
+    },
+    {
+      "title": "Members",
+      "route": "customers"
+    },
+    {
+      "title": "Reports",
+      "route": "reports"
+    },
+    {
+      "title": "Tasks & deadlines",
+      "route": "tasks"
+    },
+    {
+      "title": "Operations register",
+      "route": "operations"
+    },
+    {
+      "title": "Team & permissions",
+      "route": "team"
+    },
+    {
+      "title": "Announcements",
+      "route": "announcements"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}
