@@ -1,4 +1,4 @@
-/* Shared runtime registry for all 51 Molan Business profiles.
+/* Shared runtime registry for 550 selectable Molan Business profiles (plus one retired redirect folder).
  * Profile-specific configuration lives in /business-profiles/<slug>/profile.json.
  * Shared rendering, navigation, styling and database wiring stay in the application root.
  */
@@ -50,31 +50,29 @@
     const bindSearchableSelect = (selectId, searchId, countId) => {
       const select = document.getElementById(selectId);
       if (!select) return;
-      const previous = select.value;
-      select.replaceChildren(new Option('Choose your business type', ''));
-      catalog.forEach(profile => select.add(new Option(profile[0], profile[0])));
-      if (previous && byName[previous]) select.value = previous;
       const search = document.getElementById(searchId);
       const resultCount = document.getElementById(countId);
-      const filterOptions = () => {
+      const renderOptions = () => {
+        const previous = select.value;
         const query = String(search?.value || '').trim().toLocaleLowerCase();
         let matches = 0;
-        [...select.options].forEach((option, index) => {
-          if (index === 0) { option.hidden = false; return; }
-          const profile = byName[option.value];
-          const haystack = [option.text, profile?.plural, profile?.description, profile?.group, profile?.specialty].join(' ').toLocaleLowerCase();
-          const show = !query || haystack.includes(query) || option.value === select.value;
-          option.hidden = !show;
-          if (show && option.value !== select.value) matches++;
+        select.replaceChildren(new Option('Choose your business type', ''));
+        catalog.forEach(profile => {
+          const config = byName[profile[0]];
+          const haystack = [profile[0], profile[1], profile[2], config?.group, config?.specialty].join(' ').toLocaleLowerCase();
+          const matchesQuery = !query || haystack.includes(query);
+          if (matchesQuery) matches++;
+          if (matchesQuery || profile[0] === previous) select.add(new Option(profile[0], profile[0]));
         });
-        if (resultCount) resultCount.textContent = query ? (matches + (select.value && byName[select.value] ? 1 : 0)) + ' matching business types' : catalog.length + ' business types available';
+        if (previous && [...select.options].some(option => option.value === previous)) select.value = previous;
+        if (resultCount) resultCount.textContent = query ? matches + ' matching business type' + (matches === 1 ? '' : 's') : catalog.length + ' business types available';
       };
       if (search && !search.dataset.profileSearchBound) {
-        search.addEventListener('input', filterOptions);
-        select.addEventListener('change', filterOptions);
+        search.addEventListener('input', renderOptions);
+        select.addEventListener('change', renderOptions);
         search.dataset.profileSearchBound = 'true';
       }
-      filterOptions();
+      renderOptions();
     };
     bindSearchableSelect('guided-business-type', 'guided-business-type-search', 'guided-business-type-results');
     bindSearchableSelect('business-category', 'business-category-search', 'business-category-results');
