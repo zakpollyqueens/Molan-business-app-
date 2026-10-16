@@ -346,8 +346,8 @@
     const count=$('#learn-slide-count');if(count)count.textContent=String(learnIndex+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0');
     $('.learn-controls')?.classList.toggle('is-final',learnIndex===slides.length-1);
   }
-  function openLearnMore(){clearInterval(welcomeTimer);showScreen('learn-more-screen');const country=$('#learn-country');if(country&&!country.dataset.initialized){country.value=detectLearnCountry();country.dataset.initialized='true';renderLearnPricing()}showLearnSlide(0);window.scrollTo({top:0,behavior:'smooth'})}
-  function closeLearnMore(){showScreen('welcome-screen');startWelcomeAutoplay();window.scrollTo({top:0,behavior:'smooth'})}
+  function openLearnMore(){clearInterval(welcomeTimer);document.body.classList.add('learn-more-open');showScreen('learn-more-screen');const country=$('#learn-country');if(country&&!country.dataset.initialized){country.value=detectLearnCountry();country.dataset.initialized='true';renderLearnPricing()}showLearnSlide(0);window.scrollTo({top:0,behavior:'smooth'})}
+  function closeLearnMore(){document.body.classList.remove('learn-more-open');showScreen('welcome-screen');startWelcomeAutoplay();window.scrollTo({top:0,behavior:'smooth'})}
   $('#welcome-learn-more')?.addEventListener('click',openLearnMore);
   $('#learn-close')?.addEventListener('click',closeLearnMore);
   $('#learn-back-home')?.addEventListener('click',closeLearnMore);
