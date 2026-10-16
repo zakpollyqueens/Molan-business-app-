@@ -998,7 +998,8 @@ document.addEventListener('click',async event=>{
  const biometricUnlock=event.target.closest('[data-workspace-biometric-unlock]');if(biometricUnlock){event.preventDefault();const status=$('#workspace-lock-message');try{await unlockWorkspaceWithBiometric()}catch(err){if(status)status.textContent=err.message||'Device verification failed.'}return}
  const disable=event.target.closest('[data-workspace-lock-disable]');if(disable){event.preventDefault();if(!confirm('Disable the workspace lock on this device?'))return;localStorage.removeItem(workspaceLockKey());workspaceUnlocked.add(user.id+':'+company.id);const status=$('#workspace-lock-status');if(status)status.textContent='Workspace lock disabled on this device.';toast('Workspace lock disabled on this device.');return}
 });
-\nfunction renderSaccoWelfarePage(el){
+
+function renderSaccoWelfarePage(el){
  el.innerHTML=head('Separate welfare fund','A group-level welfare account with its own ledger, separate from every member’s personal savings balance.')+'<div class="loading"><div class="spinner"></div> Loading welfare fund…</div>';
  (async()=>{
   const cid=company.id;
