@@ -30,5 +30,20 @@
     <p class="notice">For your security, this return page alone does not activate a subscription. Activation must follow verified payment confirmation from the payment provider.</p>
     <footer>Built and managed by Zakmolanitech Solutions Company</footer>
   </main>
+<script>
+    (function(){
+      if(!new URLSearchParams(window.location.search).has('website_payment_id')) return;
+      document.title='Website payment submitted | Molan Business';
+      const heading=document.querySelector('main h1');
+      if(heading) heading.textContent='Thank you for your website package payment';
+      const paragraphs=document.querySelectorAll('main > p');
+      if(paragraphs[0]) paragraphs[0].textContent='Jjuma Pay returned you to Molan Business. We are waiting for the secure payment verification before marking your website request as paid.';
+      if(paragraphs[1]) paragraphs[1].textContent='After the provider verifies the exact amount and currency, your website request will move into the work queue. Return to your workspace to see the confirmed payment status.';
+      const status=document.querySelector('.status span:last-child');
+      if(status) status.textContent='Waiting for secure Jjuma Pay confirmation';
+      const notice=document.querySelector('.notice');
+      if(notice) notice.textContent='This return page alone does not prove that payment succeeded. The website request is marked paid only after server-side provider verification.';
+    })();
+  </script>
 </body>
 </html>
