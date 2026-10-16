@@ -33,7 +33,7 @@ jobs:
           if (!html.includes('business-profiles.js') || !html.includes('business-profiles.css')) throw new Error('Shared profile loader/styles must be loaded by index.html.');
           if (!js.includes('e.stopImmediatePropagation()') || !js.includes('navigate(page)')) throw new Error('Shared navigation click handler is missing.');
           const profileFolders = fs.readdirSync('business-profiles', { withFileTypes: true }).filter(item => item.isDirectory());
-          if (profileFolders.length !== 50) throw new Error('Expected 50 business profile folders, found ' + profileFolders.length);
+          if (profileFolders.length !== 51) throw new Error('Expected 51 business profile folders (50 active categories plus one retired redirect), found ' + profileFolders.length);
           const profileNames = new Set();
           for (const folder of profileFolders) {
             const file = 'business-profiles/' + folder.name + '/profile.json';
@@ -55,7 +55,7 @@ jobs:
               if (!feature.title || !renderedRoutes.has(feature.route)) throw new Error('Unconnected profile feature route in ' + file + ': ' + feature.route);
             }
           }
-          if (profileNames.size !== 50) throw new Error('Expected 50 unique profile names.');
+          if (profileNames.size !== 51) throw new Error('Expected 51 unique profile folder names (including the retired redirect).');
           if (!js.includes('manage_company_workspace_status') || !js.includes('data-workspace-admin-action')) throw new Error('Workspace lifecycle controls are not connected.');
           const lifecycleMigration = fs.readFileSync('supabase/migrations/20261016090000_workspace_lifecycle_controls.sql', 'utf8');
           for (const required of ['status text','deleted_at','manage_company_workspace_status','security invoker','from public, anon','to authenticated']) {
