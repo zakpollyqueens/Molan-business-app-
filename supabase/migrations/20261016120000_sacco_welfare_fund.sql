@@ -88,7 +88,7 @@ create policy sacco_welfare_contribution_record on public.sacco_welfare_entries
 create or replace function public.sacco_review_welfare_request(
  p_request_id uuid, p_decision text, p_rejection_reason text default null
 ) returns public.sacco_welfare_requests
- language plpgsql security definer set search_path = public, pg_temp as $$
+ language plpgsql security definer set search_path = pg_catalog, public, pg_temp as $$
 declare req public.sacco_welfare_requests;
 begin
  if auth.uid() is null then raise exception 'Authentication required'; end if;
@@ -109,7 +109,7 @@ end $$;
 create or replace function public.sacco_record_welfare_payment(
  p_request_id uuid, p_payment_method text, p_payment_reference text default null, p_payment_note text default null
 ) returns public.sacco_welfare_entries
- language plpgsql security definer set search_path = public, pg_temp as $$
+ language plpgsql security definer set search_path = pg_catalog, public, pg_temp as $$
 declare req public.sacco_welfare_requests; entry public.sacco_welfare_entries;
 begin
  if auth.uid() is null then raise exception 'Authentication required'; end if;
