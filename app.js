@@ -601,7 +601,7 @@
       const visibleSaccoSections = new Set(saccoSections[focusSection||''] || saccoSections['']);
       el.querySelectorAll('.sacco-panel').forEach(section => {
         const title = section.querySelector('.panel-head h3')?.textContent.trim() || '';
-        section.hidden = !visibleSaccoSections.has(title);
+        if(!visibleSaccoSections.has(title)) section.remove();
       });
       const memberPhotoInput=$('#sacco-member-form [name="avatar_file"]');
       memberPhotoInput?.addEventListener('change',()=>{const file=memberPhotoInput.files?.[0],preview=$('#sacco-member-avatar-preview');if(!preview)return;if(!file){preview.innerHTML='<span class="sacco-member-avatar sacco-member-avatar-placeholder">♙</span><small>Member photo preview</small>';return}if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>5*1024*1024){memberPhotoInput.value='';preview.innerHTML='<span class="sacco-member-avatar sacco-member-avatar-placeholder">♙</span><small>Choose a JPG, PNG or WebP image up to 5 MB.</small>';return}const url=URL.createObjectURL(file);preview.innerHTML='<img class="sacco-member-avatar" src="'+url+'" alt="Member photo preview"><small>'+esc(file.name)+'</small>'});
