@@ -47,6 +47,11 @@ jobs:
             if (!html.includes('data-page="' + page + '"')) throw new Error('Missing navigation page: ' + page);
           }
           const renderedRoutes = new Set([...js.matchAll(/(?:else )?if\(page==='([^']+)'/g)].map(match => match[1]));
+          // Profile-owned feature routes can intentionally alias to shared rendered pages.
+          // Count an alias as connected only when its target is an actual rendered route.
+          for (const alias of js.matchAll(/'([^']+)':\{page:'([^']+)'/g)) {
+            if (renderedRoutes.has(alias[2])) renderedRoutes.add(alias[1]);
+          }
           for (const match of html.matchAll(/data-page="([^"]+)"/g)) {
             if (!renderedRoutes.has(match[1])) throw new Error('Navigation button has no render route: ' + match[1]);
           }
