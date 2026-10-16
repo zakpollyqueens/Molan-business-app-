@@ -59,6 +59,16 @@ Serve this folder with a static HTTP server, or use GitHub Pages. The app loads 
 
 ## Subscription plan schedule and billing status
 
-The customer-facing plan durations are **Gold — 3 months**, **Silver — 2 months**, and **Premium — 1 month**. The subscription catalog and payment-event tables are managed in Supabase. The proposed USD monthly reference amounts are Gold $100, Silver $60, and Premium $50, producing proposed package totals of $300, $120, and $50 respectively. These are not live checkout prices until approved and enabled.
+The customer-facing plan durations are **Gold — 3 months**, **Silver — 2 months**, and **Premium — 1 month**. The displayed amount is the full package fee, due again when the selected period ends: Gold renews every 3 months, Silver every 2 months, and Premium every month.
 
-No approved Uganda UGX price list or other local-currency rate card was found in the existing repository/database. Uganda pricing rows are therefore left unconfigured so existing prices are not accidentally changed. Regional prices and checkout remain disabled until the owner approves the exact rates and a provider integration verifies payment. Subscription activation must only occur after verified payment or a separately authorised manual activation.
+Current regional package prices:
+- **Uganda (UGX):** Gold 100,000; Silver 70,000; Premium 30,000.
+- **Kenya (KES):** Gold 90,000; Silver 80,000; Premium 70,000.
+- **Tanzania (TZS):** Gold 140,000; Silver 120,000; Premium 90,000.
+- **Other African countries (USD):** Gold $80; Silver $50; Premium $40.
+- **Europe (EUR default):** Gold €100; Silver €50; Premium €30.
+- **Asia (USD):** Gold $80; Silver $70; Premium $50.
+- **America (USD):** Gold $100; Silver $60; Premium $50.
+- **Unspecified markets (USD default):** Gold $80; Silver $50; Premium $40.
+
+The subscription catalog stores full package totals separately from the monthly equivalent. The page can request browser location permission and use a reverse-geocoding service to suggest a country/region; users can choose a market manually. Payment-provider checkout remains disabled until the payment integration is configured. Verified payment activation has to match the exact approved package total. Automatic access locking on expiry and scheduled renewal reminders still require end-to-end implementation.
