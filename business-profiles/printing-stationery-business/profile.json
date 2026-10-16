@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "index": 50,
+  "slug": "printing-stationery-business",
+  "name": "Printing / stationery business",
+  "plural": "Printing and stationery businesses",
+  "description": "Print jobs, stationery stock, quotes and deliveries.",
+  "icon": "▤",
+  "features": [
+    {
+      "title": "Appointments & service delivery",
+      "route": "business-tools"
+    },
+    {
+      "title": "Projects & operations",
+      "route": "operations"
+    },
+    {
+      "title": "Website & media",
+      "route": "website-studio"
+    },
+    {
+      "title": "Tasks & deadlines",
+      "route": "tasks"
+    },
+    {
+      "title": "Customers / members",
+      "route": "customers"
+    },
+    {
+      "title": "Finance & expenses",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Team & permissions",
+      "route": "team"
+    },
+    {
+      "title": "Announcements",
+      "route": "announcements"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}
