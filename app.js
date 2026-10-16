@@ -705,7 +705,7 @@ function industryProfileFeatures(profile){
   ];
  }
  const normalized=[];
- const add=(f)=>{if(!f||!f.title||!f.route)return;const circle=isSavingsCircleProfile(profile);if((/^sacco(?:-|$)|^circle-/.test(f.route))&&!circle)return;if(!circle&&(/^sacco(?:-|$)/.test(f.route)))return;if(!normalized.some(x=>x.route===f.route))normalized.push(f)};
+ const add=(f)=>{if(!f||!f.title||!f.route)return;const circle=isSavingsCircleProfile(profile);if(circle&&f.route==='sacco')return;if(!circle&&(/^sacco(?:-|$)|^circle-/.test(f.route)))return;if(!normalized.some(x=>x.route===f.route))normalized.push(f)};
  domain.forEach(add);
  const isSchoolProfile=/school|college|training|education|academy/.test(name);
  const isITProfile=/ict|software|information technology|technology|computer training|computer repair|computer service|it services|digital service|computer centre|computer center|it company|it support|computer maintenance/.test(name);
