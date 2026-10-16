@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "index": 35,
+  "slug": "school",
+  "name": "School",
+  "plural": "Schools",
+  "description": "Learners, classes, assessments, fees and attendance.",
+  "icon": "▦",
+  "features": [
+    {
+      "title": "Classes & learners",
+      "route": "operations"
+    },
+    {
+      "title": "Attendance",
+      "route": "attendance"
+    },
+    {
+      "title": "Fees & finance",
+      "route": "finance"
+    },
+    {
+      "title": "Savings & SACCO",
+      "route": "sacco"
+    },
+    {
+      "title": "Tasks & deadlines",
+      "route": "tasks"
+    },
+    {
+      "title": "Customers / members",
+      "route": "customers"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Team & permissions",
+      "route": "team"
+    },
+    {
+      "title": "Announcements",
+      "route": "announcements"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

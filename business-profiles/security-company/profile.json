@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "index": 47,
+  "slug": "security-company",
+  "name": "Security company",
+  "plural": "Security companies",
+  "description": "Guard assignments, rosters, incidents and attendance.",
+  "icon": "◉",
+  "features": [
+    {
+      "title": "Appointments & service delivery",
+      "route": "business-tools"
+    },
+    {
+      "title": "Projects & operations",
+      "route": "operations"
+    },
+    {
+      "title": "Website & media",
+      "route": "website-studio"
+    },
+    {
+      "title": "Tasks & deadlines",
+      "route": "tasks"
+    },
+    {
+      "title": "Customers / members",
+      "route": "customers"
+    },
+    {
+      "title": "Finance & expenses",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Team & permissions",
+      "route": "team"
+    },
+    {
+      "title": "Announcements",
+      "route": "announcements"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

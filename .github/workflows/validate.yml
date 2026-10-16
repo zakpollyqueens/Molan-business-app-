@@ -1,9 +1,9 @@
 name: Validate frontend
 on:
   push:
-    branches: [main]
+    branches: [main, feat/sacco-savings-withdrawals-terms, fix/connected-navigation-workspace-admin]
   pull_request:
-    branches: [main]
+    branches: [main, feat/sacco-savings-withdrawals-terms]
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -13,9 +13,9 @@ jobs:
         with:
           node-version: 20
       - name: Check JavaScript syntax
-        run: node --check app.js && node --check member-portal.js
+        run: node --check app.js && node --check business-profiles.js && node --check member-portal.js
       - name: Check required frontend files
-        run: test -s index.html && test -s styles.css && test -s app.js && test -s member-portal.html && test -s member-portal.css && test -s member-portal.js && test -s supabase/functions/sacco-member-portal/index.ts
+        run: test -s index.html && test -s styles.css && test -s app.js && test -s business-profiles.js && test -s business-profiles.css && test -s member-portal.html && test -s member-portal.css && test -s member-portal.js && test -s supabase/functions/sacco-member-portal/index.ts
       - name: Smoke-check workspace modules and public frontend safety
         run: |
           node <<'NODE'
@@ -25,6 +25,32 @@ jobs:
           const pages = ['overview','tasks','products','team','announcements','customers','inventory','sales','finance','attendance','reports','council','websites','business-profile','industry-workspace','business-tools','website-studio','operations','sacco','control-center','profile-directory'];
           for (const page of pages) {
             if (!html.includes('data-page="' + page + '"')) throw new Error('Missing navigation page: ' + page);
+          }
+          const renderedRoutes = new Set([...js.matchAll(/(?:else )?if\(page==='([^']+)'/g)].map(match => match[1]));
+          for (const match of html.matchAll(/data-page="([^"]+)"/g)) {
+            if (!renderedRoutes.has(match[1])) throw new Error('Navigation button has no render route: ' + match[1]);
+          }
+          if (!html.includes('business-profiles.js') || !html.includes('business-profiles.css')) throw new Error('Shared profile loader/styles must be loaded by index.html.');
+          if (!js.includes('e.stopImmediatePropagation()') || !js.includes('navigate(page)')) throw new Error('Shared navigation click handler is missing.');
+          const profileFolders = fs.readdirSync('business-profiles', { withFileTypes: true }).filter(item => item.isDirectory());
+          if (profileFolders.length !== 51) throw new Error('Expected 51 business profile folders, found ' + profileFolders.length);
+          const profileNames = new Set();
+          for (const folder of profileFolders) {
+            const file = 'business-profiles/' + folder.name + '/profile.json';
+            if (!fs.existsSync(file)) throw new Error('Missing profile configuration: ' + file);
+            const profile = JSON.parse(fs.readFileSync(file, 'utf8'));
+            if (profile.slug !== folder.name || !profile.name || !Array.isArray(profile.features) || !profile.features.length) throw new Error('Invalid profile configuration: ' + file);
+            if (profileNames.has(profile.name)) throw new Error('Duplicate profile name: ' + profile.name);
+            profileNames.add(profile.name);
+            for (const feature of profile.features) {
+              if (!feature.title || !renderedRoutes.has(feature.route)) throw new Error('Unconnected profile feature route in ' + file + ': ' + feature.route);
+            }
+          }
+          if (profileNames.size !== 51) throw new Error('Expected 51 unique profile names.');
+          if (!js.includes('manage_company_workspace_status') || !js.includes('data-workspace-admin-action')) throw new Error('Workspace lifecycle controls are not connected.');
+          const lifecycleMigration = fs.readFileSync('supabase/migrations/20261016090000_workspace_lifecycle_controls.sql', 'utf8');
+          for (const required of ['status text','deleted_at','manage_company_workspace_status','security invoker','from public, anon','to authenticated']) {
+            if (!lifecycleMigration.toLowerCase().includes(required.toLowerCase())) throw new Error('Workspace lifecycle migration missing: ' + required);
           }
           for (const feature of ['accept_company_invitation','create_company_invitation','attendance_records','website_service_requests','website_service_payments','finance_transactions','inventory_items','sales_orders','sales_order_items','create_sales_order_with_items','business-gallery','gallery_images','workspace-switcher','business_operations','inventory_movements','record_inventory_movement','school_classes','school_learners','school_assessments','school_fee_entries','create-school-assessment','operation-status','copy-media-url','set-media-logo','set-media-cover','Upload website images','industry-feature-grid','Business tools & workflows','Appointments & bookings','Purchasing & procurement','Maintenance & inspections','EXTENDED WORKFLOWS','sacco_role_assignments','sacco_terms','sacco_members','sacco_savings_entries','sacco_withdrawal_requests','sacco_member_reviews','sacco_review_savings','sacco_review_withdrawal','sacco_record_withdrawal_payment','sacco-amount-words','sacco-review-form','businessProfileCatalog','profile-catalogue-grid','data-profile-category','profile-catalogue-search','profile-catalogue-group','industryProfileSettingFields','data-save-industry-settings','industry_profile_settings']) {
             if (!js.includes(feature)) throw new Error('Missing expected app integration: ' + feature);

@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "index": 38,
+  "slug": "dental-practice",
+  "name": "Dental practice",
+  "plural": "Dental practices",
+  "description": "Appointments, treatment schedules and patient follow-up.",
+  "icon": "✚",
+  "features": [
+    {
+      "title": "Appointments & service jobs",
+      "route": "business-tools"
+    },
+    {
+      "title": "Inventory & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Finance & expenses",
+      "route": "finance"
+    },
+    {
+      "title": "Tasks & deadlines",
+      "route": "tasks"
+    },
+    {
+      "title": "Customers / members",
+      "route": "customers"
+    },
+    {
+      "title": "Operations register",
+      "route": "operations"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Team & permissions",
+      "route": "team"
+    },
+    {
+      "title": "Announcements",
+      "route": "announcements"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

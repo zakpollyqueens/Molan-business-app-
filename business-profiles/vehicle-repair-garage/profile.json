@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "index": 34,
+  "slug": "vehicle-repair-garage",
+  "name": "Vehicle repair garage",
+  "plural": "Vehicle repair garages",
+  "description": "Job cards, parts, technicians and customer updates.",
+  "icon": "⚙",
+  "features": [
+    {
+      "title": "Fleet & trip operations",
+      "route": "business-tools"
+    },
+    {
+      "title": "Maintenance",
+      "route": "operations"
+    },
+    {
+      "title": "Collections & sales",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & deadlines",
+      "route": "tasks"
+    },
+    {
+      "title": "Customers / members",
+      "route": "customers"
+    },
+    {
+      "title": "Finance & expenses",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Team & permissions",
+      "route": "team"
+    },
+    {
+      "title": "Announcements",
+      "route": "announcements"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

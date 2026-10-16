@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "index": 19,
+  "slug": "poultry-farming",
+  "name": "Poultry farming",
+  "plural": "Poultry farming",
+  "description": "Flock cycles, feed, eggs and mortality records.",
+  "icon": "♧",
+  "features": [
+    {
+      "title": "Field & farm operations",
+      "route": "business-tools"
+    },
+    {
+      "title": "Inputs & inventory",
+      "route": "inventory"
+    },
+    {
+      "title": "Produce sales",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & deadlines",
+      "route": "tasks"
+    },
+    {
+      "title": "Customers / members",
+      "route": "customers"
+    },
+    {
+      "title": "Operations register",
+      "route": "operations"
+    },
+    {
+      "title": "Finance & expenses",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Team & permissions",
+      "route": "team"
+    },
+    {
+      "title": "Announcements",
+      "route": "announcements"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

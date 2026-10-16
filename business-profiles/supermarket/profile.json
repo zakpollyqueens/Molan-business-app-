@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "index": 4,
+  "slug": "supermarket",
+  "name": "Supermarket",
+  "plural": "Supermarkets",
+  "description": "Departments, stock movement, sales and staff.",
+  "icon": "▤",
+  "features": [
+    {
+      "title": "Inventory & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & orders",
+      "route": "sales"
+    },
+    {
+      "title": "Business tools",
+      "route": "business-tools"
+    },
+    {
+      "title": "Tasks & deadlines",
+      "route": "tasks"
+    },
+    {
+      "title": "Customers / members",
+      "route": "customers"
+    },
+    {
+      "title": "Operations register",
+      "route": "operations"
+    },
+    {
+      "title": "Finance & expenses",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Team & permissions",
+      "route": "team"
+    },
+    {
+      "title": "Announcements",
+      "route": "announcements"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}
