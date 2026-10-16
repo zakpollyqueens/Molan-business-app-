@@ -39,3 +39,10 @@ Each `business-profiles/<slug>/` folder will contain:
 
 ## Current baseline / gap
 The current profile implementation is configuration-led: folders mainly contain `profile.json` and feature shortcuts that route to shared `app.js` pages. That is useful for the catalogue, but it does **not** meet the requirement that every profile owns its actual pages and interactions. This branch is intended to close that architectural gap incrementally and honestly; a folder or UI scaffold is not considered backend-complete until its actions are wired and tested.
+
+## Implementation update — 2026-10-16
+- Added a dedicated `index.html` page to all 51 business-profile folders. Each page reads its own `profile.json`, displays that profile's declared feature buttons, and explicitly reports when the shared authenticated runtime is not connected.
+- The main profile workspace now embeds the selected folder-owned page. The parent application supplies a narrow runtime bridge after iframe load.
+- The bridge validates the selected profile slug, confirms the requested feature title and route are declared in that profile, and then routes through the main application shell. The existing application still owns authentication, active workspace state, permissions and database access.
+- CI now checks that each profile folder has an `index.html`, its `data-profile` identity matches the folder slug, it loads `profile.json`, and it declares runtime bridge integration.
+- **Not yet complete:** the 51 pages are currently dedicated page scaffolds and feature entry points. Not every profile has its own fully independent specialist data workflows, and some profile-specific CSS/JS is inline in its `index.html` while early modules split those assets into files. The next build phase must normalize the per-folder asset contract, implement profile-specific CRUD and validations, verify table/RPC mappings and tenant/RLS protections, and test all controls on a real browser/device. Do not call the app backend-complete until those checks pass.
