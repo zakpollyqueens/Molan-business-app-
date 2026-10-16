@@ -221,13 +221,30 @@
     try{localStorage.setItem('molan_guided_staff_links_v1',JSON.stringify(staffLinks));localStorage.setItem(ACTIVE_COMPANY_KEY,companyId);localStorage.removeItem(GUIDED_DRAFT_KEY)}catch{}
     try{const updated=await supabase.auth.updateUser({data:{molan_guided_onboarding_completed:true}});if(!updated.error)user={...user,user_metadata:{...(user.user_metadata||{}),molan_guided_onboarding_completed:true}};else console.warn('[Molan onboarding] Completion marker could not be saved:',updated.error.message)}catch(err){console.warn('[Molan onboarding] Completion marker could not be saved:',err.message)}
     await loadCompany(companyId);
-    if(staffLinks.length){
-      const summary=staffLinks.map(x=>x.name+' ('+x.email+')\n'+x.url).join('\n\n');
-      setTimeout(()=>{try{prompt('Your workspace is ready. Copy these secure staff invitation links and send each link to the matching staff member:',summary)}catch{}},350);
-      toast('Workspace created. Staff invitation links are ready to share.');
-    }else toast('Your business workspace is ready.');
+    guidedShowCompletion(staffLinks);
+    if(staffLinks.length)toast('Workspace created. Staff invitation links are ready to share.');else toast('Your business workspace is ready.');
     return true;
   }
+  let guidedInstallPrompt=null;
+  window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();guidedInstallPrompt=e;$('#guided-install-pwa-wrap')?.classList.remove('hidden')});
+  function guidedShowCompletion(staffLinks=[]){
+    const modal=$('#guided-complete-modal');if(!modal)return;
+    const ua=navigator.userAgent||'',isAndroid=/Android/i.test(ua),isIOS=/iPhone|iPad|iPod/i.test(ua),isWindows=/Windows/i.test(ua),isInstalled=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+    const label=$('#guided-device-label'),desc=$('#guided-device-description'),primary=$('#guided-install-primary');
+    primary.onclick=null;primary.target='_blank';
+    if(window.Capacitor?.isNativePlatform?.()||isInstalled){label.textContent='This app is already installed';desc.textContent='Your business workspace is ready. Continue to your workspace in this app.';primary.textContent='Continue to workspace →';primary.href='#';primary.onclick=e=>{e.preventDefault();modal.classList.add('hidden')};primary.removeAttribute('target')}
+    else if(isAndroid){label.textContent='Android phone detected';desc.textContent='Download the Android app, or continue using the browser. You may need to approve installation from your browser.';primary.textContent='Download Android app →';primary.href='https://github.com/zakpollyqueens/Molan-business-app-/releases/latest/download/Molan-Business.apk'}
+    else if(isIOS){label.textContent='iPhone / iPad detected';desc.textContent='Continue in your browser, or use the browser menu to add Molan Business to your Home Screen. The Android APK is not for iPhone.';primary.textContent='Open workspace in browser →';primary.href='#';primary.onclick=e=>{e.preventDefault();modal.classList.add('hidden')};primary.removeAttribute('target')}
+    else if(isWindows){label.textContent='Windows PC detected';desc.textContent='Download the Windows desktop installer, or continue in the browser. Run the installer yourself and follow its prompts.';primary.textContent='Download Windows app →';primary.href='https://github.com/zakpollyqueens/Molan-business-app-/releases/latest/download/Molan-Business-Setup.exe'}
+    else{label.textContent='Choose your device';desc.textContent='Use the web workspace now or choose an app download for your device.';primary.textContent='View app downloads →';primary.href='https://github.com/zakpollyqueens/Molan-business-app-/releases/latest'}
+    const wrap=$('#guided-staff-links-wrap'),list=$('#guided-staff-links-list');
+    if(staffLinks.length){wrap.classList.remove('hidden');list.innerHTML=staffLinks.map(x=>'<div class="guided-staff-link-row"><strong>'+guidedEsc(x.name)+' · '+guidedEsc(x.email)+'</strong><a href="'+guidedEsc(x.url)+'" target="_blank" rel="noopener">'+guidedEsc(x.url)+'</a></div>').join('');}else wrap.classList.add('hidden');
+    modal.classList.remove('hidden');
+  }
+  $('#guided-complete-close')?.addEventListener('click',()=>$('#guided-complete-modal').classList.add('hidden'));
+  $('#guided-open-browser')?.addEventListener('click',()=>$('#guided-complete-modal').classList.add('hidden'));
+  $('#guided-copy-staff-links')?.addEventListener('click',async()=>{const links=$('.guided-staff-link-row').map(row=>row.innerText).join('\n');try{await navigator.clipboard.writeText(links);toast('Staff invitation links copied.')}catch{prompt('Copy the staff invitation links:',links)}});
+  $('#guided-install-pwa')?.addEventListener('click',async()=>{if(!guidedInstallPrompt)return;guidedInstallPrompt.prompt();await guidedInstallPrompt.userChoice;guidedInstallPrompt=null;$('#guided-install-pwa-wrap').classList.add('hidden')});
   async function guidedFinish(){
     if(!guidedValidateStep(5))return;
     const draft=guidedSaveDraft();draft.termsAcceptedAt=new Date().toISOString();try{localStorage.setItem(GUIDED_DRAFT_KEY,JSON.stringify(draft))}catch{}
