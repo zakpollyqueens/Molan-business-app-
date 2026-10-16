@@ -1225,7 +1225,7 @@ typeInput?.addEventListener('change',renderMetadata);renderMetadata();
       if(!registered||registered.slug!==profile)throw new Error('The profile identity could not be verified.');
       const declared=(registered.features||[]).find(item=>item.title===feature?.title&&item.route===feature?.route);
       if(!declared)throw new Error('This feature is not declared by the selected profile.');
-      const allowed=new Set(['overview','tasks','products','team','announcements','customers','inventory','sales','finance','attendance','reports','council','websites','business-profile','industry-workspace','business-tools','website-studio','operations','sacco','control-center','profile-directory','industry-profile','industry-settings','connections','workspace-admin']);
+      const allowed=new Set(['overview','tasks','products','team','announcements','customers','inventory','sales','finance','attendance','reports','council','websites','business-profile','industry-workspace','business-tools','website-studio','operations','sacco','sacco-welfare','control-center','profile-directory','industry-profile','industry-settings','connections','workspace-admin']);
       if(!allowed.has(declared.route))throw new Error('This destination is not an approved application route.');
       navigate(declared.route);
       return Promise.resolve({opened:declared.route,profile});
