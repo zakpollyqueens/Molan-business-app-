@@ -13,3 +13,12 @@
 .profile-admin-actions .button:disabled{opacity:.45;cursor:not-allowed}
 @media(max-width:640px){.profile-catalog-card,.industry-feature-card,.profile-shortcut-card{padding:16px;border-radius:16px}.profile-catalog-grid,.industry-feature-grid,.profile-shortcut-grid{gap:12px}}
 @media(prefers-reduced-motion:reduce){.profile-catalog-card,.industry-feature-card,.profile-shortcut-card{transition:none}.profile-catalog-card:hover,.industry-feature-card:hover,.profile-shortcut-card:hover{transform:none}}
+
+
+/* Shared profile-card readability and accessible contrast. */
+.profile-catalog-card h2,.profile-catalog-card h3,.industry-feature-card h2,.industry-feature-card h3,.profile-shortcut-card h2,.profile-shortcut-card h3{color:#142c49;font-weight:800;line-height:1.3}
+.profile-catalog-card p,.industry-feature-card p,.profile-shortcut-card p{color:#435873;font-size:.95rem;line-height:1.65}
+.profile-route-badge{color:#23415f;background:#e8f1fa;font-weight:800}
+.profile-catalog-card,.industry-feature-card,.profile-shortcut-card{border-color:#d5e0ed}
+html[data-theme="dark"] .profile-catalog-card h2,html[data-theme="dark"] .profile-catalog-card h3,html[data-theme="dark"] .industry-feature-card h2,html[data-theme="dark"] .industry-feature-card h3,html[data-theme="dark"] .profile-shortcut-card h2,html[data-theme="dark"] .profile-shortcut-card h3{color:#eff6ff}
+html[data-theme="dark"] .profile-catalog-card p,html[data-theme="dark"] .industry-feature-card p,html[data-theme="dark"] .profile-shortcut-card p{color:#c1d0e4}
