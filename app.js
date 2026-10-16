@@ -294,8 +294,8 @@ el.innerHTML=head(esc(profile[1])+' workspace','A dedicated feature map for '+es
  const active=company.business_category||'Business';
  const tiles=[
   ['▧','Business profile','Identity, branding, contact details and gallery','business-profile','Profile settings'],['◉','Connected businesses & cameras','Manage related shops, branches and camera viewers','connections','Open secure connections'],
-  ['▦','50 business profile templates','Dedicated feature maps and settings shortcuts for every business type','profile-directory','Browse profiles'],
-  ['▦','Business profile catalogue','Browse 50 business types and create a separate workspace','profile-directory','Browse 50 profiles'],
+  ['▦','51 business profile templates','Dedicated feature maps and settings shortcuts for every business type','profile-directory','Browse profiles'],
+  ['▦','Business profile catalogue','Browse 50 business types and create a separate workspace','profile-directory','Browse 51 profiles'],
   ['✦','Industry workspace','Your business-specific operating dashboard','industry-workspace','Open workspace'],
   ['◇','Business tools','Extended workflows and specialist tools','business-tools','Explore tools'],
   ['▧','Website & media','Images, logos, covers and web assets','website-studio','Open media library'],
