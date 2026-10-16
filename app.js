@@ -1294,8 +1294,14 @@ function syncProfileNavigation(){
   (config.features||[]).forEach(feature=>{
     if(!feature||!feature.title||!feature.route)return;
     const circleProfile=isSavingsCircleProfile(selectedIndustryProfile);
+    const profileName=String(selectedIndustryProfile?.[0]||'').toLowerCase();
+    const schoolProfile=/school|college|training|education|academy/.test(profileName);
+    const itProfile=/ict|software|information technology|technology|computer|it services|digital service/.test(profileName);
     if(circleProfile&&feature.route==='sacco')return;
     if(!circleProfile&&(/^sacco(?:-|$)|^circle-/.test(feature.route)))return;
+    if(schoolProfile&&['customers','operations','business-tools','finance','reports'].includes(feature.route))return;
+    if(itProfile&&['operations','inventory','customers','website-studio','reports','business-tools','team'].includes(feature.route))return;
+    if(circleProfile&&['customers','reports','tasks','operations'].includes(feature.route))return;
     if(!routes.has(feature.route))routes.set(feature.route,{route:feature.route,icon:routeIcons[feature.route]||'◈',title:feature.title});
   });
   industryProfileFeatures(selectedIndustryProfile).forEach(feature=>{const route=feature[3];if(!route)return;const circleProfile=isSavingsCircleProfile(selectedIndustryProfile);if((/^sacco(?:-|$)|^circle-/.test(route))&&!circleProfile)return;if(!routes.has(route))routes.set(route,{route,icon:feature[0]||routeIcons[route]||'◈',title:feature[1]});});
@@ -1558,7 +1564,7 @@ typeInput?.addEventListener('change',renderMetadata);renderMetadata();
       if(!registered||registered.slug!==profile)throw new Error('The profile identity could not be verified.');
       const declared=(registered.features||[]).find(item=>item.title===feature?.title&&item.route===feature?.route);
       if(!declared)throw new Error('This feature is not declared by the selected profile.');
-      const allowed=new Set(['overview','tasks','products','team','announcements','customers','inventory','sales','finance','attendance','reports','council','websites','business-profile','industry-workspace','business-tools','website-studio','operations','sacco','sacco-welfare','control-center','profile-directory','industry-profile','industry-settings','connections','workspace-admin']);
+      const allowed=new Set(['overview','tasks','products','team','announcements','customers','inventory','sales','finance','attendance','reports','council','websites','business-profile','industry-workspace','business-tools','website-studio','operations','sacco','sacco-welfare','control-center','profile-directory','industry-profile','industry-settings','connections','workspace-admin','sacco-overview','sacco-members','sacco-terms','sacco-savings','sacco-approvals','sacco-withdrawals','sacco-reviews','circle-meetings','circle-reports','school-overview','school-classes','school-assessments','school-fees','school-reports','it-projects','it-support','it-devices','it-clients','it-websites','it-team','it-releases']);
       if(!allowed.has(declared.route))throw new Error('This destination is not an approved application route.');
       navigate(declared.route);
       return Promise.resolve({opened:declared.route,profile});
