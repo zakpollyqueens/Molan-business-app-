@@ -29,7 +29,7 @@ create or replace function public.manage_company_workspace_status(
 )
 returns jsonb
 language plpgsql
-security definer
+security invoker
 set search_path = public, pg_temp
 as $$
 declare
