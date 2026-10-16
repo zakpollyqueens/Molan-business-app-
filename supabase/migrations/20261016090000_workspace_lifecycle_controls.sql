@@ -84,5 +84,5 @@ begin
 end;
 $$;
 
-revoke all on function public.manage_company_workspace_status(uuid,text) from public;
+revoke all on function public.manage_company_workspace_status(uuid,text) from public, anon;
 grant execute on function public.manage_company_workspace_status(uuid,text) to authenticated;
