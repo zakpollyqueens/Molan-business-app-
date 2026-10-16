@@ -1,25 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#123b68"/><stop offset=".48" stop-color="#081a35"/><stop offset="1" stop-color="#040d20"/></linearGradient>
-    <linearGradient id="cyan" x1="0" y1="0" x2=".9" y2="1"><stop offset="0" stop-color="#b8f8ff"/><stop offset=".32" stop-color="#45e5ff"/><stop offset=".72" stop-color="#08a9e8"/><stop offset="1" stop-color="#0874ca"/></linearGradient>
-    <linearGradient id="white" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#b9eaff"/></linearGradient>
-    <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity=".22"/><stop offset=".46" stop-color="#ffffff" stop-opacity=".025"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></linearGradient>
-    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="22"/></filter>
-    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#020817" flood-opacity=".7"/></filter>
-  </defs>
-  <rect x="32" y="32" width="960" height="960" rx="220" fill="url(#bg)"/>
-  <circle cx="765" cy="250" r="210" fill="#0dbbe9" opacity=".13" filter="url(#glow)"/>
-  <path d="M105 290 Q512 40 919 290 L919 490 Q512 300 105 490Z" fill="#54dfff" opacity=".045"/>
-  <path d="M120 760 Q512 570 904 760" fill="none" stroke="#3ddcff" stroke-opacity=".16" stroke-width="5"/>
-  <g filter="url(#shadow)">
-    <path d="M218 730V322Q218 274 260 299L512 474L764 299Q806 274 806 322V730H690V454L512 578L334 454V730Z" fill="#020a19" opacity=".55" transform="translate(0 18)"/>
-    <path d="M218 716V308Q218 260 260 285L512 460L764 285Q806 260 806 308V716H690V440L512 564L334 440V716Z" fill="url(#cyan)"/>
-    <path d="M334 440L512 564L690 440V510L512 634L334 510Z" fill="#047ab9" opacity=".65"/>
-    <path d="M260 285Q218 260 218 308V380L334 460V440Z" fill="url(#white)" opacity=".98"/>
-    <path d="M764 285Q806 260 806 308V380L690 460V440Z" fill="#e9fbff"/>
-    <path d="M334 716V440L512 564L690 440V716H580V602L512 650L444 602V716Z" fill="url(#white)"/>
-    <path d="M218 308Q218 260 260 285L512 460L764 285Q806 260 806 308" fill="none" stroke="#e9fdff" stroke-width="15" stroke-linecap="round" stroke-linejoin="round" opacity=".82"/>
-  </g>
-  <rect x="32" y="32" width="960" height="960" rx="220" fill="url(#sheen)"/>
-  <rect x="42" y="42" width="940" height="940" rx="210" fill="none" stroke="#a7edff" stroke-opacity=".28" stroke-width="4"/>
+ <defs>
+  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe58a"/><stop offset=".3" stop-color="#e5ad25"/><stop offset=".62" stop-color="#bd8110"/><stop offset=".83" stop-color="#ffdc62"/><stop offset="1" stop-color="#a86b08"/></linearGradient>
+  <linearGradient id="navy" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#172e43"/><stop offset=".55" stop-color="#061321"/><stop offset="1" stop-color="#020811"/></linearGradient>
+  <linearGradient id="white" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#f0f2f5"/></linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="0" dy="20" stdDeviation="18" flood-color="#091421" flood-opacity=".22"/></filter>
+  <filter id="shine" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="14"/></filter>
+ </defs>
+ <rect width="1024" height="1024" rx="224" fill="url(#white)"/>
+ <rect x="25" y="25" width="974" height="974" rx="208" fill="none" stroke="#ffffff" stroke-width="8" opacity=".9"/>
+ <circle cx="760" cy="235" r="130" fill="#f5c44a" opacity=".12" filter="url(#shine)"/>
+ <g filter="url(#shadow)">
+  <path d="M244 230 H704 Q743 230 716 267 L393 650 L722 650 L659 748 H246 Q211 748 235 717 L557 337 H192 Z" fill="url(#navy)" stroke="#07111b" stroke-width="5" stroke-linejoin="round" transform="translate(16 22)"/>
+  <path d="M195 225 H680 Q720 225 693 262 L365 644 L690 644 L628 737 H215 Q180 737 204 706 L526 332 H150 Z" fill="url(#gold)" stroke="#9e6c10" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M195 225 H680 Q720 225 693 262 L526 332 H150 Z" fill="#fff1b0" opacity=".12"/>
+  <path d="M365 644 L526 332 L693 262 L365 644Z" fill="#f9d55d" opacity=".22"/>
+  <path d="M365 644 L690 644 L628 737 H215 Q180 737 204 706Z" fill="url(#navy)" stroke="#081421" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M365 644 L526 332 L693 262" fill="none" stroke="#ffe17a" stroke-width="7" stroke-linecap="round" opacity=".95"/>
+ </g>
+ <path d="M789 169 Q800 224 853 235 Q800 246 789 301 Q778 246 725 235 Q778 224 789 169Z" fill="url(#gold)" stroke="#b47b12" stroke-width="4"/>
+ <circle cx="789" cy="235" r="6" fill="#fff0ad"/>
+ <path d="M105 838 H919" stroke="#d3a43c" stroke-width="4" opacity=".6"/>
+ <text x="512" y="846" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="67" font-weight="700" letter-spacing="7" fill="url(#navy)">ZAKITECH</text>
+ <text x="512" y="906" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="600" letter-spacing="5" fill="#172536">MANAGE. EMPOWER. <tspan fill="#bd861b">GROW.</tspan></text>
 </svg>
