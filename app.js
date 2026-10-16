@@ -618,7 +618,7 @@ function industryProfileFeatures(profile){
    feature('School fees & finance','Manage fee entries and finance workflows.','school-fees','＝'),
    feature('Academic reports & graphs','Review school progress and activity.','school-reports','▥')
   ];
- }else if(/ict|software|information technology|technology|computer|it services|digital service/.test(name)){
+ }else if(/ict|software|information technology|technology|computer training|computer repair|computer service|it services|digital service|computer centre|computer center|it company|it support|computer maintenance/.test(name)){
   domain=[
    feature('IT projects & delivery board','Track client projects, milestones and releases.','it-projects','⌘'),
    feature('Support tickets & service requests','Track support requests and service delivery.','it-support','⚙'),
@@ -702,7 +702,7 @@ function industryProfileFeatures(profile){
  const add=(f)=>{if(!f||!f.title||!f.route)return;const circle=isSavingsCircleProfile(profile);if((/^sacco(?:-|$)|^circle-/.test(f.route))&&!circle)return;if(!circle&&(/^sacco(?:-|$)/.test(f.route)))return;if(!normalized.some(x=>x.route===f.route))normalized.push(f)};
  domain.forEach(add);
  const isSchoolProfile=/school|college|training|education|academy/.test(name);
- const isITProfile=/ict|software|information technology|technology|computer|it services|digital service/.test(name);
+ const isITProfile=/ict|software|information technology|technology|computer training|computer repair|computer service|it services|digital service|computer centre|computer center|it company|it support|computer maintenance/.test(name);
  configured.forEach(f=>{
   if(isSchoolProfile&&['customers','operations','business-tools','finance','reports'].includes(f.route))return;
   if(isITProfile&&['operations','inventory','customers','website-studio','reports','business-tools','team'].includes(f.route))return;
@@ -784,7 +784,7 @@ if(sameType&&isSavingsCircleProfile(profile)){
 }
 const openTasks=(cache.tasks||[]).filter(t=>!['done','cancelled'].includes(String(t.status||'').toLowerCase()));
 const isSchool=/school|college|training|education|academy/.test(name);
-const isIT=/ict|software|information technology|technology|computer/.test(name);
+const isIT=/ict|software|information technology|technology|computer training|computer repair|computer service|it services|digital service|computer centre|computer center|it company|it support|computer maintenance/.test(name);
 const isCircle=/circle|cooperative|investment group|association|club/.test(name);
 const isFarm=/farm|agri|poultry|fish|livestock|orchard|dairy|crop|horticulture/.test(name);
 const activitySource=isSavingsCircleProfile(profile)?circleSavings.filter(entry=>entry.entry_type==='deposit'&&entry.status==='confirmed').map(entry=>({...entry,created_at:entry.transaction_date||entry.submitted_at||entry.created_at})):isSchool?[...(cache.schoolClasses||[]),...(cache.schoolLearners||[]),...(cache.schoolAssessments||[]),...(cache.schoolFees||[])]:[...(cache.tasks||[]),...(cache.operations||[]),...(cache.sales||[]),...(cache.finance||[])];
@@ -1296,7 +1296,7 @@ function syncProfileNavigation(){
     const circleProfile=isSavingsCircleProfile(selectedIndustryProfile);
     const profileName=String(selectedIndustryProfile?.[0]||'').toLowerCase();
     const schoolProfile=/school|college|training|education|academy/.test(profileName);
-    const itProfile=/ict|software|information technology|technology|computer|it services|digital service/.test(profileName);
+    const itProfile=/ict|software|information technology|technology|computer training|computer repair|computer service|it services|digital service|computer centre|computer center|it company|it support|computer maintenance/.test(profileName);
     if(circleProfile&&feature.route==='sacco')return;
     if(!circleProfile&&(/^sacco(?:-|$)|^circle-/.test(feature.route)))return;
     if(schoolProfile&&['customers','operations','business-tools','finance','reports'].includes(feature.route))return;
@@ -1305,8 +1305,8 @@ function syncProfileNavigation(){
     if(!routes.has(feature.route))routes.set(feature.route,{route:feature.route,icon:routeIcons[feature.route]||'◈',title:feature.title});
   });
   industryProfileFeatures(selectedIndustryProfile).forEach(feature=>{const route=feature[3];if(!route)return;const circleProfile=isSavingsCircleProfile(selectedIndustryProfile);if((/^sacco(?:-|$)|^circle-/.test(route))&&!circleProfile)return;if(!routes.has(route))routes.set(route,{route,icon:feature[0]||routeIcons[route]||'◈',title:feature[1]});});
-  if(config.overviewRoute)routes.set(config.overviewRoute,{route:config.overviewRoute,icon:config.icon||'✦',title:'Business overview'});
-  if(config.settingsRoute)routes.set(config.settingsRoute,{route:config.settingsRoute,icon:'⚙',title:'Business settings'});
+  if(config.overviewRoute&&!['overview','industry-profile'].includes(config.overviewRoute))routes.set(config.overviewRoute,{route:config.overviewRoute,icon:config.icon||'✦',title:'Business overview'});
+  if(config.settingsRoute&&config.settingsRoute!=='industry-settings')routes.set(config.settingsRoute,{route:config.settingsRoute,icon:'⚙',title:'Business settings'});
   nav.replaceChildren();
   routes.forEach(item=>{
     const button=document.createElement('button');button.type='button';button.className='nav-item';button.dataset.page=item.route;
@@ -1321,7 +1321,7 @@ function syncProfileNavigation(){
 function renderProfileFeaturePage(el,requestedPage){
  const name=String(selectedIndustryProfile?.[0]||company?.business_category||'').toLowerCase();
  const school=/school|college|training|education|academy/.test(name);
- const it=/ict|software|information technology|technology|computer|it services|digital service/.test(name);
+ const it=/ict|software|information technology|technology|computer training|computer repair|computer service|it services|digital service|computer centre|computer center|it company|it support|computer maintenance/.test(name);
  if(school){
   const classes=cache.schoolClasses||[],learners=cache.schoolLearners||[],assessments=cache.schoolAssessments||[],fees=cache.schoolFees||[];
   const fmt=v=>Number(v||0).toLocaleString()+' '+(company.currency_code||'UGX');
