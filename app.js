@@ -275,7 +275,10 @@
     if(tz==='Africa/Bujumbura'||lang.endsWith('-bi'))return 'BI';
     if(tz==='Africa/Juba'||lang.endsWith('-ss'))return 'SS';
     if(tz.startsWith('Africa/'))return 'OTHER_AFRICA';
-    if(lang.endsWith('-us'))return 'USD';
+    if(tz.startsWith('Europe/'))return 'EUROPE';
+    if(tz.startsWith('Asia/'))return 'ASIA';
+    if(tz.startsWith('America/'))return 'AMERICA';
+    if(lang.endsWith('-us')||lang.endsWith('-ca'))return 'AMERICA';
     return 'OTHER';
   }
 
@@ -284,29 +287,27 @@
     {plan_code:'silver',display_name:'Silver',duration_months:2,usd_monthly_reference:60,display_order:2},
     {plan_code:'premium',display_name:'Premium',duration_months:1,usd_monthly_reference:50,display_order:3}
   ];
+  const FALLBACK_PACKAGE_PRICES={UG:{gold:100000,silver:70000,premium:30000,currency:'UGX'},KE:{gold:90000,silver:80000,premium:70000,currency:'KES'},TZ:{gold:140000,silver:120000,premium:90000,currency:'TZS'},OTHER_AFRICA:{gold:80,silver:50,premium:40,currency:'USD'},RW:{gold:80,silver:50,premium:40,currency:'USD'},BI:{gold:80,silver:50,premium:40,currency:'USD'},SS:{gold:80,silver:50,premium:40,currency:'USD'},EUROPE:{gold:100,silver:50,premium:30,currency:'EUR'},ASIA:{gold:80,silver:70,premium:50,currency:'USD'},AMERICA:{gold:100,silver:60,premium:50,currency:'USD'},USD:{gold:80,silver:50,premium:40,currency:'USD'},OTHER:{gold:80,silver:50,premium:40,currency:'USD'}};
   function formatPlanAmount(amount,currency){try{return new Intl.NumberFormat(undefined,{style:'currency',currency:currency||'USD',maximumFractionDigits:2}).format(Number(amount))}catch{return String(amount)+' '+String(currency||'')}}
   async function subscriptionPlansForMarket(market){
-    let plans=DEFAULT_SUBSCRIPTION_PLANS.map(p=>({...p,price_status:market==='USD'?'proposed':'pending_configuration',currency_code:market==='USD'?'USD':null,monthly_amount:market==='USD'?p.usd_monthly_reference:null,checkout_enabled:false}));
+    const fallback=FALLBACK_PACKAGE_PRICES[market]||FALLBACK_PACKAGE_PRICES.OTHER;
+    let plans=DEFAULT_SUBSCRIPTION_PLANS.map(p=>({...p,price_status:'approved',currency_code:fallback.currency,package_amount:fallback[p.plan_code],monthly_amount:Number((fallback[p.plan_code]/p.duration_months).toFixed(2)),checkout_enabled:false}));
     if(!supabase)return plans;
     try{
       const [pr,prices]=await Promise.all([
         supabase.from('subscription_plan_catalog').select('plan_code,display_name,duration_months,usd_monthly_reference,display_order').eq('is_active',true).order('display_order'),
-        supabase.from('subscription_plan_prices').select('plan_code,market_code,currency_code,monthly_amount,price_status,checkout_enabled').eq('market_code',market).eq('is_visible',true)
+        supabase.from('subscription_plan_prices').select('plan_code,market_code,currency_code,monthly_amount,package_amount,price_status,checkout_enabled').eq('market_code',market).eq('is_visible',true)
       ]);
       if(pr.error||prices.error||!Array.isArray(pr.data)||!pr.data.length)return plans;
-      return pr.data.map(p=>{const rate=(prices.data||[]).find(x=>x.plan_code===p.plan_code);return {...p,price_status:rate?.price_status||'pending_configuration',currency_code:rate?.currency_code||null,monthly_amount:rate?.monthly_amount===null||rate?.monthly_amount===undefined?null:Number(rate.monthly_amount),checkout_enabled:!!rate?.checkout_enabled};});
+      return pr.data.map(p=>{const rate=(prices.data||[]).find(x=>x.plan_code===p.plan_code),fallbackAmount=fallback[p.plan_code];return {...p,price_status:rate?.price_status||'pending_configuration',currency_code:rate?.currency_code||fallback.currency,package_amount:rate?.package_amount===null||rate?.package_amount===undefined?fallbackAmount:Number(rate.package_amount),monthly_amount:rate?.monthly_amount===null||rate?.monthly_amount===undefined?Number((fallbackAmount/p.duration_months).toFixed(2)):Number(rate.monthly_amount),checkout_enabled:!!rate?.checkout_enabled};});
     }catch{return plans}
   }
   function planPriceLabels(plan,market){
-    if(plan.price_status==='approved'&&plan.monthly_amount!==null&&plan.monthly_amount!==undefined){
-      const monthly=formatPlanAmount(plan.monthly_amount,plan.currency_code),total=formatPlanAmount(Number(plan.monthly_amount)*Number(plan.duration_months),plan.currency_code);
-      return {monthly:monthly+' / month',total:'Approved package total: '+total,approved:true};
+    if(plan.package_amount!==null&&plan.package_amount!==undefined){
+      const total=formatPlanAmount(plan.package_amount,plan.currency_code),average=formatPlanAmount(Number(plan.package_amount)/Number(plan.duration_months),plan.currency_code);
+      return {monthly:total+' per '+plan.duration_months+' '+(Number(plan.duration_months)===1?'month':'months'),total:'Renewal due every '+plan.duration_months+' '+(Number(plan.duration_months)===1?'month':'months')+' · average '+average+'/month',approved:plan.price_status==='approved'};
     }
-    if(market==='USD'&&plan.price_status==='proposed'&&plan.monthly_amount!==null&&plan.monthly_amount!==undefined){
-      const monthly=formatPlanAmount(plan.monthly_amount,'USD'),total=formatPlanAmount(Number(plan.monthly_amount)*Number(plan.duration_months),'USD');
-      return {monthly:monthly+' / month · proposed',total:'Proposed package total: '+total,approved:false};
-    }
-    return {monthly:'Price awaiting approval',total:'Local currency price not configured',approved:false};
+    return {monthly:'Price awaiting approval',total:'Price not configured for this market',approved:false};
   }
   async function renderLearnPlanCards(market){
     const grid=$('#learn-plan-grid');if(!grid)return;
@@ -320,23 +321,24 @@
 
     function renderLearnPricing(){
     const country=$('#learn-country')?.value||'UG',out=$('#learn-pricing-result');if(!out)return;
-    const names={UG:'Uganda',KE:'Kenya',TZ:'Tanzania',RW:'Rwanda',BI:'Burundi',SS:'South Sudan',OTHER_AFRICA:'other African countries',USD:'countries using USD pricing',OTHER:'your selected country'};
+    const names={UG:'Uganda',KE:'Kenya',TZ:'Tanzania',RW:'other African countries',BI:'other African countries',SS:'other African countries',OTHER_AFRICA:'other African countries',EUROPE:'Europe',ASIA:'Asia',AMERICA:'America',USD:'default USD market',OTHER:'your selected country'};
     const notes={
-      UG:'Uganda: the intended policy is to keep existing Uganda prices unchanged. The current repository does not publish exact Silver, Gold and Premium prices, so no new UGX amounts are invented here.',
-      KE:'Kenya: display prices in Kenyan shillings (KES), with a modest regional adjustment above Uganda pricing once the approved Uganda base prices are configured.',
-      TZ:'Tanzania: display prices in Tanzanian shillings (TZS), with a modest regional adjustment above Uganda pricing once the approved Uganda base prices are configured.',
-      RW:'Rwanda: display prices in Rwandan francs (RWF), with a modest regional adjustment above Uganda pricing once the approved Uganda base prices are configured.',
-      BI:'Burundi: display prices in Burundian francs (BIF), with a modest regional adjustment above Uganda pricing once the approved Uganda base prices are configured.',
-      SS:'South Sudan: display prices in South Sudanese pounds (SSP), with a modest regional adjustment above Uganda pricing once the approved Uganda base prices are configured.',
-      OTHER_AFRICA:'Other African countries: apply a country-specific local currency and a higher rate than the East African schedule after the rate table and exchange rules are approved.',
-      USD:'Your suggested international reference figures are Gold: $100/month, Silver: $60/month and Premium: $50/month. These are examples from your instruction, not activated billing prices.',
-      OTHER:'Use the selected country’s supported currency and an approved international rate. A confirmed currency/price table is required before billing can be enabled.'
+      UG:'Uganda: Gold is UGX 100,000 for 3 months, Silver is UGX 70,000 for 2 months, and Premium is UGX 30,000 for 1 month.',
+      KE:'Kenya: Gold is KSh 90,000 for 3 months, Silver is KSh 80,000 for 2 months, and Premium is KSh 70,000 for 1 month.',
+      TZ:'Tanzania: Gold is TZS 140,000 for 3 months, Silver is TZS 120,000 for 2 months, and Premium is TZS 90,000 for 1 month.',
+      RW:'Other African countries use USD: Gold $80 for 3 months, Silver $50 for 2 months, and Premium $40 for 1 month.',
+      BI:'Other African countries use USD: Gold $80 for 3 months, Silver $50 for 2 months, and Premium $40 for 1 month.',
+      SS:'Other African countries use USD: Gold $80 for 3 months, Silver $50 for 2 months, and Premium $40 for 1 month.',
+      OTHER_AFRICA:'Other African countries use USD: Gold $80 for 3 months, Silver $50 for 2 months, and Premium $40 for 1 month.',
+      EUROPE:'Europe: Gold €100 for 3 months, Silver €50 for 2 months, and Premium €30 for 1 month.',
+      ASIA:'Asia uses USD: Gold $80 for 3 months, Silver $70 for 2 months, and Premium $50 for 1 month.',
+      AMERICA:'America uses USD: Gold $100 for 3 months, Silver $60 for 2 months, and Premium $50 for 1 month.',
+      USD:'Default USD market: Gold $80 for 3 months, Silver $50 for 2 months, and Premium $40 for 1 month.',
+      OTHER:'Countries without a specific rate use default USD prices: Gold $80 for 3 months, Silver $50 for 2 months, and Premium $40 for 1 month.'
     };
-    const usd=country==='USD';
-    const plans=[{code:'gold',name:'Gold',months:3,monthly:100},{code:'silver',name:'Silver',months:2,monthly:60},{code:'premium',name:'Premium',months:1,monthly:50}];
     renderLearnPlanCards(country);
-    const extra=usd?' USD figures are the proposed monthly reference rates from the project brief; package totals are calculated from each plan duration and are not yet enabled for checkout.':' Exact prices for this market are not published in the current system yet. The app must show an approved local-currency price before accepting payment.';
-    out.innerHTML='<strong>'+esc(names[country]||'Selected market')+'</strong><p>'+esc(notes[country]||notes.OTHER)+esc(extra)+'</p><div class="learn-price-status"><span>Gold · 3 months | Silver · 2 months | Premium · 1 month</span><b>Checkout not yet active</b></div>';
+    const extra=' The displayed amount is the full package fee and is due again when the plan period ends. Gold renews every 3 months, Silver every 2 months, and Premium every month. Confirm the country and currency before payment; checkout is not yet connected.';
+    out.innerHTML='<strong>'+esc(names[country]||'Selected market')+'</strong><p>'+esc(notes[country]||notes.OTHER)+esc(extra)+'</p><div class="learn-price-status"><span>Gold · renew every 3 months | Silver · renew every 2 months | Premium · renew every month</span><b>Checkout not yet active</b></div>';
   }
   function showLearnSlide(index){
     const slides=$$('[data-learn-slide]');if(!slides.length)return;learnIndex=(index+slides.length)%slides.length;
@@ -818,19 +820,32 @@ ownedFrame.addEventListener('load',()=>{
 
   function renderSubscriptionPage(el){
     const country=detectLearnCountry();
-    const plans=[{code:'gold',name:'Gold',months:3,monthly:100,summary:'For businesses that want a longer uninterrupted period of access.'},{code:'silver',name:'Silver',months:2,monthly:60,summary:'A mid-length plan for businesses building a steady routine.'},{code:'premium',name:'Premium',months:1,monthly:50,summary:'A one-month plan for a focused short-term period.'}];
-    const countryName={UG:'Uganda',KE:'Kenya',TZ:'Tanzania',RW:'Rwanda',BI:'Burundi',SS:'South Sudan',OTHER_AFRICA:'Other African country',USD:'USD pricing market',OTHER:'Other market'}[country]||'Selected market';
-    const usd=country==='USD';
+    const plans=[{code:'gold',name:'Gold',months:3,summary:'Pay for 3 months; renew when the 3-month period ends.'},{code:'silver',name:'Silver',months:2,summary:'Pay for 2 months; renew when the 2-month period ends.'},{code:'premium',name:'Premium',months:1,summary:'Pay for 1 month; renew monthly.'}];
+    const countryName={UG:'Uganda',KE:'Kenya',TZ:'Tanzania',RW:'Other African country (USD)',BI:'Other African country (USD)',SS:'Other African country (USD)',OTHER_AFRICA:'Other African country (USD)',EUROPE:'Europe (EUR)',ASIA:'Asia (USD)',AMERICA:'America (USD)',USD:'Default USD market',OTHER:'Other country (USD)'}[country]||'Selected market';
     el.innerHTML=head('Subscription plans & upgrades','Choose a plan duration that fits your business. Your price and payment terms must be shown before any payment is accepted.')+
-    '<section class="subscription-intro panel"><span class="section-kicker">CLEAR TERMS BEFORE YOU PAY</span><h2>Three plans. Clear durations.</h2><p>Gold lasts 3 months, Silver lasts 2 months, and Premium lasts 1 month. The subscription clock should start only after a verified payment or an authorised activation.</p><p class="muted">Detected market: <strong id="subscription-country-name">'+esc(countryName)+'</strong>. Country detection is an estimate; confirm your country before billing.</p><label class="subscription-country-label">Change country <select id="subscription-country" class="field-input"><option value="UG" '+(country==='UG'?'selected':'')+'>Uganda (UGX)</option><option value="KE" '+(country==='KE'?'selected':'')+'>Kenya (KES)</option><option value="TZ" '+(country==='TZ'?'selected':'')+'>Tanzania (TZS)</option><option value="RW" '+(country==='RW'?'selected':'')+'>Rwanda (RWF)</option><option value="BI" '+(country==='BI'?'selected':'')+'>Burundi (BIF)</option><option value="SS" '+(country==='SS'?'selected':'')+'>South Sudan (SSP)</option><option value="OTHER_AFRICA" '+(country==='OTHER_AFRICA'?'selected':'')+'>Other African country</option><option value="USD" '+(country==='USD'?'selected':'')+'>USD pricing market</option><option value="OTHER" '+(country==='OTHER'?'selected':'')+'>Other country</option></select></label></section>'+
-    '<div class="subscription-plan-grid">'+plans.map(p=>'<article class="subscription-plan-card plan-'+p.code+'" data-subscription-plan="'+p.code+'"><span class="subscription-plan-eyebrow">'+(p.code==='gold'?'LONGER COVERAGE':p.code==='silver'?'MID-LENGTH COVERAGE':'SHORT-TERM COVERAGE')+'</span><h2>'+p.name+'</h2><div class="subscription-duration">'+p.months+' '+(p.months===1?'month':'months')+'</div><p>'+p.summary+'</p><div class="subscription-price">Loading price…</div><div class="subscription-total">Checking approved rate…</div><div class="subscription-price-status">Checkout disabled until approval</div><ul><li>Subscription duration: '+p.months+' '+(p.months===1?'month':'months')+'</li><li>Activation after verified payment or authorised manual approval</li><li>Expiry date and renewal terms shown on activation</li></ul><button class="button secondary small" type="button" disabled>Online upgrade checkout not connected</button></article>').join('')+'</div>'+
+    '<section class="subscription-intro panel"><span class="section-kicker">CLEAR TERMS BEFORE YOU PAY</span><h2>Three plans. Clear durations.</h2><p>Gold lasts 3 months, Silver lasts 2 months, and Premium lasts 1 month. The subscription clock should start only after a verified payment or an authorised activation.</p><p class="muted">Detected market: <strong id="subscription-country-name">'+esc(countryName)+'</strong>. You can request browser location permission to help identify your region. Confirm the country before billing.</p><button type="button" class="button secondary small" id="subscription-detect-location">Use my location</button><label class="subscription-country-label">Change country <select id="subscription-country" class="field-input"><option value="UG" '+(country==='UG'?'selected':'')+'>Uganda (UGX)</option><option value="KE" '+(country==='KE'?'selected':'')+'>Kenya (KES)</option><option value="TZ" '+(country==='TZ'?'selected':'')+'>Tanzania (TZS)</option><option value="RW" '+(country==='RW'?'selected':'')+'>Rwanda (RWF)</option><option value="BI" '+(country==='BI'?'selected':'')+'>Burundi (BIF)</option><option value="SS" '+(country==='SS'?'selected':'')+'>South Sudan (SSP)</option><option value="OTHER_AFRICA" '+(country==='OTHER_AFRICA'?'selected':'')+'>Other African country (USD)</option><option value="EUROPE" '+(country==='EUROPE'?'selected':'')+'>Europe (EUR)</option><option value="ASIA" '+(country==='ASIA'?'selected':'')+'>Asia (USD)</option><option value="AMERICA" '+(country==='AMERICA'?'selected':'')+'>America (USD)</option><option value="USD" '+(country==='USD'?'selected':'')+'>Default USD market</option><option value="OTHER" '+(country==='OTHER'?'selected':'')+'>Other country (USD)</option></select></label></section>'+
+    '<div class="subscription-plan-grid">'+plans.map(p=>'<article class="subscription-plan-card plan-'+p.code+'" data-subscription-plan="'+p.code+'"><span class="subscription-plan-eyebrow">'+(p.code==='gold'?'LONGER COVERAGE':p.code==='silver'?'MID-LENGTH COVERAGE':'SHORT-TERM COVERAGE')+'</span><h2>'+p.name+'</h2><div class="subscription-duration">'+p.months+' '+(p.months===1?'month':'months')+'</div><p>'+p.summary+'</p><div class="subscription-price">Loading price…</div><div class="subscription-total">Checking approved rate…</div><div class="subscription-price-status">Checkout disabled until approval</div><ul><li>Subscription duration: '+p.months+' '+(p.months===1?'month':'months')+'</li><li>Renewal payment is due after '+p.months+' '+(p.months===1?'month':'months')+'</li><li>Access should expire at the end of the paid period unless renewed</li><li>Activation only after verified payment or authorised manual approval</li></ul><button class="button secondary small" type="button" disabled>Online upgrade checkout not connected</button></article>').join('')+'</div>'+
     '<section class="panel subscription-trust"><h3>Security and business continuity</h3><p>Your workspace is designed with authenticated sign-in, workspace membership checks, permission-controlled staff access and private camera recording storage. Owners control camera setup and archived-footage deletion. Use strong passwords, grant minimum necessary access and connect only supported camera systems.</p><p><strong>Workshop Real Time requirements:</strong> owner-authorised camera claim, compatible camera/NVR/DVR or approved provider API, verified pairing, reliable power and internet, secure recording/retention setup, and explicit staff viewing permissions. QR/Bluetooth/Wi-Fi assists setup but cannot by itself guarantee a working live feed.</p><button type="button" class="button secondary" data-page="connections">Open Workshop Real Time →</button></section>'+
-    '<section class="panel subscription-billing-note"><h3>Before billing goes live</h3><p>We inspected the current repository and Supabase schema: there was no existing subscription catalog or payment-provider checkout to reuse. The USD monthly figures shown here are proposed reference rates from the project brief; local currency prices still need approval. No charge is taken and no plan is activated by this page yet.</p></section>';
+    '<section class="panel subscription-billing-note"><h3>Renewal and billing status</h3><p>The displayed amount is the full package fee due again when the selected period ends: Gold every 3 months, Silver every 2 months, and Premium every month. Prices are configured by market. Payment-provider checkout, verified payment activation, automatic expiry enforcement and renewal reminders are not yet connected, so this page does not collect money or activate plans.</p></section>';
     updateSubscriptionPagePrices(country);
     $('#subscription-country')?.addEventListener('change',e=>{
       const chosen=e.target.value,selectedName={UG:'Uganda',KE:'Kenya',TZ:'Tanzania',RW:'Rwanda',BI:'Burundi',SS:'South Sudan',OTHER_AFRICA:'Other African country',USD:'USD pricing market',OTHER:'Other market'}[chosen]||chosen;
       const detected=$('#subscription-country-name');if(detected)detected.textContent=selectedName;
       updateSubscriptionPagePrices(chosen);
+    });
+    $('#subscription-detect-location')?.addEventListener('click',()=>{
+      const btn=$('#subscription-detect-location');
+      if(!navigator.geolocation){toast('Location is not supported by this browser. Choose your country from the list.',true);return}
+      btn.disabled=true;btn.textContent='Requesting location permission…';
+      navigator.geolocation.getCurrentPosition(()=>{
+        const detected=detectLearnCountry(),select=$('#subscription-country');
+        if(select){select.value=detected;select.dispatchEvent(new Event('change',{bubbles:true}))}
+        toast('Location permission received. Please confirm the detected region and currency before billing.');
+        btn.disabled=false;btn.textContent='Use my location';
+      },()=>{
+        toast('Location was not shared. Choose your country manually; location access is optional.',true);
+        btn.disabled=false;btn.textContent='Use my location';
+      },{enableHighAccuracy:false,timeout:10000,maximumAge:300000});
     });
   }
 
