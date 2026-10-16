@@ -22,13 +22,11 @@ jobs:
           enablement: true
       - name: Install icon-generation dependencies
         run: npm install
-      - name: Prepare public site files
+      - name: Prepare and stage complete public site
         run: |
           npm run prepare:web
-          mkdir -p _site/assets
-          cp index.html styles.css app.js _site/
-          cp manifest.webmanifest _site/
-          cp assets/molan-business-icon.svg assets/icon.png assets/icon-192.png assets/icon-512.png _site/assets/
+          mkdir -p _site
+          cp -R www/. _site/
           touch _site/.nojekyll
       - name: Upload static site
         uses: actions/upload-pages-artifact@v3
