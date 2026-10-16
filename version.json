@@ -1,10 +1,10 @@
 {
   "app": "Molan Business",
-  "currentVersion": "molan-2026.10.16.3",
+  "currentVersion": "molan-2026.10.16.4",
   "releaseApi": "https://api.github.com/repos/zakpollyqueens/Molan-business-app-/releases/latest",
   "releasePage": "https://github.com/zakpollyqueens/Molan-business-app-/releases/latest",
   "checkedAt": "runtime",
-  "version": "molan-2026.10.16.3",
+  "version": "molan-2026.10.16.4",
   "releasedAt": "2026-10-16",
-  "notes": "Subscription plan durations, country-aware price catalog, secure Workshop Real Time guidance, and explainer updates."
+  "notes": "Subscription plans and durations, Supabase price catalog, secure Workshop Real Time explainer, and slide-control overlap fix."
 }
