@@ -197,7 +197,7 @@ async function handleWebhook(req: Request) {
   if (!paymentEvent) return json({ error: "No matching payment record." }, 404);
   if (paymentEvent.status === "verified") return json({ success: true, already_processed: true });
   if (eventName === "payment.failed" || eventName === "payment.cancelled") {
-    const failedStatus = eventName === "payment.cancelled" ? "cancelled" : "failed";
+    const failedStatus = "failed"; // The database status constraint uses failed for both failed and cancelled checkouts.
     const { error: failureError } = await admin.from("subscription_payment_events").update({
       status: failedStatus,
       provider_metadata: { ...(paymentEvent.provider_metadata ?? {}), webhook_event: eventName, delivery_id: req.headers.get("X-Jjuma-Delivery-Id") },
