@@ -69,6 +69,39 @@ for (const [i, p] of catalog.profiles.entries()) {
   createdFolders++;
 }
 // Add the same profile-scoped hamburger to the original 50 profile folders too.
+
+const primaryProfileNavSync = `<script data-primary-profile-nav-sync>(()=>{const slugify=s=>String(s||'').toLowerCase().normalize('NFKD').replace(/[^a-z0-9\\s-]/g,'').trim().replace(/[\\s_]+/g,'-').replace(/-+/g,'-');const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));fetch('profile.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('Profile config unavailable');return r.json()}).then(p=>{const nav=document.querySelector('[data-profile-menu] nav');if(!nav||!Array.isArray(p.features))return;nav.replaceChildren();const home=document.createElement('a');home.href='index.html';home.innerHTML='<span>⌂</span> Overview';nav.append(home);p.features.forEach((f,i)=>{const a=document.createElement('a');a.href='pages/'+slugify(f.title)+'/index.html';a.innerHTML='<span>'+String(i+1).padStart(2,'0')+'</span>'+esc(f.title);nav.append(a)})}).catch(e=>console.warn('[Molan Business] Profile navigation sync failed:',e.message));})();</script>
+<script data-primary-profile-feature-fallback>(()=>{const slugify=s=>String(s||'').toLowerCase().normalize('NFKD').replace(/[^a-z0-9\\s-]/g,'').trim().replace(/[\\s_]+/g,'-').replace(/-+/g,'-');document.addEventListener('click',e=>{const b=e.target.closest('#features button.feature');if(!b||typeof window.MolanProfileRuntime?.openFeature==='function')return;const title=b.querySelector('strong')?.textContent;if(!title)return;e.preventDefault();e.stopImmediatePropagation();location.href='pages/'+slugify(title)+'/index.html'},true)})();</script>`;
+let primaryFeaturePages=0, primaryProfilesUpdated=0;
+for (const entry of registry.profiles) {
+  if (extended.has(entry.slug)) continue;
+  const configPath = path.join(root, entry.config || `business-profiles/${entry.slug}/profile.json`);
+  const indexPath = path.join(root, entry.page || `business-profiles/${entry.slug}/index.html`);
+  if (!fs.existsSync(configPath) || !fs.existsSync(indexPath)) continue;
+  let profile;
+  try { profile = JSON.parse(fs.readFileSync(configPath, 'utf8')); } catch { continue; }
+  if (!profile.slug || !Array.isArray(profile.features)) continue;
+  const profileDir = path.dirname(configPath);
+  for (const [i, feature] of profile.features.entries()) {
+    if (!feature?.title) continue;
+    const featureSlug = slugify(feature.title);
+    const pageDir = path.join(profileDir, 'pages', featureSlug);
+    const pagePath = path.join(pageDir, 'index.html');
+    fs.mkdirSync(pageDir, { recursive: true });
+    if (fs.existsSync(pagePath)) continue;
+    const route = feature.route || 'business-tools';
+    const pageHtml = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="${esc(profile.description)}"><title>${esc(feature.title)} · ${esc(profile.name)}</title><style>:root{font-family:Inter,system-ui,sans-serif;color:#10213e;background:#f4f8fc}*{box-sizing:border-box}body{margin:0}.shell{max-width:1000px;margin:auto;padding:clamp(12px,3vw,28px)}.hero,.panel{border:1px solid #dce5f1;border-radius:20px;background:#fff;padding:22px;box-shadow:0 12px 34px #122b4f0f}.back{color:#087fbd;text-decoration:none;font-weight:800}.eyebrow{font-size:.72rem;font-weight:800;letter-spacing:.12em;color:#087fbd;margin-top:22px}h1{font-size:clamp(26px,5vw,40px);margin:8px 0}.muted{color:#65758b;line-height:1.6}.panel{margin-top:16px}.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}button,.button{border:1px solid #cbd8e8;border-radius:12px;padding:12px 15px;background:#0a8ac5;color:white;font:700 14px system-ui;text-decoration:none;cursor:pointer}.secondary{background:white;color:#10213e}footer{padding:20px 4px;color:#65758b;font-size:.85rem}</style></head><body data-profile="${esc(profile.slug)}" data-profile-name="${esc(profile.name)}"><main class="shell"><header class="hero"><a class="back" href="../../index.html">← Back to ${esc(profile.name)}</a><p class="eyebrow">${esc(profile.group || 'BUSINESS PROFILE')} · FEATURE ${i+1} / ${profile.features.length}</p><h1>${esc(feature.title)}</h1><p class="muted">${esc(profile.description || 'Dedicated business profile feature.')}</p></header><section class="panel"><h2>${esc(feature.title)}</h2><p class="muted">This page belongs exclusively to the <strong>${esc(profile.name)}</strong> profile. Live records are opened through the authenticated Molan Business workspace and remain scoped to that workspace.</p><p class="muted">Feature destination: <code>${esc(route)}</code></p><div class="actions"><button id="open-feature" data-feature-title="${esc(feature.title)}" data-feature-route="${esc(route)}">Open in Molan Business →</button><a class="button secondary" href="../../index.html">Return to profile overview</a></div><p id="feature-status" class="muted" role="status">No data has been changed.</p></section><footer>Molan Business · ${esc(profile.name)} · ${esc(profile.slug)}</footer></main><script>(()=>{const b=document.getElementById('open-feature'),s=document.getElementById('feature-status');b.addEventListener('click',()=>{const req={profile:document.body.dataset.profile,profileName:document.body.dataset.profileName,feature:{title:b.dataset.featureTitle,route:b.dataset.featureRoute},createdAt:Date.now()};if(typeof window.MolanProfileRuntime?.openFeature==='function'){try{const r=window.MolanProfileRuntime.openFeature(req);r?.catch?.(e=>s.textContent=e.message||'Could not open feature');return}catch(e){s.textContent=e.message||'Could not open feature';return}}try{localStorage.setItem('molan_business_pending_profile_feature_v1',JSON.stringify(req));location.href='../../../../index.html'}catch(e){s.textContent='Open the signed-in Molan Business app and select this profile feature from its hamburger menu.'}})})();</script></body></html>`;
+    fs.writeFileSync(pagePath, pageHtml);
+    primaryFeaturePages++;
+  }
+  let html = fs.readFileSync(indexPath, 'utf8');
+  if (!html.includes('data-primary-profile-nav-sync')) {
+    html = html.replace('</body>', primaryProfileNavSync + '</body>');
+    fs.writeFileSync(indexPath, html);
+    primaryProfilesUpdated++;
+  }
+}
+
 const extended = new Set(catalog.profiles.map(p => p.slug));
 for (const entry of registry.profiles) {
   if (extended.has(entry.slug)) continue;
