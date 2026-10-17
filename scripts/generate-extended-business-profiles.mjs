@@ -27,9 +27,10 @@ function ensureProfileNavigation(file, profile, isFeaturePage = false) {
     const menuNav = /(\<aside\b[^>]*\bdata-profile-menu\b[^>]*>[\s\S]*?\<nav\b[^>]*>)([\s\S]*?)(\<\/nav\s*>)/i;
     const match = html.match(menuNav);
     if (!match) throw new Error('Profile hamburger has no menu navigation: ' + file);
-    const navContents = match[2]
+    // Keep the action at the top of the hamburger so it is visible immediately.
+    const navContents = accessNavItem + match[2]
       .replace(/<a\b(?=[^>]*\bdata-give-device-access\b)[^>]*>[\s\S]*?<\/a\s*>/gi, '')
-      .replace(/\s*$/, '') + accessNavItem;
+      .replace(/^\s*/, '');
     html = html.replace(menuNav, match[1] + navContents + match[3]);
 
     const relativePage = path.relative(root, file).split(path.sep).join('/');
