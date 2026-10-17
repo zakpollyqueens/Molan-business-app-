@@ -74,6 +74,20 @@ for (const file of profileHtmlFiles) {
     html = html.replace(/<\/body\s*>/i, runtimeTag + '</body>');
   }
   fs.writeFileSync(file, html);
+
+  const verifiedNav = html.match(menuNav);
+  const accessCount = verifiedNav ? (verifiedNav[2].match(/data-give-device-access/g) || []).length : 0;
+  if (accessCount !== 1) {
+    throw new Error('Expected exactly one Give Access item inside the hamburger nav, found ' + accessCount + ': ' + relativePage);
+  }
+  const runtimeTags = [...html.matchAll(/<script\\b(?=[^>]*\\bdata-profile-device-access\\b)[^>]*src=["']([^"']+)["'][^>]*>/gi)];
+  if (runtimeTags.length !== 1 || runtimeTags[0][1] !== runtimeSrc) {
+    throw new Error('Expected one correctly linked device-access runtime (' + runtimeSrc + '): ' + relativePage);
+  }
+  const resolvedRuntime = path.resolve(output, path.dirname(relativePage), runtimeSrc);
+  if (!fs.existsSync(resolvedRuntime)) {
+    throw new Error('Device-access runtime URL does not resolve from profile page: ' + relativePage + ' -> ' + runtimeSrc);
+  }
   repairedProfilePages++;
 }
 console.log('Repaired device-access menu/runtime in ' + repairedProfilePages + ' published profile pages.');
