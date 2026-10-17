@@ -83,8 +83,9 @@ async function createWebsiteServiceCheckout(authenticatedUser: any, body: any) {
   if (!allowedInitialStatus && !allowedBalanceStatus) {
     return json({ error: "This request is not currently eligible for checkout." }, 409);
   }
+  const firstInstalment = Math.round((packageAmount / 2) * 100) / 100;
   const amount = paymentPlan === "two_part"
-    ? (isBalancePayment ? packageAmount - Math.ceil(packageAmount / 2) : Math.ceil(packageAmount / 2))
+    ? (isBalancePayment ? Math.round((packageAmount - firstInstalment) * 100) / 100 : firstInstalment)
     : packageAmount;
   const paymentPart = paymentPlan === "two_part" ? (isBalancePayment ? "balance" : "deposit") : "full";
   const currency = String(request.package_currency_code || "").toUpperCase();
