@@ -11,7 +11,7 @@
 :root{color-scheme:dark;font-family:Inter,"DM Sans",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#071426;color:#eaf2ff}
 *{box-sizing:border-box}
 body{min-height:100vh;margin:0;padding:clamp(12px,3vw,30px);background:radial-gradient(ellipse at 8% 0%,rgba(43,135,238,.22),transparent 42%),radial-gradient(ellipse at 100% 25%,rgba(27,201,190,.13),transparent 36%),#071426}
-.content{width:min(100%,900px);margin:0 auto;padding:clamp(18px,4vw,38px);border:1px solid rgba(142,171,210,.22);border-radius:26px;background:linear-gradient(145deg,rgba(17,34,61,.97),rgba(7,20,39,.98));box-shadow:0 28px 90px rgba(0,0,0,.3);overflow:hidden}
+.support-page{width:min(100%,900px);margin:0 auto;padding:clamp(18px,4vw,38px);border:1px solid rgba(142,171,210,.22);border-radius:26px;background:linear-gradient(145deg,rgba(17,34,61,.97),rgba(7,20,39,.98));box-shadow:0 28px 90px rgba(0,0,0,.3);overflow:hidden}.support-page>.content{width:100%;margin:0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}
 .support-brand{display:flex;align-items:center;gap:13px;margin-bottom:24px;padding-bottom:22px;border-bottom:1px solid rgba(159,184,217,.18)}
 .support-brand-icon{display:grid;place-items:center;width:48px;height:48px;border-radius:15px;background:linear-gradient(145deg,#43e5e5,#238ce9 52%,#102c65);font-size:23px;box-shadow:0 10px 26px #0b8bc733}
 .support-brand strong,.support-brand small{display:block}
@@ -39,13 +39,14 @@ body{min-height:100vh;margin:0;padding:clamp(12px,3vw,30px);background:radial-gr
 #support-chat a{color:#65d7f0}
 .support-company-footer{margin:30px auto 4px;text-align:center;color:#8299b7;font-size:12px;line-height:1.8}
 .support-company-footer strong{display:block;color:#c7d8ed;font-weight:700}
-@media(max-width:620px){body{padding:10px}.content{padding:18px 14px;border-radius:18px}.support-brand{margin-bottom:20px}#support-chat .support-chat-form{grid-template-columns:minmax(0,1fr)}#support-chat .support-chat-form>*{grid-column:1/-1}#support-chat .support-chat-action button{width:100%}}
+@media(max-width:620px){body{padding:10px}.support-page{padding:18px 14px;border-radius:18px}.support-brand{margin-bottom:20px}#support-chat .support-chat-form{grid-template-columns:minmax(0,1fr)}#support-chat .support-chat-form>*{grid-column:1/-1}#support-chat .support-chat-action button{width:100%}}
 </style>
 </head>
 <body>
-<main class="content">
+<main class="support-page">
 <header class="support-brand"><span class="support-brand-icon" aria-hidden="true">✦</span><span><strong>Molan Business Support</strong><small>Private help desk · Messages and replies</small></span></header>
 <section class="support-intro"><h1>How can we help?</h1><p>Send your question or complaint directly to the support team. Choose a subject and category, explain what you need, and follow replies here after signing in.</p></section>
+<div class="content" aria-label="Support chat and message composer"></div>
 </main>
 <footer class="support-company-footer"><strong>Built and managed by Zakmolanitech Solutions</strong>Equipping minds with IT solutions.</footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
