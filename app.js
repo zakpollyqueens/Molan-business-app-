@@ -1582,6 +1582,44 @@ const WEBSITE_MARKET_STORAGE_KEY = 'molan_website_service_market_v1';
     if(choosePackage){e.preventDefault();openForm('website-request',choosePackage.dataset.websitePackage)}
   });
 
+  document.addEventListener('click',e=>{
+  const button=e.target.closest('[data-legal-open]');if(!button)return;e.preventDefault();
+  const kind=button.dataset.legalOpen;
+  const content={
+    terms:{title:'Website Service Terms & Conditions',body:[
+      'Project scope: The package covers the pages and features agreed in the submitted brief. New features or major scope changes may require a separate quote and approval.',
+      'Payment: The first payment is 50% of the approved package price. The remaining 50% becomes payable after the website is completed and marked delivered. Jjuma Pay confirmations are verified server-side; a return page alone is not proof of payment.',
+      'Customer content: The customer must provide accurate business details, contact information, location, domain preferences and content they are authorized to publish. The customer is responsible for checking public information before launch.',
+      'Domain and third-party costs: Domain registration, premium templates, paid plugins, hosting upgrades, stock assets and other third-party charges are included only when explicitly stated in the approved scope.',
+      'Review and delivery: The customer should review the preview, spelling, contact details, links and mobile layout before approving delivery. Delivery timing depends on receiving the required content and feedback.',
+      'Support: Support is provided for the agreed delivered scope. Ongoing maintenance, new pages, content updates and third-party outages may require a separate support agreement.',
+      'Cancellation and refunds: Work already performed, third-party purchases and any refund eligibility are reviewed under the written project agreement and applicable law. Do not assume a refund is automatic.',
+      'Acceptance: Submitting a website request confirms that you have read these conditions and have the right to request publication of the supplied material.'
+    ]},
+    privacy:{title:'Privacy Policy',body:[
+      'We use submitted business details, contact information, website preferences and any voice note to assess, build, test and support the requested website.',
+      'Voice notes are stored in private storage and are not intended for public display. Access is limited by authenticated workspace permissions.',
+      'Payment information is processed through Jjuma Pay. Molan Business stores payment references and verification status; do not submit card or mobile-money PINs in the website brief.',
+      'Provide only information you have permission to share. Contact support to request correction or assistance with your project data.'
+    ]},
+    copyright:{title:'Copyright & Content Rights',body:[
+      'Customers must own or have permission to use logos, photographs, text, videos, trademarks, music and other materials they submit.',
+      'Unless the written project agreement says otherwise, third-party assets remain subject to their own copyright and license terms. Do not upload infringing, misleading or unlawful content.',
+      'The customer is responsible for the accuracy of published claims, pricing, contact details, policies and required business disclosures.'
+    ]},
+    licenses:{title:'Software Licenses & Third-Party Services',body:[
+      'The app and website may use open-source libraries and third-party services under their respective licenses and terms.',
+      'Paid themes, fonts, plugins, hosting, domain registration and other third-party licenses are subject to the provider terms and are included only when stated in the agreed package.',
+      'License notices and required attributions must be preserved where applicable. Ask support if a particular asset or license is unclear.'
+    ]}
+  }[kind];
+  if(!content)return;
+  const overlay=document.createElement('div');overlay.className='legal-dialog-backdrop';overlay.setAttribute('role','presentation');
+  overlay.innerHTML='<section class="legal-dialog" role="dialog" aria-modal="true" aria-labelledby="legal-dialog-title"><button class="legal-dialog-close" type="button" aria-label="Close">×</button><span class="section-kicker">MOLAN BUSINESS · CUSTOMER INFORMATION</span><h2 id="legal-dialog-title">'+esc(content.title)+'</h2><div class="legal-dialog-copy">'+content.body.map(p=>'<p>'+esc(p)+'</p>').join('')+'</div><button type="button" class="button primary legal-dialog-done">Close</button></section>';
+  document.body.appendChild(overlay);const close=()=>overlay.remove();overlay.querySelector('.legal-dialog-close').addEventListener('click',close);overlay.querySelector('.legal-dialog-done').addEventListener('click',close);overlay.addEventListener('click',ev=>{if(ev.target===overlay)close()});
+});
+document.addEventListener('DOMContentLoaded',()=>{const y=document.querySelector('#app-legal-year');if(y)y.textContent=String(new Date().getFullYear())});
+
   function renderPage(page){
  if(!company)return;
  const pendingKey='molan_business_pending_profile_feature_v1';
