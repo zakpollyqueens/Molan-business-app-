@@ -118,6 +118,33 @@ for (const profile of registry.profiles || []) {
   }
 }
 
+// Install the same Support launcher on every published HTML page, including generated business profiles.
+const allPublishedHtml = walkHtml(output);
+let supportLauncherPages = 0;
+for (const file of allPublishedHtml) {
+  let html = fs.readFileSync(file, 'utf8');
+  const relativePage = path.relative(output, file).split(path.sep).join('/');
+  const pageDirectory = path.posix.dirname(relativePage);
+  const runtimeSrc = path.posix.relative(pageDirectory, 'shared/support-launcher.js');
+  const tag = '<script data-molan-support-launcher src="' + runtimeSrc + '"></script>';
+  if (!html.includes('data-molan-support-launcher')) {
+    if (!html.includes('</body>')) continue;
+    html = html.replace('</body>', tag + '</body>');
+  } else {
+    const tagStart = html.indexOf('<script data-molan-support-launcher');
+    const tagEnd = html.indexOf('</script>', tagStart);
+    if (tagStart < 0 || tagEnd < 0) throw new Error('Malformed Support launcher tag: ' + relativePage);
+    html = html.slice(0, tagStart) + tag + html.slice(tagEnd + 9);
+  }
+  fs.writeFileSync(file, html);
+  if (html.split('data-molan-support-launcher').length - 1 !== 1) throw new Error('Expected one Support launcher in ' + relativePage);
+  const resolvedRuntime = path.resolve(output, path.dirname(relativePage), runtimeSrc);
+  if (!fs.existsSync(resolvedRuntime)) throw new Error('Support launcher URL does not resolve: ' + relativePage + ' -> ' + runtimeSrc);
+  supportLauncherPages++;
+}
+if (!fs.existsSync(path.join(output, 'shared/support-messaging.css'))) throw new Error('Support styling is missing from published output.');
+console.log('Installed and verified Support launcher on ' + supportLauncherPages + ' published HTML pages.');
+
 const versionPath = path.join(output, 'version.json');
 if (fs.existsSync(versionPath)) {
   const version = JSON.parse(fs.readFileSync(versionPath, 'utf8'));
