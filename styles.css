@@ -478,3 +478,32 @@ html[data-theme="dark"] .website-request-info p{color:#c1d0e1}
 html[data-theme="dark"] .website-checkout-price-preview{background:#14334b;color:#d4efff!important;border-color:#285979}
 @media(max-width:960px){.website-package-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.website-package-card.website-package-featured{transform:none}}
 @media(max-width:640px){.website-market-panel{grid-template-columns:1fr;gap:15px;padding:16px}.website-package-grid{grid-template-columns:1fr;gap:12px}.website-package-card{padding:19px}.website-package-card p{min-height:0}.website-request-row{align-items:flex-start;flex-wrap:wrap}.website-request-info{min-width:calc(100% - 55px)}.website-request-row>.button{width:100%;margin-left:52px}.website-package-card .button{width:100%}}
+
+
+/* Website request brief, private voice-note controls, payment plan and legal footer. */
+.website-voice-note{display:grid;gap:12px;padding:16px;border:1px solid #d5e5f4;border-radius:15px;background:#f6fbff;margin:14px 0}
+.website-voice-note strong{color:#153452;font-size:14px}
+.website-voice-note p{margin:5px 0 0;color:#5d7085;font-size:12px;line-height:1.65}
+.website-voice-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.website-voice-actions span{font-size:11px;color:#536981;flex:1;min-width:150px}
+.website-voice-note audio{width:100%;max-width:520px}
+.website-terms-accept{display:flex;align-items:flex-start;gap:10px;padding:13px 14px;border:1px solid #d7e4f1;border-radius:12px;background:#f8fbff;color:#334e68;font-size:12px;line-height:1.6;margin:8px 0 14px}
+.website-terms-accept input{margin-top:3px;flex:0 0 auto}
+.website-terms-accept a{color:#1673b8;font-weight:800}
+html[data-theme="dark"] .website-voice-note,html[data-theme="dark"] .website-terms-accept{background:#10253b;border-color:#294963;color:#d5e5f4}
+html[data-theme="dark"] .website-voice-note strong{color:#f1f8ff}
+html[data-theme="dark"] .website-voice-note p,html[data-theme="dark"] .website-voice-actions span{color:#c0d0e1}
+.zakmolanitech-company-footer{padding:26px clamp(16px,4vw,38px);color:#aebed1;background:#071426;border-top:1px solid rgba(148,163,184,.2);font-size:12px;line-height:1.7}
+.app-footer-top{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:26px;max-width:1240px;margin:0 auto 22px}
+.app-footer-brand strong,.app-footer-contact>strong,.app-footer-links>strong{display:block;color:#e6f7ff;font-size:13px;margin-bottom:8px}
+.app-footer-brand p{margin:4px 0 12px;color:#70d9f3;font-weight:700}
+.app-footer-brand small{color:#8fa4ba}
+.app-footer-contact,.app-footer-links{display:flex;flex-direction:column;align-items:flex-start;gap:5px;min-width:0}
+.app-footer-contact a,.app-footer-links a{color:#70d9f3;text-decoration:none;overflow-wrap:anywhere}
+.app-footer-contact a:hover,.app-footer-links a:hover{text-decoration:underline;color:#fff}
+.app-footer-legal{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;max-width:1240px;margin:0 auto}
+.app-footer-legal details{min-width:0;border:1px solid #263c55;border-radius:11px;background:#0b1c30}
+.app-footer-legal summary{padding:11px 13px;color:#e4f3ff;font-weight:800;cursor:pointer}
+.app-footer-legal details>div{padding:0 13px 13px;color:#b7c7d9}
+.app-footer-legal p{margin:8px 0;line-height:1.75}
+@media(max-width:760px){.app-footer-top{grid-template-columns:1fr;gap:18px}.app-footer-legal{grid-template-columns:1fr}.website-voice-actions{align-items:flex-start}.website-voice-actions span{flex-basis:100%}}
