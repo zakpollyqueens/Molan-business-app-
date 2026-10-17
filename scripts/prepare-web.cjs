@@ -123,21 +123,23 @@ const allPublishedHtml = walkHtml(output);
 let supportLauncherPages = 0;
 for (const file of allPublishedHtml) {
   let html = fs.readFileSync(file, 'utf8');
-  const tag = '<script data-molan-support-launcher src="' + path.posix.relative(path.posix.dirname(path.relative(output, file)).split(path.sep).join('/'), 'shared/support-launcher.js') + '"></script>';
-  const pattern = /<script\\b(?=[^>]*\\bdata-molan-support-launcher\\b)[^>]*>[\\s\\S]*?<\\/script\\s*>/gi;
-  if (pattern.test(html)) {
-    pattern.lastIndex = 0;
-    let first = true;
-    html = html.replace(pattern, () => { if (!first) return ''; first = false; return tag; });
+  const relativePage = path.relative(output, file).split(path.sep).join('/');
+  const pageDirectory = path.posix.dirname(relativePage);
+  const runtimeSrc = path.posix.relative(pageDirectory, 'shared/support-launcher.js');
+  const tag = '<script data-molan-support-launcher src="' + runtimeSrc + '"></script>';
+  if (!html.includes('data-molan-support-launcher')) {
+    if (!html.includes('</body>')) continue;
+    html = html.replace('</body>', tag + '</body>');
   } else {
-    if (!/<\\/body\\s*>/i.test(html)) continue;
-    html = html.replace(/<\\/body\\s*>/i, tag + '</body>');
+    const tagStart = html.indexOf('<script data-molan-support-launcher');
+    const tagEnd = html.indexOf('</script>', tagStart);
+    if (tagStart < 0 || tagEnd < 0) throw new Error('Malformed Support launcher tag: ' + relativePage);
+    html = html.slice(0, tagStart) + tag + html.slice(tagEnd + 9);
   }
   fs.writeFileSync(file, html);
-  const tags = [...html.matchAll(/<script\\b(?=[^>]*\\bdata-molan-support-launcher\\b)[^>]*src=["']([^"']+)["'][^>]*>/gi)];
-  if (tags.length !== 1) throw new Error('Expected one Support launcher script in ' + path.relative(output, file));
-  const resolved = path.resolve(output, path.dirname(path.relative(output, file)), tags[0][1]);
-  if (!fs.existsSync(resolved)) throw new Error('Support launcher script URL does not resolve: ' + tags[0][1]);
+  if (html.split('data-molan-support-launcher').length - 1 !== 1) throw new Error('Expected one Support launcher in ' + relativePage);
+  const resolvedRuntime = path.resolve(output, path.dirname(relativePage), runtimeSrc);
+  if (!fs.existsSync(resolvedRuntime)) throw new Error('Support launcher URL does not resolve: ' + relativePage + ' -> ' + runtimeSrc);
   supportLauncherPages++;
 }
 if (!fs.existsSync(path.join(output, 'shared/support-messaging.css'))) throw new Error('Support styling is missing from published output.');
