@@ -30,9 +30,8 @@ for (const directory of assetDirectories) {
   }
 }
 
-// Repair the published HTML itself, not only the shared runtime. Some profile navigation
-// scripts rebuild <nav> with replaceChildren(), so every published profile page gets
-// one canonical access item inside its actual hamburger and a correct relative script URL.
+// Keep profile navigation focused on navigation. Device/app access belongs in the
+// authenticated workspace's Business Settings screen, not the profile hamburger.
 const walkHtml = directory => {
   const files = [];
   if (!fs.existsSync(directory)) return files;
@@ -43,66 +42,37 @@ const walkHtml = directory => {
   }
   return files;
 };
-const accessMenuItem = '<a href="#give-device-access" data-give-device-access><span>🔐</span><strong>Give Access to Mobile &amp; PC App</strong></a>';
 const profileHtmlFiles = walkHtml(path.join(output, 'business-profiles'));
-let repairedProfilePages = 0;
+let checkedProfilePages = 0;
 for (const file of profileHtmlFiles) {
-  let html = fs.readFileSync(file, 'utf8');
-  if (!html.includes('data-profile-hamburger')) continue; // retired redirects/legacy landing pages
+  const html = fs.readFileSync(file, 'utf8');
   const relativePage = path.relative(output, file).split(path.sep).join('/');
-  const menuNav = /(\<aside\b[^>]*\bdata-profile-menu\b[^>]*>[\s\S]*?\<nav\b[^>]*>)([\s\S]*?)(\<\/nav\s*>)/i;
+  if (!html.includes('data-profile-hamburger')) continue;
+  const menuNav = /(<aside\\b[^>]*\\bdata-profile-menu[^>]*>[\\s\\S]*?<nav\\b[^>]*>)([\\s\\S]*?)(<\\/nav\\s*>)/i;
   const match = html.match(menuNav);
   if (!match) throw new Error('Profile hamburger exists but its menu navigation is missing: ' + relativePage);
-  let navContents = match[2].replace(/<a\b(?=[^>]*\bdata-give-device-access\b)[^>]*>[\s\S]*?<\/a\s*>/gi, '');
-  navContents = navContents.replace(/\s*$/, '') + accessMenuItem;
-  html = html.replace(menuNav, match[1] + navContents + match[3]);
-
-  const pageDirectory = path.posix.dirname(relativePage);
-  const runtimeSrc = path.posix.relative(pageDirectory, 'shared/profile-device-access.js');
-  const runtimeTag = '<script data-profile-device-access src="' + runtimeSrc + '"></script>';
-  const runtimeTagPattern = /<script\b(?=[^>]*\bdata-profile-device-access\b)[^>]*>[\s\S]*?<\/script\s*>/gi;
-  if (runtimeTagPattern.test(html)) {
-    runtimeTagPattern.lastIndex = 0;
-    let first = true;
-    html = html.replace(runtimeTagPattern, () => {
-      if (!first) return '';
-      first = false;
-      return runtimeTag;
-    });
-  } else {
-    if (!/<\/body\s*>/i.test(html)) throw new Error('Profile page has no closing body tag for device-access runtime: ' + relativePage);
-    html = html.replace(/<\/body\s*>/i, runtimeTag + '</body>');
+  if (/data-give-device-access/.test(match[2]) || /Give Access to Mobile/i.test(match[2])) {
+    throw new Error('Give Access must not be placed in the profile hamburger: ' + relativePage);
   }
-  fs.writeFileSync(file, html);
-
-  const verifiedNav = html.match(menuNav);
-  const accessCount = verifiedNav ? (verifiedNav[2].match(/data-give-device-access/g) || []).length : 0;
-  if (accessCount !== 1) {
-    throw new Error('Expected exactly one Give Access item inside the hamburger nav, found ' + accessCount + ': ' + relativePage);
-  }
-  const runtimeTags = [...html.matchAll(/<script\b(?=[^>]*\bdata-profile-device-access\b)[^>]*src=["']([^"']+)["'][^>]*>/gi)];
-  if (runtimeTags.length !== 1 || runtimeTags[0][1] !== runtimeSrc) {
-    throw new Error('Expected one correctly linked device-access runtime (' + runtimeSrc + '): ' + relativePage);
-  }
-  const resolvedRuntime = path.resolve(output, path.dirname(relativePage), runtimeSrc);
-  if (!fs.existsSync(resolvedRuntime)) {
-    throw new Error('Device-access runtime URL does not resolve from profile page: ' + relativePage + ' -> ' + runtimeSrc);
-  }
-  repairedProfilePages++;
+  checkedProfilePages++;
 }
-console.log('Repaired device-access menu/runtime in ' + repairedProfilePages + ' published profile pages.');
+console.log('Verified ' + checkedProfilePages + ' profile hamburger menus do not contain the misplaced Give Access action.');
 
-// Verify the complete business-profile catalogue and its device-access runtime
-// are actually copied into the public site/package, not just present in source.
+// Verify the complete business-profile catalogue is copied into the public site
+// and that the shared app shell provides device access from Business Settings.
 for (const required of [
   'business-profiles/registry.json',
-  'shared/profile-device-access.js'
+  'app.js'
 ]) {
   if (!fs.existsSync(path.join(output, required))) {
-    throw new Error('Required published profile asset missing: ' + required);
+    throw new Error('Required published business asset missing: ' + required);
   }
 }
 const registry = JSON.parse(fs.readFileSync(path.join(output, 'business-profiles/registry.json'), 'utf8'));
+const appSource = fs.readFileSync(path.join(output, 'app.js'), 'utf8');
+if (!appSource.includes('DEVICE & APP ACCESS') || !appSource.includes('device-access-settings-panel')) {
+  throw new Error('Business Settings is missing the Device & App Access section.');
+}
 for (const profile of registry.profiles || []) {
   if (profile.retired) continue;
   const relativePage = profile.page || `business-profiles/${profile.slug}/index.html`;
@@ -110,14 +80,7 @@ for (const profile of registry.profiles || []) {
   if (!fs.existsSync(publishedPage)) {
     throw new Error('Business profile page was not included in public build: ' + relativePage);
   }
-  const html = fs.readFileSync(publishedPage, 'utf8');
-  for (const marker of ['data-profile-hamburger', 'data-profile-device-access', 'data-give-device-access']) {
-    if (!html.includes(marker)) {
-      throw new Error('Business profile is missing Give Access markup/runtime marker ' + marker + ': ' + relativePage);
-    }
-  }
 }
-
 const versionPath = path.join(output, 'version.json');
 if (fs.existsSync(versionPath)) {
   const version = JSON.parse(fs.readFileSync(versionPath, 'utf8'));
