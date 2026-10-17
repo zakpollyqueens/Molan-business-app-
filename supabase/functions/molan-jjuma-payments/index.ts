@@ -48,9 +48,12 @@ async function markWebsiteCheckoutFailed(paymentId: string, requestId: string, m
   }).eq("id", paymentId).eq("status", "pending");
 
   const { data: request } = await admin.from("website_service_requests")
-    .select("status").eq("id", requestId).maybeSingle();
-  const patch: Record<string, unknown> = { payment_status: "failed" };
-  if (request?.status === "awaiting_payment") patch.status = "requested";
+    .select("status,payment_status").eq("id", requestId).maybeSingle();
+  const { data: payment } = await admin.from("website_service_checkout_payments")
+    .select("provider_metadata").eq("id", paymentId).maybeSingle();
+  const isBalanceCheckout = payment?.provider_metadata?.payment_stage === "balance";
+  const patch: Record<string, unknown> = { payment_status: isBalanceCheckout ? "deposit_paid" : "failed" };
+  if (!isBalanceCheckout && request?.status === "awaiting_payment") patch.status = "requested";
   await admin.from("website_service_requests").update(patch).eq("id", requestId);
 }
 
