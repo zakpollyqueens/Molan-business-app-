@@ -138,6 +138,7 @@
     if (label) label.textContent = 'Closing access…';
     item.setAttribute('aria-busy', 'true');
     try {
+      try { window.MolanBusinessNative?.closeAppAccess?.(); } catch (_) {}
       const client = await getAuthClient();
       const { error } = await client.auth.signOut({ scope: 'local' });
       if (error) throw error;
