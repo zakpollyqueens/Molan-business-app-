@@ -126,13 +126,13 @@ for (const entry of registry.profiles) {
     ensureProfileFeatureLaunch(pagePath, profile, feature);
     let featureHtml = fs.readFileSync(pagePath, 'utf8');
     if (!featureHtml.includes('data-primary-feature-nav-sync')) {
-      featureHtml = featureHtml.replace('</body>', primaryFeatureNavSync + '</body>');
+      featureHtml = featureHtml.replace('</body>', primaryFeatureNavSync + '<script data-profile-device-access src="../../../../shared/profile-device-access.js"></script></body>');
       fs.writeFileSync(pagePath, featureHtml);
     }
   }
   let html = fs.readFileSync(indexPath, 'utf8');
   if (!html.includes('data-primary-profile-nav-sync')) {
-    html = html.replace('</body>', primaryProfileNavSync + '</body>');
+    html = html.replace('</body>', primaryProfileNavSync + '<script data-profile-device-access src="../../shared/profile-device-access.js"></script></body>');
     fs.writeFileSync(indexPath, html);
     primaryProfilesUpdated++;
   }
