@@ -54,7 +54,8 @@ for (const file of profileHtmlFiles) {
   const match = html.match(menuNav);
   if (!match) throw new Error('Profile hamburger exists but its menu navigation is missing: ' + relativePage);
   let navContents = match[2].replace(/<a\b(?=[^>]*\bdata-give-device-access\b)[^>]*>[\s\S]*?<\/a\s*>/gi, '');
-  navContents = navContents.replace(/\s*$/, '') + accessMenuItem;
+  // Put the action at the very top so it is visible immediately when the hamburger opens.
+  navContents = accessMenuItem + navContents.replace(/^\s*/, '');
   html = html.replace(menuNav, match[1] + navContents + match[3]);
 
   const pageDirectory = path.posix.dirname(relativePage);

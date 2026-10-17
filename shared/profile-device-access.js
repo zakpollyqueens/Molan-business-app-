@@ -20,7 +20,9 @@
     if (!currentNav) return;
     const existing = currentNav.querySelectorAll('[data-give-device-access]');
     if (existing.length > 1) existing.forEach((item, index) => { if (index > 0) item.remove(); });
-    if (!currentNav.querySelector('[data-give-device-access]')) currentNav.append(createAccessLink());
+    const accessItem = currentNav.querySelector('[data-give-device-access]') || createAccessLink();
+    // Always keep Give Access as the first navigation item so it is immediately visible.
+    if (currentNav.firstElementChild !== accessItem) currentNav.prepend(accessItem);
   };
   // Do not exit when a profile menu is rendered late. Observe the document so
   // delayed menus and profile.json navigation rebuilds are repaired as well.
