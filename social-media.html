@@ -271,6 +271,49 @@ header:not(.top),header.top{background:linear-gradient(100deg,rgba(4,15,46,.97),
 @media(max-width:780px){.credit-link-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
 @media(max-width:480px){.credit-main.credit-main-grid{padding:22px 16px!important}.credit-link-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}.credit-link-grid>a{padding:10px!important;font-size:11px!important}.credit-main-grid .credit-brand{grid-column:auto!important}}
 
+
+/* Professional themed background and accessible icon treatment v2 */
+/* Keep all legal and support text legible over a purpose-specific, subtle illustration. */
+html{background:#071329!important}
+body{position:relative!important;isolation:isolate!important;background:linear-gradient(120deg,#071329 0%,#0b1a3b 52%,#15133f 100%)!important;color:#eef4ff!important}
+body:before{content:""!important;position:fixed!important;z-index:-1!important;pointer-events:none!important;inset:0!important;background-image:linear-gradient(90deg,rgba(4,12,29,.92) 0%,rgba(5,16,39,.80) 54%,rgba(6,14,37,.68) 100%),url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20600%20460%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%2327d9e8%22%2F%3E%3Cstop%20offset%3D%22.55%22%20stop-color%3D%22%23536bff%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23a35cff%22%2F%3E%3C%2FlinearGradient%3E%3CradialGradient%20id%3D%22r%22%3E%3Cstop%20stop-color%3D%22%235c64ff%22%20stop-opacity%3D%22.28%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%2308152f%22%20stop-opacity%3D%220%22%2F%3E%3C%2FradialGradient%3E%3C%2Fdefs%3E%3Ccircle%20cx%3D%22330%22%20cy%3D%22220%22%20r%3D%22235%22%20fill%3D%22url(%23r)%22%2F%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22url(%23g)%22%20stroke-width%3D%222.4%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20opacity%3D%22.72%22%3E%3Ccircle%20cx%3D%22350%22%20cy%3D%22220%22%20r%3D%22155%22%20stroke-dasharray%3D%222%2012%22%2F%3E%3Ccircle%20cx%3D%22350%22%20cy%3D%22220%22%20r%3D%22125%22%20opacity%3D%22.45%22%2F%3E%3Cpath%20d%3D%22M350%2055v38m0%20254v38M185%20220h38m254%200h38M233%20103l27%2027m180%20180%2027%2027m0-234-27%2027M260%20310l-27%2027%22%2F%3E%3Crect%20x%3D%22265%22%20y%3D%22127%22%20width%3D%22170%22%20height%3D%22188%22%20rx%3D%2218%22%20fill%3D%22%23142859%22%20fill-opacity%3D%22.65%22%2F%3E%3Cpath%20d%3D%22M301%20174h98M301%20202h98M301%20230h78M301%20258h62%22%20opacity%3D%22.9%22%2F%3E%3Ccircle%20cx%3D%22390%22%20cy%3D%22270%22%20r%3D%2224%22%20fill%3D%22%23173a78%22%2F%3E%3Cpath%20d%3D%22m379%20270%208%208%2015-18%22%20stroke%3D%22%239efff4%22%20stroke-width%3D%224%22%2F%3E%3C%2Fg%3E%3Ccircle%20cx%3D%22350%22%20cy%3D%22220%22%20r%3D%22220%22%20fill%3D%22none%22%20stroke%3D%22%2391b6ff%22%20stroke-opacity%3D%22.12%22%20stroke-width%3D%221.5%22%2F%3E%3C%2Fsvg%3E")!important;background-repeat:no-repeat!important;background-position:center, right 3vw center!important;background-size:cover,min(66vw,820px) auto!important;opacity:.98!important}
+body:after{content:""!important;position:fixed!important;z-index:-1!important;inset:0!important;pointer-events:none!important;background:radial-gradient(ellipse at 10% 12%,rgba(22,202,227,.12),transparent 35%),radial-gradient(ellipse at 88% 80%,rgba(121,66,255,.13),transparent 40%)!important}
+.wrap{background:rgba(7,18,43,.94)!important;border:1px solid rgba(137,169,255,.28)!important;box-shadow:0 24px 75px rgba(0,0,0,.35)!important;backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:blur(12px)!important}
+header:not(.top),header.top{background:linear-gradient(100deg,#06132e,#10265d)!important;border-bottom:1px solid rgba(133,169,255,.28)!important}
+.hero{background:linear-gradient(110deg,rgba(12,29,70,.97),rgba(25,27,81,.91))!important;color:#f8fbff!important;border-bottom:1px solid rgba(138,164,255,.23)!important}
+.hero h1,.hero h2{color:#fff!important;text-shadow:0 2px 20px rgba(0,0,0,.2)!important}
+.hero p,.hero p strong{color:#dce7ff!important}
+.hero-kicker{color:#9df5ff!important}
+.content{background:rgba(7,18,43,.96)!important;color:#edf3ff!important}
+.content h2,.content h3,.content strong{color:#f5f7ff!important}
+.content p,.content li,.content span{color:#d4e0f7}
+.content a{color:#9eeaff!important}
+.note,.link-card{background:linear-gradient(120deg,rgba(18,39,83,.98),rgba(26,29,78,.97))!important;border:1px solid rgba(126,162,255,.29)!important;color:#eaf1ff!important;box-shadow:0 8px 24px rgba(0,0,0,.16)!important}
+.note p,.link-card p,.link-card small{color:#d4e0f7!important}
+.btn{background:linear-gradient(110deg,#176be8,#743be5)!important}
+.site-credit{background:#06132e!important;border-color:rgba(137,169,255,.3)!important;color:#edf3ff!important}
+.credit-main.credit-main-grid{background:linear-gradient(145deg,rgba(5,17,43,.99),rgba(12,23,62,.99))!important}
+.credit-link-grid>a{justify-content:flex-start!important;gap:10px!important;color:#d5e9ff!important;background:linear-gradient(130deg,rgba(22,47,99,.98),rgba(32,29,85,.98))!important}
+.credit-link-grid>a:before{display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 28px!important;width:28px!important;height:28px!important;border-radius:8px!important;background:rgba(91,126,255,.2)!important;border:1px solid rgba(129,166,255,.3)!important;color:#9ff5ff!important;font-size:15px!important;font-weight:900!important}
+.credit-link-grid>a[href="./"]:before{content:"⌂"!important}
+.credit-link-grid>a[href*="support"]:before{content:"☏"!important}
+.credit-link-grid>a[href*="social-media"]:before{content:"◎"!important}
+.credit-link-grid>a[href*="terms"]:before{content:"§"!important}
+.credit-link-grid>a[href*="privacy"]:before{content:"◈"!important}
+.credit-link-grid>a[href*="website-service"]:before{content:"⌘"!important}
+.credit-link-grid>a[href*="copyright"]:before{content:"©"!important}
+.credit-link-grid>a[href*="licenses"]:before{content:"✓"!important}
+.credit-link-grid>a[href^="mailto:"]:before{content:"✉"!important;background:rgba(234,76,137,.16)!important;color:#ffb7d4!important;border-color:rgba(255,145,192,.35)!important}
+.credit-link-grid>a[href*="wa.me"]:before{content:"◉"!important;background:rgba(37,211,102,.17)!important;color:#7effa8!important;border-color:rgba(65,230,125,.38)!important}
+.credit-link-grid>a span{margin-left:auto!important;color:#8cf3ff!important}
+.credit-cta{background:linear-gradient(110deg,#103bb0,#4330d3 58%,#732fe0)!important}
+.credit-cta h2,.credit-cta p{color:#fff!important}
+.credit-brand strong{color:#fff!important}
+.credit-brand small{color:#bdcbed!important}
+.credit-bottom{background:#040d22!important;color:#d4e0f7!important}
+@media(max-width:780px){body:before{background-position:center,right -18vw top 12%!important;background-size:cover,min(110vw,600px) auto!important;opacity:.85!important}}
+@media(prefers-reduced-motion:no-preference){.credit-link-grid>a{transition:transform .18s ease,border-color .18s ease,filter .18s ease!important}.credit-link-grid>a:hover{filter:brightness(1.14)!important}}
+
 </style>
 </head><body><main class="wrap"><header><a class="brand" href="./"><img class="brand-logo" src="assets/molan-business-icon.svg" alt="Molan Business app icon"><span>ZAKMOLANITECH SOLUTIONS<br><small>Equipping minds with IT solutions.</small></span></a></header><section class="hero"><div class="hero-kicker">CONNECT WITH OUR COMMUNITY</div><h1>Social Media Accounts</h1><p>Find Zakmolanitech Solutions on social platforms. The company display name supplied for TikTok, Instagram, Facebook and LinkedIn is “Zakmolanitech Solutions”.</p>
 </section><div class="content"><div class="note">The platform links below open a search for the supplied display name, rather than claiming an unverified profile URL. This avoids sending visitors to the wrong account.</div>
