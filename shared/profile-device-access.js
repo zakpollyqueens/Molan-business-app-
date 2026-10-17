@@ -82,16 +82,23 @@
     dialog.hidden = false;
     dialog.querySelector('[data-access-target="mobile"]').focus();
   });
-  new MutationObserver(() => {
+  const ensureAccessMenuItem = () => {
     const currentNav = document.querySelector('[data-profile-menu] nav');
-    if (currentNav && !currentNav.querySelector('[data-give-device-access]')) {
-      const newLink = document.createElement('a');
-      newLink.href = '#give-device-access';
-      newLink.dataset.giveDeviceAccess = '';
-      newLink.innerHTML = '<span>🔐</span><strong>Give Access to Mobile &amp; PC App</strong>';
-      currentNav.append(newLink);
-    }
-  }).observe(nav, { childList: true });
+    if (!currentNav || currentNav.querySelector('[data-give-device-access]')) return;
+    const newLink = document.createElement('a');
+    newLink.href = '#give-device-access';
+    newLink.dataset.giveDeviceAccess = '';
+    const icon = document.createElement('span');
+    icon.textContent = '🔐';
+    const label = document.createElement('strong');
+    label.textContent = 'Give Access to Mobile & PC App';
+    newLink.append(icon, label);
+    currentNav.append(newLink);
+  };
+  // Profile navigation can be rebuilt after profile.json loads; watch the whole page
+  // so the access action survives nav replacement and delayed profile rendering.
+  new MutationObserver(ensureAccessMenuItem).observe(document.body, { childList: true, subtree: true });
+  ensureAccessMenuItem();
   dialog.querySelectorAll('[data-access-target]').forEach(button => button.addEventListener('click', () => {
     target = button.dataset.accessTarget;
     dialog.querySelectorAll('[data-access-target]').forEach(option => option.setAttribute('aria-pressed', String(option === button)));
