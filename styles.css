@@ -513,3 +513,19 @@ html[data-theme="dark"] .legal-dialog h2{color:#eef7ff}html[data-theme="dark"] .
 
 .website-payment-plan-note{grid-column:1/-1;margin:-4px 0 8px;padding:10px 12px;border-left:3px solid #2b94d2;border-radius:7px;background:#eef8ff;color:#234d6d;font-size:12px;line-height:1.65}
 html[data-theme="dark"] .website-payment-plan-note{background:#122d43;color:#d2e8f7}
+
+/* Expandable company footer, support contacts and legal policies. */
+.zakmolanitech-company-footer{padding:26px clamp(16px,4vw,38px);color:#aebed1;background:#071426;border-top:1px solid rgba(148,163,184,.2);font-size:12px;line-height:1.7}
+.app-footer-top{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:26px;max-width:1240px;margin:0 auto 22px}
+.app-footer-brand strong,.app-footer-contact>strong,.app-footer-links>strong{display:block;color:#e6f7ff;font-size:13px;margin-bottom:8px}
+.app-footer-brand p{margin:4px 0 12px;color:#70d9f3;font-weight:700}
+.app-footer-brand small{color:#8fa4ba}
+.app-footer-contact,.app-footer-links{display:flex;flex-direction:column;align-items:flex-start;gap:5px;min-width:0}
+.app-footer-contact a,.app-footer-links a{color:#70d9f3;text-decoration:none;overflow-wrap:anywhere}
+.app-footer-contact a:hover,.app-footer-links a:hover{text-decoration:underline;color:#fff}
+.app-footer-legal{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;max-width:1240px;margin:0 auto}
+.app-footer-legal details{min-width:0;border:1px solid #263c55;border-radius:11px;background:#0b1c30}
+.app-footer-legal summary{padding:11px 13px;color:#e4f3ff;font-weight:800;cursor:pointer}
+.app-footer-legal details>div{padding:0 13px 13px;color:#b7c7d9}
+.app-footer-legal p{margin:8px 0;line-height:1.75}
+@media(max-width:760px){.app-footer-top{grid-template-columns:1fr;gap:18px}.app-footer-legal{grid-template-columns:1fr}}
