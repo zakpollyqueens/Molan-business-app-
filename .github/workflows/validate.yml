@@ -14,6 +14,16 @@ jobs:
           node-version: 20
       - name: Check JavaScript syntax
         run: node -e "JSON.parse(require('node:fs').readFileSync('package.json','utf8'))" && node --check app.js && node --check business-profiles.js && node --check member-portal.js && node --check shared/upgrade-manager.js && node --check shared/profile-device-access.js && node --check scripts/prepare-web.cjs && node --check scripts/generate-extended-business-profiles.mjs && node --check scripts/configure-android-app-access.cjs && node --check desktop/main.cjs && node --check desktop/preload.cjs
+      - name: Verify live app handoff rejects unauthorized requests
+        run: |
+          set -eu
+          base="https://rcubnewrfieqhwcnvrzs.supabase.co/functions/v1/business-app-handoff"
+          key="sb_publishable_0T7DCcWPMHr5sRGMUcc8sQ_8jnobyYQ"
+          create_status="$(curl -sS -o /tmp/molan-handoff-create.json -w '%{http_code}' "$base" -X POST -H "Origin: https://zakpollyqueens.github.io" -H "Content-Type: application/json" -H "apikey: $key" --data '{"action":"create"}')"
+          test "$create_status" = "401" || { cat /tmp/molan-handoff-create.json; echo "Unauthenticated create should return 401, got $create_status"; exit 1; }
+          consume_status="$(curl -sS -o /tmp/molan-handoff-consume.json -w '%{http_code}' "$base" -X POST -H "Origin: https://zakpollyqueens.github.io" -H "Content-Type: application/json" -H "apikey: $key" --data '{"action":"consume","token":"invalid"}')"
+          test "$consume_status" = "400" || { cat /tmp/molan-handoff-consume.json; echo "Invalid consume token should return 400, got $consume_status"; exit 1; }
+          echo "Live handoff endpoint is active and rejects unauthenticated or invalid-token requests."
       - name: Build and audit the complete published profile catalogue
         run: npm install && npm run prepare:web
       - name: Check required frontend files
