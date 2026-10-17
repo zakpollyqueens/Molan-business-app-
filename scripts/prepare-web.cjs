@@ -80,7 +80,7 @@ for (const file of profileHtmlFiles) {
   if (accessCount !== 1) {
     throw new Error('Expected exactly one Give Access item inside the hamburger nav, found ' + accessCount + ': ' + relativePage);
   }
-  const runtimeTags = [...html.matchAll(/<script\\b(?=[^>]*\\bdata-profile-device-access\\b)[^>]*src=["']([^"']+)["'][^>]*>/gi)];
+  const runtimeTags = [...html.matchAll(/<script\b(?=[^>]*\bdata-profile-device-access\b)[^>]*src=["']([^"']+)["'][^>]*>/gi)];
   if (runtimeTags.length !== 1 || runtimeTags[0][1] !== runtimeSrc) {
     throw new Error('Expected one correctly linked device-access runtime (' + runtimeSrc + '): ' + relativePage);
   }
