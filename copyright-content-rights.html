@@ -258,6 +258,19 @@ header:not(.top),header.top{background:linear-gradient(100deg,rgba(4,15,46,.97),
 @media(max-width:680px){body:before{background-size:cover, min(115vw,520px) auto!important;background-position:center, right -35vw top 15%!important;opacity:.65!important}.wrap{backdrop-filter:blur(10px)!important;-webkit-backdrop-filter:blur(10px)!important}}
 @media(prefers-reduced-motion:reduce){body:before,body:after{animation:none!important}}
 
+
+/* Organised 10-link footer navigation: four columns by three rows */
+.credit-main.credit-main-grid{display:grid!important;grid-template-columns:1fr!important;gap:20px!important;padding:26px clamp(18px,3.5vw,36px)!important;background:linear-gradient(160deg,rgba(5,17,45,.97),rgba(10,20,61,.97))!important}
+.credit-main-grid .credit-brand{width:max-content;max-width:100%;color:#fff!important}
+.credit-main-grid .credit-brand strong{color:#f5f7ff!important}
+.credit-main-grid .credit-brand small{color:#b7c8f2!important}
+.credit-link-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;grid-auto-rows:minmax(44px,auto)!important;gap:10px!important;align-items:stretch!important}
+.credit-link-grid>a{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;min-width:0!important;padding:11px 12px!important;border:1px solid rgba(119,157,255,.25)!important;border-radius:11px!important;background:linear-gradient(135deg,rgba(25,49,105,.86),rgba(38,32,100,.76))!important;color:#b8dfff!important;font-size:12px!important;font-weight:750!important;line-height:1.35!important;text-decoration:none!important;overflow-wrap:anywhere!important;transition:transform .18s,border-color .18s,background .18s!important}
+.credit-link-grid>a span{flex:0 0 auto;color:#8ef2ff!important;font-size:14px!important}
+.credit-link-grid>a:hover{transform:translateY(-2px)!important;border-color:rgba(104,229,255,.75)!important;background:linear-gradient(135deg,rgba(31,77,157,.95),rgba(76,42,156,.9))!important;color:#fff!important}
+@media(max-width:780px){.credit-link-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+@media(max-width:480px){.credit-main.credit-main-grid{padding:22px 16px!important}.credit-link-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}.credit-link-grid>a{padding:10px!important;font-size:11px!important}.credit-main-grid .credit-brand{grid-column:auto!important}}
+
 </style>
 </head><body><main class="wrap"><header><a class="brand" href="./"><img class="brand-logo" src="assets/molan-business-icon.svg" alt="Molan Business app icon"><span>ZAKMOLANITECH SOLUTIONS<br><small>Equipping minds with IT solutions.</small></span></a></header><section class="hero"><div class="hero-kicker">CREATIVE WORK · OWNERSHIP · FAIR USE</div><h1>Copyright & Content Rights</h1><p>This page explains the general rights and responsibilities for content used in Molan Business and services provided by Zakmolanitech Solutions.</p>
 </section><div class="content"><div class="note">Please respect the rights of the company, customers and third-party creators. These notes provide a plain-language overview and do not replace a signed project agreement or applicable law.</div>
@@ -270,11 +283,20 @@ header:not(.top),header.top{background:linear-gradient(100deg,rgba(4,15,46,.97),
     <div class="credit-cta-copy"><span class="credit-eyebrow">HERE TO HELP YOU MOVE FORWARD</span><h2>Let’s keep your business moving.</h2><p>Need assistance with Molan Business or a Zakmolanitech Solutions service? We’re ready to help.</p></div>
     <a class="credit-cta-button" href="support.html">Contact support <span aria-hidden="true">↗</span></a>
   </section>
-  <div class="credit-main">
+  <div class="credit-main credit-main-grid">
     <a class="credit-brand" href="./" aria-label="Molan Business home"><img src="assets/molan-business-icon.svg" alt="" class="credit-logo"><span><strong>MOLAN <b>BUSINESS</b></strong><small>Your business, in sync.</small></span></a>
-    <div class="credit-column"><strong>QUICK LINKS</strong><a href="./">Home / App</a><a href="support.html">Support & Contacts</a><a href="social-media.html">Social Media</a></div>
-    <div class="credit-column"><strong>LEGAL & POLICIES</strong><a href="terms.html">Terms of Service</a><a href="privacy.html">Privacy Policy</a><a href="website-service-terms.html">Website Service Terms</a><a href="copyright-content-rights.html">Copyright & Content Rights</a><a href="licenses.html">Licenses</a></div>
-    <div class="credit-column credit-contact"><strong>GET IN TOUCH</strong><a href="mailto:Zakmolanitechsolutions@gmail.com">Zakmolanitechsolutions@gmail.com</a><a href="https://wa.me/256742956448" target="_blank" rel="noopener">WhatsApp support ↗</a></div>
+    <nav class="credit-link-grid" aria-label="Footer navigation">
+      <a href="./">Home / App <span aria-hidden="true">↗</span></a>
+      <a href="support.html">Support & Contacts <span aria-hidden="true">↗</span></a>
+      <a href="social-media.html">Social Media <span aria-hidden="true">↗</span></a>
+      <a href="terms.html">Terms of Service <span aria-hidden="true">↗</span></a>
+      <a href="privacy.html">Privacy Policy <span aria-hidden="true">↗</span></a>
+      <a href="website-service-terms.html">Website Service Terms <span aria-hidden="true">↗</span></a>
+      <a href="copyright-content-rights.html">Copyright & Content Rights <span aria-hidden="true">↗</span></a>
+      <a href="licenses.html">Licences & Notices <span aria-hidden="true">↗</span></a>
+      <a href="mailto:Zakmolanitechsolutions@gmail.com">Company Email <span aria-hidden="true">↗</span></a>
+      <a href="https://wa.me/256742956448" target="_blank" rel="noopener">WhatsApp Support <span aria-hidden="true">↗</span></a>
+    </nav>
   </div>
   <div class="credit-bottom"><span>© <span class="credit-year">2026</span> Molan Business. All rights reserved.</span><span class="credit-company">Built and Managed by Zakmolanitech Solutions Company</span><span class="credit-motto">Equipping minds with IT solutions.</span></div>
 </footer>
