@@ -1,9 +1,9 @@
 name: Validate frontend
 on:
   push:
-    branches: [main, feat/sacco-savings-withdrawals-terms, fix/connected-navigation-workspace-admin, feat/profile-owned-pages-architecture]
+    branches: [main, feat/sacco-savings-withdrawals-terms, fix/connected-navigation-workspace-admin, feat/profile-owned-pages-architecture, feat/device-access-in-business-profile-settings]
   pull_request:
-    branches: [main, feat/sacco-savings-withdrawals-terms, fix/connected-navigation-workspace-admin]
+    branches: [main, feat/sacco-savings-withdrawals-terms, fix/connected-navigation-workspace-admin, feat/device-access-in-business-profile-settings]
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -72,7 +72,7 @@ jobs:
             const ownedHtml = fs.readFileSync(ownedPage, 'utf8');
             if (!ownedHtml.includes('data-profile="' + folder.name + '"') && !ownedHtml.includes('src="profile.js"')) throw new Error('Owned page must declare its identity or load its folder-owned identity-checking profile.js: ' + ownedPage);
             // The retired savings-circle slug is intentionally a redirect, not an active business profile.
-            if (folder.name !== 'savings-circle-village-savings-group' && (!ownedHtml.includes('data-profile-hamburger') || !ownedHtml.includes('data-give-device-access') || !ownedHtml.includes('data-profile-device-access'))) throw new Error('Profile overview is missing its hamburger Give Access action/runtime: ' + ownedPage);
+            if (folder.name !== 'savings-circle-village-savings-group' && !ownedHtml.includes('data-profile-hamburger')) throw new Error('Profile overview is missing its hamburger navigation: ' + ownedPage);
             const ownedScript = 'business-profiles/' + folder.name + '/profile.js';
             if (!fs.existsSync(ownedScript)) throw new Error('Missing profile-specific loader/runtime: ' + ownedScript);
             const ownedJs = fs.readFileSync(ownedScript, 'utf8');
@@ -87,7 +87,7 @@ jobs:
               if (!profile.retired && !fs.existsSync(featurePage)) throw new Error('Missing profile feature page: ' + featurePage);
               if (!profile.retired) {
                 const featureHtml = fs.readFileSync(featurePage, 'utf8');
-                if (!featureHtml.includes('data-profile-hamburger') || !featureHtml.includes('data-give-device-access') || !featureHtml.includes('data-profile-device-access')) throw new Error('Feature page is missing its hamburger Give Access action/runtime: ' + featurePage);
+                if (!featureHtml.includes('data-profile-hamburger')) throw new Error('Feature page is missing its hamburger navigation: ' + featurePage);
               }
             }
             if (folder.name !== 'sacco-savings-group' && profile.features.some(feature => ['sacco','sacco-welfare'].includes(feature.route))) {
@@ -122,9 +122,10 @@ jobs:
           }
           if (!js.includes("upsert({company_id:company.id,profile_key:profile[0],settings,updated_by:user.id")) throw new Error('Industry settings must be saved to the active tenant.');
           const deviceAccessRuntime = fs.readFileSync('shared/profile-device-access.js', 'utf8');
-          for (const required of ['new MutationObserver', 'ensureAccessMenuItem', 'data-give-device-access', 'data-profile-device-access-dialog']) {
+          for (const required of ['cleanLegacyMenu', 'new MutationObserver(cleanLegacyMenu)', 'data-open-device-access', 'data-profile-device-access-dialog']) {
             if (!deviceAccessRuntime.includes(required)) throw new Error('Give Access runtime missing required behavior: ' + required);
           }
+          if (!js.includes('DEVICE & APP ACCESS') || !js.includes('device-access-settings-panel') || !js.includes('Get mobile app') || !js.includes('Get PC app')) throw new Error('Business Settings is missing the workspace Device & App Access section.');
           const versionManifest = JSON.parse(fs.readFileSync('version.json', 'utf8'));
           const upgradeManager = fs.readFileSync('shared/upgrade-manager.js', 'utf8');
           const platformCss = fs.readFileSync('shared/platform.css', 'utf8');
