@@ -2,6 +2,10 @@
   'use strict';
   // Always repair the profile hamburger first; a pre-existing dialog must not
   // prevent the access menu item from being restored after navigation rebuilds.
+  const isInstalledApp = () => !!window.MolanBusinessNative ||
+    !!(window.Capacitor && typeof window.Capacitor.isNativePlatform === 'function' && window.Capacitor.isNativePlatform()) ||
+    /Electron/i.test(navigator.userAgent || '');
+  if (isInstalledApp()) document.documentElement.classList.add('molan-native-app');
   const getMenu = () => document.querySelector('[data-profile-menu]');
   const getNav = () => getMenu()?.querySelector('nav');
   const createAccessLink = () => {
@@ -11,7 +15,7 @@
     const icon = document.createElement('span');
     icon.textContent = '🔐';
     const label = document.createElement('strong');
-    label.textContent = 'Give Access to Mobile & PC App';
+    label.textContent = isInstalledApp() ? 'Close Access on This App' : 'Give Access to Mobile & PC App';
     item.append(icon, label);
     return item;
   };
@@ -21,7 +25,10 @@
     const existing = currentNav.querySelectorAll('[data-give-device-access]');
     if (existing.length > 1) existing.forEach((item, index) => { if (index > 0) item.remove(); });
     const accessItem = currentNav.querySelector('[data-give-device-access]') || createAccessLink();
-    // Keep Give Access after the final business-profile feature in the hamburger.
+    const label = accessItem.querySelector('strong');
+    if (label) label.textContent = isInstalledApp() ? 'Close Access on This App' : 'Give Access to Mobile & PC App';
+    accessItem.setAttribute('aria-label', isInstalledApp() ? 'Close access on this app' : 'Give access to the Molan Business app');
+    // Keep the action after the final business-profile feature in the hamburger.
     if (currentNav.lastElementChild !== accessItem) currentNav.append(accessItem);
   };
   // Do not exit when a profile menu is rendered late. Observe the document so
@@ -56,6 +63,12 @@
     .device-access-actions button.secondary{background:#fff;color:#10213e}
     .device-access-note{padding:12px;border-radius:12px;background:#fff7e8;border:1px solid #f2d7a4;color:#754c08;font-size:13px;line-height:1.55}
     @media(max-width:440px){.device-access-options{grid-template-columns:1fr}.device-access-card{padding:17px}}
+
+    html.molan-native-app .profile-menu nav a[data-give-device-access]{background:linear-gradient(110deg,#fff3e6,#fff,#fff0e3)!important;border-color:#f1b47a!important;animation:none!important}
+    html.molan-native-app .profile-menu nav a[data-give-device-access] span{background:#fff0dc!important;box-shadow:inset 0 0 0 1px #f1c89d!important}
+    .device-access-error{padding:10px 12px;border-radius:10px;background:#fff0f0;border:1px solid #efb1b1;color:#8b2222!important;font-size:13px}
+    .device-access-actions [data-device-access-download]{align-self:center;color:#087eaf;font-size:13px;font-weight:700;text-decoration:none}
+    .device-access-actions [data-device-access-download]:hover{text-decoration:underline}
   `;
   document.head.append(style);
 
@@ -66,75 +79,157 @@
   dialog.hidden = true;
   dialog.innerHTML = `
     <section class="device-access-card" role="dialog" aria-modal="true" aria-labelledby="device-access-title">
-      <div style="font-size:11px;font-weight:850;letter-spacing:.14em;color:#0787bf">MOLAN BUSINESS · DEVICE ACCESS</div>
+      <div style="font-size:11px;font-weight:850;letter-spacing:.14em;color:#0787bf">MOLAN BUSINESS · SECURE DEVICE ACCESS</div>
       <h2 id="device-access-title">Give access to your mobile or PC app</h2>
-      <p>Choose the device you want to connect to this business profile. Use your own Molan Business account and never share your password or verification codes.</p>
+      <p>Authorize your own signed-in account to open in the installed Molan Business app. You must approve this request explicitly.</p>
       <div class="device-access-options">
-        <button type="button" class="device-access-option" data-access-target="mobile" aria-pressed="true"><strong>📱 Mobile app</strong><small>Android or iPhone</small></button>
+        <button type="button" class="device-access-option" data-access-target="mobile" aria-pressed="true"><strong>📱 Mobile app</strong><small>Android</small></button>
         <button type="button" class="device-access-option" data-access-target="pc" aria-pressed="false"><strong>💻 PC app</strong><small>Windows or desktop</small></button>
       </div>
-      <div class="device-access-note">Choose a device to continue to the secure Molan Business account access flow. Access is not granted until the account owner or an authorized administrator approves it.</div>
-      <p data-device-access-status role="status">Selected: Mobile app</p>
+      <div class="device-access-note">A one-time approval code expires after 2 minutes and can be used only once. Never share your sign-in details.</div>
+      <p data-device-access-account role="status">Checking your signed-in account…</p>
+      <p data-device-access-status role="status">Selected: Android / mobile app</p>
+      <p data-device-access-error class="device-access-error" role="alert" hidden></p>
       <div class="device-access-actions">
-        <button type="button" data-device-access-continue>Continue to Molan Business</button>
+        <button type="button" data-device-access-confirm disabled>Checking account…</button>
+        <a data-device-access-download href="https://github.com/zakpollyqueens/Molan-business-app-/releases/latest" target="_blank" rel="noopener">Don't have the app? Download it</a>
         <button type="button" class="secondary" data-device-access-close>Cancel</button>
       </div>
     </section>`;
   document.body.append(dialog);
 
   let target = 'mobile';
+  let authClientPromise = null;
+  const accountLabel = dialog.querySelector('[data-device-access-account]');
+  const errorBox = dialog.querySelector('[data-device-access-error]');
+  const confirmButton = dialog.querySelector('[data-device-access-confirm]');
   const status = dialog.querySelector('[data-device-access-status]');
   const closeButton = dialog.querySelector('[data-device-access-close]');
-  const close = () => { dialog.hidden = true; document.querySelector('[data-give-device-access]')?.focus(); };
-  document.addEventListener('click', event => {
+  const closeDialog = () => { dialog.hidden = true; document.querySelector('[data-give-device-access]')?.focus(); };
+  const showError = message => { errorBox.textContent = message; errorBox.hidden = false; };
+  const loadSupabase = async () => {
+    if (window.supabase?.createClient) return window.supabase;
+    if (!window.__molanSupabaseLibraryPromise) {
+      window.__molanSupabaseLibraryPromise = new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+        script.async = true;
+        script.onload = () => window.supabase?.createClient ? resolve(window.supabase) : reject(new Error('The secure sign-in library did not load.'));
+        script.onerror = () => reject(new Error('Could not load the secure sign-in library. Check your connection and try again.'));
+        document.head.appendChild(script);
+      });
+    }
+    return window.__molanSupabaseLibraryPromise;
+  };
+  const getAuthClient = async () => {
+    if (!authClientPromise) authClientPromise = (async () => {
+      const library = await loadSupabase();
+      let config = null;
+      try { config = JSON.parse(localStorage.getItem('molan_supabase_config_v1') || 'null'); } catch {}
+      const url = config?.url || 'https://rcubnewrfieqhwcnvrzs.supabase.co';
+      const key = config?.key || 'sb_publishable_0T7DCcWPMHr5sRGMUcc8sQ_8jnobyYQ';
+      return library.createClient(url, key, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
+    })();
+    return authClientPromise;
+  };
+  const closeInstalledAccess = async item => {
+    const label = item.querySelector('strong');
+    const original = 'Close Access on This App';
+    if (label) label.textContent = 'Closing access…';
+    item.setAttribute('aria-busy', 'true');
+    try {
+      const client = await getAuthClient();
+      const { error } = await client.auth.signOut({ scope: 'local' });
+      if (error) throw error;
+      try { localStorage.removeItem('molan_business_app_access_active'); } catch {}
+      if (label) label.textContent = 'Access Closed';
+      item.setAttribute('aria-label', 'App access closed on this device');
+      window.setTimeout(() => {
+        if (label) label.textContent = original;
+        item.removeAttribute('aria-busy');
+      }, 2400);
+      window.alert('Access to Molan Business has been closed on this device. Sign in again to reconnect.');
+    } catch (error) {
+      if (label) label.textContent = original;
+      item.removeAttribute('aria-busy');
+      window.alert(error?.message || 'Access could not be closed. Please try again.');
+    }
+  };
+  document.addEventListener('click', async event => {
     const accessLink = event.target.closest('[data-give-device-access]');
     if (!accessLink) return;
     event.preventDefault();
-    dialog.hidden = false;
-    dialog.querySelector('[data-access-target="mobile"]').focus();
-  });
-  // Keep the action present even when profile navigation is replaced after
-  // profile.json loads or the hamburger is inserted after this script executes.
-  const observer = new MutationObserver(() => ensureAccessMenuItem());
-  const observeWhenReady = () => {
-    ensureAccessMenuItem();
-    if (document.body && !observerStarted) {
-      observer.observe(document.body, { childList: true, subtree: true });
-      observerStarted = true;
+    if (isInstalledApp()) {
+      await closeInstalledAccess(accessLink);
+      return;
     }
-  };
-  let observerStarted = false;
-  observeWhenReady();
-  if (!observerStarted) {
-    document.addEventListener('DOMContentLoaded', observeWhenReady, { once: true });
-  }
+    dialog.hidden = false;
+    errorBox.hidden = true;
+    accountLabel.textContent = 'Checking your signed-in Molan Business account…';
+    confirmButton.disabled = true;
+    confirmButton.textContent = 'Checking account…';
+    confirmButton._molanSession = null;
+    try {
+      const client = await getAuthClient();
+      const { data, error } = await client.auth.getSession();
+      if (error) throw error;
+      if (!data.session?.user) throw new Error('Sign in to Molan Business in this browser first, then try again.');
+      accountLabel.textContent = 'Signed in as ' + (data.session.user.email || 'your Molan Business account');
+      confirmButton.disabled = false;
+      confirmButton.textContent = 'Authorize & open Molan Business';
+      confirmButton._molanSession = data.session;
+    } catch (error) {
+      accountLabel.textContent = 'No active account detected.';
+      showError(error?.message || 'Sign in to Molan Business in this browser first.');
+      confirmButton.disabled = true;
+      confirmButton.textContent = 'Sign in required';
+    }
+  });
   dialog.querySelectorAll('[data-access-target]').forEach(button => button.addEventListener('click', () => {
     target = button.dataset.accessTarget;
     dialog.querySelectorAll('[data-access-target]').forEach(option => option.setAttribute('aria-pressed', String(option === button)));
-    status.textContent = 'Selected: ' + (target === 'mobile' ? 'Mobile app' : 'PC app');
+    status.textContent = 'Selected: ' + (target === 'mobile' ? 'Android / mobile app' : 'Windows / PC app');
   }));
-  closeButton.addEventListener('click', close);
-  dialog.addEventListener('click', event => { if (event.target === dialog) close(); });
-  document.addEventListener('keydown', event => { if (event.key === 'Escape' && !dialog.hidden) close(); });
-
-  dialog.querySelector('[data-device-access-continue]').addEventListener('click', () => {
-    const profile = document.body.dataset.profile || '';
-    const currentMenu = getMenu();
-    const profileName = currentMenu?.querySelector('.profile-menu-head strong')?.textContent || document.title;
-    try {
-      sessionStorage.setItem('molan_device_access_request_v1', JSON.stringify({
-        profile, profileName, target, requestedAt: Date.now()
-      }));
-    } catch {}
-    const appLink = getMenu()?.querySelector('.profile-menu-app');
-    if (!appLink?.href) {
-      status.textContent = 'Open Molan Business and sign in to continue. No device access has been granted yet.';
+  closeButton.addEventListener('click', closeDialog);
+  dialog.addEventListener('click', event => { if (event.target === dialog) closeDialog(); });
+  document.addEventListener('keydown', event => { if (event.key === 'Escape' && !dialog.hidden) closeDialog(); });
+  confirmButton.addEventListener('click', async () => {
+    errorBox.hidden = true;
+    const currentSession = confirmButton._molanSession;
+    if (!currentSession?.access_token) {
+      showError('Sign in to Molan Business in this browser first, then try again.');
       return;
     }
-    const destination = new URL(appLink.href, location.href);
-    destination.searchParams.set('deviceAccess', '1');
-    destination.searchParams.set('deviceType', target);
-    destination.searchParams.set('profile', profile);
-    location.href = destination.href;
+    const profileSlug = String(document.body.dataset.profile || '').trim();
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(profileSlug)) {
+      showError('This business profile could not be verified. Refresh the page and try again.');
+      return;
+    }
+    confirmButton.disabled = true;
+    confirmButton.textContent = 'Authorizing this device…';
+    try {
+      const config = JSON.parse(localStorage.getItem('molan_supabase_config_v1') || 'null');
+      const supabaseUrl = (config?.url || 'https://rcubnewrfieqhwcnvrzs.supabase.co').replace(/\/$/, '');
+      const supabaseKey = config?.key || 'sb_publishable_0T7DCcWPMHr5sRGMUcc8sQ_8jnobyYQ';
+      const response = await fetch(supabaseUrl + '/functions/v1/business-app-handoff', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'apikey': supabaseKey, 'Authorization': 'Bearer ' + currentSession.access_token },
+        body: JSON.stringify({ action: 'create', profileSlug, targetDevice: target })
+      });
+      const payload = await response.json();
+      if (!response.ok || !payload.success || !payload.appUrl) throw new Error(payload.error || 'Could not authorize the app. Please try again.');
+      try { sessionStorage.setItem('molan_business_pending_profile_access_v1', JSON.stringify({ profileSlug, targetDevice: target, requestedAt: Date.now() })); } catch {}
+      window.location.href = payload.appUrl;
+      confirmButton.textContent = 'Opening Molan Business…';
+      window.setTimeout(() => {
+        confirmButton.disabled = false;
+        confirmButton.textContent = 'Authorize & open Molan Business';
+        showError('If the app did not open, install the Molan Business app first. This approval expires after 2 minutes; you can authorize again.');
+      }, 1500);
+    } catch (error) {
+      showError(error?.message || 'Authorization failed. Please try again.');
+      confirmButton.disabled = false;
+      confirmButton.textContent = 'Authorize & open Molan Business';
+    }
   });
 })();
