@@ -1671,7 +1671,7 @@ document.addEventListener('DOMContentLoaded',()=>{const y=document.querySelector
       const optionMarkup=[['UG','Uganda · UGX'],['KE','Kenya · KSh'],['TZ','Tanzania · TZS'],['OTHER','Other countries · USD']].map(([code,label])=>'<option value="'+code+'" '+(market===code?'selected':'')+'>'+label+'</option>').join('');
       const requestRows=cache.websiteRequests.length?cache.websiteRequests.map(x=>{
         const xCurrency=String(x.package_currency_code||'UGX').toUpperCase(),xAmount=Number(x.package_amount??x.package_price_ugx??0);
-        const paid=x.payment_status==='paid',depositPaid=x.payment_status==='deposit_paid',delivered=String(x.status||'').toLowerCase()==='delivered';
+        const paid=x.payment_status==='paid',depositPaid=x.payment_status==='partially_paid',delivered=String(x.status||'').toLowerCase()==='delivered';
         const canPayDeposit=!paid&&!depositPaid&&!['cancelled','delivered'].includes(String(x.status||'').toLowerCase());
         const canPayBalance=depositPaid&&delivered&&Number(x.balance_amount||0)>0;
         const planLabel=x.payment_plan==='installments'?'Installments':'Full amount plan';
