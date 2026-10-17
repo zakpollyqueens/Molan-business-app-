@@ -124,8 +124,11 @@ async function createWebsiteServiceCheckout(authenticatedUser: any, body: any) {
     }).select("id").single();
   if (paymentError || !payment) return json({ error: "Could not create the website checkout record. Please retry." }, 500);
 
+  const awaitingPatch = paymentStage === "balance"
+    ? { payment_status: "partially_paid" }
+    : { status: "awaiting_payment", payment_status: "pending" };
   const { error: awaitingError } = await admin.from("website_service_requests")
-    .update({ status: "awaiting_payment", payment_status: "pending" }).eq("id", request.id);
+    .update(awaitingPatch).eq("id", request.id);
   if (awaitingError) {
     await markWebsiteCheckoutFailed(payment.id, request.id, "Could not mark request as awaiting payment.");
     return json({ error: "Could not prepare this website request for checkout." }, 500);
