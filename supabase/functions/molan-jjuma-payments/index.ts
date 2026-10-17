@@ -52,7 +52,7 @@ async function markWebsiteCheckoutFailed(paymentId: string, requestId: string, m
   const { data: payment } = await admin.from("website_service_checkout_payments")
     .select("provider_metadata").eq("id", paymentId).maybeSingle();
   const isBalanceCheckout = payment?.provider_metadata?.payment_stage === "balance";
-  const patch: Record<string, unknown> = { payment_status: isBalanceCheckout ? "deposit_paid" : "failed" };
+  const patch: Record<string, unknown> = { payment_status: isBalanceCheckout ? "partially_paid" : "failed" };
   if (!isBalanceCheckout && request?.status === "awaiting_payment") patch.status = "requested";
   await admin.from("website_service_requests").update(patch).eq("id", requestId);
 }
@@ -79,11 +79,11 @@ async function createWebsiteServiceCheckout(authenticatedUser: any, body: any) {
   if (!request) return json({ error: "The website service request was not found in this business." }, 404);
   if (request.payment_status === "paid") return json({ error: "This website request has already been paid in full." }, 409);
   if (paymentStage === "balance") {
-    if (request.payment_status !== "deposit_paid" || String(request.status) !== "delivered") {
+    if (request.payment_status !== "partially_paid" || String(request.status) !== "delivered") {
       return json({ error: "The remaining balance can be paid after the website has been marked delivered and the first payment is verified." }, 409);
     }
   } else {
-    if (request.payment_status === "deposit_paid") return json({ error: "The first payment is already verified. The remaining balance becomes payable after website delivery." }, 409);
+    if (request.payment_status === "partially_paid") return json({ error: "The first payment is already verified. The remaining balance becomes payable after website delivery." }, 409);
     if (!["requested", "awaiting_payment"].includes(String(request.status))) {
       return json({ error: "This request is no longer available for the first-payment checkout." }, 409);
     }
@@ -128,7 +128,7 @@ async function createWebsiteServiceCheckout(authenticatedUser: any, body: any) {
   if (paymentError || !payment) return json({ error: "Could not create the website checkout record. Please retry." }, 500);
 
   const requestPendingPatch = paymentStage === "balance"
-    ? { payment_status: "deposit_paid" }
+    ? { payment_status: "partially_paid" }
     : { status: "awaiting_payment", payment_status: "pending" };
   const { error: awaitingError } = await admin.from("website_service_requests")
     .update(requestPendingPatch).eq("id", request.id);
@@ -345,7 +345,7 @@ async function handleWebsiteServiceWebhook(
       .select("status").eq("id", websitePayment.request_id).maybeSingle();
     if (requestReadError) return json({ error: "Could not update website request payment status." }, 500);
     const isBalanceCheckout = websitePayment.provider_metadata?.payment_stage === "balance";
-    const requestPatch: Record<string, unknown> = { payment_status: isBalanceCheckout ? "deposit_paid" : "failed" };
+    const requestPatch: Record<string, unknown> = { payment_status: isBalanceCheckout ? "partially_paid" : "failed" };
     if (!isBalanceCheckout && request?.status === "awaiting_payment") requestPatch.status = "requested";
     const { error: requestUpdateError } = await admin.from("website_service_requests")
       .update(requestPatch).eq("id", websitePayment.request_id);
@@ -381,7 +381,7 @@ async function handleWebsiteServiceWebhook(
   if (requestError || !request) return json({ error: "Could not locate the website request for this payment." }, 500);
   const paymentStage = websitePayment.provider_metadata?.payment_stage === "balance" ? "balance" : "deposit";
   const requestPatch: Record<string, unknown> = {
-    payment_status: paymentStage === "balance" ? "paid" : "deposit_paid",
+    payment_status: paymentStage === "balance" ? "paid" : "partially_paid",
     payment_provider_reference: transactionId,
   };
   if (paymentStage === "balance") requestPatch.balance_amount = 0;
