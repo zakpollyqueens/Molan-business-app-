@@ -1798,7 +1798,7 @@ typeInput?.addEventListener('change',renderMetadata);renderMetadata();
     const ext=websiteVoiceMime.includes('mp4')?'m4a':websiteVoiceMime.includes('ogg')?'ogg':'webm';
     const token=window.crypto?.randomUUID?window.crypto.randomUUID():Date.now()+'-'+Math.random().toString(36).slice(2);
     const voicePath=company.id+'/'+user.id+'/'+token+'.'+ext;
-    const voiceUpload=await supabase.storage.from('website-service-voice-notes').upload(voicePath,websiteVoiceBlob,{contentType:websiteVoiceMime||'audio/webm',upsert:false});
+    const voiceUpload=await supabase.storage.from('website-service-voice-notes').upload(voicePath,websiteVoiceBlob,{contentType:websiteVoiceMime.includes('mp4')?'audio/mp4':websiteVoiceMime.includes('ogg')?'audio/ogg':'audio/webm',upsert:false});
     if(voiceUpload.error){toast('Could not upload the voice note: '+voiceUpload.error.message,true);resetWebsiteSubmit();return}
     payload.voice_note_path=voicePath;
   }
