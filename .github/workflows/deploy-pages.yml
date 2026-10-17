@@ -9,7 +9,7 @@ permissions:
   id-token: write
 concurrency:
   group: github-pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -42,3 +42,16 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Verify the published Give Access menu and runtime
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          set -eu
+          base="${PAGE_URL%/}"
+          for profile in grocery-shop supermarket translation-agency-business; do
+            html="$(curl --fail --silent --show-error "$base/business-profiles/$profile/index.html")"
+            printf '%s' "$html" | grep -q 'data-give-device-access' || { echo "Give Access menu item missing from live profile: $profile"; exit 1; }
+            printf '%s' "$html" | grep -q 'data-profile-device-access' || { echo "Device-access runtime missing from live profile: $profile"; exit 1; }
+          done
+          curl --fail --silent --show-error "$base/shared/profile-device-access.js" | grep -q 'ensureAccessMenuItem' || { echo "Shared device-access runtime failed live verification"; exit 1; }
+          echo "Live Give Access checks passed for all smoke-test profiles."

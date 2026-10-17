@@ -60,6 +60,7 @@
   const dialog = document.createElement('div');
   dialog.className = 'device-access-dialog';
   dialog.dataset.profileDeviceAccessDialog = '';
+  dialog.setAttribute('data-profile-device-access-dialog', '');
   dialog.hidden = true;
   dialog.innerHTML = `
     <section class="device-access-card" role="dialog" aria-modal="true" aria-labelledby="device-access-title">

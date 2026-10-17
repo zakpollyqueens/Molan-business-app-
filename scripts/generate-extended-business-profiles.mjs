@@ -23,18 +23,30 @@ function ensureProfileNavigation(file, profile, isFeaturePage = false) {
   const deviceAccessScript = '<script data-profile-device-access src="' + (isFeaturePage ? '../../../../shared/profile-device-access.js' : '../../shared/profile-device-access.js') + '"></script>';
   const accessNavItem = '<a href="#give-device-access" data-give-device-access><span>🔐</span><strong>Give Access to Mobile &amp; PC App</strong></a>';
   if (html.includes('data-profile-hamburger')) {
-    // Repair already-generated profile pages too; do not depend on a fresh folder being created.
-    if (!html.includes('data-give-device-access')) {
-      html = html.replace('</nav>', accessNavItem + '</nav>');
+    // Always normalize the actual hamburger nav, even if a stale marker exists elsewhere.
+    const menuNav = /(\<aside\b[^>]*\bdata-profile-menu\b[^>]*>[\s\S]*?\<nav\b[^>]*>)([\s\S]*?)(\<\/nav\s*>)/i;
+    const match = html.match(menuNav);
+    if (!match) throw new Error('Profile hamburger has no menu navigation: ' + file);
+    const navContents = match[2]
+      .replace(/<a\b(?=[^>]*\bdata-give-device-access\b)[^>]*>[\s\S]*?<\/a\s*>/gi, '')
+      .replace(/\s*$/, '') + accessNavItem;
+    html = html.replace(menuNav, match[1] + navContents + match[3]);
+
+    const relativePage = path.relative(root, file).split(path.sep).join('/');
+    const runtimeSrc = path.posix.relative(path.posix.dirname(relativePage), 'shared/profile-device-access.js');
+    const canonicalRuntimeTag = '<script data-profile-device-access src="' + runtimeSrc + '"></script>';
+    const runtimePattern = /<script\b(?=[^>]*\bdata-profile-device-access\b)[^>]*>[\s\S]*?<\/script\s*>/gi;
+    if (runtimePattern.test(html)) {
+      runtimePattern.lastIndex = 0;
+      let first = true;
+      html = html.replace(runtimePattern, () => {
+        if (!first) return '';
+        first = false;
+        return canonicalRuntimeTag;
+      });
+    } else {
+      html = html.replace('</body>', canonicalRuntimeTag + '</body>');
     }
-    if (!html.includes('data-profile-device-access')) {
-      html = html.replace('</body>', deviceAccessScript + '</body>');
-    }
-    if (!html.includes('data-give-device-access')) {
-      // Defensive fallback for unusual profile markup without a closing nav.
-      html = html.replace('</body>', accessNavItem + deviceAccessScript + '</body>');
-    }
-    if (!html.includes('data-profile-device-access')) html = html.replace('</body>', deviceAccessScript + '</body>');
     fs.writeFileSync(file, html);
     return;
   }
@@ -109,7 +121,7 @@ for (const [i, p] of catalog.profiles.entries()) {
 
 const extended = new Set(catalog.profiles.map(p => p.slug));
 const primaryProfileNavSync = `<script data-primary-profile-nav-sync>(()=>{const slugify=s=>String(s||'').toLowerCase().normalize('NFKD').replace(/[^a-z0-9\\s-]/g,'').trim().replace(/[\\s_]+/g,'-').replace(/-+/g,'-');const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));fetch('profile.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('Profile config unavailable');return r.json()}).then(p=>{const nav=document.querySelector('[data-profile-menu] nav');if(!nav||!Array.isArray(p.features))return;nav.replaceChildren();const home=document.createElement('a');home.href='index.html';home.innerHTML='<span>⌂</span> Overview';nav.append(home);p.features.forEach((f,i)=>{const a=document.createElement('a');a.href='pages/'+slugify(f.title)+'/index.html';a.innerHTML='<span>'+String(i+1).padStart(2,'0')+'</span>'+esc(f.title);nav.append(a)})}).catch(e=>console.warn('[Molan Business] Profile navigation sync failed:',e.message));})();</script>
-<script data-primary-profile-feature-fallback>(()=>{const slugify=s=>String(s||'').toLowerCase().normalize('NFKD').replace(/[^a-z0-9\\s-]/g,'').trim().replace(/[\\s_]+/g,'-').replace(/-+/g,'-');document.addEventListener('click',e=>{const b=e.target.closest('#features button.feature');if(!b||typeof window.MolanProfileRuntime?.openFeature==='function')return;const title=b.querySelector('strong')?.textContent;if(!title)return;e.preventDefault();e.stopImmediatePropagation();location.href='pages/'+slugify(title)+'/index.html'},true)})();</script>`;
+<script data-primary-profile-feature-fallback>(()=>{const slugify=s=>String(s||'').toLowerCase().normalize('NFKD').replace(/[^a-z0-9\s-]/g,'').trim().replace(/[\s_]+/g,'-').replace(/-+/g,'-');document.addEventListener('click',e=>{const b=e.target.closest('#features button.feature');if(!b||typeof window.MolanProfileRuntime?.openFeature==='function')return;const title=b.querySelector('strong')?.textContent;if(!title)return;e.preventDefault();e.stopImmediatePropagation();location.href='pages/'+slugify(title)+'/index.html'},true)})();</script>`;
 const primaryFeatureNavSync = `<script data-primary-feature-nav-sync>(()=>{const slugify=s=>String(s||'').toLowerCase().normalize('NFKD').replace(/[^a-z0-9\\s-]/g,'').trim().replace(/[\\s_]+/g,'-').replace(/-+/g,'-');const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));fetch('../../profile.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('Profile config unavailable');return r.json()}).then(p=>{const nav=document.querySelector('[data-profile-menu] nav');if(!nav||!Array.isArray(p.features))return;nav.replaceChildren();const home=document.createElement('a');home.href='../../index.html';home.innerHTML='<span>⌂</span> Overview';nav.append(home);p.features.forEach((f,i)=>{const a=document.createElement('a');a.href='../'+slugify(f.title)+'/index.html';a.innerHTML='<span>'+String(i+1).padStart(2,'0')+'</span>'+esc(f.title);nav.append(a)})}).catch(e=>console.warn('[Molan Business] Feature navigation sync failed:',e.message));})();</script>`;
 let primaryFeaturePages=0, primaryProfilesUpdated=0;
 for (const entry of registry.profiles) {

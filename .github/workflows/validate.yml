@@ -13,7 +13,9 @@ jobs:
         with:
           node-version: 20
       - name: Check JavaScript syntax
-        run: node --check app.js && node --check business-profiles.js && node --check member-portal.js && node --check shared/upgrade-manager.js && node --check scripts/prepare-web.cjs
+        run: node --check app.js && node --check business-profiles.js && node --check member-portal.js && node --check shared/upgrade-manager.js && node --check shared/profile-device-access.js && node --check scripts/prepare-web.cjs && node --check scripts/generate-extended-business-profiles.mjs
+      - name: Build and audit the complete published profile catalogue
+        run: npm install && npm run prepare:web
       - name: Check required frontend files
         run: test -s index.html && test -s styles.css && test -s app.js && test -s business-profiles.js && test -s business-profiles.css && test -s member-portal.html && test -s member-portal.css && test -s member-portal.js && test -s supabase/functions/sacco-member-portal/index.ts && test -s supabase/functions/sacco-savings-approval-email/index.ts
       - name: Smoke-check workspace modules and public frontend safety
