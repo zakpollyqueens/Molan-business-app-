@@ -69,6 +69,7 @@ jobs:
             if (!fs.existsSync(ownedPage)) throw new Error('Missing profile-owned page: ' + ownedPage);
             const ownedHtml = fs.readFileSync(ownedPage, 'utf8');
             if (!ownedHtml.includes('data-profile="' + folder.name + '"') && !ownedHtml.includes('src="profile.js"')) throw new Error('Owned page must declare its identity or load its folder-owned identity-checking profile.js: ' + ownedPage);
+            if (!ownedHtml.includes('data-profile-hamburger') || !ownedHtml.includes('data-give-device-access') || !ownedHtml.includes('data-profile-device-access')) throw new Error('Profile overview is missing its hamburger Give Access action/runtime: ' + ownedPage);
             const ownedScript = 'business-profiles/' + folder.name + '/profile.js';
             if (!fs.existsSync(ownedScript)) throw new Error('Missing profile-specific loader/runtime: ' + ownedScript);
             const ownedJs = fs.readFileSync(ownedScript, 'utf8');
@@ -78,6 +79,11 @@ jobs:
             profileNames.add(profile.name);
             for (const feature of profile.features) {
               if (!feature.title || !renderedRoutes.has(feature.route)) throw new Error('Unconnected profile feature route in ' + file + ': ' + feature.route);
+              const featureSlug = String(feature.title).toLowerCase().normalize('NFKD').replace(/[^a-z0-9\\s-]/g, '').trim().replace(/[\\s_]+/g, '-').replace(/-+/g, '-');
+              const featurePage = 'business-profiles/' + folder.name + '/pages/' + featureSlug + '/index.html';
+              if (!fs.existsSync(featurePage)) throw new Error('Missing profile feature page: ' + featurePage);
+              const featureHtml = fs.readFileSync(featurePage, 'utf8');
+              if (!featureHtml.includes('data-profile-hamburger') || !featureHtml.includes('data-give-device-access') || !featureHtml.includes('data-profile-device-access')) throw new Error('Feature page is missing its hamburger Give Access action/runtime: ' + featurePage);
             }
             if (folder.name !== 'sacco-savings-group' && profile.features.some(feature => ['sacco','sacco-welfare'].includes(feature.route))) {
               throw new Error('SACCO-only workflow leaked into non-SACCO profile: ' + file);
@@ -110,6 +116,10 @@ jobs:
             if (!profileMigration.includes(required)) throw new Error('Industry settings migration is missing security requirement: ' + required);
           }
           if (!js.includes("upsert({company_id:company.id,profile_key:profile[0],settings,updated_by:user.id")) throw new Error('Industry settings must be saved to the active tenant.');
+          const deviceAccessRuntime = fs.readFileSync('shared/profile-device-access.js', 'utf8');
+          for (const required of ['new MutationObserver', 'ensureAccessMenuItem', 'data-give-device-access', 'data-profile-device-access-dialog']) {
+            if (!deviceAccessRuntime.includes(required)) throw new Error('Give Access runtime missing required behavior: ' + required);
+          }
           const versionManifest = JSON.parse(fs.readFileSync('version.json', 'utf8'));
           const upgradeManager = fs.readFileSync('shared/upgrade-manager.js', 'utf8');
           const platformCss = fs.readFileSync('shared/platform.css', 'utf8');
