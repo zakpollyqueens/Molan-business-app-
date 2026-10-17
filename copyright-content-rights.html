@@ -328,6 +328,12 @@ header:not(.top),header.top{background:linear-gradient(100deg,#06132e,#10265d)!i
 .credit-link-grid>a[href*="wa.me"]:before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%2325D366' d='M12 2a9.8 9.8 0 0 0-8.4 14.8L2.4 22l5.4-1.4A10 10 0 1 0 12 2z'/%3E%3Cpath fill='white' d='M9 7.2c-.4-.1-.7 0-.9.3-.3.3-1 1-1 2.2 0 1.3 1 2.7 1.2 2.9.2.3 2 3.1 4.7 3.9 2.3.7 2.8.4 3.3.2.5-.2 1.5-.7 1.7-1.4.2-.7.2-1.2 0-1.3-.1-.2-.4-.3-.8-.5l-1.7-.8c-.3-.1-.5-.2-.7.2l-.8 1c-.2.2-.4.2-.7.1-.4-.2-1.3-.5-2.2-1.3-.8-.7-1.3-1.5-1.5-1.8-.2-.3 0-.5.2-.7l.5-.6c.2-.2.2-.4.3-.6.1-.2 0-.4-.1-.6l-.8-1.8c-.2-.5-.4-.5-.7-.5z'/%3E%3C/svg%3E")!important;background-color:#e8faef!important;border-color:#ccefd9!important}
 .credit-link-grid>a[href="./"]:before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m3 11 9-8 9 8M6 9v11h12V9M10 20v-6h4v6' fill='none' stroke='%23176bd8' stroke-width='1.8' stroke-linejoin='round'/%3E%3C/svg%3E")!important}
 
+
+.mb-icon.terms{color:#176bd8!important;background:#edf4ff!important}
+.mb-icon.privacy{color:#7957d5!important;background:#f2edff!important;border-color:#dfd5ff!important}
+.mb-icon.website{color:#087f98!important;background:#e9f9fb!important;border-color:#c9edf0!important}
+.mb-icon.social{color:#0b91a8!important;background:#e9f8fb!important;border-color:#c9edf0!important}
+
 </style>
 <link rel="stylesheet" href="assets/premium-seven-pages.css?v=2"><script>
 document.addEventListener("DOMContentLoaded",()=>{
@@ -396,6 +402,10 @@ document.addEventListener("DOMContentLoaded",()=>{
    linkedin:'<path d="M5.1 7.6A2.1 2.1 0 1 0 5.1 3.4a2.1 2.1 0 0 0 0 4.2ZM3.3 9.2h3.6V21H3.3zM9.2 9.2h3.4v1.6h.1a3.8 3.8 0 0 1 3.4-1.9c3.6 0 4.3 2.4 4.3 5.5V21h-3.6v-5.9c0-1.4 0-3.2-2-3.2s-2.3 1.5-2.3 3.1V21H9.2z"/>',
    copyright:'<circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M14.8 9.3a3.6 3.6 0 1 0 0 5.4l-1.3-1.1a1.9 1.9 0 1 1 0-3.2z"/>',
    license:'<path d="m4 12 5 5L20 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>',
+   terms:'<path d="M6 3h8l4 4v14H6z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M14 3v5h5M9 12h6M9 16h6" fill="none" stroke="currentColor" stroke-width="1.6"/>',
+   privacy:'<path d="M12 2.8 20 6v5.3c0 5-3.4 8.2-8 10-4.6-1.8-8-5-8-10V6z" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="9" y="10.5" width="6" height="5.5" rx="1" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10.5 10.5V9a1.5 1.5 0 0 1 3 0v1.5" fill="none" stroke="currentColor" stroke-width="1.6"/>',
+   website:'<rect x="3" y="4" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 8h18M7 6h.1M10 6h.1M8 12h8M8 15h5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>',
+   social:'<circle cx="6" cy="12" r="2.2"/><circle cx="18" cy="6" r="2.2"/><circle cx="18" cy="18" r="2.2"/><path d="m8 11 7.8-4M8 13l7.8 4" fill="none" stroke="currentColor" stroke-width="1.8"/>',
    document:'<path d="M6 3h8l4 4v14H6z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M14 3v5h5M9 12h6M9 16h6" fill="none" stroke="currentColor" stroke-width="1.6"/>'
   };
   return '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">'+(paths[kind]||paths.document)+'</svg>';
