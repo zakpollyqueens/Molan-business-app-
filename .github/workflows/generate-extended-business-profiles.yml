@@ -75,7 +75,11 @@ jobs:
               if (!featureHtml.includes('data-profile-feature-launch')) throw new Error('Missing feature launch button: ' + page);
             }
           }
-          console.log('Validated 550 business profile folders and every declared feature page.');
+          const accessRuntime = fs.readFileSync('shared/profile-device-access.js', 'utf8');
+          for (const required of ['data-give-device-access','data-profile-device-access-dialog','new MutationObserver','ensureAccessMenuItem','deviceAccess','deviceType']) {
+            if (!accessRuntime.includes(required)) throw new Error('Give Access runtime is missing required behavior: ' + required);
+          }
+          console.log('Validated all 550 business profile folders, every declared feature page, and resilient device-access navigation.');
           NODE
       - name: Commit generated profiles to main
         run: |

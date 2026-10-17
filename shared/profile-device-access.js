@@ -1,22 +1,29 @@
 (() => {
   'use strict';
   if (document.querySelector('[data-profile-device-access-dialog]')) return;
-  const menu = document.querySelector('[data-profile-menu]');
-  const nav = menu?.querySelector('nav');
-  if (!menu || !nav) return;
-
-  let link = nav.querySelector('[data-give-device-access]');
-  if (!link) {
-    link = document.createElement('a');
-    link.href = '#give-device-access';
-    link.dataset.giveDeviceAccess = '';
+  const getMenu = () => document.querySelector('[data-profile-menu]');
+  const getNav = () => getMenu()?.querySelector('nav');
+  const createAccessLink = () => {
+    const item = document.createElement('a');
+    item.href = '#give-device-access';
+    item.dataset.giveDeviceAccess = '';
     const icon = document.createElement('span');
     icon.textContent = '🔐';
     const label = document.createElement('strong');
     label.textContent = 'Give Access to Mobile & PC App';
-    link.append(icon, label);
-    nav.append(link);
-  }
+    item.append(icon, label);
+    return item;
+  };
+  const ensureAccessMenuItem = () => {
+    const currentNav = getNav();
+    if (!currentNav) return;
+    const existing = currentNav.querySelectorAll('[data-give-device-access]');
+    if (existing.length > 1) existing.forEach((item, index) => { if (index > 0) item.remove(); });
+    if (!currentNav.querySelector('[data-give-device-access]')) currentNav.append(createAccessLink());
+  };
+  // Do not exit when a profile menu is rendered late. Observe the document so
+  // delayed menus and profile.json navigation rebuilds are repaired as well.
+  ensureAccessMenuItem();
 
   const style = document.createElement('style');
   style.dataset.deviceAccessStyles = '';
@@ -74,7 +81,7 @@
   let target = 'mobile';
   const status = dialog.querySelector('[data-device-access-status]');
   const closeButton = dialog.querySelector('[data-device-access-close]');
-  const close = () => { dialog.hidden = true; link.focus(); };
+  const close = () => { dialog.hidden = true; document.querySelector('[data-give-device-access]')?.focus(); };
   document.addEventListener('click', event => {
     const accessLink = event.target.closest('[data-give-device-access]');
     if (!accessLink) return;
@@ -82,23 +89,21 @@
     dialog.hidden = false;
     dialog.querySelector('[data-access-target="mobile"]').focus();
   });
-  const ensureAccessMenuItem = () => {
-    const currentNav = document.querySelector('[data-profile-menu] nav');
-    if (!currentNav || currentNav.querySelector('[data-give-device-access]')) return;
-    const newLink = document.createElement('a');
-    newLink.href = '#give-device-access';
-    newLink.dataset.giveDeviceAccess = '';
-    const icon = document.createElement('span');
-    icon.textContent = '🔐';
-    const label = document.createElement('strong');
-    label.textContent = 'Give Access to Mobile & PC App';
-    newLink.append(icon, label);
-    currentNav.append(newLink);
+  // Keep the action present even when profile navigation is replaced after
+  // profile.json loads or the hamburger is inserted after this script executes.
+  const observer = new MutationObserver(() => ensureAccessMenuItem());
+  const observeWhenReady = () => {
+    ensureAccessMenuItem();
+    if (document.body && !observerStarted) {
+      observer.observe(document.body, { childList: true, subtree: true });
+      observerStarted = true;
+    }
   };
-  // Profile navigation can be rebuilt after profile.json loads; watch the whole page
-  // so the access action survives nav replacement and delayed profile rendering.
-  new MutationObserver(ensureAccessMenuItem).observe(document.body, { childList: true, subtree: true });
-  ensureAccessMenuItem();
+  let observerStarted = false;
+  observeWhenReady();
+  if (!observerStarted) {
+    document.addEventListener('DOMContentLoaded', observeWhenReady, { once: true });
+  }
   dialog.querySelectorAll('[data-access-target]').forEach(button => button.addEventListener('click', () => {
     target = button.dataset.accessTarget;
     dialog.querySelectorAll('[data-access-target]').forEach(option => option.setAttribute('aria-pressed', String(option === button)));
@@ -110,13 +115,14 @@
 
   dialog.querySelector('[data-device-access-continue]').addEventListener('click', () => {
     const profile = document.body.dataset.profile || '';
-    const profileName = menu.querySelector('.profile-menu-head strong')?.textContent || document.title;
+    const currentMenu = getMenu();
+    const profileName = currentMenu?.querySelector('.profile-menu-head strong')?.textContent || document.title;
     try {
       sessionStorage.setItem('molan_device_access_request_v1', JSON.stringify({
         profile, profileName, target, requestedAt: Date.now()
       }));
     } catch {}
-    const appLink = menu.querySelector('.profile-menu-app');
+    const appLink = getMenu()?.querySelector('.profile-menu-app');
     if (!appLink?.href) {
       status.textContent = 'Open Molan Business and sign in to continue. No device access has been granted yet.';
       return;
