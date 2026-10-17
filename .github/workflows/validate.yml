@@ -79,7 +79,7 @@ jobs:
             profileNames.add(profile.name);
             for (const feature of profile.features) {
               if (!feature.title || !renderedRoutes.has(feature.route)) throw new Error('Unconnected profile feature route in ' + file + ': ' + feature.route);
-              const featureSlug = String(feature.title).toLowerCase().normalize('NFKD').replace(/[^a-z0-9\\s-]/g, '').trim().replace(/[\\s_]+/g, '-').replace(/-+/g, '-');
+              const featureSlug = String(feature.title).toLowerCase().normalize('NFKD').replace(/[^a-z0-9\s-]/g, '').trim().replace(/[\s_]+/g, '-').replace(/-+/g, '-');
               const featurePage = 'business-profiles/' + folder.name + '/pages/' + featureSlug + '/index.html';
               if (!fs.existsSync(featurePage)) throw new Error('Missing profile feature page: ' + featurePage);
               const featureHtml = fs.readFileSync(featurePage, 'utf8');
