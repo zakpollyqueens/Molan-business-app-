@@ -9,6 +9,7 @@ const allowedOrigins = new Set([
   "http://localhost",
   "capacitor://localhost",
   "ionic://localhost",
+  "null", // Electron file:// pages use an opaque origin; requests still require the one-time token or a valid bearer.
 ]);
 const corsHeaders = (origin: string | null) => ({
   "Access-Control-Allow-Origin": origin && allowedOrigins.has(origin) ? origin : "https://zakpollyqueens.github.io",
