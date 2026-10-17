@@ -6,7 +6,7 @@ const manifestPath = path.join(root, 'android', 'app', 'src', 'main', 'AndroidMa
 const mainPath = path.join(root, 'android', 'app', 'src', 'main', 'java', 'com', 'zakmolanitech', 'molanbusiness', 'MainActivity.java');
 if (!fs.existsSync(manifestPath)) throw new Error('AndroidManifest.xml was not generated. Run npx cap add android first.');
 let manifest = fs.readFileSync(manifestPath, 'utf8');
-const activityPattern = /(<activity\\b(?=[^>]*android:name="[^"]*MainActivity")[^>]*>)([\\s\\S]*?)(<\\/activity>)/i;
+const activityPattern = /(<activity\b(?=[^>]*android:name="[^"]*MainActivity")[^>]*>)([\s\S]*?)(<\/activity>)/i;
 const match = manifest.match(activityPattern);
 if (!match) throw new Error('Could not find the Capacitor MainActivity in AndroidManifest.xml.');
 if (!match[2].includes('android:scheme="molanbusiness"')) {
