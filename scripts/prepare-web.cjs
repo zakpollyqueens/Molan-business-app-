@@ -11,7 +11,7 @@ const excludedFiles = new Set([
   'package.json', 'package-lock.json', 'capacitor.config.json',
   'tsconfig.json'
 ]);
-const assetDirectories = ['assets', 'images', 'fonts', 'static', 'shared'];
+const assetDirectories = ['assets', 'images', 'fonts', 'static', 'shared', 'business-profiles'];
 
 fs.rmSync(output, { recursive: true, force: true });
 fs.mkdirSync(output, { recursive: true });
@@ -27,6 +27,32 @@ for (const directory of assetDirectories) {
   const source = path.join(root, directory);
   if (fs.existsSync(source) && fs.statSync(source).isDirectory()) {
     fs.cpSync(source, path.join(output, directory), { recursive: true });
+  }
+}
+
+// Verify the complete business-profile catalogue and its device-access runtime
+// are actually copied into the public site/package, not just present in source.
+for (const required of [
+  'business-profiles/registry.json',
+  'shared/profile-device-access.js'
+]) {
+  if (!fs.existsSync(path.join(output, required))) {
+    throw new Error('Required published profile asset missing: ' + required);
+  }
+}
+const registry = JSON.parse(fs.readFileSync(path.join(output, 'business-profiles/registry.json'), 'utf8'));
+for (const profile of registry.profiles || []) {
+  if (profile.retired) continue;
+  const relativePage = profile.page || `business-profiles/${profile.slug}/index.html`;
+  const publishedPage = path.join(output, relativePage);
+  if (!fs.existsSync(publishedPage)) {
+    throw new Error('Business profile page was not included in public build: ' + relativePage);
+  }
+  const html = fs.readFileSync(publishedPage, 'utf8');
+  for (const marker of ['data-profile-hamburger', 'data-profile-device-access', 'data-give-device-access']) {
+    if (!html.includes(marker)) {
+      throw new Error('Business profile is missing Give Access markup/runtime marker ' + marker + ': ' + relativePage);
+    }
   }
 }
 
