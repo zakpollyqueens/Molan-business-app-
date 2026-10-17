@@ -73,7 +73,7 @@
         <button type="button" class="device-access-option" data-access-target="mobile" aria-pressed="true"><strong>📱 Mobile app</strong><small>Android or iPhone</small></button>
         <button type="button" class="device-access-option" data-access-target="pc" aria-pressed="false"><strong>💻 PC app</strong><small>Windows or desktop</small></button>
       </div>
-      <div class="device-access-note">Selecting a device here does not grant access by itself. The target device must sign in and be authorized through the account/workspace access flow.</div>
+      <div class="device-access-note">Choose a device to continue to the secure Molan Business account access flow. Access is not granted until the account owner or an authorized administrator approves it.</div>
       <p data-device-access-status role="status">Selected: Mobile app</p>
       <div class="device-access-actions">
         <button type="button" data-device-access-continue>Continue to Molan Business</button>
