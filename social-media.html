@@ -315,6 +315,7 @@ header:not(.top),header.top{background:linear-gradient(100deg,#06132e,#10265d)!i
 @media(prefers-reduced-motion:no-preference){.credit-link-grid>a{transition:transform .18s ease,border-color .18s ease,filter .18s ease!important}.credit-link-grid>a:hover{filter:brightness(1.14)!important}}
 
 </style>
+<link rel="stylesheet" href="assets/premium-seven-pages.css?v=1">
 </head><body><main class="wrap"><header><a class="brand" href="./"><img class="brand-logo" src="assets/molan-business-icon.svg" alt="Molan Business app icon"><span>ZAKMOLANITECH SOLUTIONS<br><small>Equipping minds with IT solutions.</small></span></a></header><section class="hero"><div class="hero-kicker">CONNECT WITH OUR COMMUNITY</div><h1>Social Media Accounts</h1><p>Find Zakmolanitech Solutions on social platforms. The company display name supplied for TikTok, Instagram, Facebook and LinkedIn is “Zakmolanitech Solutions”.</p>
 </section><div class="content"><div class="note">The platform links below open a search for the supplied display name, rather than claiming an unverified profile URL. This avoids sending visitors to the wrong account.</div>
 <div class="link-list">
@@ -346,4 +347,62 @@ header:not(.top),header.top{background:linear-gradient(100deg,#06132e,#10265d)!i
   </div>
   <div class="credit-bottom"><span>© <span class="credit-year">2026</span> Molan Business. All rights reserved.</span><span class="credit-company">Built and Managed by Zakmolanitech Solutions Company</span><span class="credit-motto">Equipping minds with IT solutions.</span></div>
 </footer>
+<script>
+(()=> {
+ const iconSvg=(kind)=> {
+  const paths={
+   email:'<path d="M3 6.5A2.5 2.5 0 0 1 5.5 4h13A2.5 2.5 0 0 1 21 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="m4 6 8 6 8-6" fill="none" stroke="currentColor" stroke-width="1.7"/>',
+   whatsapp:'<path d="M20.2 3.8A9.8 9.8 0 0 0 4.8 15.6L3.5 20.5l5-1.3A9.8 9.8 0 1 0 20.2 3.8ZM12 20a8 8 0 0 1-4.1-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 20Z"/><path d="M9.1 7.5c-.2-.5-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1 2.8 1.1 3 .2.3.4.6c.2.3 1.7 2.7 4.2 3.7 2 .8 2.5.6 3 .6.5-.1 1.6-.7 1.8-1.3.2-.6.2-1.1.2-1.2s-.2-.2-.5-.4l-1.7-.8c-.2-.1-.4-.1-.6.2l-.8 1c-.2.2-.3.2-.6.1-.3-.1-1.2-.4-2.2-1.3-.8-.7-1.3-1.6-1.5-1.9-.2-.3 0-.4.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5z"/>',
+   phone:'<path d="M6.6 3.5 9 3c.6-.1 1.1.2 1.3.8l1.1 3c.2.5 0 1-.4 1.4L9.5 9.6a14.4 14.4 0 0 0 4.9 4.9l1.4-1.5c.4-.4.9-.5 1.4-.4l3 1.1c.6.2.9.8.8 1.3l-.5 2.4c-.1.7-.7 1.1-1.4 1.1C10.3 18.5 5.5 13.7 5.5 5c0-.7.5-1.3 1.1-1.5Z"/>',
+   telegram:'<path d="M21.5 4.5 18.3 20c-.2 1.1-.9 1.4-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.3-8.4c.4-.4-.1-.6-.6-.2L5.7 13.6.8 12c-1.1-.3-1.1-1.1.2-1.6L20 3c.9-.3 1.7.2 1.5 1.5Z"/>',
+   tiktok:'<path d="M16.5 3h-3v12.2a3.1 3.1 0 1 1-2.6-3.1V9a6.1 6.1 0 1 0 5.6 6.1V9a8.2 8.2 0 0 0 4.5 1.4V7.3A5.3 5.3 0 0 1 16.5 3Z"/>',
+   instagram:'<rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.6" cy="6.7" r="1.2"/>',
+   facebook:'<path d="M13.4 21v-8h2.7l.4-3.1h-3.1v-2c0-.9.3-1.5 1.6-1.5h1.7V3.6c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.1H7.2V13H10v8z"/>',
+   linkedin:'<path d="M5.1 7.6A2.1 2.1 0 1 0 5.1 3.4a2.1 2.1 0 0 0 0 4.2ZM3.3 9.2h3.6V21H3.3zM9.2 9.2h3.4v1.6h.1a3.8 3.8 0 0 1 3.4-1.9c3.6 0 4.3 2.4 4.3 5.5V21h-3.6v-5.9c0-1.4 0-3.2-2-3.2s-2.3 1.5-2.3 3.1V21H9.2z"/>',
+   copyright:'<circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M14.8 9.3a3.6 3.6 0 1 0 0 5.4l-1.3-1.1a1.9 1.9 0 1 1 0-3.2z"/>',
+   license:'<path d="m4 12 5 5L20 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>',
+   document:'<path d="M6 3h8l4 4v14H6z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M14 3v5h5M9 12h6M9 16h6" fill="none" stroke="currentColor" stroke-width="1.6"/>'
+  };
+  return '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">'+(paths[kind]||paths.document)+'</svg>';
+ };
+ const classify=(text)=>{
+  const t=text.toLowerCase();
+  if(t.includes('whatsapp')) return 'whatsapp';
+  if(t.includes('email')||t.includes('gmail')) return 'email';
+  if(t.includes('call')||t.includes('phone')) return 'phone';
+  if(t.includes('telegram')) return 'telegram';
+  if(t.includes('tiktok')) return 'tiktok';
+  if(t.includes('instagram')) return 'instagram';
+  if(t.includes('facebook')) return 'facebook';
+  if(t.includes('linkedin')) return 'linkedin';
+  if(t.includes('copyright')||t.includes('content rights')) return 'copyright';
+  if(t.includes('licence')||t.includes('license')) return 'license';
+  return 'document';
+ };
+ document.querySelectorAll('.link-list .link-card').forEach(card=>{
+  if(card.querySelector('.mb-icon')) return;
+  const kind=classify(card.innerText||card.textContent||'');
+  const badge=document.createElement('span');
+  badge.className='mb-icon '+kind;
+  badge.setAttribute('aria-hidden','true');
+  badge.innerHTML=iconSvg(kind);
+  card.insertBefore(badge,card.firstChild);
+ });
+ const content=document.querySelector('.content');
+ const headings=content?[...content.querySelectorAll(':scope > h2')]:[];
+ if(headings.length>=3 && !document.querySelector('.mb-toc')){
+  const toc=document.createElement('nav');toc.className='mb-toc';toc.setAttribute('aria-label','On this page');
+  const title=document.createElement('div');title.className='mb-toc-head';title.textContent='On this page';toc.appendChild(title);
+  const list=document.createElement('ul');list.className='mb-toc-links';
+  headings.forEach((heading,index)=>{
+   if(!heading.id) heading.id='section-'+(index+1)+'-'+heading.textContent.trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+   const li=document.createElement('li');const a=document.createElement('a');a.href='#'+heading.id;a.textContent=heading.textContent.trim();li.appendChild(a);list.appendChild(li);
+  });
+  toc.appendChild(list);
+  const note=content.querySelector('.note');
+  if(note) note.insertAdjacentElement('afterend',toc); else content.insertBefore(toc,content.firstChild);
+ }
+ document.querySelectorAll('a[href^="mailto:"]').forEach(a=>{if(!a.getAttribute('aria-label')&&a.textContent.trim())a.setAttribute('aria-label','Email '+a.textContent.trim())});
+})();
+</script>
 </body></html>
