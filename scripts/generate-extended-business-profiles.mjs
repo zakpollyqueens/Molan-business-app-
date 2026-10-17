@@ -20,7 +20,7 @@ const js = `(()=>{'use strict';const slug=location.pathname.replace(/\\/$/,'').s
 function ensureProfileNavigation(file, profile, isFeaturePage = false) {
   if (!fs.existsSync(file)) return;
   let html = fs.readFileSync(file, 'utf8');
-  const deviceAccessScript = '<script data-profile-device-access src="' + (isFeaturePage ? '../../../../shared/profile-device-access.js' : '../../shared/profile-device-access.js') + '"></script>';
+  const deviceAccessScript = '<script data-profile-device-access src="' + (isFeaturePage ? '../../../../shared/profile-device-access.js' : '../../shared/profile-device-access.js') + '?v=20261017-2"></script>';
   const accessNavItem = '<a href="#give-device-access" data-give-device-access><span>🔐</span><strong>Give Access to Mobile &amp; PC App</strong></a>';
   if (html.includes('data-profile-hamburger')) {
     // Always normalize the actual hamburger nav, even if a stale marker exists elsewhere.
@@ -35,7 +35,7 @@ function ensureProfileNavigation(file, profile, isFeaturePage = false) {
 
     const relativePage = path.relative(root, file).split(path.sep).join('/');
     const runtimeSrc = path.posix.relative(path.posix.dirname(relativePage), 'shared/profile-device-access.js');
-    const canonicalRuntimeTag = '<script data-profile-device-access src="' + runtimeSrc + '"></script>';
+    const canonicalRuntimeTag = '<script data-profile-device-access src="' + runtimeSrc + '?v=20261017-2"></script>';
     const runtimePattern = /<script\b(?=[^>]*\bdata-profile-device-access\b)[^>]*>[\s\S]*?<\/script\s*>/gi;
     if (runtimePattern.test(html)) {
       runtimePattern.lastIndex = 0;
