@@ -49,10 +49,10 @@ jobs:
         run: |
           set -eu
           base="${PAGE_URL%/}"
-          for profile in grocery-shop supermarket translation-agency-business; do
+          for profile in grocery-shop supermarket translation-agency-business sacco-savings-group; do
             html="$(curl --fail --silent --show-error "$base/business-profiles/$profile/index.html")"
             printf '%s' "$html" | grep -q 'data-give-device-access' || { echo "Give Access menu item missing from live profile: $profile"; exit 1; }
             printf '%s' "$html" | grep -q 'data-profile-device-access' || { echo "Device-access runtime missing from live profile: $profile"; exit 1; }
           done
           curl --fail --silent --show-error "$base/shared/profile-device-access.js" | grep -q 'ensureAccessMenuItem' || { echo "Shared device-access runtime failed live verification"; exit 1; }
-          echo "Live Give Access checks passed for all smoke-test profiles."
+          echo "Live Give Access checks passed for all smoke-test profiles, including SACCO savings group."
