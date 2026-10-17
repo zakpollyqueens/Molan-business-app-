@@ -26,7 +26,7 @@ grant all on public.support_tickets,public.support_messages,public.support_ticke
 grant usage,select on sequence public.support_tickets_ticket_number_seq to service_role;
 revoke update on public.support_messages from authenticated;
 grant update(customer_read_at) on public.support_messages to authenticated;
-create or replace function public.support_touch_ticket() returns trigger language plpgsql security definer set search_path=public as $support$ begin update public.support_tickets set updated_at=now() where id=new.ticket_id; return new; end; $support$;
+create or replace function public.support_touch_ticket() returns trigger language plpgsql security definer set search_path=public as $support$ begin update public.support_tickets set updated_at=now(),status=case when new.sender_role='customer' and status in('resolved','closed') then 'open' else status end,resolved_at=case when new.sender_role='customer' and status in('resolved','closed') then null else resolved_at end where id=new.ticket_id; return new; end; $support$;
 revoke all on function public.support_touch_ticket() from public, anon, authenticated;
 drop trigger if exists support_messages_touch_ticket on public.support_messages;
 create trigger support_messages_touch_ticket after insert on public.support_messages for each row execute function public.support_touch_ticket();
