@@ -1609,6 +1609,10 @@ const WEBSITE_MARKET_STORAGE_KEY = 'molan_website_service_market_v1';
       'Unless the written project agreement says otherwise, third-party assets remain subject to their own copyright and license terms. Do not upload infringing, misleading or unlawful content.',
       'The customer is responsible for the accuracy of published claims, pricing, contact details, policies and required business disclosures.'
     ]},
+    social:{title:'Official Social Media',body:[
+      'Official social media handles have not yet been configured in this app. We will not publish guessed or unverified account links.',
+      'Contact Zakmolanitech Solutions Company at Zakmolanitechsolutions@gmail.com to confirm the official company social profiles or provide the handles to be added here.'
+    ]},
     licenses:{title:'Software Licenses & Third-Party Services',body:[
       'The app and website may use open-source libraries and third-party services under their respective licenses and terms.',
       'Paid themes, fonts, plugins, hosting, domain registration and other third-party licenses are subject to the provider terms and are included only when stated in the agreed package.',
@@ -1760,7 +1764,8 @@ if(kind==='website-request'){
   }catch(error){voiceStream?.getTracks().forEach(track=>track.stop());voiceStream=null;toast(error.message||'Could not start voice recording.',true)}});
   stopVoice?.addEventListener('click',()=>{if(mediaRecorder&&mediaRecorder.state!=='inactive')mediaRecorder.stop()});
   const termsLabel=document.createElement('label');termsLabel.className='website-terms-check';termsLabel.innerHTML='<input type="checkbox" name="website_terms_accepted" required><span>I have reviewed and accept the website service terms, content rights, licensing, support, privacy and delivery conditions.</span>';
-  if(submitButton)submitButton.parentNode.insertBefore(termsLabel,submitButton);
+  const termsRead=document.createElement('button');termsRead.type='button';termsRead.className='button secondary small';termsRead.dataset.legalOpen='terms';termsRead.textContent='Read Terms & Conditions';
+  if(submitButton){submitButton.parentNode.insertBefore(termsLabel,submitButton);submitButton.parentNode.insertBefore(termsRead,submitButton)}
 }
 const websiteCheckoutIntent=kind==='website-request'&&['starter','premium','business'].includes(preferredOperationType);
 if(kind==='website-request'){
