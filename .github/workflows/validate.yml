@@ -13,11 +13,11 @@ jobs:
         with:
           node-version: 20
       - name: Check JavaScript syntax
-        run: node --check app.js && node --check business-profiles.js && node --check member-portal.js && node --check shared/upgrade-manager.js && node --check shared/profile-device-access.js && node --check scripts/prepare-web.cjs && node --check scripts/generate-extended-business-profiles.mjs
+        run: node -e "JSON.parse(require('node:fs').readFileSync('package.json','utf8'))" && node --check app.js && node --check business-profiles.js && node --check member-portal.js && node --check shared/upgrade-manager.js && node --check shared/profile-device-access.js && node --check scripts/prepare-web.cjs && node --check scripts/generate-extended-business-profiles.mjs && node --check scripts/configure-android-app-access.cjs && node --check desktop/main.cjs && node --check desktop/preload.cjs
       - name: Build and audit the complete published profile catalogue
         run: npm install && npm run prepare:web
       - name: Check required frontend files
-        run: test -s index.html && test -s styles.css && test -s app.js && test -s business-profiles.js && test -s business-profiles.css && test -s member-portal.html && test -s member-portal.css && test -s member-portal.js && test -s supabase/functions/sacco-member-portal/index.ts && test -s supabase/functions/sacco-savings-approval-email/index.ts
+        run: test -s index.html && test -s styles.css && test -s app.js && test -s business-profiles.js && test -s business-profiles.css && test -s member-portal.html && test -s member-portal.css && test -s member-portal.js && test -s supabase/functions/sacco-member-portal/index.ts && test -s supabase/functions/sacco-savings-approval-email/index.ts && test -s supabase/functions/business-app-handoff/index.ts && test -s supabase/migrations/20261017200000_business_app_auth_handoffs.sql && test -s desktop/preload.cjs && test -s scripts/configure-android-app-access.cjs
       - name: Smoke-check workspace modules and public frontend safety
         run: |
           node <<'NODE'
@@ -121,6 +121,21 @@ jobs:
             if (!profileMigration.includes(required)) throw new Error('Industry settings migration is missing security requirement: ' + required);
           }
           if (!js.includes("upsert({company_id:company.id,profile_key:profile[0],settings,updated_by:user.id")) throw new Error('Industry settings must be saved to the active tenant.');
+          const appHandoffFunction = fs.readFileSync('supabase/functions/business-app-handoff/index.ts', 'utf8');
+          const appHandoffMigration = fs.readFileSync('supabase/migrations/20261017200000_business_app_auth_handoffs.sql', 'utf8');
+          const androidAccessSetup = fs.readFileSync('scripts/configure-android-app-access.cjs', 'utf8');
+          const desktopMain = fs.readFileSync('desktop/main.cjs', 'utf8');
+          const desktopPackage = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+          for (const required of ['business_app_auth_handoffs','token_hash','expires_at','consumed_at','enable row level security','service_role']) {
+            if (!appHandoffMigration.toLowerCase().includes(required.toLowerCase())) throw new Error('App handoff migration missing security requirement: ' + required);
+          }
+          for (const required of ['action === "create"','action === "consume"','expires_at','consumed_at','generateLink','verifyOtp','molanbusiness://auth-handoff']) {
+            if (!appHandoffFunction.includes(required)) throw new Error('App handoff function missing secure workflow: ' + required);
+          }
+          if (!js.includes('consumeNativeAppAccessHandoff') || !js.includes('data-close-app-access')) throw new Error('Installed app must consume handoffs and expose Close Access.');
+          if (!androidAccessSetup.includes('android:scheme="molanbusiness"') || !androidAccessSetup.includes('getPendingHandoffToken')) throw new Error('Android build must register the handoff protocol and native token bridge.');
+          if (!desktopMain.includes('setAsDefaultProtocolClient') || !desktopMain.includes('molan-access-handoff')) throw new Error('Desktop build must accept and forward app-access deep links.');
+          if (!desktopPackage.build.protocols?.some(protocol => protocol.schemes?.includes('molanbusiness'))) throw new Error('Desktop package must register the Molan Business handoff protocol.');
           const deviceAccessRuntime = fs.readFileSync('shared/profile-device-access.js', 'utf8');
           for (const required of ['new MutationObserver', 'ensureAccessMenuItem', 'data-give-device-access', 'data-profile-device-access-dialog']) {
             if (!deviceAccessRuntime.includes(required)) throw new Error('Give Access runtime missing required behavior: ' + required);
