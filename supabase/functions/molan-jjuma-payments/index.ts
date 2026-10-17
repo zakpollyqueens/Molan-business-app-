@@ -49,7 +49,7 @@ async function markWebsiteCheckoutFailed(paymentId: string, requestId: string, m
 
   const { data: request } = await admin.from("website_service_requests")
     .select("status").eq("id", requestId).maybeSingle();
-  const patch: Record<string, unknown> = { payment_status: "failed" };
+  const patch: Record<string, unknown> = { payment_status: request?.status === "delivered" ? "partially_paid" : "failed" };
   if (request?.status === "awaiting_payment") patch.status = "requested";
   await admin.from("website_service_requests").update(patch).eq("id", requestId);
 }
