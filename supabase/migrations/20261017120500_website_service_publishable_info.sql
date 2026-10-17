@@ -1,0 +1,1 @@
+alter table public.website_service_requests add column if not exists publishable_info text;
