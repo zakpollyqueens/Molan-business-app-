@@ -513,13 +513,16 @@ html[data-theme="dark"] .legal-dialog h2{color:#eef7ff}html[data-theme="dark"] .
 
 
 /* Company support and legal footer */
-.zak-footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:24px;max-width:1180px;margin:0 auto 20px;text-align:left}
-.zak-footer-column{display:grid;align-content:start;gap:9px;min-width:0}
-.zak-footer-column h3{margin:0 0 3px;color:#eaf8ff;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
-.zak-footer-column p,.zak-footer-column a,.zak-footer-column span,.zak-footer-column button{margin:0;color:#b1c1d5;font-size:12px;line-height:1.7;overflow-wrap:anywhere;text-align:left}
-.zak-footer-column a{text-decoration:none}
-.zak-footer-column button{padding:0;border:0;background:transparent;cursor:pointer}
-.zak-footer-column a:hover,.zak-footer-column button:hover{color:#70d9f3;text-decoration:underline}
-.zak-footer-bottom{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;max-width:1180px;margin:auto;padding-top:16px;border-top:1px solid rgba(148,163,184,.2);color:#9aa9bf;font-size:11px;text-align:left}
-@media(max-width:800px){.zak-footer-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}}
-@media(max-width:480px){.zak-footer-grid{grid-template-columns:1fr}.zak-footer-bottom{display:grid}}
+.zakmolanitech-company-footer{width:100%;box-sizing:border-box}
+.zak-footer-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(260px,.85fr);gap:clamp(28px,6vw,84px);max-width:1180px;margin:0 auto;text-align:left;align-items:start}
+.zak-footer-brand,.zak-footer-links{display:grid;align-content:start;gap:11px;min-width:0}
+.zak-footer-brand h2{margin:0;color:#f1fbff;font-size:clamp(22px,3vw,30px);line-height:1.2;letter-spacing:-.035em}
+.zak-footer-eyebrow{margin:0;color:#79dff3;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+.zak-footer-brand p,.zak-footer-links p,.zak-footer-links a{margin:0;color:#b1c1d5;font-size:13px;line-height:1.75;overflow-wrap:anywhere;text-align:left}
+.zak-footer-brand .zak-footer-motto{color:#e6f7ff;font-weight:700}
+.zak-footer-brand .zak-footer-copy{margin-top:12px;padding-top:14px;border-top:1px solid rgba(148,163,184,.2);font-size:11px;color:#9aa9bf}
+.zak-footer-links h3{margin:0 0 5px;color:#eaf8ff;font-size:12px;letter-spacing:.1em;text-transform:uppercase}
+.zak-footer-links a{width:fit-content;text-decoration:none;border-bottom:1px solid transparent}
+.zak-footer-links a:hover{color:#70d9f3;text-decoration:underline;text-underline-offset:3px}
+.zak-footer-links .zak-footer-note{margin-top:10px;padding-top:12px;border-top:1px solid rgba(148,163,184,.2);font-size:11px;color:#9aa9bf}
+@media(max-width:700px){.zak-footer-grid{grid-template-columns:1fr;gap:26px}.zak-footer-brand .zak-footer-copy{margin-top:6px}}
