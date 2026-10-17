@@ -1,37 +1,11 @@
 (() => {
   'use strict';
-  // Always repair the profile hamburger first; a pre-existing dialog must not
-  // prevent the access menu item from being restored after navigation rebuilds.
-  const getMenu = () => document.querySelector('[data-profile-menu]');
-  const getNav = () => getMenu()?.querySelector('nav');
-  const createAccessLink = () => {
-    const item = document.createElement('a');
-    item.href = '#give-device-access';
-    item.dataset.giveDeviceAccess = '';
-    const icon = document.createElement('span');
-    icon.textContent = '🔐';
-    const label = document.createElement('strong');
-    label.textContent = 'Give Access to Mobile & PC App';
-    item.append(icon, label);
-    return item;
-  };
-  const ensureAccessMenuItem = () => {
-    const currentNav = getNav();
-    if (!currentNav) return;
-    const existing = currentNav.querySelectorAll('[data-give-device-access]');
-    if (existing.length > 1) existing.forEach((item, index) => { if (index > 0) item.remove(); });
-    if (!currentNav.querySelector('[data-give-device-access]')) currentNav.append(createAccessLink());
-  };
-  // Do not exit when a profile menu is rendered late. Observe the document so
-  // delayed menus and profile.json navigation rebuilds are repaired as well.
-  ensureAccessMenuItem();
-
-  const style = document.createElement('style');
+  // Device access is launched from authenticated Business Settings, never from a profile hamburger.\n  const style = document.createElement('style');
   style.dataset.deviceAccessStyles = '';
   style.textContent = `
     @keyframes giveAccessPulse{0%,100%{box-shadow:0 0 0 0 #08a5d544,0 5px 16px #0787bf12;transform:translateY(0)}50%{box-shadow:0 0 0 5px #08a5d51c,0 8px 22px #0787bf28;transform:translateY(-1px)}}
     @keyframes giveAccessShimmer{0%{background-position:0% 50%}100%{background-position:200% 50%}}
-    .profile-menu nav a[data-give-device-access]{position:relative;isolation:isolate;overflow:hidden;border:1px solid #70d1ef;background:linear-gradient(110deg,#e9faff,#fff,#e4f7ff,#fff);background-size:200% 100%;font-weight:800;animation:giveAccessPulse 2.2s ease-in-out infinite,giveAccessShimmer 5s linear infinite;transition:transform .2s ease,border-color .2s ease}
+    [data-open-device-access]{position:relative;isolation:isolate;overflow:hidden;border:1px solid #70d1ef;background:linear-gradient(110deg,#e9faff,#fff,#e4f7ff,#fff);background-size:200% 100%;font-weight:800;animation:giveAccessPulse 2.2s ease-in-out infinite,giveAccessShimmer 5s linear infinite;transition:transform .2s ease,border-color .2s ease}
     .profile-menu nav a[data-give-device-access]::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 20%,#fff9 48%,transparent 72%);transform:translateX(-120%);animation:giveAccessSweep 3.6s ease-in-out infinite}
     @keyframes giveAccessSweep{0%,45%{transform:translateX(-120%)}75%,100%{transform:translateX(120%)}}
     .profile-menu nav a[data-give-device-access] span{display:grid;place-items:center;min-width:30px;height:30px;border-radius:9px;background:#d7f5ff;box-shadow:inset 0 0 0 1px #a5e8fa;animation:giveAccessIconGlow 2.2s ease-in-out infinite}
@@ -83,29 +57,14 @@
   let target = 'mobile';
   const status = dialog.querySelector('[data-device-access-status]');
   const closeButton = dialog.querySelector('[data-device-access-close]');
-  const close = () => { dialog.hidden = true; document.querySelector('[data-give-device-access]')?.focus(); };
+  const close = () => { dialog.hidden = true; document.querySelector('[data-open-device-access]')?.focus(); };
   document.addEventListener('click', event => {
-    const accessLink = event.target.closest('[data-give-device-access]');
+    const accessLink = event.target.closest('[data-open-device-access]');
     if (!accessLink) return;
     event.preventDefault();
     dialog.hidden = false;
     dialog.querySelector('[data-access-target="mobile"]').focus();
   });
-  // Keep the action present even when profile navigation is replaced after
-  // profile.json loads or the hamburger is inserted after this script executes.
-  const observer = new MutationObserver(() => ensureAccessMenuItem());
-  const observeWhenReady = () => {
-    ensureAccessMenuItem();
-    if (document.body && !observerStarted) {
-      observer.observe(document.body, { childList: true, subtree: true });
-      observerStarted = true;
-    }
-  };
-  let observerStarted = false;
-  observeWhenReady();
-  if (!observerStarted) {
-    document.addEventListener('DOMContentLoaded', observeWhenReady, { once: true });
-  }
   dialog.querySelectorAll('[data-access-target]').forEach(button => button.addEventListener('click', () => {
     target = button.dataset.accessTarget;
     dialog.querySelectorAll('[data-access-target]').forEach(option => option.setAttribute('aria-pressed', String(option === button)));
