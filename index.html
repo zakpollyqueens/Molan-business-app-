@@ -11,6 +11,34 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="shared/platform.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+/* App legal footer: aligned responsive link grid */
+.app-legal-footer{padding:28px clamp(20px,4vw,42px) 24px!important;background:linear-gradient(145deg,#081923,#0b202b)!important;border-top:1px solid rgba(127,180,195,.2)!important;color:#e6edf4!important}
+.app-legal-footer .app-legal-brand{margin-bottom:22px!important;display:flex!important;flex-direction:column!important;gap:8px!important}
+.app-legal-footer .app-legal-brand>strong{font-size:clamp(19px,2vw,24px)!important;letter-spacing:.04em!important;color:#f4e4d2!important}
+.app-legal-footer .app-legal-brand>strong span{color:#49c5d4!important}
+.app-legal-footer .app-legal-brand small{font-size:14px!important;line-height:1.55!important;color:#c1ced8!important}
+.app-legal-footer nav[aria-label="Legal, support and social media links"]{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;grid-auto-flow:row!important;gap:11px!important;margin:0 0 23px!important}
+.app-legal-footer nav[aria-label="Legal, support and social media links"] a{display:flex!important;align-items:center!important;gap:10px!important;min-width:0!important;min-height:48px!important;padding:10px 12px!important;border:1px solid rgba(111,177,198,.22)!important;border-radius:11px!important;background:linear-gradient(135deg,rgba(20,49,65,.96),rgba(20,38,59,.96))!important;color:#cdeaff!important;font-size:13px!important;font-weight:650!important;line-height:1.35!important;text-decoration:none!important;overflow-wrap:anywhere!important;transition:transform .18s ease,border-color .18s ease,background .18s ease!important}
+.app-legal-footer nav[aria-label="Legal, support and social media links"] a:before{display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 27px!important;width:27px!important;height:27px!important;border-radius:8px!important;background:rgba(66,139,255,.16)!important;border:1px solid rgba(107,177,255,.25)!important;color:#8ceeff!important;font-size:15px!important;font-weight:850!important}
+.app-legal-footer nav[aria-label="Legal, support and social media links"] a:nth-child(1):before{content:"§"!important}
+.app-legal-footer nav[aria-label="Legal, support and social media links"] a:nth-child(2):before{content:"⌘"!important}
+.app-legal-footer nav[aria-label="Legal, support and social media links"] a:nth-child(3):before{content:"◈"!important}
+.app-legal-footer nav[aria-label="Legal, support and social media links"] a:nth-child(4):before{content:"©"!important}
+.app-legal-footer nav[aria-label="Legal, support and social media links"] a:nth-child(5):before{content:"✓"!important}
+.app-legal-footer nav[aria-label="Legal, support and social media links"] a:nth-child(6):before{content:"◎"!important}
+.app-legal-footer nav[aria-label="Legal, support and social media links"] a:nth-child(7):before{content:"☏"!important}
+.app-legal-footer nav[aria-label="Legal, support and social media links"] a:nth-child(8):before{content:"✉"!important;background:rgba(225,72,131,.16)!important;color:#ffb8d2!important;border-color:rgba(255,145,192,.25)!important}
+.app-legal-footer nav[aria-label="Legal, support and social media links"] a:nth-child(9):before,.app-legal-footer nav[aria-label="Legal, support and social media links"] a:nth-child(10):before{content:"◉"!important;background:rgba(37,211,102,.14)!important;color:#79f5a1!important;border-color:rgba(65,230,125,.3)!important}
+.app-legal-footer nav[aria-label="Legal, support and social media links"] a:hover{transform:translateY(-2px)!important;border-color:rgba(91,224,238,.65)!important;background:linear-gradient(135deg,#173f56,#232d58)!important;color:#fff!important}
+.app-legal-footer>p{margin:0!important;padding-top:18px!important;border-top:1px solid rgba(133,166,183,.2)!important;color:#c0ccd7!important;line-height:1.8!important}
+.app-legal-footer>p a{color:#ffb9d4!important}
+@media(max-width:760px){.app-legal-footer nav[aria-label="Legal, support and social media links"]{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+@media(max-width:480px){.app-legal-footer{padding:23px 18px 20px!important}.app-legal-footer nav[aria-label="Legal, support and social media links"]{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}.app-legal-footer nav[aria-label="Legal, support and social media links"] a{padding:9px!important;font-size:12px!important;min-height:46px!important;gap:8px!important}.app-legal-footer nav[aria-label="Legal, support and social media links"] a:before{flex-basis:25px!important;width:25px!important;height:25px!important}}
+@media(prefers-reduced-motion:reduce){.app-legal-footer nav a{transition:none!important}}
+</style>
+
 </head>
 <body>
   <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
