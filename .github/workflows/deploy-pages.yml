@@ -43,16 +43,21 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-      - name: Verify the published Give Access menu and runtime
+      - name: Verify published Business Settings access placement
         env:
           PAGE_URL: ${{ steps.deployment.outputs.page_url }}
         run: |
           set -eu
           base="${PAGE_URL%/}"
-          for profile in grocery-shop supermarket translation-agency-business; do
+          for profile in grocery-shop supermarket translation-agency-business sacco-savings-group; do
             html="$(curl --fail --silent --show-error "$base/business-profiles/$profile/index.html")"
-            printf '%s' "$html" | grep -q 'data-give-device-access' || { echo "Give Access menu item missing from live profile: $profile"; exit 1; }
-            printf '%s' "$html" | grep -q 'data-profile-device-access' || { echo "Device-access runtime missing from live profile: $profile"; exit 1; }
+            if printf '%s' "$html" | grep -q 'data-give-device-access'; then
+              echo "Legacy Give Access item remains in profile hamburger: $profile"
+              exit 1
+            fi
           done
-          curl --fail --silent --show-error "$base/shared/profile-device-access.js" | grep -q 'ensureAccessMenuItem' || { echo "Shared device-access runtime failed live verification"; exit 1; }
-          echo "Live Give Access checks passed for all smoke-test profiles."
+          app="$(curl --fail --silent --show-error "$base/app.js")"
+          printf '%s' "$app" | grep -q 'device-access-settings-panel' || { echo "Device & App Access is missing from Business Settings"; exit 1; }
+          printf '%s' "$app" | grep -q 'Get mobile app' || { echo "Mobile app access entry point missing"; exit 1; }
+          printf '%s' "$app" | grep -q 'Get PC app' || { echo "PC app access entry point missing"; exit 1; }
+          echo "Live Business Settings access-placement checks passed."
