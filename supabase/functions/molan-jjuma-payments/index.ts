@@ -69,16 +69,23 @@ async function createWebsiteServiceCheckout(authenticatedUser: any, body: any) {
 
   const { data: request, error: requestError } = await admin
     .from("website_service_requests")
-    .select("id,company_id,market_code,package_code,package_currency_code,package_amount,status,payment_status")
+    .select("id,company_id,market_code,package_code,package_currency_code,package_amount,status,payment_status,payment_plan")
     .eq("id", requestId).eq("company_id", companyId).maybeSingle();
   if (requestError) return json({ error: "Could not load the website service request." }, 500);
   if (!request) return json({ error: "The website service request was not found in this business." }, 404);
-  if (request.payment_status === "paid") return json({ error: "This website request has already been paid." }, 409);
-  if (!["requested", "awaiting_payment"].includes(String(request.status))) {
-    return json({ error: "This request is no longer available for checkout." }, 409);
+  if (request.payment_status === "paid") return json({ error: "This website request has already been paid in full." }, 409);
+  const paymentPlan = request.payment_plan === "two_part" ? "two_part" : "full";
+  const packageAmount = Number(request.package_amount);
+  const isBalancePayment = paymentPlan === "two_part" && request.payment_status === "partially_paid";
+  const allowedInitialStatus = ["requested", "awaiting_payment"].includes(String(request.status));
+  const allowedBalanceStatus = isBalancePayment && ["requested", "awaiting_payment", "in_progress", "delivered"].includes(String(request.status));
+  if (!allowedInitialStatus && !allowedBalanceStatus) {
+    return json({ error: "This request is not currently eligible for checkout." }, 409);
   }
-
-  const amount = Number(request.package_amount);
+  const amount = paymentPlan === "two_part"
+    ? (isBalancePayment ? packageAmount - Math.ceil(packageAmount / 2) : Math.ceil(packageAmount / 2))
+    : packageAmount;
+  const paymentPart = paymentPlan === "two_part" ? (isBalancePayment ? "balance" : "deposit") : "full";
   const currency = String(request.package_currency_code || "").toUpperCase();
   if (!Number.isFinite(amount) || amount <= 0 || !["UGX", "KES", "TZS", "USD"].includes(currency)) {
     return json({ error: "This website request has no valid server-approved package price." }, 409);
@@ -110,13 +117,18 @@ async function createWebsiteServiceCheckout(authenticatedUser: any, body: any) {
       provider: "jjuma", amount, currency_code: currency, status: "pending",
       provider_metadata: {
         product: "molan_website_service", market_code: request.market_code,
-        package_code: request.package_code, customer_user_id: authenticatedUser.id,
+        package_code: request.package_code, payment_plan: paymentPlan, payment_part: paymentPart,
+        total_package_amount: packageAmount, balance_amount: packageAmount - amount,
+        customer_user_id: authenticatedUser.id,
       },
     }).select("id").single();
   if (paymentError || !payment) return json({ error: "Could not create the website checkout record. Please retry." }, 500);
 
+  const requestCheckoutPatch = isBalancePayment
+    ? { payment_status: "partially_paid" }
+    : { status: "awaiting_payment", payment_status: "pending" };
   const { error: awaitingError } = await admin.from("website_service_requests")
-    .update({ status: "awaiting_payment", payment_status: "pending" }).eq("id", request.id);
+    .update(requestCheckoutPatch).eq("id", request.id);
   if (awaitingError) {
     await markWebsiteCheckoutFailed(payment.id, request.id, "Could not mark request as awaiting payment.");
     return json({ error: "Could not prepare this website request for checkout." }, 500);
@@ -128,7 +140,7 @@ async function createWebsiteServiceCheckout(authenticatedUser: any, body: any) {
   const cancelRedirect = `https://zakpollyqueens.github.io/Molan-business-app-/failed.html?website_payment_id=${encodeURIComponent(payment.id)}`;
   const payload = {
     amount, currency,
-    description: `Molan Business ${packageName} website service package`,
+    description: `Molan Business ${packageName} website service ${paymentPart === "deposit" ? "first instalment (50%)" : paymentPart === "balance" ? "completion balance" : "full payment"}`,
     customer_name: authenticatedUser.user_metadata?.full_name || authenticatedUser.email || "Molan Business customer",
     customer_email: authenticatedUser.email,
     redirect_url: redirect, return_url: redirect, cancel_redirect_url: cancelRedirect,
@@ -137,6 +149,8 @@ async function createWebsiteServiceCheckout(authenticatedUser: any, body: any) {
       product: "molan_website_service", company_id: companyId,
       website_request_id: request.id, website_payment_id: payment.id,
       package_code: request.package_code, market_code: request.market_code,
+      payment_plan: paymentPlan, payment_part: paymentPart,
+      total_package_amount: packageAmount, balance_amount: packageAmount - amount,
       customer_user_id: authenticatedUser.id,
     },
   };
@@ -163,6 +177,8 @@ async function createWebsiteServiceCheckout(authenticatedUser: any, body: any) {
       provider_metadata: {
         product: "molan_website_service", package_code: request.package_code,
         market_code: request.market_code, customer_user_id: authenticatedUser.id,
+        payment_plan: paymentPlan, payment_part: paymentPart,
+        total_package_amount: packageAmount, balance_amount: packageAmount - amount,
         transaction_id: String(providerResponse.data.transaction_id),
         provider_reference: providerResponse.data.reference ?? null,
         checkout_url: checkoutUrl.toString(), checkout_created: true,
@@ -326,10 +342,12 @@ async function handleWebsiteServiceWebhook(
     }).eq("id", websitePayment.id).eq("status", "pending");
     if (failureError) return json({ error: "Could not record website payment outcome." }, 500);
     const { data: request, error: requestReadError } = await admin.from("website_service_requests")
-      .select("status").eq("id", websitePayment.request_id).maybeSingle();
+      .select("status,payment_status").eq("id", websitePayment.request_id).maybeSingle();
     if (requestReadError) return json({ error: "Could not update website request payment status." }, 500);
-    const requestPatch: Record<string, unknown> = { payment_status: "failed" };
-    if (request?.status === "awaiting_payment") requestPatch.status = "requested";
+    const isBalanceAttempt = websitePayment.provider_metadata?.payment_part === "balance";
+    const requestPatch: Record<string, unknown> = isBalanceAttempt && request?.payment_status === "partially_paid"
+      ? { payment_status: "partially_paid" } : { payment_status: "failed" };
+    if (request?.status === "awaiting_payment" && !isBalanceAttempt) requestPatch.status = "requested";
     const { error: requestUpdateError } = await admin.from("website_service_requests")
       .update(requestPatch).eq("id", websitePayment.request_id);
     if (requestUpdateError) return json({ error: "Could not update website request payment status." }, 500);
@@ -362,7 +380,13 @@ async function handleWebsiteServiceWebhook(
   const { data: request, error: requestError } = await admin.from("website_service_requests")
     .select("id,status").eq("id", websitePayment.request_id).maybeSingle();
   if (requestError || !request) return json({ error: "Could not locate the website request for this payment." }, 500);
-  const requestPatch: Record<string, unknown> = {
+  const paymentPart = String(websitePayment.provider_metadata?.payment_part || "full");
+  const isDepositPayment = paymentPart === "deposit";
+  const requestPatch: Record<string, unknown> = isDepositPayment ? {
+    payment_status: "partially_paid",
+    deposit_paid_at: verifiedData.paid_at ?? new Date().toISOString(),
+    deposit_provider_reference: transactionId,
+  } : {
     payment_status: "paid",
     paid_at: verifiedData.paid_at ?? new Date().toISOString(),
     payment_provider_reference: transactionId,
@@ -388,7 +412,7 @@ async function handleWebsiteServiceWebhook(
       .select("status").eq("id", websitePayment.id).maybeSingle();
     if (currentPayment?.status !== "verified") return json({ error: "Could not complete website payment verification." }, 500);
   }
-  return json({ success: true, website_service_paid: true, request_id: request.id });
+  return json({ success: true, website_service_paid: !isDepositPayment, payment_status: isDepositPayment ? "partially_paid" : "paid", payment_part: paymentPart, request_id: request.id });
 }
 
 async function handleWebhook(req: Request) {
