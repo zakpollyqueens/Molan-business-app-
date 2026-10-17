@@ -20,6 +20,6 @@ grant select,insert on public.support_tickets to authenticated;
 grant select,insert on public.support_messages to authenticated;
 revoke update on public.support_messages from authenticated;
 grant update(customer_read_at) on public.support_messages to authenticated;
-create or replace function public.support_touch_ticket() returns trigger language plpgsql security definer set search_path=public as $ begin update public.support_tickets set updated_at=now() where id=new.ticket_id; return new; end; $$;
+create or replace function public.support_touch_ticket() returns trigger language plpgsql security definer set search_path=public as $support$ begin update public.support_tickets set updated_at=now() where id=new.ticket_id; return new; end; $support$;
 drop trigger if exists support_messages_touch_ticket on public.support_messages;
 create trigger support_messages_touch_ticket after insert on public.support_messages for each row execute function public.support_touch_ticket();
