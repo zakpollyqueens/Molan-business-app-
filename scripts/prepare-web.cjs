@@ -48,7 +48,7 @@ for (const file of profileHtmlFiles) {
   const html = fs.readFileSync(file, 'utf8');
   const relativePage = path.relative(output, file).split(path.sep).join('/');
   if (!html.includes('data-profile-hamburger')) continue;
-  const menuNav = /(<aside\\b[^>]*\\bdata-profile-menu[^>]*>[\\s\\S]*?<nav\\b[^>]*>)([\\s\\S]*?)(<\\/nav\\s*>)/i;
+  const menuNav = /(<aside\b[^>]*\bdata-profile-menu[^>]*>[\s\S]*?<nav\b[^>]*>)([\s\S]*?)(<\/nav\s*>)/i;
   const match = html.match(menuNav);
   if (!match) throw new Error('Profile hamburger exists but its menu navigation is missing: ' + relativePage);
   if (/data-give-device-access/.test(match[2]) || /Give Access to Mobile/i.test(match[2])) {
