@@ -51,8 +51,14 @@ for (const file of profileHtmlFiles) {
   const menuNav = /(<aside\b[^>]*\bdata-profile-menu[^>]*>[\s\S]*?<nav\b[^>]*>)([\s\S]*?)(<\/nav\s*>)/i;
   const match = html.match(menuNav);
   if (!match) throw new Error('Profile hamburger exists but its menu navigation is missing: ' + relativePage);
-  if (/data-give-device-access/.test(match[2]) || /Give Access to Mobile/i.test(match[2])) {
-    throw new Error('Give Access must not be placed in the profile hamburger: ' + relativePage);
+  const cleanedNav = match[2].replace(/<a\\b(?=[^>]*(?:data-give-device-access|href=["']#give-device-access))[^>]*>[\\s\\S]*?<\\/a\\s*>/gi, '');
+  if (cleanedNav !== match[2]) {
+    html = html.replace(menuNav, match[1] + cleanedNav + match[3]);
+    fs.writeFileSync(file, html);
+  }
+  const verified = html.match(menuNav);
+  if (!verified || /data-give-device-access/.test(verified[2]) || /Give Access to Mobile/i.test(verified[2])) {
+    throw new Error('Legacy Give Access item remains in the profile hamburger: ' + relativePage);
   }
   checkedProfilePages++;
 }
