@@ -69,6 +69,8 @@ insert into storage.buckets (id,name,public,file_size_limit,allowed_mime_types)
 values ('website-service-voice-notes','website-service-voice-notes',false,15728640,array['audio/webm','audio/ogg','audio/mp4','audio/mpeg','audio/wav'])
 on conflict (id) do update set public=false, file_size_limit=15728640, allowed_mime_types=array['audio/webm','audio/ogg','audio/mp4','audio/mpeg','audio/wav'];
 
+drop policy if exists "Company members upload website service voice notes" on storage.objects;
+drop policy if exists "Company members view website service voice notes" on storage.objects;
 drop policy if exists "website voice notes deletable by uploader or company admin" on storage.objects;
 drop policy if exists "website voice notes upload by active company members" on storage.objects;
 drop policy if exists "website voice notes visible to company members" on storage.objects;
