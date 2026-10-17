@@ -510,3 +510,16 @@ html[data-theme="dark"] .legal-dialog h2{color:#eef7ff}html[data-theme="dark"] .
 @media(max-width:760px){.app-legal-footer{align-items:flex-start;flex-direction:column}.app-legal-footer nav{gap:12px}.website-request-row{flex-wrap:wrap}.website-request-row>.button{width:100%}}
 
 .website-publishable-details{display:grid;gap:3px;margin-top:4px}.website-publishable-details p{margin:0;color:#526981;font-size:11px;line-height:1.55;overflow-wrap:anywhere}.website-publishable-details strong{color:#284b69}html[data-theme="dark"] .website-publishable-details p{color:#c1d0e1}html[data-theme="dark"] .website-publishable-details strong{color:#eef7ff}
+
+
+/* Company support and legal footer */
+.zak-footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:24px;max-width:1180px;margin:0 auto 20px;text-align:left}
+.zak-footer-column{display:grid;align-content:start;gap:9px;min-width:0}
+.zak-footer-column h3{margin:0 0 3px;color:#eaf8ff;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.zak-footer-column p,.zak-footer-column a,.zak-footer-column span,.zak-footer-column button{margin:0;color:#b1c1d5;font-size:12px;line-height:1.7;overflow-wrap:anywhere;text-align:left}
+.zak-footer-column a{text-decoration:none}
+.zak-footer-column button{padding:0;border:0;background:transparent;cursor:pointer}
+.zak-footer-column a:hover,.zak-footer-column button:hover{color:#70d9f3;text-decoration:underline}
+.zak-footer-bottom{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;max-width:1180px;margin:auto;padding-top:16px;border-top:1px solid rgba(148,163,184,.2);color:#9aa9bf;font-size:11px;text-align:left}
+@media(max-width:800px){.zak-footer-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}}
+@media(max-width:480px){.zak-footer-grid{grid-template-columns:1fr}.zak-footer-bottom{display:grid}}
