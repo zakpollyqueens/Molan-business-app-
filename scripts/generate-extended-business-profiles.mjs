@@ -20,7 +20,14 @@ const js = `(()=>{'use strict';const slug=location.pathname.replace(/\\/$/,'').s
 function ensureProfileNavigation(file, profile, isFeaturePage = false) {
   if (!fs.existsSync(file)) return;
   let html = fs.readFileSync(file, 'utf8');
-  if (html.includes('data-profile-hamburger')) return;
+  const deviceAccessScript = '<script data-profile-device-access src="' + (isFeaturePage ? '../../../../shared/profile-device-access.js' : '../../shared/profile-device-access.js') + '"></script>';
+  if (html.includes('data-profile-hamburger')) {
+    if (!html.includes('data-profile-device-access')) {
+      html = html.replace('</body>', deviceAccessScript + '</body>');
+      fs.writeFileSync(file, html);
+    }
+    return;
+  }
   const featureLinks = (profile.features || []).map((f, i) => {
     const href = isFeaturePage ? '../' + slugify(f.title) + '/index.html' : 'pages/' + slugify(f.title) + '/index.html';
     return '<a href="' + href + '"><span>' + String(i + 1).padStart(2, '0') + '</span>' + esc(f.title) + '</a>';
@@ -39,7 +46,7 @@ function ensureProfileNavigation(file, profile, isFeaturePage = false) {
   if (!mainTag.test(html)) return;
   html = html.replace('</head>', styles + '</head>');
   html = html.replace(mainTag, match => match + nav);
-  html = html.replace('</body>', script + '</body>');
+  html = html.replace('</body>', script + deviceAccessScript + '</body>');
   fs.writeFileSync(file, html);
 }
 
@@ -119,13 +126,13 @@ for (const entry of registry.profiles) {
     ensureProfileFeatureLaunch(pagePath, profile, feature);
     let featureHtml = fs.readFileSync(pagePath, 'utf8');
     if (!featureHtml.includes('data-primary-feature-nav-sync')) {
-      featureHtml = featureHtml.replace('</body>', primaryFeatureNavSync + '</body>');
+      featureHtml = featureHtml.replace('</body>', primaryFeatureNavSync + '<script data-profile-device-access src="../../../../shared/profile-device-access.js"></script></body>');
       fs.writeFileSync(pagePath, featureHtml);
     }
   }
   let html = fs.readFileSync(indexPath, 'utf8');
   if (!html.includes('data-primary-profile-nav-sync')) {
-    html = html.replace('</body>', primaryProfileNavSync + '</body>');
+    html = html.replace('</body>', primaryProfileNavSync + '<script data-profile-device-access src="../../shared/profile-device-access.js"></script></body>');
     fs.writeFileSync(indexPath, html);
     primaryProfilesUpdated++;
   }
