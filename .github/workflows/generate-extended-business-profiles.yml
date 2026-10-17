@@ -76,7 +76,7 @@ jobs:
             }
           }
           const accessRuntime = fs.readFileSync('shared/profile-device-access.js', 'utf8');
-          for (const required of ['data-give-device-access','data-profile-device-access-dialog','new MutationObserver','ensureAccessMenuItem','deviceAccess','deviceType']) {
+          for (const required of ['data-give-device-access','data-profile-device-access-dialog','new MutationObserver','ensureAccessMenuItem','business-app-handoff','targetDevice']) {
             if (!accessRuntime.includes(required)) throw new Error('Give Access runtime is missing required behavior: ' + required);
           }
           console.log('Validated all 550 business profile folders, every declared feature page, and resilient device-access navigation.');
