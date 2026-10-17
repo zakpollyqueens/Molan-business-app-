@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#071426">
+<meta name="description" content="Contact Molan Business support securely.">
+<title>Contact Support · Molan Business</title>
+<link rel="stylesheet" href="shared/support-messaging.css">
+<style>
+:root{color-scheme:dark;font-family:Inter,"DM Sans",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#071426;color:#eaf2ff}
+*{box-sizing:border-box}
+body{min-height:100vh;margin:0;padding:clamp(12px,3vw,30px);background:radial-gradient(ellipse at 8% 0%,rgba(43,135,238,.22),transparent 42%),radial-gradient(ellipse at 100% 25%,rgba(27,201,190,.13),transparent 36%),#071426}
+.content{width:min(100%,900px);margin:0 auto;padding:clamp(18px,4vw,38px);border:1px solid rgba(142,171,210,.22);border-radius:26px;background:linear-gradient(145deg,rgba(17,34,61,.97),rgba(7,20,39,.98));box-shadow:0 28px 90px rgba(0,0,0,.3);overflow:hidden}
+.support-brand{display:flex;align-items:center;gap:13px;margin-bottom:24px;padding-bottom:22px;border-bottom:1px solid rgba(159,184,217,.18)}
+.support-brand-icon{display:grid;place-items:center;width:48px;height:48px;border-radius:15px;background:linear-gradient(145deg,#43e5e5,#238ce9 52%,#102c65);font-size:23px;box-shadow:0 10px 26px #0b8bc733}
+.support-brand strong,.support-brand small{display:block}
+.support-brand strong{font-size:17px;letter-spacing:-.02em;color:#f4f8ff}
+.support-brand small{margin-top:4px;color:#91a8c5;font-size:12px}
+.support-intro h1{margin:0 0 10px;font-size:clamp(28px,5vw,42px);line-height:1.12;letter-spacing:-.04em;color:#f3f8ff}
+.support-intro p{margin:0 0 25px;max-width:650px;color:#b8c9df;font-size:15px;line-height:1.7}
+#support-chat{margin-top:18px}
+#support-chat .support-chat-head{display:none}
+#support-chat .support-chat-body{padding:0}
+#support-chat .support-chat-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 18px}
+#support-chat .support-chat-form label{display:block;min-width:0;color:#c9d8eb;font-size:13px;font-weight:700;line-height:1.5}
+#support-chat .support-chat-form .full{grid-column:1/-1}
+#support-chat input,#support-chat select,#support-chat textarea{display:block;width:100%;min-width:0;max-width:100%;min-height:49px;margin:8px 0 18px;padding:13px 14px;border:1px solid #344b69;border-radius:12px;background:#0a192c;color:#f0f6ff;font:500 15px/1.5 inherit}
+#support-chat textarea{min-height:145px;resize:vertical}
+#support-chat input::placeholder,#support-chat textarea::placeholder{color:#7186a2;opacity:1}
+#support-chat input:focus,#support-chat select:focus,#support-chat textarea:focus{outline:3px solid #3bb9ef38;border-color:#42c9e8}
+#support-chat button{min-height:47px;border:0;border-radius:12px;padding:12px 18px;background:linear-gradient(110deg,#22c5d7,#287ce8);color:#fff;font:750 14px/1.3 inherit;box-shadow:0 9px 24px #1985dc38;cursor:pointer}
+#support-chat button:disabled{opacity:.6;cursor:wait}
+#support-chat .support-chat-action{display:flex;align-items:center;flex-wrap:wrap;gap:12px}
+#support-chat .support-chat-status{font-size:13px;color:#a9c0da;overflow-wrap:anywhere}
+#support-chat .support-chat-divider{margin-top:28px}
+#support-chat .support-chat-section-title{font-size:20px;letter-spacing:-.02em;color:#f3f8ff}
+#support-chat .support-empty,#support-chat .support-chat-login{padding:16px;border:1px solid #263c59;border-radius:13px;background:#0a192c;color:#a9bdd6;line-height:1.7}
+#support-chat a{color:#65d7f0}
+.support-company-footer{margin:30px auto 4px;text-align:center;color:#8299b7;font-size:12px;line-height:1.8}
+.support-company-footer strong{display:block;color:#c7d8ed;font-weight:700}
+@media(max-width:620px){body{padding:10px}.content{padding:18px 14px;border-radius:18px}.support-brand{margin-bottom:20px}#support-chat .support-chat-form{grid-template-columns:minmax(0,1fr)}#support-chat .support-chat-form>*{grid-column:1/-1}#support-chat .support-chat-action button{width:100%}}
+</style>
+</head>
+<body>
+<main class="content">
+<header class="support-brand"><span class="support-brand-icon" aria-hidden="true">✦</span><span><strong>Molan Business Support</strong><small>Private help desk · Messages and replies</small></span></header>
+<section class="support-intro"><h1>How can we help?</h1><p>Send your question or complaint directly to the support team. Choose a subject and category, explain what you need, and follow replies here after signing in.</p></section>
+</main>
+<footer class="support-company-footer"><strong>Built and managed by Zakmolanitech Solutions</strong>Equipping minds with IT solutions.</footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="shared/support-chat.js"></script>
+</body>
+</html>
