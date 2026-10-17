@@ -1,0 +1,5 @@
+# The handoff endpoint performs its own bearer/session or single-use-token validation.
+# It must accept a token-only consume request from a fresh installed app; create requests
+# are authenticated inside the function using the supplied browser access token.
+[functions.business-app-handoff]
+verify_jwt = false
