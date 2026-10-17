@@ -507,3 +507,6 @@ html[data-theme="dark"] .website-voice-note p,html[data-theme="dark"] .website-v
 .app-footer-legal details>div{padding:0 13px 13px;color:#b7c7d9}
 .app-footer-legal p{margin:8px 0;line-height:1.75}
 @media(max-width:760px){.app-footer-top{grid-template-columns:1fr;gap:18px}.app-footer-legal{grid-template-columns:1fr}.website-voice-actions{align-items:flex-start}.website-voice-actions span{flex-basis:100%}}
+
+.website-payment-plan-note{grid-column:1/-1;margin:-4px 0 8px;padding:10px 12px;border-left:3px solid #2b94d2;border-radius:7px;background:#eef8ff;color:#234d6d;font-size:12px;line-height:1.65}
+html[data-theme="dark"] .website-payment-plan-note{background:#122d43;color:#d2e8f7}
