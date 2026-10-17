@@ -510,3 +510,6 @@ html[data-theme="dark"] .legal-dialog h2{color:#eef7ff}html[data-theme="dark"] .
 @media(max-width:760px){.app-legal-footer{align-items:flex-start;flex-direction:column}.app-legal-footer nav{gap:12px}.website-request-row{flex-wrap:wrap}.website-request-row>.button{width:100%}}
 
 .website-publishable-details{display:grid;gap:3px;margin-top:4px}.website-publishable-details p{margin:0;color:#526981;font-size:11px;line-height:1.55;overflow-wrap:anywhere}.website-publishable-details strong{color:#284b69}html[data-theme="dark"] .website-publishable-details p{color:#c1d0e1}html[data-theme="dark"] .website-publishable-details strong{color:#eef7ff}
+
+.website-payment-plan-note{grid-column:1/-1;margin:-4px 0 8px;padding:10px 12px;border-left:3px solid #2b94d2;border-radius:7px;background:#eef8ff;color:#234d6d;font-size:12px;line-height:1.65}
+html[data-theme="dark"] .website-payment-plan-note{background:#122d43;color:#d2e8f7}
