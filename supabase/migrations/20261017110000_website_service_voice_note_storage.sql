@@ -18,7 +18,7 @@ on storage.objects for select to authenticated
 using (
   bucket_id = 'website-service-voice-notes'
   and case when split_part(name, '/', 1) ~* '^[0-9a-f-]{36}$'
-    then public.is_company_member(split_part(name, '/', 1)::uuid)
+    then private.has_company_role(split_part(name, '/', 1)::uuid, array['owner','admin'])
     else false end
 );
 
