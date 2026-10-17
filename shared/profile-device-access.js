@@ -75,11 +75,23 @@
   const status = dialog.querySelector('[data-device-access-status]');
   const closeButton = dialog.querySelector('[data-device-access-close]');
   const close = () => { dialog.hidden = true; link.focus(); };
-  link.addEventListener('click', event => {
+  document.addEventListener('click', event => {
+    const accessLink = event.target.closest('[data-give-device-access]');
+    if (!accessLink) return;
     event.preventDefault();
     dialog.hidden = false;
     dialog.querySelector('[data-access-target="mobile"]').focus();
   });
+  new MutationObserver(() => {
+    const currentNav = document.querySelector('[data-profile-menu] nav');
+    if (currentNav && !currentNav.querySelector('[data-give-device-access]')) {
+      const newLink = document.createElement('a');
+      newLink.href = '#give-device-access';
+      newLink.dataset.giveDeviceAccess = '';
+      newLink.innerHTML = '<span>🔐</span><strong>Give Access to Mobile &amp; PC App</strong>';
+      currentNav.append(newLink);
+    }
+  }).observe(nav, { childList: true });
   dialog.querySelectorAll('[data-access-target]').forEach(button => button.addEventListener('click', () => {
     target = button.dataset.accessTarget;
     dialog.querySelectorAll('[data-access-target]').forEach(option => option.setAttribute('aria-pressed', String(option === button)));
