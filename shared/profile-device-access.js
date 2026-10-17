@@ -1,6 +1,7 @@
 (() => {
   'use strict';
-  if (document.querySelector('[data-profile-device-access-dialog]')) return;
+  // Always repair the profile hamburger first; a pre-existing dialog must not
+  // prevent the access menu item from being restored after navigation rebuilds.
   const getMenu = () => document.querySelector('[data-profile-menu]');
   const getNav = () => getMenu()?.querySelector('nav');
   const createAccessLink = () => {
