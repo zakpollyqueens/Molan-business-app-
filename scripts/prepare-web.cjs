@@ -132,7 +132,7 @@ for (const file of allPublishedHtml) {
   const relativePage = path.relative(output, file).split(path.sep).join('/');
   const pageDirectory = path.posix.dirname(relativePage);
   const runtimeSrc = path.posix.relative(pageDirectory, 'shared/support-launcher.js');
-  const tag = '<script data-molan-support-launcher src="' + runtimeSrc + '"></script>';
+  const tag = '<script data-molan-support-launcher src="' + runtimeSrc + '?v=20261017-3"></script>';
   if (!html.includes('data-molan-support-launcher')) {
     if (!html.includes('</body>')) continue;
     html = html.replace('</body>', tag + '</body>');
