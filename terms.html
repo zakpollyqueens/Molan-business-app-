@@ -316,7 +316,31 @@ header:not(.top),header.top{background:linear-gradient(100deg,#06132e,#10265d)!i
 @media(prefers-reduced-motion:no-preference){.credit-link-grid>a{transition:transform .18s ease,border-color .18s ease,filter .18s ease!important}.credit-link-grid>a:hover{filter:brightness(1.14)!important}}
 
 </style>
-<link rel="stylesheet" href="assets/premium-seven-pages.css?v=1">
+<link rel="stylesheet" href="assets/premium-seven-pages.css?v=1"><script>
+(()=> {
+ const imageSets = {
+ "terms.html":["https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1800&q=75","https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=1800&q=75","https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1800&q=75" ],
+ "privacy.html":["https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&fit=crop&w=1800&q=75","https://images.unsplash.com/photo-1510511459019-5dda7724fd87?auto=format&fit=crop&w=1800&q=75","https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=1800&q=75" ],
+ "website-service-terms.html":["https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1800&q=75","https://images.unsplash.com/photo-1523726491678-bf852e717f6a?auto=format&fit=crop&w=1800&q=75","https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1800&q=75" ],
+ "copyright-content-rights.html":["https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1800&q=75","https://images.unsplash.com/photo-1501504905252-473c47e087f8?auto=format&fit=crop&w=1800&q=75","https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1800&q=75" ],
+ "licenses.html":["https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=1800&q=75","https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1800&q=75","https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1800&q=75" ],
+ "support.html":["https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1800&q=75","https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1800&q=75","https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=1800&q=75" ],
+ "social-media.html":["https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1800&q=75","https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1800&q=75","https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1800&q=75" ]
+ };
+ const page=location.pathname.split("/").pop()||"terms.html";
+ const slides=document.createElement("div");
+ slides.className="mb-background-slideshow";
+ slides.setAttribute("aria-hidden","true");
+ (imageSets[page]||imageSets["terms.html"]).forEach(url=>{
+  const slide=document.createElement("div");
+  slide.className="mb-background-slide";
+  slide.style.backgroundImage='url("'+url+'")';
+  slides.appendChild(slide);
+ });
+ document.body.prepend(slides);
+})();
+</script>
+
 </head><body><main class="wrap"><header><a class="brand" href="./"><img class="brand-logo" src="assets/molan-business-icon.svg" alt="Molan Business app icon"><span>ZAKMOLANITECH SOLUTIONS<br><small>Molan Business · Business workspace</small></span></a></header><section class="hero"><div class="hero-kicker">YOUR WORKSPACE · YOUR RESPONSIBILITIES</div><h1>Terms of Service</h1><p><strong>Effective date:</strong> 16 October 2026</p><p>These terms describe the basic rules for using Molan Business, a business-management workspace. They are a product terms draft and should be reviewed for the operator's legal entity and applicable jurisdictions before commercial launch.</p></section><div class="content"><div class="note">By creating an account or using a workspace, you agree to use the service lawfully, provide accurate information, protect your sign-in credentials, and respect the privacy and access rights of your staff, customers, learners, members and other people whose data you manage.</div>
 <h2>1. Accounts and workspace ownership</h2><p>Provide accurate registration details and keep your email address and password secure. Workspace owners and authorised administrators are responsible for assigning roles and permissions carefully. Do not share credentials or give people access they do not need. You are responsible for activity performed through accounts under your control.</p>
 <h2>2. Business records and permissions</h2><p>You are responsible for the accuracy, lawfulness, retention and appropriate use of records entered into your workspace. Use only data you are authorised to collect. School, health, financial, staff, customer and member records may require additional safeguards and lawful permissions. Do not use the service to unlawfully monitor people, expose confidential information, or bypass access controls.</p>
