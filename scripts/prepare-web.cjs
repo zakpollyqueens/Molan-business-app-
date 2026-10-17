@@ -54,9 +54,14 @@ for (const file of profileHtmlFiles) {
   const match = html.match(menuNav);
   if (!match) throw new Error('Profile hamburger exists but its menu navigation is missing: ' + relativePage);
   let navContents = match[2].replace(/<a\b(?=[^>]*\bdata-give-device-access\b)[^>]*>[\s\S]*?<\/a\s*>/gi, '');
-  // Put the action at the very top so it is visible immediately when the hamburger opens.
-  navContents = accessMenuItem + navContents.replace(/^\s*/, '');
+  // Put the action after the final business-profile feature in the hamburger.
+  navContents = navContents.replace(/^\s*/, '') + accessMenuItem;
   html = html.replace(menuNav, match[1] + navContents + match[3]);
+
+  // The profile's own navigation-sync script rebuilds the nav asynchronously. Keep Give Access last there too.
+  html = html.replace('nav.append(access);const home=', 'const home=');
+  html = html.replace('nav.append(a)})}).catch(e=>console.warn(\'[Molan Business] Profile navigation sync failed:\',e.message));',
+    'nav.append(a)});nav.append(access)}).catch(e=>console.warn(\'[Molan Business] Profile navigation sync failed:\',e.message));');
 
   const pageDirectory = path.posix.dirname(relativePage);
   const runtimeSrc = path.posix.relative(pageDirectory, 'shared/profile-device-access.js');
