@@ -41,16 +41,17 @@ async function hmacHex(secret: string, message: string): Promise<string> {
   return [...new Uint8Array(signature)].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
-async function markWebsiteCheckoutFailed(paymentId: string, requestId: string, message: string) {
+async function markWebsiteCheckoutFailed(paymentId: string, requestId: string, message: string, preservePartialPayment = false) {
   await admin.from("website_service_checkout_payments").update({
     status: "failed",
     provider_metadata: { checkout_created: false, provider_error: message },
   }).eq("id", paymentId).eq("status", "pending");
 
   const { data: request } = await admin.from("website_service_requests")
-    .select("status").eq("id", requestId).maybeSingle();
-  const patch: Record<string, unknown> = { payment_status: "failed" };
-  if (request?.status === "awaiting_payment") patch.status = "requested";
+    .select("status,payment_status").eq("id", requestId).maybeSingle();
+  const patch: Record<string, unknown> = preservePartialPayment && request?.payment_status === "partially_paid"
+    ? { payment_status: "partially_paid" } : { payment_status: "failed" };
+  if (request?.status === "awaiting_payment" && !preservePartialPayment) patch.status = "requested";
   await admin.from("website_service_requests").update(patch).eq("id", requestId);
 }
 
@@ -130,7 +131,7 @@ async function createWebsiteServiceCheckout(authenticatedUser: any, body: any) {
   const { error: awaitingError } = await admin.from("website_service_requests")
     .update(requestCheckoutPatch).eq("id", request.id);
   if (awaitingError) {
-    await markWebsiteCheckoutFailed(payment.id, request.id, "Could not mark request as awaiting payment.");
+    await markWebsiteCheckoutFailed(payment.id, request.id, "Could not mark request as awaiting payment.", isBalancePayment);
     return json({ error: "Could not prepare this website request for checkout." }, 500);
   }
 
@@ -164,12 +165,12 @@ async function createWebsiteServiceCheckout(authenticatedUser: any, body: any) {
     const providerResponse = await response.json();
     if (!response.ok || providerResponse?.success !== true || !providerResponse?.data?.transaction_id ||
         typeof providerResponse?.data?.payment_url !== "string") {
-      await markWebsiteCheckoutFailed(payment.id, request.id, "Jjuma Pay rejected checkout creation.");
+      await markWebsiteCheckoutFailed(payment.id, request.id, "Jjuma Pay rejected checkout creation.", isBalancePayment);
       return json({ error: "Jjuma Pay could not create checkout. No website payment has been marked as paid." }, 502);
     }
     const checkoutUrl = new URL(providerResponse.data.payment_url);
     if (checkoutUrl.protocol !== "https:" || checkoutUrl.hostname !== "pay.jjuma.com") {
-      await markWebsiteCheckoutFailed(payment.id, request.id, "Jjuma Pay returned an untrusted checkout URL.");
+      await markWebsiteCheckoutFailed(payment.id, request.id, "Jjuma Pay returned an untrusted checkout URL.", isBalancePayment);
       return json({ error: "The payment provider returned an untrusted checkout URL." }, 502);
     }
     const { error: providerSaveError } = await admin.from("website_service_checkout_payments").update({
@@ -185,7 +186,7 @@ async function createWebsiteServiceCheckout(authenticatedUser: any, body: any) {
       },
     }).eq("id", payment.id).eq("status", "pending");
     if (providerSaveError) {
-      await markWebsiteCheckoutFailed(payment.id, request.id, "Could not save the checkout reference.");
+      await markWebsiteCheckoutFailed(payment.id, request.id, "Could not save the checkout reference.", isBalancePayment);
       return json({ error: "Checkout was created but its payment record could not be saved. Contact support before paying again." }, 500);
     }
     return json({
@@ -195,7 +196,7 @@ async function createWebsiteServiceCheckout(authenticatedUser: any, body: any) {
       message: "Complete Jjuma Pay checkout. Your website request proceeds after server-side payment verification.",
     });
   } catch (_error) {
-    await markWebsiteCheckoutFailed(payment.id, request.id, "Could not contact Jjuma Pay.");
+    await markWebsiteCheckoutFailed(payment.id, request.id, "Could not contact Jjuma Pay.", isBalancePayment);
     return json({ error: "Could not contact Jjuma Pay. No website payment has been marked as paid." }, 502);
   }
 }
