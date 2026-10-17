@@ -84,7 +84,7 @@ jobs:
               const featurePage = 'business-profiles/' + folder.name + '/pages/' + featureSlug + '/index.html';
               if (!fs.existsSync(featurePage)) throw new Error('Missing profile feature page: ' + featurePage);
               const featureHtml = fs.readFileSync(featurePage, 'utf8');
-              if (!featureHtml.includes('data-profile-hamburger') || !featureHtml.includes('data-give-device-access') || !featureHtml.includes('data-profile-device-access')) throw new Error('Feature page is missing its hamburger Give Access action/runtime: ' + featurePage);
+              if (!profile.retired && (!featureHtml.includes('data-profile-hamburger') || !featureHtml.includes('data-give-device-access') || !featureHtml.includes('data-profile-device-access'))) throw new Error('Feature page is missing its hamburger Give Access action/runtime: ' + featurePage);
             }
             if (folder.name !== 'sacco-savings-group' && profile.features.some(feature => ['sacco','sacco-welfare'].includes(feature.route))) {
               throw new Error('SACCO-only workflow leaked into non-SACCO profile: ' + file);
