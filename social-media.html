@@ -314,6 +314,20 @@ header:not(.top),header.top{background:linear-gradient(100deg,#06132e,#10265d)!i
 @media(max-width:780px){body:before{background-position:center,right -18vw top 12%!important;background-size:cover,min(110vw,600px) auto!important;opacity:.85!important}}
 @media(prefers-reduced-motion:no-preference){.credit-link-grid>a{transition:transform .18s ease,border-color .18s ease,filter .18s ease!important}.credit-link-grid>a:hover{filter:brightness(1.14)!important}}
 
+
+/* Brand-accurate navigation icon refresh */
+.credit-link-grid>a:before{content:""!important;display:inline-flex!important;flex:0 0 30px!important;width:30px!important;height:30px!important;background-color:rgba(91,126,255,.12)!important;background-repeat:no-repeat!important;background-position:center!important;background-size:19px 19px!important;border:1px solid rgba(129,166,255,.2)!important;border-radius:9px!important;font-size:0!important}
+.credit-link-grid>a[href*="support"]:before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%231c9b72' d='M6.6 3.5 9 3c.6-.1 1.1.2 1.3.8l1.1 3c.2.5 0 1-.4 1.4L9.5 9.6a14.4 14.4 0 0 0 4.9 4.9l1.4-1.5c.4-.4.9-.5 1.4-.4l3 1.1c.6.2.9.8.8 1.3l-.5 2.4c-.1.7-.7 1.1-1.4 1.1C10.3 18.5 5.5 13.7 5.5 5c0-.7.5-1.3 1.1-1.5Z'/%3E%3C/svg%3E")!important;background-color:#e8f7ef!important;border-color:#ccebd9!important}
+.credit-link-grid>a[href*="social-media"]:before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='6' cy='12' r='2.5' fill='%230b91a8'/%3E%3Ccircle cx='18' cy='6' r='2.5' fill='%23176bd8'/%3E%3Ccircle cx='18' cy='18' r='2.5' fill='%23176bd8'/%3E%3Cpath d='m8 11 7.5-4M8 13l7.5 4' stroke='%230b91a8' stroke-width='2' fill='none'/%3E%3C/svg%3E")!important}
+.credit-link-grid>a[href*="terms"]:before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 3h8l4 4v14H6zM14 3v5h5M9 12h6M9 16h6' fill='none' stroke='%23176bd8' stroke-width='1.8' stroke-linejoin='round'/%3E%3C/svg%3E")!important}
+.credit-link-grid>a[href*="privacy"]:before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2.8 20 6v5.3c0 5-3.4 8.2-8 10-4.6-1.8-8-5-8-10V6z' fill='none' stroke='%237c5ce7' stroke-width='1.8'/%3E%3Crect x='9' y='10.5' width='6' height='5.5' rx='1' fill='none' stroke='%237c5ce7' stroke-width='1.6'/%3E%3Cpath d='M10.5 10.5V9a1.5 1.5 0 0 1 3 0v1.5' fill='none' stroke='%237c5ce7' stroke-width='1.6'/%3E%3C/svg%3E")!important;background-color:#f1edff!important}
+.credit-link-grid>a[href*="website-service"]:before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='3' y='4' width='18' height='16' rx='2' fill='none' stroke='%230b91a8' stroke-width='1.8'/%3E%3Cpath d='M3 8h18M8 12h8M8 15h5' stroke='%230b91a8' stroke-width='1.6' fill='none'/%3E%3C/svg%3E")!important;background-color:#e7f9fb!important}
+.credit-link-grid>a[href*="copyright"]:before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='9' fill='none' stroke='%238a55c8' stroke-width='1.8'/%3E%3Cpath d='M14.8 9.3a3.6 3.6 0 1 0 0 5.4' fill='none' stroke='%238a55c8' stroke-width='1.8'/%3E%3C/svg%3E")!important}
+.credit-link-grid>a[href*="licenses"]:before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m4 12 5 5L20 6' fill='none' stroke='%230b91a8' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")!important}
+.credit-link-grid>a[href^="mailto:"]:before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%234285F4' d='M3 7v10h4V9z'/%3E%3Cpath fill='%2334A853' d='M17 9v8h4V7z'/%3E%3Cpath fill='%23EA4335' d='M3 7l9 7 9-7c0-2-2-3-4-2l-5 4-5-4C5 4 3 5 3 7z'/%3E%3C/svg%3E")!important;background-color:#fff!important;border-color:#e5eaf0!important}
+.credit-link-grid>a[href*="wa.me"]:before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%2325D366' d='M12 2a9.8 9.8 0 0 0-8.4 14.8L2.4 22l5.4-1.4A10 10 0 1 0 12 2z'/%3E%3Cpath fill='white' d='M9 7.2c-.4-.1-.7 0-.9.3-.3.3-1 1-1 2.2 0 1.3 1 2.7 1.2 2.9.2.3 2 3.1 4.7 3.9 2.3.7 2.8.4 3.3.2.5-.2 1.5-.7 1.7-1.4.2-.7.2-1.2 0-1.3-.1-.2-.4-.3-.8-.5l-1.7-.8c-.3-.1-.5-.2-.7.2l-.8 1c-.2.2-.4.2-.7.1-.4-.2-1.3-.5-2.2-1.3-.8-.7-1.3-1.5-1.5-1.8-.2-.3 0-.5.2-.7l.5-.6c.2-.2.2-.4.3-.6.1-.2 0-.4-.1-.6l-.8-1.8c-.2-.5-.4-.5-.7-.5z'/%3E%3C/svg%3E")!important;background-color:#e8faef!important;border-color:#ccefd9!important}
+.credit-link-grid>a[href="./"]:before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m3 11 9-8 9 8M6 9v11h12V9M10 20v-6h4v6' fill='none' stroke='%23176bd8' stroke-width='1.8' stroke-linejoin='round'/%3E%3C/svg%3E")!important}
+
 </style>
 <link rel="stylesheet" href="assets/premium-seven-pages.css?v=2"><script>
 document.addEventListener("DOMContentLoaded",()=>{
@@ -375,7 +389,7 @@ document.addEventListener("DOMContentLoaded",()=>{
 (()=> {
  const iconSvg=(kind)=> {
   const paths={
-   email:'<path d="M3 6.5A2.5 2.5 0 0 1 5.5 4h13A2.5 2.5 0 0 1 21 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="m4 6 8 6 8-6" fill="none" stroke="currentColor" stroke-width="1.7"/>',
+   email:'<path fill="#4285F4" d="M3 7.2v10.1c0 .9.7 1.7 1.7 1.7h2.1V9.2z"/><path fill="#34A853" d="M17.2 19h2.1c.9 0 1.7-.8 1.7-1.7V7.2l-3.8 2z"/><path fill="#EA4335" d="M17.2 5.2 12 9.3 6.8 5.2C5.5 4.2 3 5.1 3 7.2v.1l9 6.8 9-6.8v-.1c0-2.1-2.5-3-3.8-2z"/><path fill="#C5221F" d="M3 7.2v.1l3.8 2.9V5.2C5.5 4.2 3 5.1 3 7.2z"/><path fill="#FBBC04" d="M17.2 5.2v5l3.8-2.9v-.1c0-2.1-2.5-3-3.8-2z"/>',
    whatsapp:'<path d="M20.2 3.8A9.8 9.8 0 0 0 4.8 15.6L3.5 20.5l5-1.3A9.8 9.8 0 1 0 20.2 3.8ZM12 20a8 8 0 0 1-4.1-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 20Z"/><path d="M9.1 7.5c-.2-.5-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1 2.8 1.1 3 .2.3.4.6c.2.3 1.7 2.7 4.2 3.7 2 .8 2.5.6 3 .6.5-.1 1.6-.7 1.8-1.3.2-.6.2-1.1.2-1.2s-.2-.2-.5-.4l-1.7-.8c-.2-.1-.4-.1-.6.2l-.8 1c-.2.2-.3.2-.6.1-.3-.1-1.2-.4-2.2-1.3-.8-.7-1.3-1.6-1.5-1.9-.2-.3 0-.4.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5z"/>',
    phone:'<path d="M6.6 3.5 9 3c.6-.1 1.1.2 1.3.8l1.1 3c.2.5 0 1-.4 1.4L9.5 9.6a14.4 14.4 0 0 0 4.9 4.9l1.4-1.5c.4-.4.9-.5 1.4-.4l3 1.1c.6.2.9.8.8 1.3l-.5 2.4c-.1.7-.7 1.1-1.4 1.1C10.3 18.5 5.5 13.7 5.5 5c0-.7.5-1.3 1.1-1.5Z"/>',
    telegram:'<path d="M21.5 4.5 18.3 20c-.2 1.1-.9 1.4-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.3-8.4c.4-.4-.1-.6-.6-.2L5.7 13.6.8 12c-1.1-.3-1.1-1.1.2-1.6L20 3c.9-.3 1.7.2 1.5 1.5Z"/>',
@@ -399,6 +413,11 @@ document.addEventListener("DOMContentLoaded",()=>{
   if(t.includes('instagram')) return 'instagram';
   if(t.includes('facebook')) return 'facebook';
   if(t.includes('linkedin')) return 'linkedin';
+  if(t.includes('privacy')) return 'privacy';
+  if(t.includes('terms')||t.includes('conditions')) return 'terms';
+  if(t.includes('website service')||t.includes('website request')||t.includes('website')) return 'website';
+  if(t.includes('social media')||t.includes('social')) return 'social';
+  if(t.includes('support')||t.includes('contact')) return 'phone';
   if(t.includes('copyright')||t.includes('content rights')) return 'copyright';
   if(t.includes('licence')||t.includes('license')) return 'license';
   return 'document';
