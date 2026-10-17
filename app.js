@@ -1817,7 +1817,7 @@ typeInput?.addEventListener('change',renderMetadata);renderMetadata();
   }
   close();
   if(websiteCheckoutIntent){const checkoutStarted=await startWebsiteCheckout(websiteRequest.id);if(checkoutStarted)return}
-  toast(websiteCheckoutIntent?'Request saved. Checkout was not opened; use Pay with Jjuma Pay to retry.':'Website request saved. You can pay the first payment with Jjuma Pay when ready.');
+  toast(websiteCheckoutIntent?'Congratulations! Your website request is saved. Checkout was not opened; use Pay with Jjuma Pay to continue.':'Congratulations! Your website request has been submitted successfully. You can pay the first 50% with Jjuma Pay when ready.');
   await refreshData();renderPage(currentPage);return;
 }
 const {error}=await supabase.from(cfg.table).insert(payload);if(error){toast(error.message,true);submit.disabled=false;submit.innerHTML='Save to workspace <span>→</span>';return}close();toast('Saved successfully.');await refreshData();renderPage(currentPage)})}
