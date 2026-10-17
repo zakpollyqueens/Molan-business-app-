@@ -21,8 +21,16 @@
   const style = document.createElement('style');
   style.dataset.deviceAccessStyles = '';
   style.textContent = `
-    .profile-menu nav a[data-give-device-access]{border-color:#b7e5f5;background:linear-gradient(120deg,#f0fbff,#fff);font-weight:800}
-    .profile-menu nav a[data-give-device-access] strong{font-size:13px}
+    @keyframes giveAccessPulse{0%,100%{box-shadow:0 0 0 0 #08a5d544,0 5px 16px #0787bf12;transform:translateY(0)}50%{box-shadow:0 0 0 5px #08a5d51c,0 8px 22px #0787bf28;transform:translateY(-1px)}}
+    @keyframes giveAccessShimmer{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+    .profile-menu nav a[data-give-device-access]{position:relative;isolation:isolate;overflow:hidden;border:1px solid #70d1ef;background:linear-gradient(110deg,#e9faff,#fff,#e4f7ff,#fff);background-size:200% 100%;font-weight:800;animation:giveAccessPulse 2.2s ease-in-out infinite,giveAccessShimmer 5s linear infinite;transition:transform .2s ease,border-color .2s ease}
+    .profile-menu nav a[data-give-device-access]::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 20%,#fff9 48%,transparent 72%);transform:translateX(-120%);animation:giveAccessSweep 3.6s ease-in-out infinite}
+    @keyframes giveAccessSweep{0%,45%{transform:translateX(-120%)}75%,100%{transform:translateX(120%)}}
+    .profile-menu nav a[data-give-device-access] span{display:grid;place-items:center;min-width:30px;height:30px;border-radius:9px;background:#d7f5ff;box-shadow:inset 0 0 0 1px #a5e8fa;animation:giveAccessIconGlow 2.2s ease-in-out infinite}
+    @keyframes giveAccessIconGlow{0%,100%{transform:scale(1);filter:drop-shadow(0 0 0 #08a5d500)}50%{transform:scale(1.09);filter:drop-shadow(0 0 5px #08a5d588)}}
+    .profile-menu nav a[data-give-device-access] strong{font-size:13px;position:relative;z-index:1}
+    .profile-menu nav a[data-give-device-access]:hover,.profile-menu nav a[data-give-device-access]:focus-visible{transform:translateY(-2px);border-color:#0787bf;outline:2px solid #0787bf55;outline-offset:2px}
+    @media(prefers-reduced-motion:reduce){.profile-menu nav a[data-give-device-access],.profile-menu nav a[data-give-device-access]::after,.profile-menu nav a[data-give-device-access] span{animation:none!important;transition:none!important}}
     .device-access-dialog{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:16px;background:#07152bd9}
     .device-access-dialog[hidden]{display:none}
     .device-access-card{width:min(520px,100%);max-height:90vh;overflow:auto;background:#fff;color:#10213e;border:1px solid #dce5f1;border-radius:22px;padding:22px;box-shadow:0 24px 80px #07152b55;font:15px/1.5 system-ui}
