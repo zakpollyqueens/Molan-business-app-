@@ -478,3 +478,29 @@ html[data-theme="dark"] .website-request-info p{color:#c1d0e1}
 html[data-theme="dark"] .website-checkout-price-preview{background:#14334b;color:#d4efff!important;border-color:#285979}
 @media(max-width:960px){.website-package-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.website-package-card.website-package-featured{transform:none}}
 @media(max-width:640px){.website-market-panel{grid-template-columns:1fr;gap:15px;padding:16px}.website-package-grid{grid-template-columns:1fr;gap:12px}.website-package-card{padding:19px}.website-package-card p{min-height:0}.website-request-row{align-items:flex-start;flex-wrap:wrap}.website-request-info{min-width:calc(100% - 55px)}.website-request-row>.button{width:100%;margin-left:52px}.website-package-card .button{width:100%}}
+
+
+/* Website service intake and voice-note controls */
+.website-voice-capture{display:grid;gap:12px;margin:18px 0;padding:16px;border:1px solid #cfe3f5;border-radius:16px;background:linear-gradient(145deg,#f4faff,#fff)}
+.website-voice-heading{display:flex;gap:12px;align-items:center}
+.website-voice-icon{display:grid;place-items:center;flex:0 0 42px;height:42px;border-radius:14px;background:#dff2ff;font-size:20px}
+.website-voice-heading strong{display:block;color:#173653;font-size:13px}
+.website-voice-heading small,.website-voice-status{display:block;color:#60768c;font-size:11px;line-height:1.6}
+.website-voice-actions{display:flex;flex-wrap:wrap;gap:8px}
+.website-voice-preview{width:100%;max-width:520px}
+.website-terms-accept{display:flex;align-items:flex-start;gap:10px;margin:14px 0;padding:12px 14px;border:1px solid #d9e6f2;border-radius:12px;color:#536981;font-size:11px;line-height:1.6}
+.website-terms-accept input{margin-top:3px;flex:0 0 auto}
+.website-terms-accept a{color:#1676bc;font-weight:800;text-decoration:underline}
+.zak-footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:24px;max-width:1180px;margin:0 auto 20px;text-align:left}
+.zak-footer-column{display:grid;align-content:start;gap:9px}
+.zak-footer-column h3{margin:0 0 3px;color:#eaf8ff;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.zak-footer-column p,.zak-footer-column a,.zak-footer-column span{margin:0;color:#b1c1d5;font-size:12px;line-height:1.7;overflow-wrap:anywhere}
+.zak-footer-column a{text-decoration:none}
+.zak-footer-column a:hover{color:#70d9f3;text-decoration:underline}
+.zak-footer-bottom{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;max-width:1180px;margin:auto;padding-top:16px;border-top:1px solid rgba(148,163,184,.2);color:#9aa9bf;font-size:11px;text-align:left}
+html[data-theme="dark"] .website-voice-capture{background:linear-gradient(145deg,#122b43,#0e2035);border-color:#2b4c68}
+html[data-theme="dark"] .website-voice-heading strong{color:#f1f8ff}
+html[data-theme="dark"] .website-voice-heading small,html[data-theme="dark"] .website-voice-status,html[data-theme="dark"] .website-terms-accept{color:#c2d4e7}
+html[data-theme="dark"] .website-terms-accept{border-color:#35516e}
+@media(max-width:800px){.zak-footer-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}}
+@media(max-width:480px){.zak-footer-grid{grid-template-columns:1fr}.zak-footer-bottom{display:grid}.website-voice-actions .button{flex:1}}
