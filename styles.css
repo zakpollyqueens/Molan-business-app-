@@ -526,3 +526,7 @@ html[data-theme="dark"] .legal-dialog h2{color:#eef7ff}html[data-theme="dark"] .
 .zak-footer-links a:hover{color:#70d9f3;text-decoration:underline;text-underline-offset:3px}
 .zak-footer-links .zak-footer-note{margin-top:10px;padding-top:12px;border-top:1px solid rgba(148,163,184,.2);font-size:11px;color:#9aa9bf}
 @media(max-width:700px){.zak-footer-grid{grid-template-columns:1fr;gap:26px}.zak-footer-brand .zak-footer-copy{margin-top:6px}}
+
+/* Clear first-payment and remaining-balance guidance for website packages. */
+.website-payment-plan-note{grid-column:1/-1;margin:-4px 0 8px;padding:10px 12px;border-left:3px solid #2b94d2;border-radius:7px;background:#eef8ff;color:#234d6d;font-size:12px;line-height:1.65}
+html[data-theme="dark"] .website-payment-plan-note{background:#122d43;color:#d2e8f7}
