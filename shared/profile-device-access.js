@@ -98,6 +98,20 @@
     </section>`;
   document.body.append(dialog);
 
+  // Profile navigation can be rebuilt asynchronously from profile.json. Re-apply
+  // the browser Give Access / native Close Access action after every menu rebuild.
+  const observer = new MutationObserver(() => ensureAccessMenuItem());
+  let observerStarted = false;
+  const observeWhenReady = () => {
+    ensureAccessMenuItem();
+    if (document.body && !observerStarted) {
+      observer.observe(document.body, { childList: true, subtree: true });
+      observerStarted = true;
+    }
+  };
+  observeWhenReady();
+  if (!observerStarted) document.addEventListener('DOMContentLoaded', observeWhenReady, { once: true });
+
   let target = 'mobile';
   let authClientPromise = null;
   const accountLabel = dialog.querySelector('[data-device-access-account]');
