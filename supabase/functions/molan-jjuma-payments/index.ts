@@ -69,16 +69,23 @@ async function createWebsiteServiceCheckout(authenticatedUser: any, body: any) {
 
   const { data: request, error: requestError } = await admin
     .from("website_service_requests")
-    .select("id,company_id,market_code,package_code,package_currency_code,package_amount,status,payment_status")
+    .select("id,company_id,market_code,package_code,package_currency_code,package_amount,deposit_amount,balance_amount,payment_plan,status,payment_status")
     .eq("id", requestId).eq("company_id", companyId).maybeSingle();
   if (requestError) return json({ error: "Could not load the website service request." }, 500);
   if (!request) return json({ error: "The website service request was not found in this business." }, 404);
-  if (request.payment_status === "paid") return json({ error: "This website request has already been paid." }, 409);
-  if (!["requested", "awaiting_payment"].includes(String(request.status))) {
-    return json({ error: "This request is no longer available for checkout." }, 409);
+  const paymentStage = body?.payment_stage === "balance" ? "balance" : "deposit";
+  if (request.payment_status === "paid") return json({ error: "This website request has already been paid in full." }, 409);
+  if (paymentStage === "deposit") {
+    if (request.payment_status === "partially_paid") return json({ error: "The first payment is already recorded. The remaining balance is due after the website is completed." }, 409);
+    if (!["requested", "awaiting_payment"].includes(String(request.status))) {
+      return json({ error: "The initial payment is only available for a new website request." }, 409);
+    }
+  } else {
+    if (request.payment_status !== "partially_paid") return json({ error: "The remaining balance is available only after the first payment has been verified." }, 409);
+    if (String(request.status).toLowerCase() !== "delivered") return json({ error: "The remaining balance becomes payable after the website has been completed and delivered." }, 409);
   }
 
-  const amount = Number(request.package_amount);
+  const amount = Number(paymentStage === "balance" ? request.balance_amount : request.deposit_amount);
   const currency = String(request.package_currency_code || "").toUpperCase();
   if (!Number.isFinite(amount) || amount <= 0 || !["UGX", "KES", "TZS", "USD"].includes(currency)) {
     return json({ error: "This website request has no valid server-approved package price." }, 409);
@@ -90,12 +97,12 @@ async function createWebsiteServiceCheckout(authenticatedUser: any, body: any) {
   if (existingError) return json({ error: "Could not check the current checkout status." }, 500);
   if (existing) {
     const url = existing.provider_metadata?.checkout_url;
-    if (typeof url === "string") {
+    if (typeof url === "string" && existing.provider_metadata?.payment_stage === paymentStage) {
       try {
         const parsed = new URL(url);
         if (parsed.protocol === "https:" && parsed.hostname === "pay.jjuma.com") {
           return json({ success: true, payment_url: parsed.toString(), amount: Number(existing.amount),
-            currency: String(existing.currency_code).toUpperCase(), status: "pending",
+            currency: String(existing.currency_code).toUpperCase(), status: "pending", payment_stage: paymentStage,
             message: "Continue with the existing secure Jjuma Pay checkout." });
         }
       } catch (_) { /* Treat invalid stored provider URLs as unavailable. */ }
@@ -110,7 +117,9 @@ async function createWebsiteServiceCheckout(authenticatedUser: any, body: any) {
       provider: "jjuma", amount, currency_code: currency, status: "pending",
       provider_metadata: {
         product: "molan_website_service", market_code: request.market_code,
-        package_code: request.package_code, customer_user_id: authenticatedUser.id,
+        package_code: request.package_code, payment_plan: request.payment_plan,
+        payment_stage: paymentStage, package_total_amount: Number(request.package_amount),
+        customer_user_id: authenticatedUser.id,
       },
     }).select("id").single();
   if (paymentError || !payment) return json({ error: "Could not create the website checkout record. Please retry." }, 500);
@@ -128,7 +137,7 @@ async function createWebsiteServiceCheckout(authenticatedUser: any, body: any) {
   const cancelRedirect = `https://zakpollyqueens.github.io/Molan-business-app-/failed.html?website_payment_id=${encodeURIComponent(payment.id)}`;
   const payload = {
     amount, currency,
-    description: `Molan Business ${packageName} website service package`,
+    description: `Molan Business ${packageName} website service ${paymentStage === "balance" ? "remaining balance" : "first 50% installment"}`,
     customer_name: authenticatedUser.user_metadata?.full_name || authenticatedUser.email || "Molan Business customer",
     customer_email: authenticatedUser.email,
     redirect_url: redirect, return_url: redirect, cancel_redirect_url: cancelRedirect,
@@ -328,8 +337,9 @@ async function handleWebsiteServiceWebhook(
     const { data: request, error: requestReadError } = await admin.from("website_service_requests")
       .select("status").eq("id", websitePayment.request_id).maybeSingle();
     if (requestReadError) return json({ error: "Could not update website request payment status." }, 500);
-    const requestPatch: Record<string, unknown> = { payment_status: "failed" };
-    if (request?.status === "awaiting_payment") requestPatch.status = "requested";
+    const failedStage = websitePayment.provider_metadata?.payment_stage === "balance" ? "balance" : "deposit";
+    const requestPatch: Record<string, unknown> = { payment_status: failedStage === "balance" ? "partially_paid" : "failed" };
+    if (failedStage === "deposit" && request?.status === "awaiting_payment") requestPatch.status = "requested";
     const { error: requestUpdateError } = await admin.from("website_service_requests")
       .update(requestPatch).eq("id", websitePayment.request_id);
     if (requestUpdateError) return json({ error: "Could not update website request payment status." }, 500);
@@ -359,15 +369,18 @@ async function handleWebsiteServiceWebhook(
     return json({ error: "Verified website payment amount or currency does not match the pending checkout." }, 409);
   }
 
+  const paymentStage = websitePayment.provider_metadata?.payment_stage === "balance" ? "balance" : "deposit";
   const { data: request, error: requestError } = await admin.from("website_service_requests")
-    .select("id,status").eq("id", websitePayment.request_id).maybeSingle();
+    .select("id,status,payment_status").eq("id", websitePayment.request_id).maybeSingle();
   if (requestError || !request) return json({ error: "Could not locate the website request for this payment." }, 500);
+  const verifiedAt = verifiedData.paid_at ?? new Date().toISOString();
   const requestPatch: Record<string, unknown> = {
-    payment_status: "paid",
-    paid_at: verifiedData.paid_at ?? new Date().toISOString(),
+    payment_status: paymentStage === "balance" ? "paid" : "partially_paid",
     payment_provider_reference: transactionId,
   };
-  if (["requested", "awaiting_payment"].includes(String(request.status))) requestPatch.status = "in_progress";
+  if (paymentStage === "balance") requestPatch.paid_at = verifiedAt;
+  else requestPatch.deposit_paid_at = verifiedAt;
+  if (paymentStage === "deposit" && ["requested", "awaiting_payment"].includes(String(request.status))) requestPatch.status = "in_progress";
   const { error: requestUpdateError } = await admin.from("website_service_requests")
     .update(requestPatch).eq("id", request.id);
   if (requestUpdateError) return json({ error: "Payment was verified but the website request could not be updated. The webhook can be retried." }, 500);
@@ -388,7 +401,7 @@ async function handleWebsiteServiceWebhook(
       .select("status").eq("id", websitePayment.id).maybeSingle();
     if (currentPayment?.status !== "verified") return json({ error: "Could not complete website payment verification." }, 500);
   }
-  return json({ success: true, website_service_paid: true, request_id: request.id });
+  return json({ success: true, website_service_paid: paymentStage === "balance", payment_status: paymentStage === "balance" ? "paid" : "partially_paid", payment_stage: paymentStage, request_id: request.id });
 }
 
 async function handleWebhook(req: Request) {
