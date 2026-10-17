@@ -65,7 +65,7 @@ for (const file of profileHtmlFiles) {
 
   const pageDirectory = path.posix.dirname(relativePage);
   const runtimeSrc = path.posix.relative(pageDirectory, 'shared/profile-device-access.js');
-  const runtimeTag = '<script data-profile-device-access src="' + runtimeSrc + '"></script>';
+  const runtimeTag = '<script data-profile-device-access src="' + runtimeSrc + '?v=20261017-2"></script>';
   const runtimeTagPattern = /<script\b(?=[^>]*\bdata-profile-device-access\b)[^>]*>[\s\S]*?<\/script\s*>/gi;
   if (runtimeTagPattern.test(html)) {
     runtimeTagPattern.lastIndex = 0;
@@ -87,7 +87,7 @@ for (const file of profileHtmlFiles) {
     throw new Error('Expected exactly one Give Access item inside the hamburger nav, found ' + accessCount + ': ' + relativePage);
   }
   const runtimeTags = [...html.matchAll(/<script\b(?=[^>]*\bdata-profile-device-access\b)[^>]*src=["']([^"']+)["'][^>]*>/gi)];
-  if (runtimeTags.length !== 1 || runtimeTags[0][1] !== runtimeSrc) {
+  if (runtimeTags.length !== 1 || runtimeTags[0][1].split('?')[0] !== runtimeSrc || !runtimeTags[0][1].includes('v=20261017-2')) {
     throw new Error('Expected one correctly linked device-access runtime (' + runtimeSrc + '): ' + relativePage);
   }
   const resolvedRuntime = path.resolve(output, path.dirname(relativePage), runtimeSrc);
