@@ -46,7 +46,7 @@ function ensureProfileNavigation(file, profile, isFeaturePage = false) {
   if (!mainTag.test(html)) return;
   html = html.replace('</head>', styles + '</head>');
   html = html.replace(mainTag, match => match + nav);
-  html = html.replace('</body>', script + '</body>');
+  html = html.replace('</body>', script + deviceAccessScript + '</body>');
   fs.writeFileSync(file, html);
 }
 
