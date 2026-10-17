@@ -51,7 +51,7 @@ for (const file of profileHtmlFiles) {
   const menuNav = /(<aside\b[^>]*\bdata-profile-menu[^>]*>[\s\S]*?<nav\b[^>]*>)([\s\S]*?)(<\/nav\s*>)/i;
   const match = html.match(menuNav);
   if (!match) throw new Error('Profile hamburger exists but its menu navigation is missing: ' + relativePage);
-  const cleanedNav = match[2].replace(/<a\\b(?=[^>]*(?:data-give-device-access|href=["']#give-device-access))[^>]*>[\\s\\S]*?<\\/a\\s*>/gi, '');
+  const cleanedNav = match[2].replace(/<a\b(?=[^>]*(?:data-give-device-access|href=["']#give-device-access))[^>]*>[\s\S]*?<\/a\s*>/gi, '');
   if (cleanedNav !== match[2]) {
     html = html.replace(menuNav, match[1] + cleanedNav + match[3]);
     fs.writeFileSync(file, html);
