@@ -22,6 +22,8 @@ create policy support_messages_customer_mark_read on public.support_messages for
 grant select,insert on public.support_tickets to authenticated;
 grant usage,select on sequence public.support_tickets_ticket_number_seq to authenticated;
 grant select,insert on public.support_messages to authenticated;
+grant all on public.support_tickets,public.support_messages,public.support_ticket_events to service_role;
+grant usage,select on sequence public.support_tickets_ticket_number_seq to service_role;
 revoke update on public.support_messages from authenticated;
 grant update(customer_read_at) on public.support_messages to authenticated;
 create or replace function public.support_touch_ticket() returns trigger language plpgsql security definer set search_path=public as $support$ begin update public.support_tickets set updated_at=now() where id=new.ticket_id; return new; end; $support$;
