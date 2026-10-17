@@ -45,7 +45,7 @@ const walkHtml = directory => {
 const profileHtmlFiles = walkHtml(path.join(output, 'business-profiles'));
 let checkedProfilePages = 0;
 for (const file of profileHtmlFiles) {
-  const html = fs.readFileSync(file, 'utf8');
+  let html = fs.readFileSync(file, 'utf8');
   const relativePage = path.relative(output, file).split(path.sep).join('/');
   if (!html.includes('data-profile-hamburger')) continue;
   const menuNav = /(<aside\b[^>]*\bdata-profile-menu[^>]*>[\s\S]*?<nav\b[^>]*>)([\s\S]*?)(<\/nav\s*>)/i;
