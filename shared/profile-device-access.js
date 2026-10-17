@@ -1,6 +1,22 @@
 (() => {
   'use strict';
-  // Device access is launched from authenticated Business Settings, never from a profile hamburger.\n  const style = document.createElement('style');
+  // Device access is launched from authenticated Business Settings, never from a profile hamburger.
+  // Remove legacy links from static profile pages, including menus rebuilt after load.
+  const cleanLegacyMenu = () => {
+    document.querySelectorAll('[data-profile-menu] nav [data-give-device-access], [data-profile-menu] nav a[href="#give-device-access"]').forEach(item => item.remove());
+  };
+  cleanLegacyMenu();
+  let menuObserverStarted = false;
+  const startMenuCleanup = () => {
+    cleanLegacyMenu();
+    if (document.body && !menuObserverStarted) {
+      new MutationObserver(cleanLegacyMenu).observe(document.body, { childList: true, subtree: true });
+      menuObserverStarted = true;
+    }
+  };
+  startMenuCleanup();
+  if (!menuObserverStarted) document.addEventListener('DOMContentLoaded', startMenuCleanup, { once: true });
+  const style = document.createElement('style');
   style.dataset.deviceAccessStyles = '';
   style.textContent = `
     @keyframes giveAccessPulse{0%,100%{box-shadow:0 0 0 0 #08a5d544,0 5px 16px #0787bf12;transform:translateY(0)}50%{box-shadow:0 0 0 5px #08a5d51c,0 8px 22px #0787bf28;transform:translateY(-1px)}}
