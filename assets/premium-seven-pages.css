@@ -80,3 +80,18 @@ header:not(.top),header.top{display:flex!important;align-items:center!important;
 .credit-bottom .credit-motto{color:#8debf2!important;font-weight:700!important}
 @media(max-width:760px){body{padding:12px 9px 24px!important}.wrap{border-radius:17px!important}.hero{padding:28px 22px!important}.hero h1,.hero p,.hero p strong{max-width:100%!important}.hero:before{right:-68px!important;top:14px!important;width:150px!important;height:150px!important}.hero:after{right:24px!important;top:42px!important;font-size:49px!important}.content{padding:23px 20px!important}.link-list{grid-template-columns:1fr!important}.link-card{min-height:88px!important;padding:14px!important}.mb-icon{width:42px!important;height:42px!important;flex-basis:42px!important}.mb-toc-links{grid-template-columns:1fr!important}.credit-cta{align-items:flex-start!important;flex-direction:column!important}.credit-cta-button{width:100%!important}.credit-link-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.credit-bottom{flex-direction:column!important;gap:7px!important}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+/* Subtle themed image slideshow behind the seven information pages */
+body{position:relative!important;isolation:isolate!important;background:transparent!important}
+.mb-background-slideshow{position:fixed!important;inset:0!important;z-index:-1!important;overflow:hidden!important;pointer-events:none!important;background:#dfe7ef!important}
+.mb-background-slide{position:absolute!important;inset:-2%!important;background-size:cover!important;background-position:center!important;opacity:0!important;transform:scale(1.035)!important;filter:saturate(.72) brightness(.78)!important;animation:mbBackgroundFade 27s infinite!important}
+.mb-background-slide:nth-child(1){animation-delay:0s!important}
+.mb-background-slide:nth-child(2){animation-delay:9s!important}
+.mb-background-slide:nth-child(3){animation-delay:18s!important}
+.mb-background-slideshow:after{content:""!important;position:absolute!important;inset:0!important;background:linear-gradient(180deg,rgba(9,29,52,.34),rgba(220,230,239,.57) 52%,rgba(219,229,238,.7))!important}
+@keyframes mbBackgroundFade{0%,4%{opacity:.24}30%,34%{opacity:.24}38%,100%{opacity:0}}
+.wrap{position:relative!important;z-index:1!important;background:rgba(255,255,255,.94)!important;box-shadow:0 24px 70px rgba(12,36,68,.18)!important}
+.hero,.card .hero{background:linear-gradient(120deg,rgba(234,240,245,.91),rgba(243,245,247,.88) 58%,rgba(227,238,241,.9))!important;backdrop-filter:blur(2px)!important;-webkit-backdrop-filter:blur(2px)!important}
+.content{background:rgba(255,255,255,.97)!important}
+.site-credit{position:relative!important;z-index:1!important}
+@media(prefers-reduced-motion:reduce){.mb-background-slide{animation:none!important;opacity:.12!important}.mb-background-slide:nth-child(n+2){display:none!important}}
