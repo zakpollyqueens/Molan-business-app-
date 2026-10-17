@@ -1617,6 +1617,12 @@ const WEBSITE_MARKET_STORAGE_KEY = 'molan_website_service_market_v1';
       'The app and website may use open-source libraries and third-party services under their respective licenses and terms.',
       'Paid themes, fonts, plugins, hosting, domain registration and other third-party licenses are subject to the provider terms and are included only when stated in the agreed package.',
       'License notices and required attributions must be preserved where applicable. Ask support if a particular asset or license is unclear.'
+    ]},
+    support:{title:'Support & Contact',body:[
+      'Built and managed by Zakmolanitech Solutions Company — Equipping minds with IT solutions.',
+      'Email: Zakmolanitechsolutions@gmail.com or zakpollyqueens@gmail.com.',
+      'WhatsApp: +256 742 956 448 or +256 775 226 333.',
+      'Support covers the agreed service scope. Hosting renewals, new features, major changes and third-party services may require a separate agreement.'
     ]}
   }[kind];
   if(!content)return;
