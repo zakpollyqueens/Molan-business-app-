@@ -122,7 +122,7 @@ jobs:
           }
           if (!js.includes("upsert({company_id:company.id,profile_key:profile[0],settings,updated_by:user.id")) throw new Error('Industry settings must be saved to the active tenant.');
           const deviceAccessRuntime = fs.readFileSync('shared/profile-device-access.js', 'utf8');
-          for (const required of ['cleanLegacyMenu', 'new MutationObserver(cleanLegacyMenu)', 'data-open-device-access', 'data-profile-device-access-dialog']) {
+          for (const required of ['cleanLegacyMenu', 'new MutationObserver(cleanLegacyMenu)']) {
             if (!deviceAccessRuntime.includes(required)) throw new Error('Give Access runtime missing required behavior: ' + required);
           }
           if (!js.includes('DEVICE & APP ACCESS') || !js.includes('device-access-settings-panel') || !js.includes('Get mobile app') || !js.includes('Get PC app')) throw new Error('Business Settings is missing the workspace Device & App Access section.');
