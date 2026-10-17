@@ -478,3 +478,33 @@ html[data-theme="dark"] .website-request-info p{color:#c1d0e1}
 html[data-theme="dark"] .website-checkout-price-preview{background:#14334b;color:#d4efff!important;border-color:#285979}
 @media(max-width:960px){.website-package-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.website-package-card.website-package-featured{transform:none}}
 @media(max-width:640px){.website-market-panel{grid-template-columns:1fr;gap:15px;padding:16px}.website-package-grid{grid-template-columns:1fr;gap:12px}.website-package-card{padding:19px}.website-package-card p{min-height:0}.website-request-row{align-items:flex-start;flex-wrap:wrap}.website-request-info{min-width:calc(100% - 55px)}.website-request-row>.button{width:100%;margin-left:52px}.website-package-card .button{width:100%}}
+
+
+/* Website brief, voice recording, legal footer and accessible legal dialogs */
+.website-voice-recorder{display:grid;gap:10px;margin:18px 0;padding:18px;border:1px solid #cfe3f4;border-radius:16px;background:linear-gradient(145deg,#f5fbff,#fff)}
+.website-voice-recorder h3{margin:0;color:#173b5b;font-size:16px}
+.website-voice-recorder p{margin:0;color:#5c7188;font-size:12px;line-height:1.65}
+.website-voice-actions{display:flex;flex-wrap:wrap;align-items:center;gap:9px}
+.website-voice-actions [role=status]{font-size:11px;color:#4f6c85}
+.website-voice-recorder audio{width:100%;max-width:520px}
+.website-terms-check{display:flex;align-items:flex-start;gap:10px;margin:12px 0;padding:13px;border:1px solid #d5e2ef;border-radius:12px;background:#f7faff;color:#354e67;font-size:12px;line-height:1.6}
+.website-terms-check input{margin-top:3px;accent-color:#1479bd;flex:0 0 auto}
+.app-legal-footer{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;padding:22px clamp(16px,3vw,34px);border-top:1px solid #e1e9f2;background:#f8fbff;color:#63758a;font-size:11px}
+.app-legal-brand{display:grid;gap:4px}.app-legal-brand strong{font:800 13px Manrope,sans-serif;letter-spacing:.6px;color:#173653}.app-legal-brand strong span{color:#258bc9}.app-legal-brand small{font-size:10px}
+.app-legal-footer nav{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}
+.app-legal-footer nav button,.app-legal-footer nav a{padding:0;border:0;background:none;color:#286c9c;text-decoration:none;font:600 11px inherit;cursor:pointer}
+.app-legal-footer nav button:hover,.app-legal-footer nav a:hover{text-decoration:underline}
+.app-legal-footer>p{flex-basis:100%;margin:0;font-size:10px;color:#71839a}
+.legal-dialog-backdrop{position:fixed;inset:0;z-index:100500;display:grid;place-items:center;padding:18px;background:rgba(6,19,35,.72);backdrop-filter:blur(7px)}
+.legal-dialog{position:relative;width:min(100%,680px);max-height:min(84vh,760px);overflow:auto;padding:clamp(20px,4vw,34px);border:1px solid #d9e7f3;border-radius:22px;background:#fff;color:#18324c;box-shadow:0 30px 100px #061a2e55}
+.legal-dialog h2{margin:8px 0 18px;font:800 clamp(22px,4vw,30px)/1.2 Manrope,sans-serif}
+.legal-dialog-copy{display:grid;gap:12px}.legal-dialog-copy p{margin:0;color:#4d6278;font-size:13px;line-height:1.75}
+.legal-dialog-close{position:absolute;top:12px;right:14px;width:36px;height:36px;border:0;border-radius:12px;background:#edf5fb;color:#244761;font-size:24px;cursor:pointer}
+.legal-dialog-done{margin-top:20px}
+html[data-theme="dark"] .website-voice-recorder,html[data-theme="dark"] .website-terms-check{background:#112840;border-color:#345878;color:#eaf4ff}
+html[data-theme="dark"] .website-voice-recorder h3{color:#eaf4ff}html[data-theme="dark"] .website-voice-recorder p,html[data-theme="dark"] .website-voice-actions [role=status]{color:#bdd0e3}
+html[data-theme="dark"] .app-legal-footer{background:#0c1e32;border-color:#2b4560;color:#b7c9db}
+html[data-theme="dark"] .app-legal-brand strong{color:#eef7ff}html[data-theme="dark"] .app-legal-footer>p{color:#a4b7cb}
+html[data-theme="dark"] .legal-dialog{background:#10253b;color:#eef7ff;border-color:#34516f}
+html[data-theme="dark"] .legal-dialog h2{color:#eef7ff}html[data-theme="dark"] .legal-dialog-copy p{color:#c1d1e1}
+@media(max-width:760px){.app-legal-footer{align-items:flex-start;flex-direction:column}.app-legal-footer nav{gap:12px}.website-request-row{flex-wrap:wrap}.website-request-row>.button{width:100%}}
