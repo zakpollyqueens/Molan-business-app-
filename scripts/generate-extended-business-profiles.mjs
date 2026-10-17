@@ -21,11 +21,21 @@ function ensureProfileNavigation(file, profile, isFeaturePage = false) {
   if (!fs.existsSync(file)) return;
   let html = fs.readFileSync(file, 'utf8');
   const deviceAccessScript = '<script data-profile-device-access src="' + (isFeaturePage ? '../../../../shared/profile-device-access.js' : '../../shared/profile-device-access.js') + '"></script>';
+  const accessNavItem = '<a href="#give-device-access" data-give-device-access><span>🔐</span><strong>Give Access to Mobile &amp; PC App</strong></a>';
   if (html.includes('data-profile-hamburger')) {
+    // Repair already-generated profile pages too; do not depend on a fresh folder being created.
+    if (!html.includes('data-give-device-access')) {
+      html = html.replace('</nav>', accessNavItem + '</nav>');
+    }
     if (!html.includes('data-profile-device-access')) {
       html = html.replace('</body>', deviceAccessScript + '</body>');
-      fs.writeFileSync(file, html);
     }
+    if (!html.includes('data-give-device-access')) {
+      // Defensive fallback for unusual profile markup without a closing nav.
+      html = html.replace('</body>', accessNavItem + deviceAccessScript + '</body>');
+    }
+    if (!html.includes('data-profile-device-access')) html = html.replace('</body>', deviceAccessScript + '</body>');
+    fs.writeFileSync(file, html);
     return;
   }
   const featureLinks = (profile.features || []).map((f, i) => {
@@ -38,7 +48,7 @@ function ensureProfileNavigation(file, profile, isFeaturePage = false) {
     '<div class="profile-menu-backdrop" data-profile-menu-backdrop hidden></div>' +
     '<aside class="profile-menu" data-profile-menu hidden aria-label="' + esc(profile.name) + ' navigation">' +
     '<div class="profile-menu-head"><div><small>BUSINESS PROFILE</small><strong>' + esc(profile.name) + '</strong></div><button type="button" data-profile-menu-close aria-label="Close menu">×</button></div>' +
-    '<nav><a href="' + overviewHref + '"><span>⌂</span> Overview</a>' + featureLinks + '</nav>' +
+    '<nav><a href="' + overviewHref + '"><span>⌂</span> Overview</a>' + featureLinks + accessNavItem + '</nav>' +
     '<a class="profile-menu-app" href="' + appHref + '">← Molan Business app</a></aside>';
   const styles = '<style data-profile-nav-styles>.profile-menu-toggle{position:sticky;top:10px;z-index:20;display:flex;align-items:center;gap:9px;margin:0 0 14px auto;padding:11px 15px;border:1px solid #cbd8e8;border-radius:13px;background:#fff;color:#10213e;font:700 14px system-ui;box-shadow:0 8px 24px #10213e12;cursor:pointer}.profile-menu-backdrop{position:fixed;inset:0;z-index:40;background:#07152bcc}.profile-menu{position:fixed;inset:0 auto 0 0;z-index:41;width:min(360px,88vw);overflow:auto;padding:18px;background:#f7faff;color:#10213e;box-shadow:18px 0 48px #07152b35}.profile-menu[hidden],.profile-menu-backdrop[hidden]{display:none}.profile-menu-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 2px 18px;border-bottom:1px solid #dce5f1}.profile-menu-head small,.profile-menu-head strong{display:block}.profile-menu-head small{font-size:10px;letter-spacing:.14em;color:#0787bf;font-weight:800}.profile-menu-head strong{margin-top:5px;font-size:18px}.profile-menu-head button{border:0;border-radius:10px;background:#e6eef8;padding:7px 12px;font-size:24px;cursor:pointer}.profile-menu nav{display:grid;gap:7px;padding:16px 0}.profile-menu nav a,.profile-menu-app{display:flex;align-items:center;gap:10px;padding:11px 12px;border:1px solid #e0e8f2;border-radius:11px;background:#fff;color:#10213e;text-decoration:none;font-size:14px}.profile-menu nav a:hover,.profile-menu-app:hover{border-color:#0787bf}.profile-menu nav a span{min-width:24px;color:#0787bf;font-weight:800}.profile-menu-app{font-weight:750;margin-top:8px}@media(min-width:900px){.profile-menu-toggle{position:fixed;top:18px;right:20px}}</style>';
   const script = '<script data-profile-nav-script>(()=>{const t=document.querySelector("[data-profile-hamburger]"),m=document.querySelector("[data-profile-menu]"),b=document.querySelector("[data-profile-menu-backdrop]"),c=document.querySelector("[data-profile-menu-close]");if(!t||!m||!b)return;const open=()=>{m.hidden=false;b.hidden=false;t.setAttribute("aria-expanded","true");c?.focus()};const close=()=>{m.hidden=true;b.hidden=true;t.setAttribute("aria-expanded","false");t.focus()};t.addEventListener("click",open);c?.addEventListener("click",close);b.addEventListener("click",close);document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!m.hidden)close()});})();</script>';

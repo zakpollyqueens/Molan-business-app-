@@ -11,6 +11,7 @@ on:
       - 'business-profiles/registry.json'
       - 'business-profiles/**/profile.json'
       - 'scripts/generate-extended-business-profiles.mjs'
+      - 'shared/profile-device-access.js'
   workflow_dispatch:
 
 permissions:
@@ -61,6 +62,7 @@ jobs:
             if (!fs.existsSync(configPath) || !fs.existsSync(indexPath)) throw new Error('Missing primary profile configuration/page: ' + p.slug);
             const overviewHtml = fs.readFileSync(indexPath, 'utf8');
             if (!overviewHtml.includes('data-profile-hamburger')) throw new Error('Missing profile hamburger: ' + indexPath);
+            if (!overviewHtml.includes('data-give-device-access') || !overviewHtml.includes('data-profile-device-access')) throw new Error('Missing Give Access to Mobile & PC App action/script: ' + indexPath);
             const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
             if (!Array.isArray(config.features)) throw new Error('Missing features for profile: ' + p.slug);
             for (const f of config.features) {
@@ -69,6 +71,7 @@ jobs:
               if (!fs.existsSync(page)) throw new Error('Missing profile feature page: ' + page);
               const featureHtml = fs.readFileSync(page, 'utf8');
               if (!featureHtml.includes('data-profile-hamburger')) throw new Error('Missing feature hamburger: ' + page);
+              if (!featureHtml.includes('data-give-device-access') || !featureHtml.includes('data-profile-device-access')) throw new Error('Missing Give Access to Mobile & PC App action/script: ' + page);
               if (!featureHtml.includes('data-profile-feature-launch')) throw new Error('Missing feature launch button: ' + page);
             }
           }
