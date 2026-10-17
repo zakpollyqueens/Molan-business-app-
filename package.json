@@ -23,14 +23,14 @@
     "sharp": "^0.34.4"
   },
   "build": {
-    "appId": "com.zakmolanitech.molanbusiness",
+    "appId": "com.zakmolanitech.molanbusiness",\n    "protocols": [{ "name": "Molan Business Access", "schemes": ["molanbusiness"] }],
     "productName": "Molan Business",
     "directories": {
       "output": "dist/desktop"
     },
     "files": [
       "www/**/*",
-      "desktop/main.cjs",
+      "desktop/main.cjs",\n      "desktop/preload.cjs",
       "package.json"
     ],
     "asar": true,
