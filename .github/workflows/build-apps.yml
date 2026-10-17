@@ -30,6 +30,7 @@ jobs:
         run: |
           npm run prepare:web
           npx cap add android
+          node scripts/configure-android-app-access.cjs
           npx capacitor-assets generate --android
           npx cap sync android
       - name: Set Android version code and name
