@@ -155,6 +155,7 @@
     <div class="app-legal-brand"><strong>MOLAN <span>BUSINESS</span></strong><small>Organise today. Build for tomorrow.</small></div>
     <nav aria-label="Legal and support">
       <button type="button" data-legal-open="terms">Terms &amp; Conditions</button>
+      <a href="website-service-terms.html">Website Service Terms</a>
       <button type="button" data-legal-open="privacy">Privacy Policy</button>
       <button type="button" data-legal-open="copyright">Copyright &amp; Content Rights</button>
       <button type="button" data-legal-open="licenses">Licenses</button>
@@ -319,6 +320,7 @@
   configureReleaseDownloads();
 })();
 </script>
+<script>document.querySelectorAll("#welcome-year,#app-legal-year,#zak-footer-year").forEach(node=>{node.textContent=String(new Date().getFullYear())});</script>
 <footer class="zakmolanitech-company-footer" style="padding:28px 22px 18px;font-size:13px;color:#9aa9bf;background:#071426;border-top:1px solid rgba(148,163,184,.2)">
   <div class="zak-footer-grid">
     <section class="zak-footer-column"><h3>Zakmolanitech Solutions</h3><strong style="color:#e6f7ff">Built and managed by Zakmolanitech Solutions Company</strong><p>Equipping minds with IT solutions.</p><p>Website design, development, digital support and business technology services.</p></section>
@@ -326,6 +328,6 @@
     <section class="zak-footer-column"><h3>Terms & policies</h3><a href="terms.html">Molan Business Terms of Service</a><a href="website-service-terms.html">Website Service Terms & Conditions</a><a href="privacy.html">Privacy Policy</a><button type="button" data-legal-open="copyright">Copyright & content rights</button><button type="button" data-legal-open="licenses">Third-party licences</button><button type="button" data-legal-open="support">Support & service scope</button></section>
     <section class="zak-footer-column"><h3>Community & social</h3><span>Telegram channel: Zakmolanitech Solutions</span><span>Telegram group: zakitech subs</span><span>Other official social handles will be listed here once their exact links are confirmed.</span><span>Third-party product names and marks belong to their respective owners.</span></section>
   </div>
-  <div class="zak-footer-bottom"><span>© 2026 Zakmolanitech Solutions Company. All rights reserved.</span><span>Use of this app and its services is subject to the published terms and policies.</span></div>
+  <div class="zak-footer-bottom"><span>© <span id="zak-footer-year">2026</span> Zakmolanitech Solutions Company. All rights reserved.</span><span>Use of this app and its services is subject to the published terms and policies.</span></div>
 </footer>
 </body></html>
