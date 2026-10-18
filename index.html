@@ -149,8 +149,8 @@
         <form id="circle-invite-form" class="circle-portal-form">
           <label>Full name<input id="circle-invite-name" autocomplete="name" required maxlength="120" placeholder="Your full name"></label>
           <label>Email address<input id="circle-invite-email" type="email" autocomplete="email" required readonly placeholder="Loading your invitation email…"></label>
-          <label>Create password<input id="circle-invite-password" type="password" autocomplete="new-password" required minlength="8" placeholder="At least 8 characters"></label>
-          <label>Confirm password<input id="circle-invite-confirm" type="password" autocomplete="new-password" required minlength="8" placeholder="Enter the password again"></label>
+          <label>Sign-in method<select id="circle-secret-type"><option value="password">Password (letters, numbers and symbols)</option><option value="passcode">Numeric passcode (8 or more digits)</option></select></label><label id="circle-secret-label">Create password<input id="circle-invite-password" type="password" autocomplete="new-password" required minlength="8" placeholder="At least 8 characters"></label>
+          <label id="circle-confirm-label">Confirm password<input id="circle-invite-confirm" type="password" autocomplete="new-password" required minlength="8" placeholder="Enter the password again"></label>
           <div class="circle-security-note"><span>▣</span><span>Your password is handled by secure account authentication. Never share it with workspace members.</span></div>
           <button id="circle-invite-submit" class="circle-portal-primary" type="submit">Secure account &amp; continue <span>→</span></button>
         </form>
