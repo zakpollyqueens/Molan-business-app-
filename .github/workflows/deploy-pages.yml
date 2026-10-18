@@ -65,7 +65,7 @@ jobs:
           ]
           with open(manifest_path, "w", encoding="utf-8") as output:
               json.dump(manifest, output, indent=2)
-              output.write("\\n")
+              output.write("\n")
           print("Published updater manifest for " + tag + " with " + str(len(manifest["releaseAssets"])) + " release assets.")
           PY
       - name: Upload static site
