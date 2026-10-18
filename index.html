@@ -138,6 +138,50 @@
         </form><p class="tiny muted">Use a publishable/anon key only. Never enter a service-role key here.</p>
       </div>
     </section>
+    <section id="circle-invite-screen" class="circle-portal-screen hidden" aria-labelledby="circle-invite-title">
+      <div class="circle-portal-orbit orbit-one"></div><div class="circle-portal-orbit orbit-two"></div>
+      <div class="circle-portal-card circle-invite-card">
+        <div class="circle-portal-brand"><span class="circle-portal-mark">M</span><span>MOLAN <b>BUSINESS</b></span></div>
+        <div class="circle-portal-eyebrow">SECURE CIRCLE WORKSPACE INVITATION</div>
+        <div class="circle-portal-icon">⌁</div>
+        <h1 id="circle-invite-title">Your workspace is waiting.</h1>
+        <p class="circle-portal-lead">Create a secure password to accept your invitation and enter your Circle workspace.</p>
+        <form id="circle-invite-form" class="circle-portal-form">
+          <label>Full name<input id="circle-invite-name" autocomplete="name" required maxlength="120" placeholder="Your full name"></label>
+          <label>Email address<input id="circle-invite-email" type="email" autocomplete="email" required placeholder="The email used for your invitation"></label>
+          <label>Create password<input id="circle-invite-password" type="password" autocomplete="new-password" required minlength="8" placeholder="At least 8 characters"></label>
+          <label>Confirm password<input id="circle-invite-confirm" type="password" autocomplete="new-password" required minlength="8" placeholder="Enter the password again"></label>
+          <div class="circle-security-note"><span>▣</span><span>Your password is handled by secure account authentication. Never share it with workspace members.</span></div>
+          <button id="circle-invite-submit" class="circle-portal-primary" type="submit">Secure account &amp; continue <span>→</span></button>
+        </form>
+        <button id="circle-invite-existing" class="circle-portal-text-button" type="button">Already have an account? Sign in securely</button>
+        <p id="circle-invite-status" class="circle-portal-status" aria-live="polite"></p>
+      </div>
+    </section>
+    <section id="circle-congratulations-screen" class="circle-portal-screen hidden" aria-labelledby="circle-congrats-title">
+      <div class="circle-portal-orbit orbit-one"></div><div class="circle-portal-orbit orbit-two"></div>
+      <div class="circle-portal-card circle-congrats-card">
+        <div class="circle-celebration">✦</div><div class="circle-portal-eyebrow">INVITATION ACCEPTED</div>
+        <h1 id="circle-congrats-title">Congratulations! <span aria-hidden="true">👏</span></h1>
+        <p class="circle-portal-lead">Your account is ready. Let’s take a quick guided tour so you can use your workspace confidently on your device.</p>
+        <div class="circle-identity-card"><div class="circle-identity-avatar" id="circle-congrats-initial">M</div><div><strong id="circle-congrats-name">Workspace member</strong><span id="circle-congrats-role">Circle team member</span></div><span class="circle-verified">✓</span></div>
+        <button id="circle-start-guide" class="circle-portal-primary" type="button">Show me around <span>→</span></button>
+      </div>
+    </section>
+    <section id="circle-guide-screen" class="circle-portal-screen hidden" aria-labelledby="circle-guide-title">
+      <div class="circle-portal-orbit orbit-one"></div><div class="circle-portal-orbit orbit-two"></div>
+      <div class="circle-guide-shell">
+        <div class="circle-guide-brand"><span class="circle-portal-mark">M</span><span>MOLAN <b>BUSINESS</b></span><span class="circle-guide-chip">YOUR CIRCLE WORKSPACE</span></div>
+        <div class="circle-guide-progress"><span id="circle-guide-progress-bar"></span></div>
+        <div class="circle-guide-card">
+          <div class="circle-guide-step" id="circle-guide-step">STEP 01 / 06</div><div class="circle-guide-art" id="circle-guide-art" aria-hidden="true">✦</div>
+          <h1 id="circle-guide-title">Welcome to your workspace</h1><p id="circle-guide-copy">Your role determines the tools and actions available to you. You only see actions you are permitted to use.</p>
+          <div class="circle-guide-tip" id="circle-guide-tip">Your access is protected by your account and workspace permissions.</div>
+          <div class="circle-guide-actions"><button id="circle-guide-back" class="circle-portal-secondary" type="button">← Back</button><span id="circle-guide-count">1 of 6</span><button id="circle-guide-next" class="circle-portal-primary" type="button">Next step →</button></div>
+        </div>
+        <div class="circle-guide-footer"><a href="mailto:zakpollyqueens@gmail.com?subject=Molan%20Business%20workspace%20support" class="circle-support-button">✉ Ask support</a><span>Questions? Ask us before you finish.</span></div>
+      </div>
+    </section>
     <section id="auth-screen" class="auth-layout hidden">
       <div class="auth-intro"><div class="brand-lockup"><div class="brand-mark">M</div><div><div class="brand-name">MOLAN <span>BUSINESS</span></div><div class="brand-tagline">Your business, in sync.</div></div></div>
         <div class="hero-copy"><div class="eyebrow">ONE WORKSPACE. MORE MOMENTUM.</div><h1>Make the work<br><em>move forward.</em></h1><p>Bring your people, projects, products and priorities into one clear view.</p></div>
