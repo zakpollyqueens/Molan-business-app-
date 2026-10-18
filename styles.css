@@ -574,3 +574,6 @@ body.reduce-motion .circle-portal-screen:before,body.reduce-motion .circle-porta
 .circle-role-banner-check{display:grid;place-items:center;flex:0 0 34px;height:34px;border-radius:11px;background:linear-gradient(135deg,#8af2f3,#7e9bff);color:#07182b;font-weight:900}
 .circle-role-banner>span:nth-child(2){display:grid;gap:4px;min-width:0}.circle-role-banner strong{font-size:14px;color:var(--text,#f3f8ff);overflow-wrap:anywhere}.circle-role-banner small{font-size:12px;color:var(--muted,#a8b8ca)}.circle-role-banner-tag{margin-left:auto;font-size:9px;letter-spacing:.12em;font-weight:850;color:#63dce8;text-align:right}
 @media(max-width:560px){.circle-role-banner{align-items:flex-start;padding:13px}.circle-role-banner-tag{max-width:90px;line-height:1.5}}
+
+.circle-invite-summary{display:grid;gap:5px;margin:-7px 0 18px;padding:12px 14px;border:1px solid rgba(105,224,237,.2);border-radius:12px;background:rgba(62,187,210,.08)}
+.circle-invite-summary>span{font-size:9px;letter-spacing:.15em;color:#72e4ee;font-weight:850}.circle-invite-summary strong{font-size:14px;color:#f5fbff}.circle-invite-summary small{font-size:11px;color:#b5c9e2}
