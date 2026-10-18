@@ -323,8 +323,8 @@
       const assets = Array.isArray(release.assets) ? release.assets : [];
       // Resolve every native download card to the exact asset URL from the current
       // latest release, instead of relying on a fixed asset URL that could go stale.
-      const androidAsset = assets.find(item => /^molan-business\\.apk$/i.test(item.name) && item.browser_download_url);
-      const windowsAsset = assets.find(item => /^molan-business-setup\\.exe$/i.test(item.name) && item.browser_download_url);
+      const androidAsset = assets.find(item => /^molan-business\.apk$/i.test(item.name) && item.browser_download_url);
+      const windowsAsset = assets.find(item => /^molan-business-setup\.exe$/i.test(item.name) && item.browser_download_url);
       const releaseUrl = release.html_url || releasePage;
       const setDownloadTarget = (link, asset) => {
         if (!link) return;
