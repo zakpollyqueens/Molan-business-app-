@@ -37,10 +37,16 @@ const assert = require('node:assert/strict');
       const panel = document.querySelector('#download-menu-panel');
       return trigger?.getAttribute('aria-expanded') === 'true' && panel && !panel.hidden;
     });
-    assert.equal(await page.locator('#download-menu-panel a[href*="Molan-Business.apk"]').count(), 1,
-      'Android download must be present in the menu');
-    assert.equal(await page.locator('#download-menu-panel a[href*="Molan-Business-Setup.exe"]').count(), 1,
-      'Windows download must be present in the menu');
+    assert.equal(await page.locator('#download-menu-panel #download-android').count(), 1,
+      'Android download card must be present in the menu');
+    assert.equal(await page.locator('#download-menu-panel #download-windows').count(), 1,
+      'Windows download card must be present in the menu');
+    assert.match(await page.locator('#download-menu-panel #download-android').getAttribute('href'),
+      /github\.com\/zakpollyqueens\/Molan-business-app-\/releases\//i,
+      'Android card should point to the latest release or a published APK asset');
+    assert.match(await page.locator('#download-menu-panel #download-windows').getAttribute('href'),
+      /github\.com\/zakpollyqueens\/Molan-business-app-\/releases\//i,
+      'Windows card should point to the latest release or a published installer asset');
     await page.keyboard.press('Escape');
     await page.waitForFunction(() => {
       const trigger = document.querySelector('#download-menu-trigger');
