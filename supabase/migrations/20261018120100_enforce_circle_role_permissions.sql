@@ -11,7 +11,7 @@ alter policy sacco_terms_manage on public.sacco_terms
     )
   )
   with check (
-    private.has_company_role(company_id, array['owner','admin']::text[])
+    private.has_company_role(company_id, array['owner','admin','manager']::text[])
     or exists (
       select 1 from public.sacco_role_assignments r
       where r.company_id=sacco_terms.company_id and r.user_id=(select auth.uid())
@@ -45,7 +45,7 @@ alter policy sacco_members_update_admin_analyst on public.sacco_members
     )
   )
   with check (
-    private.has_company_role(company_id,array['owner','admin']::text[])
+    private.has_company_role(company_id,array['owner','admin','manager']::text[])
     or exists (
       select 1 from public.sacco_role_assignments r
       where r.company_id=sacco_members.company_id and r.user_id=(select auth.uid())
