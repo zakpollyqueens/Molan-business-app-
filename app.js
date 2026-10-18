@@ -16,7 +16,7 @@
   const initials = name => (String(name||'M').trim().split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase() || 'M');
   const dateLabel = value => value ? new Date(value).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}) : 'No due date';
   const nice = value => String(value||'').replaceAll('_',' ').replace(/\b\w/g,c=>c.toUpperCase());
-  function toast(message, bad=false){const el=$('#toast');el.textContent=message;el.style.background=bad?'#8d342b':'#081a35';el.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('show'),3400)}
+  function toast(message, bad=false){const el=$('#toast');if(!el){console[bad?'error':'info']('[Molan notice]',message);return}el.textContent=String(message??'');el.style.background=bad?'#8d342b':'#081a35';el.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('show'),3400)}
   function showScreen(id){screens.forEach(s=>$('#'+s).classList.toggle('hidden',s!==id))}
   const AUTH_REDIRECT_URL='https://zakpollyqueens.github.io/Molan-business-app-/';
   const PREFERENCES_KEY='molan_display_preferences_v1';
@@ -105,14 +105,32 @@
       const screen=$('#dashboard-screen'), content=$('#page-content');
       if(!screen || screen.classList.contains('hidden') || !content || !/Loading your workspace|Loading\.\.\.|Reconnecting to your workspace/i.test(content.textContent||'')) return;
       content.innerHTML='<section class="panel" role="alert"><div class="section-kicker">CONNECTION TAKING TOO LONG</div><h2>Your workspace has not finished loading</h2><p>Sign-in may have succeeded, but a workspace request is taking too long. Check your connection and retry. Your saved records have not been deleted.</p><button type="button" class="button primary" id="workspace-load-retry" '+(workspaceBootRetryBusy?'disabled':'')+'>Retry loading</button></section>';
-      $('#workspace-load-retry')?.addEventListener('click',async()=>{
-        if(workspaceBootRetryBusy||!user||!supabase)return;
-        workspaceBootRetryBusy=true;
-        content.innerHTML='<div class="loading"><div class="spinner"></div> Reconnecting to your workspace…</div>';
-        try{await loadCompany()}catch(error){console.error('[Molan workspace] Retry failed:',error);content.innerHTML='<section class="panel" role="alert"><h2>Workspace could not load</h2><p>'+(esc(error?.message||'Please check your connection and retry.'))+'</p><button type="button" class="button primary" id="workspace-load-retry">Retry loading</button></section>';$('#workspace-load-retry')?.addEventListener('click',()=>{workspaceBootRetryBusy=false;armWorkspaceBootWatchdog();loadCompany().catch(console.error)})}
-        finally{workspaceBootRetryBusy=false;armWorkspaceBootWatchdog()}
-      });
+      $('#workspace-load-retry')?.addEventListener('click', retryWorkspaceLoad);
     },20000);
+  }
+  async function retryWorkspaceLoad(){
+    if(workspaceBootRetryBusy||!user||!supabase)return;
+    workspaceBootRetryBusy=true;
+    const content=$('#page-content');
+    if(content)content.innerHTML='<div class="loading"><div class="spinner"></div> Reconnecting to your workspace…</div>';
+    try{
+      await loadCompany();
+      const screen=$('#dashboard-screen');
+      if(screen&&!screen.classList.contains('hidden')&&content&&content.querySelector('.loading')){
+        content.innerHTML='<section class="panel" role="alert"><h2>Workspace could not load</h2><p>The workspace request ended without displaying a workspace. Check your connection and try again.</p><button type="button" class="button primary" id="workspace-load-retry">Retry loading</button></section>';
+        $('#workspace-load-retry')?.addEventListener('click',retryWorkspaceLoad);
+      }
+    }catch(error){
+      console.error('[Molan workspace] Retry failed:',error);
+      const current=$('#page-content');
+      if(current){
+        current.innerHTML='<section class="panel" role="alert"><h2>Workspace could not load</h2><p>'+esc(error?.message||'Please check your connection and retry.')+'</p><button type="button" class="button primary" id="workspace-load-retry">Retry loading</button></section>';
+        $('#workspace-load-retry')?.addEventListener('click',retryWorkspaceLoad);
+      }
+    }finally{
+      workspaceBootRetryBusy=false;
+      armWorkspaceBootWatchdog();
+    }
   }
   async function initConfig(){
     let c=getConfig();
@@ -527,7 +545,7 @@
     supabase.from('staff_council_meetings').select('*').eq('company_id',id).order('meeting_date',{ascending:false}).limit(100),
     supabase.from('website_service_requests').select('*').eq('company_id',id).order('created_at',{ascending:false}).limit(100),
     supabase.from('website_service_payments').select('*, website_service_requests!inner(company_id)').eq('website_service_requests.company_id',id).order('created_at',{ascending:false}).limit(300)
-  ]);const keys=['tasks','products','members','announcements','departments','customers','inventory','inventoryMovements','operations','schoolClasses','schoolLearners','schoolAssessments','schoolFees','sales','finance','invitations','attendance','reports','council','websiteRequests','websitePayments'];queries.forEach((r,i)=>{if(r.error)console.warn('Molan query',keys[i],r.error.message);cache[keys[i]]=r.data||[]});const saleIds=cache.sales.map(x=>x.id);if(saleIds.length){const si=await supabase.from('sales_order_items').select('*').in('order_id',saleIds);if(si.error)console.warn('Molan query saleItems',si.error.message);cache.saleItems=si.data||[]}else cache.saleItems=[];const ids=[...new Set(cache.members.map(m=>m.user_id))];if(ids.length){const p=await supabase.from('user_profiles').select('*').in('user_id',ids);cache.profiles=p.data||[]}else cache.profiles=[];$('#task-count').textContent=cache.tasks.filter(t=>t.status!=='done'&&t.status!=='cancelled').length}
+  ]);const keys=['tasks','products','members','announcements','departments','customers','inventory','inventoryMovements','operations','schoolClasses','schoolLearners','schoolAssessments','schoolFees','sales','finance','invitations','attendance','reports','council','websiteRequests','websitePayments'];queries.forEach((r,i)=>{if(r.error)console.warn('Molan query',keys[i],r.error.message);cache[keys[i]]=r.data||[]});const saleIds=cache.sales.map(x=>x.id);if(saleIds.length){const si=await supabase.from('sales_order_items').select('*').in('order_id',saleIds);if(si.error)console.warn('Molan query saleItems',si.error.message);cache.saleItems=si.data||[]}else cache.saleItems=[];const ids=[...new Set(cache.members.map(m=>m.user_id))];if(ids.length){const p=await supabase.from('user_profiles').select('*').in('user_id',ids);cache.profiles=p.data||[]}else cache.profiles=[];const taskCount=$('#task-count');if(taskCount)taskCount.textContent=String(cache.tasks.filter(t=>t.status!=='done'&&t.status!=='cancelled').length)}
   $('#cancel-create-workspace')?.addEventListener('click',()=>{if(company){showScreen('dashboard-screen');navigate('profile-directory')}else if(user){guidedOpen()}else{showScreen('auth-screen');setAuthMode('signin');toast('Sign in or create an account before opening a business workspace.')}});
   $('#company-form').addEventListener('submit',async e=>{e.preventDefault();const btn=$('button[type="submit"]',e.currentTarget);btn.disabled=true;btn.textContent='Creating workspace…';try{const {data,error}=await supabase.rpc('create_company_for_current_user',{company_name:$('#company-name').value.trim(),company_motto:$('#company-motto').value.trim()||null});if(error)throw error;const companyId=data;try{localStorage.setItem(ACTIVE_COMPANY_KEY,companyId)}catch(e){}const profileUpdate=await supabase.from('company_profiles').update({business_category:$('#business-category').value,website_url:$('#website-url').value.trim()||null,onboarding_status:'profile_complete'}).eq('id',companyId);if(profileUpdate.error)throw profileUpdate.error;toast('Workspace created successfully.');await loadCompany(companyId)}catch(err){toast(err.message||'Could not create workspace.',true)}finally{btn.disabled=false;btn.innerHTML='Create workspace <span>→</span>'}});
   $('#signout').addEventListener('click',async()=>{if(!supabase)return;const signedOutUserId=user?.id;const {error}=await supabase.auth.signOut();if(error){toast(error.message,true);return}session=null;user=null;company=null;membership=null;cache.workspaces=[];try{localStorage.removeItem(ACTIVE_COMPANY_KEY);localStorage.removeItem(GUIDED_DRAFT_KEY);if(signedOutUserId)Object.keys(localStorage).filter(k=>k.startsWith(GUIDED_COMPANY_KEY+':'+signedOutUserId+':')).forEach(k=>localStorage.removeItem(k))}catch(e){}showScreen('auth-screen');toast('You have signed out.')});
