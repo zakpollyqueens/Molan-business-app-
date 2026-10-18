@@ -3,6 +3,8 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  release:
+    types: [published]
 permissions:
   actions: read
   contents: read
@@ -29,6 +31,43 @@ jobs:
           mkdir -p _site
           cp -R www/. _site/
           touch _site/.nojekyll
+      - name: Sync latest published release into update manifest
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          python - <<'PY'
+          import json, os, urllib.request
+          repository = os.environ["REPOSITORY"]
+          request = urllib.request.Request(
+              "https://api.github.com/repos/" + repository + "/releases/latest",
+              headers={
+                  "Accept": "application/vnd.github+json",
+                  "Authorization": "Bearer " + os.environ["GH_TOKEN"],
+                  "X-GitHub-Api-Version": "2022-11-28",
+              },
+          )
+          with urllib.request.urlopen(request, timeout=25) as response:
+              release = json.load(response)
+          manifest_path = "_site/version.json"
+          with open(manifest_path, encoding="utf-8") as source:
+              manifest = json.load(source)
+          tag = release.get("tag_name", "")
+          if not tag:
+              raise SystemExit("Latest published release has no tag; refusing to publish an incomplete update manifest.")
+          manifest["releaseVersion"] = tag.lstrip("vV")
+          manifest["releaseTag"] = tag
+          manifest["releasePage"] = release.get("html_url", "https://github.com/" + repository + "/releases/latest")
+          manifest["releaseAssets"] = [
+              {"name": asset.get("name", ""), "browser_download_url": asset.get("browser_download_url", "")}
+              for asset in release.get("assets", [])
+              if asset.get("name") and asset.get("browser_download_url")
+          ]
+          with open(manifest_path, "w", encoding="utf-8") as output:
+              json.dump(manifest, output, indent=2)
+              output.write("\\n")
+          print("Published updater manifest for " + tag + " with " + str(len(manifest["releaseAssets"])) + " release assets.")
+          PY
       - name: Upload static site
         uses: actions/upload-pages-artifact@v3
         with:
