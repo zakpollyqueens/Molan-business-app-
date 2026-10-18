@@ -574,7 +574,7 @@
     btn.disabled=true;btn.textContent='Securing your account…';$('#circle-invite-status').textContent='Creating your secure account. Please keep this page open.';
     try{
       sessionStorage.setItem('molan_circle_invite_token',new URLSearchParams(location.search).get('invite')||sessionStorage.getItem('molan_circle_invite_token')||'');
-      const result=await supabase.auth.signUp({email,password,options:{emailRedirectTo:AUTH_REDIRECT_URL,data:{display_name:name,full_name:name}}});
+      const result=await supabase.auth.signUp({email,password,options:{emailRedirectTo:location.origin+location.pathname+'?invite='+encodeURIComponent(sessionStorage.getItem('molan_circle_invite_token')||''),data:{display_name:name,full_name:name}}});
       if(result.error)throw result.error;
       session=result.data.session;user=result.data.user;
       if(session&&user){await supabase.auth.updateUser({data:{display_name:name,full_name:name}});await bootUser()}
