@@ -103,7 +103,7 @@
     clearTimeout(workspaceBootWatchdog);
     workspaceBootWatchdog = setTimeout(()=>{
       const screen=$('#dashboard-screen'), content=$('#page-content');
-      if(!screen || screen.classList.contains('hidden') || !content || !/Loading your workspace|Loading\.\.\./i.test(content.textContent||'')) return;
+      if(!screen || screen.classList.contains('hidden') || !content || !/Loading your workspace|Loading\.\.\.|Reconnecting to your workspace/i.test(content.textContent||'')) return;
       content.innerHTML='<section class="panel" role="alert"><div class="section-kicker">CONNECTION TAKING TOO LONG</div><h2>Your workspace has not finished loading</h2><p>Sign-in may have succeeded, but a workspace request is taking too long. Check your connection and retry. Your saved records have not been deleted.</p><button type="button" class="button primary" id="workspace-load-retry" '+(workspaceBootRetryBusy?'disabled':'')+'>Retry loading</button></section>';
       $('#workspace-load-retry')?.addEventListener('click',async()=>{
         if(workspaceBootRetryBusy||!user||!supabase)return;
