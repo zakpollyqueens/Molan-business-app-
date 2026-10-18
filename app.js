@@ -624,7 +624,7 @@
       let elections=[];
       try{const electionResult=await supabase.functions.invoke('sacco-member-portal',{body:{action:'manage-election',companyId:cid,operation:'list'}});if(!electionResult.error&&electionResult.data?.ok)elections=electionResult.data.elections||[];else if(electionResult.error)console.warn('[Molan Business] Circle elections could not load:',electionResult.error.message)}catch(error){console.warn('[Molan Business] Circle elections could not load:',error?.message||error)}
       const admin=['owner','admin'].includes(membership?.role), manager=['owner','admin','manager','accountant'].includes(membership?.role);
-      const myRoles=roles.filter(r=>r.user_id===user.id).map(r=>r.role), chair=myRoles.includes('chairperson'), canSubmit=manager||myRoles.some(r=>['analyst','secretary','mobilizer'].includes(r)), canManage=admin, canManageElection=['owner','admin','manager'].includes(membership?.role)||chair;
+      const myRoles=roles.filter(r=>r.user_id===user.id).map(r=>r.role), chair=myRoles.includes('chairperson'), analyst=myRoles.includes('analyst'), canSubmit=manager||myRoles.some(r=>['analyst','secretary','mobilizer'].includes(r)), canManage=admin||chair||analyst, canManageElection=admin||analyst||chair;
       const balance=m=>entries.filter(x=>x.member_id===m.id&&x.status==='confirmed').reduce((s,x)=>s+(x.entry_type==='withdrawal'?-Number(x.amount):x.entry_type==='deposit'?Number(x.amount):0),0);
       const pending=entries.filter(x=>x.status==='pending'), pendingW=withdrawals.filter(x=>x.status==='pending'), approvedW=withdrawals.filter(x=>x.status==='approved');
       const memberOptions=members.map(m=>'<option value="'+m.id+'">'+esc(m.account_code)+' — '+esc(m.full_name)+'</option>').join('');
