@@ -145,10 +145,10 @@
         <div class="circle-portal-eyebrow">SECURE CIRCLE WORKSPACE INVITATION</div>
         <div class="circle-portal-icon">⌁</div>
         <h1 id="circle-invite-title">Your workspace is waiting.</h1>
-        <p class="circle-portal-lead">Create a secure password to accept your invitation and enter your Circle workspace.</p>
+        <p class="circle-portal-lead">Create a secure password to accept your invitation and enter your Circle workspace.</p><div id="circle-invite-summary" class="circle-invite-summary hidden"></div>
         <form id="circle-invite-form" class="circle-portal-form">
           <label>Full name<input id="circle-invite-name" autocomplete="name" required maxlength="120" placeholder="Your full name"></label>
-          <label>Email address<input id="circle-invite-email" type="email" autocomplete="email" required placeholder="The email used for your invitation"></label>
+          <label>Email address<input id="circle-invite-email" type="email" autocomplete="email" required readonly placeholder="Loading your invitation email…"></label>
           <label>Create password<input id="circle-invite-password" type="password" autocomplete="new-password" required minlength="8" placeholder="At least 8 characters"></label>
           <label>Confirm password<input id="circle-invite-confirm" type="password" autocomplete="new-password" required minlength="8" placeholder="Enter the password again"></label>
           <div class="circle-security-note"><span>▣</span><span>Your password is handled by secure account authentication. Never share it with workspace members.</span></div>
