@@ -13,9 +13,16 @@ const assert = require('node:assert/strict');
     });
     assert(response && response.ok(), 'Published app should return a successful HTTP response');
     await page.waitForSelector('#welcome-screen:not(.hidden)', { timeout: 30000 });
-    await page.waitForFunction(() => !!document.querySelector('#molan-update-check'), null, { timeout: 10000 });
-    assert.equal(await page.locator('#molan-update-check').count(), 1,
-      'A persistent global update-check action must be mounted for the workspace shell');
+    // The current updater deliberately reuses the persistent top-right Refresh button.
+    // Do not wait for the retired standalone #molan-update-check control.
+    await page.waitForFunction(() => {
+      const button = document.querySelector('#refresh-button');
+      return !!button && !button.disabled;
+    }, null, { timeout: 10000 });
+    assert.equal(await page.locator('#refresh-button').count(), 1,
+      'The workspace shell should expose one persistent Refresh action for update checks');
+    assert.equal(await page.locator('#molan-update-check').count(), 0,
+      'The retired standalone update-check button should not be mounted');
 
     assert.equal(await page.locator('[data-welcome-slide]').count(), 8, 'Welcome page should show eight introduction slides');
     assert.equal(await page.locator('[data-welcome-dot]').count(), 8, 'Every welcome slide should have a navigation dot');
