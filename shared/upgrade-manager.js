@@ -4,11 +4,19 @@
 (() => {
   const RELEASE_API = 'https://api.github.com/repos/zakpollyqueens/Molan-business-app-/releases/latest';
   const RELEASE_PAGE = 'https://github.com/zakpollyqueens/Molan-business-app-/releases/latest';
+  const REMOTE_MANIFEST = 'https://zakpollyqueens.github.io/Molan-business-app-/version.json';
   let latest = null;
   let busy = false;
   let timer = null;
 
-  const isNative = () => !!(window.Capacitor && typeof window.Capacitor.isNativePlatform === 'function' && window.Capacitor.isNativePlatform());
+  const isNative = () => {
+    try {
+      if (window.Capacitor && typeof window.Capacitor.isNativePlatform === 'function' && window.Capacitor.isNativePlatform()) return true;
+      const platform = String(window.Capacitor?.getPlatform?.() || '').toLowerCase();
+      if (['android', 'ios'].includes(platform)) return true;
+      return /^(capacitor|ionic):$/i.test(window.location.protocol);
+    } catch (_) { return false; }
+  };
   const isElectron = () => /Electron/i.test(navigator.userAgent || '');
   const normalize = value => String(value || '').trim().replace(/^v/i, '');
   const currentVersion = () => normalize(window.MOLAN_APP_VERSION || document.documentElement.dataset.appVersion || '');
@@ -61,15 +69,55 @@
   }
 
   async function fetchLatest() {
-    const response = await fetch(RELEASE_API + '?check=' + Date.now(), {
+    let apiFailure = 'GitHub release service unavailable';
+    try {
+      const response = await fetch(RELEASE_API, {
+        cache: 'no-store',
+        headers: { 'Accept': 'application/vnd.github+json', 'Cache-Control': 'no-cache' }
+      });
+      if (!response.ok) {
+        apiFailure = response.status === 403 || response.status === 429
+          ? 'GitHub temporarily limited update checks'
+          : 'GitHub release service returned HTTP ' + response.status;
+        throw new Error(apiFailure);
+      }
+      const release = await response.json();
+      const tag = normalize(release.tag_name);
+      if (!tag || !Array.isArray(release.assets)) throw new Error('The latest release response is incomplete.');
+      return { version: tag, release, source: 'github-release' };
+    } catch (error) {
+      apiFailure = error?.message || apiFailure;
+    }
+
+    // The installed app must not depend on the GitHub API being available or
+    // on the API's anonymous rate limit. Fall back to the live GitHub Pages
+    // manifest, not the stale version.json bundled inside the installed APK.
+    const manifestUrl = new URL(REMOTE_MANIFEST);
+    manifestUrl.searchParams.set('check', String(Date.now()));
+    const response = await fetch(manifestUrl.toString(), {
       cache: 'no-store',
-      headers: { 'Accept': 'application/vnd.github+json', 'Cache-Control': 'no-cache' }
+      headers: { 'Cache-Control': 'no-cache' }
     });
-    if (!response.ok) throw new Error('Could not reach the latest release service.');
-    const release = await response.json();
-    const tag = normalize(release.tag_name);
-    if (!tag) throw new Error('The latest release has no version tag.');
-    return { version: tag, release };
+    if (!response.ok) throw new Error(apiFailure + '; update manifest returned HTTP ' + response.status + '.');
+    const manifest = await response.json();
+    const version = normalize(manifest.releaseVersion || manifest.version || manifest.currentVersion);
+    if (!version) throw new Error(apiFailure + '; update manifest has no version.');
+    const tag = manifest.releaseTag || ('v' + version);
+    const base = 'https://github.com/zakpollyqueens/Molan-business-app-/releases/download/' + encodeURIComponent(tag) + '/';
+    const assets = Array.isArray(manifest.releaseAssets) ? manifest.releaseAssets.map(item => ({
+      name: item.name || item.assetName || '',
+      browser_download_url: item.browser_download_url || item.url || ''
+    })) : [
+      { name: 'Molan-Business.apk', browser_download_url: base + 'Molan-Business.apk' },
+      { name: 'Molan-Business-Setup.exe', browser_download_url: base + 'Molan-Business-Setup.exe' },
+      { name: 'Molan.Business-' + version + '.dmg', browser_download_url: base + 'Molan.Business-' + version + '.dmg' },
+      { name: 'Molan.Business-' + version + '.AppImage', browser_download_url: base + 'Molan.Business-' + version + '.AppImage' }
+    ];
+    return {
+      version,
+      source: 'pages-manifest',
+      release: { tag_name: tag, html_url: manifest.releasePage || RELEASE_PAGE, assets }
+    };
   }
 
   function assetForPlatform(release) {
@@ -107,16 +155,27 @@
     a.href = objectUrl; a.download = filename; a.rel = 'noopener'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(objectUrl), 60000);
   }
 
+  let directDownloadFallback = false;
   async function applyUpdate() {
     if (!latest || busy) return; const button = document.getElementById('molan-apply-update');
+    if (directDownloadFallback && latest.url) { window.location.href = latest.url; return; }
     if (!latest.native) { if (button) { button.disabled = true; button.textContent = 'Refreshing…'; } const url = new URL(window.location.href); url.searchParams.set('molan_release', latest.version); url.searchParams.set('refresh', String(Date.now())); window.location.replace(url.toString()); return; }
     if (!latest.url || !latest.assetName) { notify('The latest release does not include an installer for this device.'); return; }
     if (button) { button.disabled = true; button.textContent = 'Downloading…'; } const el = document.getElementById('molan-update-banner');
     if (el) el.querySelector('#molan-update-heading').textContent = 'Downloading Molan Business';
+    directDownloadFallback = false;
+    showDownloadProgress(0, 'Connecting to the download server…');
     try { await downloadWithProgress(latest.url, latest.assetName); showDownloadProgress(100, 'Download complete. Open the downloaded installer to finish updating.');
       if (el) el.querySelector('#molan-update-heading').textContent = 'Update downloaded'; if (button) { button.disabled = false; button.textContent = 'Download again ↓'; }
       notify('Update downloaded. Open the installer and approve installation to complete the update.');
-    } catch (_) { if (button) { button.disabled = false; button.textContent = 'Download update ↓'; } notify('Download progress is unavailable in this app. Opening the official installer download instead.'); window.open(latest.url, '_blank', 'noopener,noreferrer'); }
+    } catch (error) {
+      directDownloadFallback = true;
+      if (button) { button.disabled = false; button.textContent = 'Open download ↗'; }
+      showDownloadProgress(0, 'This device cannot show in-app download progress for this file. Tap “Open download” to download it from the official release.');
+      if (el) el.querySelector('#molan-update-heading').textContent = 'Continue update download';
+      notify('The update is available. Use Open download to continue through the official release host.');
+      console.warn('[Molan Business updater] In-app download failed:', error?.message || error);
+    }
   }
 
   async function check(manual = false) {
@@ -166,7 +225,7 @@
       return { ok: true, current, latest: latestVersion, updateAvailable: available };
     } catch (error) {
       setCheckButton('', false);
-      if (manual) notify('Could not check for updates. Please check your internet connection and try again.');
+      if (manual) notify('Could not check updates from GitHub or the live update manifest. Check your connection and tap Refresh to retry.');
       return { ok: false, error: error.message };
     } finally {
       busy = false;
