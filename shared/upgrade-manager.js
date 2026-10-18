@@ -22,7 +22,14 @@
     notify.timer = setTimeout(() => toast.classList.remove('show'), 4200);
   }
 
+  function installStyles() {
+    if (document.getElementById('molan-updater-styles')) return;
+    const style = document.createElement('style'); style.id = 'molan-updater-styles';
+    style.textContent = '.molan-update-banner{position:fixed;z-index:99999;left:50%;bottom:18px;transform:translateX(-50%);width:min(620px,calc(100vw - 24px));display:flex;align-items:center;gap:16px;padding:16px 18px;border:1px solid #3e6e91;border-radius:18px;background:linear-gradient(135deg,#071a35f7,#12365af7);color:#f4fbff;box-shadow:0 18px 60px #00152c66;backdrop-filter:blur(18px)}.molan-update-banner[hidden]{display:none!important}.molan-update-copy{flex:1;min-width:0}.molan-update-copy strong{display:block;font-size:15px}.molan-update-copy p{margin:5px 0 0;color:#c6d9e9;font-size:12px;line-height:1.5}.molan-update-banner .button{white-space:nowrap}.molan-update-progress{height:6px;overflow:hidden;border-radius:99px;background:#ffffff20;margin-top:11px}.molan-update-progress>span{display:block;width:0;height:100%;border-radius:inherit;background:linear-gradient(90deg,#55d8f0,#5b9dff);transition:width .12s linear}.molan-update-percent{font-size:11px;color:#8feaff;margin-top:5px;display:block}@media(max-width:520px){.molan-update-banner{align-items:stretch;flex-direction:column;gap:12px;bottom:10px}.molan-update-banner .button{width:100%;min-height:42px}}';
+    document.head.appendChild(style);
+  }
   function banner() {
+    installStyles();
     let el = document.getElementById('molan-update-banner');
     if (el) return el;
     el = document.createElement('section');
@@ -30,7 +37,7 @@
     el.className = 'molan-update-banner';
     el.setAttribute('role', 'status');
     el.hidden = true;
-    el.innerHTML = '<div class="molan-update-copy"><strong id="molan-update-heading">Update available</strong><p id="molan-update-message">A new Molan Business release is ready.</p></div><button class="button primary small" id="molan-apply-update" type="button">Update now ↻</button>';
+    el.innerHTML = '<div class="molan-update-copy"><strong id="molan-update-heading">Update available</strong><p id="molan-update-message">A new Molan Business release is ready.</p><div class="molan-update-progress" id="molan-update-progress" hidden><span id="molan-update-progress-fill"></span></div><small class="molan-update-percent" id="molan-update-percent" hidden>0%</small></div><button class="button primary small" id="molan-apply-update" type="button">Update now ↻</button>'
     document.querySelector('#app')?.prepend(el);
     el.querySelector('#molan-apply-update').addEventListener('click', applyUpdate);
     return el;
@@ -84,28 +91,37 @@
       linux: /\.AppImage$/i
     };
     const asset = assets.find(item => patterns[platform]?.test(item.name));
-    return { platform, url: asset?.browser_download_url || release.html_url || RELEASE_PAGE, assetName: asset?.name || '' };
+    return { platform, url: asset?.browser_download_url || '', assetName: asset?.name || '' };
+  }
+
+  function showDownloadProgress(percent, message) {
+    const el = document.getElementById('molan-update-banner'); if (!el) return;
+    const progress = el.querySelector('#molan-update-progress'), fill = el.querySelector('#molan-update-progress-fill'), label = el.querySelector('#molan-update-percent'), msg = el.querySelector('#molan-update-message');
+    if (progress) progress.hidden = false; if (label) { label.hidden = false; label.textContent = Math.max(0, Math.min(100, Math.round(percent))) + '%'; }
+    if (fill) fill.style.width = Math.max(0, Math.min(100, percent)) + '%'; if (msg && message) msg.textContent = message;
+  }
+
+  async function downloadWithProgress(url, filename) {
+    const response = await fetch(url, { cache: 'no-store', redirect: 'follow' });
+    if (!response.ok || !response.body) throw new Error('No readable download stream');
+    const total = Number(response.headers.get('content-length')) || 0, reader = response.body.getReader(), chunks = []; let received = 0;
+    while (true) { const part = await reader.read(); if (part.done) break; chunks.push(part.value); received += part.value.byteLength;
+      showDownloadProgress(total ? received / total * 100 : 0, total ? 'Downloading ' + filename + '…' : 'Downloading update… ' + (received / 1048576).toFixed(1) + ' MB received'); }
+    if (!received) throw new Error('Downloaded file is empty'); showDownloadProgress(100, 'Download complete. Preparing installer…');
+    const objectUrl = URL.createObjectURL(new Blob(chunks, { type: 'application/octet-stream' })), a = document.createElement('a');
+    a.href = objectUrl; a.download = filename; a.rel = 'noopener'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(objectUrl), 60000);
   }
 
   async function applyUpdate() {
-    if (!latest) return;
-    if (latest.native) {
-      const message = latest.platform === 'android'
-        ? 'The Android update will download. Open the downloaded APK and approve installation when Android asks.'
-        : 'The desktop installer will download. Close Molan Business and run the installer to finish updating.';
-      notify(message);
-      const opened = window.open(latest.url, '_blank', 'noopener,noreferrer');
-      if (!opened && !isElectron()) {
-        window.location.assign(latest.url);
-      }
-      return;
-    }
-    const button = document.getElementById('molan-apply-update');
-    if (button) { button.disabled = true; button.textContent = 'Refreshing…'; }
-    const url = new URL(window.location.href);
-    url.searchParams.set('molan_release', latest.version);
-    url.searchParams.set('refresh', String(Date.now()));
-    window.location.replace(url.toString());
+    if (!latest || busy) return; const button = document.getElementById('molan-apply-update');
+    if (!latest.native) { if (button) { button.disabled = true; button.textContent = 'Refreshing…'; } const url = new URL(window.location.href); url.searchParams.set('molan_release', latest.version); url.searchParams.set('refresh', String(Date.now())); window.location.replace(url.toString()); return; }
+    if (!latest.url || !latest.assetName) { notify('The latest release does not include an installer for this device.'); return; }
+    if (button) { button.disabled = true; button.textContent = 'Downloading…'; } const el = document.getElementById('molan-update-banner');
+    if (el) el.querySelector('#molan-update-heading').textContent = 'Downloading Molan Business';
+    try { await downloadWithProgress(latest.url, latest.assetName); showDownloadProgress(100, 'Download complete. Open the downloaded installer to finish updating.');
+      if (el) el.querySelector('#molan-update-heading').textContent = 'Update downloaded'; if (button) { button.disabled = false; button.textContent = 'Download again ↓'; }
+      notify('Update downloaded. Open the installer and approve installation to complete the update.');
+    } catch (_) { if (button) { button.disabled = false; button.textContent = 'Download update ↓'; } notify('Download progress is unavailable in this app. Opening the official installer download instead.'); window.open(latest.url, '_blank', 'noopener,noreferrer'); }
   }
 
   async function check(manual = false) {
