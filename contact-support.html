@@ -14,7 +14,7 @@ body{min-height:100vh;margin:0;padding:clamp(12px,3vw,30px);background:#fff;colo
 .support-page{width:min(100%,900px);margin:0 auto;padding:clamp(18px,4vw,38px);border:1px solid #d8edf5;border-radius:22px;background:#fff;box-shadow:0 12px 36px rgba(15,73,101,.08);overflow:hidden}.support-page>.content{width:100%;margin:0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}
 .support-brand{display:flex;align-items:center;gap:13px;margin-bottom:24px;padding-bottom:22px;border-bottom:1px solid #e1edf2}
 .support-brand-icon{display:grid;place-items:center;width:46px;height:46px;border-radius:13px;background:#e3f8ff;color:#087fa9;font-size:22px;box-shadow:inset 0 0 0 1px #c3edf9}
-.support-brand strong,.support-brand small{display:block}
+.support-brand strong,.support-brand small{display:block}.support-brand-copy{min-width:0;flex:1}.support-return-workspace{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;min-height:42px;padding:10px 13px;border:1px solid #b9e4f2;border-radius:11px;background:#effbff;color:#087fa9;text-decoration:none;font-size:13px;font-weight:800;white-space:nowrap;transition:background .16s ease,border-color .16s ease}.support-return-workspace:hover{background:#dff7ff;border-color:#75cce5}.support-return-workspace:focus-visible{outline:3px solid #16a6d55c;outline-offset:3px}
 .support-brand strong{font-size:17px;letter-spacing:-.02em;color:#15324a}
 .support-brand small{margin-top:4px;color:#617b8b;font-size:12px}
 .support-intro h1{margin:0 0 10px;font-size:clamp(28px,5vw,42px);line-height:1.12;letter-spacing:-.04em;color:#15324a}
@@ -41,12 +41,12 @@ body{min-height:100vh;margin:0;padding:clamp(12px,3vw,30px);background:#fff;colo
 #support-chat a{color:#087fa9}
 .support-company-footer{margin:30px auto 4px;text-align:center;color:#708896;font-size:12px;line-height:1.8}
 .support-company-footer strong{display:block;color:#345568;font-weight:700}
-@media(max-width:620px){body{padding:10px}.support-page{padding:18px 14px;border-radius:16px}.support-brand{margin-bottom:20px}#support-chat .support-chat-form{grid-template-columns:minmax(0,1fr)}#support-chat .support-chat-form>*{grid-column:1/-1}#support-chat .support-chat-action button{width:100%}}
+@media(max-width:620px){body{padding:10px}.support-page{padding:18px 14px;border-radius:16px}.support-brand{margin-bottom:20px;flex-wrap:wrap}.support-return-workspace{margin-left:59px}.support-brand-copy{flex:1}#support-chat .support-chat-form{grid-template-columns:minmax(0,1fr)}#support-chat .support-chat-form>*{grid-column:1/-1}#support-chat .support-chat-action button{width:100%}}
 </style>
 </head>
 <body>
 <main class="support-page">
-<header class="support-brand"><span class="support-brand-icon" aria-hidden="true">✦</span><span><strong>Molan Business Support</strong><small>Private help desk · Messages and replies</small></span></header>
+<header class="support-brand"><span class="support-brand-icon" aria-hidden="true">✦</span><span class="support-brand-copy"><strong>Molan Business Support</strong><small>Private help desk · Messages and replies</small></span><a class="support-return-workspace" href="workspace.html" aria-label="Return to your Molan Business workspace">← Back to workspace</a></header>
 <section class="support-intro"><h1>How can we help?</h1><p>Send your question or complaint directly to the support team. Choose a subject and category, explain what you need, and follow replies here after signing in.</p></section>
 <div class="content" aria-label="Support chat and message composer"></div>
 </main>
