@@ -43,26 +43,21 @@
     return el;
   }
 
-  function setCheckButton(label, hasUpdate = false) {
-    const button = document.getElementById('molan-update-check');
+  function setCheckButton(_label, hasUpdate = false) {
+    const button = document.getElementById('refresh-button');
     if (!button) return;
-    button.textContent = label;
-    button.setAttribute('aria-label', hasUpdate ? 'Update Molan Business to the latest version' : 'Check Molan Business for application updates');
+    button.setAttribute('aria-label', hasUpdate ? 'Refresh workspace; an app update is available' : 'Refresh workspace and check for app updates');
+    button.title = hasUpdate ? 'Refresh workspace · An app update is available below' : 'Refresh workspace and check for updates';
     button.classList.toggle('has-update', hasUpdate);
   }
 
   function mount() {
-    const actions = document.querySelector('.top-actions');
-    if (!actions || document.getElementById('molan-update-check')) return;
-    const button = document.createElement('button');
-    button.id = 'molan-update-check';
-    button.type = 'button';
-    button.className = 'button secondary small molan-update-check';
-    button.textContent = 'Check for updates ↻';
-    button.setAttribute('aria-label', 'Check Molan Business for application updates');
-    button.title = 'Check for updates or download the latest app installer';
+    // Keep the existing top-right Refresh control as the only persistent control.
+    // The separate update action is shown only inside the banner when a release is available.
+    const button = document.getElementById('refresh-button');
+    if (!button || button.dataset.updateCheckBound === 'true') return;
+    button.dataset.updateCheckBound = 'true';
     button.addEventListener('click', () => check(true));
-    actions.insertBefore(button, actions.firstChild);
   }
 
   async function fetchLatest() {
@@ -127,8 +122,8 @@
   async function check(manual = false) {
     if (busy) return;
     busy = true;
-    const button = document.getElementById('molan-update-check');
-    if (button) { button.disabled = true; button.textContent = 'Checking updates…'; }
+    const button = document.getElementById('refresh-button');
+    if (button) button.setAttribute('aria-busy', 'true');
     try {
       const native = isNative() || isElectron();
       let latestVersion, release = null;
@@ -159,24 +154,24 @@
         const apply = el.querySelector('#molan-apply-update');
         apply.textContent = native ? 'Download update ↓' : 'Update now ↻';
         el.hidden = false;
-        setCheckButton('Update available ↓', true);
+        setCheckButton('', true);
         if (manual) notify('A new Molan Business version is available.');
       } else {
         latest = null;
         const el = document.getElementById('molan-update-banner');
         if (el) el.hidden = true;
-        setCheckButton('Check for updates ↻', false);
+        setCheckButton('', false);
         if (manual) notify(current ? 'Molan Business is up to date (' + current + ').' : 'Update service reached. Reload the app if it looks outdated.');
       }
       return { ok: true, current, latest: latestVersion, updateAvailable: available };
     } catch (error) {
-      setCheckButton('Retry update check ↻', false);
+      setCheckButton('', false);
       if (manual) notify('Could not check for updates. Please check your internet connection and try again.');
       return { ok: false, error: error.message };
     } finally {
       busy = false;
-      const button = document.getElementById('molan-update-check');
-      if (button) button.disabled = false;
+      const button = document.getElementById('refresh-button');
+      if (button) button.removeAttribute('aria-busy');
     }
   }
 
