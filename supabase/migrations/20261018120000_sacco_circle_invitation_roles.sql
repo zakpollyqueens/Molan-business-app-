@@ -65,10 +65,19 @@ begin
     raise exception 'This Circle already has an assigned chairperson. Complete chairperson succession before inviting another.';
   end if;
 
-  -- The standard invitation creates the secure, expiring workspace invitation.
-  -- Use a limited base workspace role; the scoped Circle role is stored separately.
-  perform public.create_company_invitation(
-    p_company_id, v_email, 'staff', p_token, null
+  -- Create the standard workspace invitation directly so an authorized Circle
+  -- analyst can invite staff without being granted generic workspace-admin rights.
+  -- The Circle role remains separately scoped and is activated only after acceptance.
+  insert into public.company_invitations(
+    company_id,email,role,department_id,token_hash,invited_by,expires_at
+  ) values (
+    p_company_id,
+    v_email,
+    'staff',
+    null,
+    encode(extensions.digest(convert_to(p_token,'UTF8'),'sha256'),'hex'),
+    auth.uid(),
+    now()+interval '7 days'
   );
 
   insert into public.sacco_circle_invitation_details(
