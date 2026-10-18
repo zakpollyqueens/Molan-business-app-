@@ -247,4 +247,8 @@
       confirmButton.textContent = 'Authorize & open Molan Business';
     }
   });
+  // Direct workspace entry should open the same secure prompt as a profile-menu click.
+  if (new URLSearchParams(window.location.search).get('open-device-access') === '1') {
+    window.setTimeout(() => document.querySelector('[data-give-device-access]')?.click(), 0);
+  }
 })();
