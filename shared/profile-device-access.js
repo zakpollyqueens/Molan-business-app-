@@ -93,7 +93,7 @@
       <p data-device-access-error class="device-access-error" role="alert" hidden></p>
       <div class="device-access-actions">
         <button type="button" data-device-access-confirm disabled>Checking account…</button>
-        <a data-device-access-download href="https://github.com/zakpollyqueens/Molan-business-app-/releases/latest" target="_blank" rel="noopener">Don't have the app? Download it</a>
+        <a data-device-access-download data-download-target="mobile" href="https://github.com/zakpollyqueens/Molan-business-app-/releases/latest/download/Molan-Business.apk" target="_blank" rel="noopener">Don't have the app? Download it</a>
         <button type="button" class="secondary" data-device-access-close>Cancel</button>
       </div>
     </section>`;
@@ -119,6 +119,7 @@
   const errorBox = dialog.querySelector('[data-device-access-error]');
   const confirmButton = dialog.querySelector('[data-device-access-confirm]');
   const status = dialog.querySelector('[data-device-access-status]');
+  const downloadLink = dialog.querySelector('[data-device-access-download]');
   const closeButton = dialog.querySelector('[data-device-access-close]');
   const closeDialog = () => { dialog.hidden = true; document.querySelector('[data-give-device-access]')?.focus(); };
   const showError = message => { errorBox.textContent = message; errorBox.hidden = false; };
@@ -208,6 +209,12 @@
     target = button.dataset.accessTarget;
     dialog.querySelectorAll('[data-access-target]').forEach(option => option.setAttribute('aria-pressed', String(option === button)));
     status.textContent = 'Selected: ' + (target === 'mobile' ? 'Android / mobile app' : 'Windows / PC app');
+    if (downloadLink) {
+      const asset = target === 'pc' ? 'Molan-Business-Setup.exe' : 'Molan-Business.apk';
+      downloadLink.href = 'https://github.com/zakpollyqueens/Molan-business-app-/releases/latest/download/' + asset;
+      downloadLink.dataset.downloadTarget = target;
+      downloadLink.textContent = target === 'pc' ? "Don't have the PC app? Download it" : "Don't have the app? Download it";
+    }
   }));
   closeButton.addEventListener('click', closeDialog);
   dialog.addEventListener('click', event => { if (event.target === dialog) closeDialog(); });
