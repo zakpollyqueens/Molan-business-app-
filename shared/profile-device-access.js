@@ -26,8 +26,9 @@
     if (existing.length > 1) existing.forEach((item, index) => { if (index > 0) item.remove(); });
     const accessItem = currentNav.querySelector('[data-give-device-access]') || createAccessLink();
     const label = accessItem.querySelector('strong');
-    if (label) label.textContent = isInstalledApp() ? 'Close Access on This App' : 'Give Access to Mobile & PC App';
-    accessItem.setAttribute('aria-label', isInstalledApp() ? 'Close access on this app' : 'Give access to the Molan Business app');
+    const closeAction = isInstalledApp() && accessItem.dataset.closeAppAccess !== undefined;
+    if (label) label.textContent = closeAction ? 'Close Access on This App' : 'Give Access to Mobile & PC App';
+    accessItem.setAttribute('aria-label', closeAction ? 'Close access on this app' : 'Give access to the Molan Business app');
     // Keep the action after the final business-profile feature in the hamburger.
     if (currentNav.lastElementChild !== accessItem) currentNav.append(accessItem);
   };
@@ -174,7 +175,10 @@
     const accessLink = event.target.closest('[data-give-device-access]');
     if (!accessLink) return;
     event.preventDefault();
-    if (isInstalledApp()) {
+    // The workspace sidebar action always means "give access" and must never
+    // sign the current user out. Only the explicit profile-menu Close Access
+    // action is allowed to close a session inside an installed app.
+    if (isInstalledApp() && accessLink.closest('.profile-menu') && accessLink.dataset.closeAppAccess !== undefined) {
       await closeInstalledAccess(accessLink);
       return;
     }
