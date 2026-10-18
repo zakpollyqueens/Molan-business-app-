@@ -1,5 +1,7 @@
 name: Browser smoke test
 on:
+  push:
+    branches: [main]
   workflow_run:
     workflows: ["Deploy Molan Business to GitHub Pages"]
     types: [completed]
