@@ -565,12 +565,22 @@
     $('#page-content').scrollIntoView({behavior:document.body.classList.contains('reduce-motion')?'auto':'smooth',block:'start'});
   });
   $('#circle-start-guide').addEventListener('click',()=>{circleGuideIndex=0;renderCircleGuide();showScreen('circle-guide-screen')});
+  $('#circle-secret-type').addEventListener('change',()=>{
+    const pin=$('#circle-secret-type').value==='passcode';
+    $('#circle-secret-label').firstChild.textContent=pin?'Create numeric passcode':'Create password';
+    $('#circle-confirm-label').firstChild.textContent=pin?'Confirm numeric passcode':'Confirm password';
+    $('#circle-invite-password').inputMode=pin?'numeric':'text';$('#circle-invite-confirm').inputMode=pin?'numeric':'text';
+    $('#circle-invite-password').placeholder=pin?'At least 8 digits':'At least 8 characters';
+    $('#circle-invite-confirm').placeholder=pin?'Enter the passcode again':'Enter the password again';
+  });
   $('#circle-invite-existing').addEventListener('click',()=>{const email=$('#circle-invite-email').value.trim();sessionStorage.setItem('molan_circle_invite_token',new URLSearchParams(location.search).get('invite')||sessionStorage.getItem('molan_circle_invite_token')||'');$('#email').value=email;setAuthMode('signin');showScreen('auth-screen');toast('Sign in with the email address that received the invitation.')});
   $('#circle-invite-form').addEventListener('submit',async e=>{
     e.preventDefault();if(!supabase)return;
     const name=$('#circle-invite-name').value.trim(),email=$('#circle-invite-email').value.trim().toLowerCase(),password=$('#circle-invite-password').value,confirm=$('#circle-invite-confirm').value,btn=$('#circle-invite-submit');
-    if(password!==confirm){$('#circle-invite-status').textContent='The passwords do not match. Please check and try again.';return}
-    if(password.length<8){$('#circle-invite-status').textContent='Choose a password with at least 8 characters.';return}
+    const passcodeMode=$('#circle-secret-type').value==='passcode';
+    if(password!==confirm){$('#circle-invite-status').textContent='The sign-in details do not match. Please check and try again.';return}
+    if(password.length<8){$('#circle-invite-status').textContent=passcodeMode?'Choose a passcode with at least 8 digits.':'Choose a password with at least 8 characters.';return}
+    if(passcodeMode&&!/^\\d{8,}$/.test(password)){$('#circle-invite-status').textContent='Your passcode must contain only numbers and at least 8 digits.';return}
     btn.disabled=true;btn.textContent='Securing your account…';$('#circle-invite-status').textContent='Creating your secure account. Please keep this page open.';
     try{
       sessionStorage.setItem('molan_circle_invite_token',new URLSearchParams(location.search).get('invite')||sessionStorage.getItem('molan_circle_invite_token')||'');
