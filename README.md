@@ -57,6 +57,10 @@ Email confirmation behavior depends on Supabase Auth settings. If email confirma
 
 Serve this folder with a static HTTP server, or use GitHub Pages. The app loads Supabase JavaScript v2 from its CDN.
 
+## Molano AI Business — Gold plan benefit
+
+The Gold subscription is marketed as including Molano AI Business for AI-assisted business management. This benefit is highlighted in the public onboarding/pricing screen and in the in-workspace Subscription plans & upgrades page. Gold is a 3-month package; Silver is 2 months; Premium is 1 month. The marketing UI does not itself grant AI access. Before treating this as fully operational, wire and verify a server-side Gold entitlement against the verified subscription record, enforce it in the workspace AI entry point, and confirm the JJuma Pay checkout/webhook activation flow end-to-end. Do not grant access based only on browser state or a return URL.
+
 ## Subscription plan schedule and billing status
 
 The customer-facing plan durations are **Gold — 3 months**, **Silver — 2 months**, and **Premium — 1 month**. The displayed amount is the full package fee, due again when the selected period ends: Gold renews every 3 months, Silver every 2 months, and Premium every month.
