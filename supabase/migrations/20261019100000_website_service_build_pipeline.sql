@@ -7,6 +7,7 @@ create table if not exists public.website_service_build_jobs (
     check (status in ('queued','building','ready_for_final_payment','published','failed')),
   progress_percent integer not null default 0 check (progress_percent between 0 and 100),
   progress_message text not null default 'Your website request is queued.',
+  preview_url text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   completed_at timestamptz
