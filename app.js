@@ -442,7 +442,7 @@
   async function renderLearnPlanCards(market){
     const grid=$('#learn-plan-grid');if(!grid)return;
     const plans=await subscriptionPlansForMarket(market);
-    grid.innerHTML=plans.map(p=>{const labels=planPriceLabels(p,market);return '<article class="learn-plan-card plan-'+esc(p.plan_code)+'" data-learn-plan="'+esc(p.plan_code)+'"><span class="learn-plan-name">'+esc(p.display_name)+'</span><strong>'+esc(labels.monthly)+'</strong><span class="learn-plan-duration">'+Number(p.duration_months)+' '+(Number(p.duration_months)===1?'month':'months')+'</span><p>'+esc(labels.total)+'</p></article>'}).join('');
+    grid.innerHTML=plans.map(p=>{const labels=planPriceLabels(p,market);return '<article class="learn-plan-card plan-'+esc(p.plan_code)+'" data-learn-plan="'+esc(p.plan_code)+'"><span class="learn-plan-name">'+esc(p.display_name)+'</span><strong>'+esc(labels.monthly)+'</strong><span class="learn-plan-duration">'+Number(p.duration_months)+' '+(Number(p.duration_months)===1?'month':'months')+'</span><p>'+esc(labels.total)+'</p>'+(p.plan_code==='gold'?'<span class="gold-ai-plan-badge">✦ Includes Molano AI Business</span>':'')+'</article>'}).join('');
   }
   async function updateSubscriptionPagePrices(market){
     const plans=await subscriptionPlansForMarket(market);
@@ -467,7 +467,7 @@
       OTHER:'Countries without a specific rate use default USD prices: Gold $80 for 3 months, Silver $50 for 2 months, and Premium $40 for 1 month.'
     };
     renderLearnPlanCards(country);
-    const extra=' The displayed amount is the full package fee and is due again when the plan period ends. Gold renews every 3 months, Silver every 2 months, and Premium every month. Confirm the country and currency before payment; checkout is not yet connected.';
+    const extra=' The displayed amount is the full package fee and is due again when the plan period ends. Gold renews every 3 months and includes Molano AI Business; Silver renews every 2 months; Premium renews every month. Confirm the country and currency before payment; checkout availability depends on the verified live payment configuration.';
     out.innerHTML='<strong>'+esc(names[country]||'Selected market')+'</strong><p>'+esc(notes[country]||notes.OTHER)+esc(extra)+'</p><div class="learn-price-status"><span>Gold · renew every 3 months | Silver · renew every 2 months | Premium · renew every month</span><b>Checkout not yet active</b></div>';
   }
   function showLearnSlide(index){
