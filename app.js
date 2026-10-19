@@ -1866,7 +1866,7 @@ document.addEventListener('DOMContentLoaded',()=>{const y=document.querySelector
         const xCurrency=String(x.package_currency_code||'UGX').toUpperCase(),xAmount=Number(x.package_amount??x.package_price_ugx??0);
         const paid=x.payment_status==='paid',depositPaid=x.payment_status==='partially_paid',statusValue=String(x.status||'').toLowerCase(),delivered=statusValue==='delivered';
         const buildJob=cache.websiteBuildJobs.find(j=>j.request_id===x.id)||null;
-        const readyForBalance=depositPaid&&(['review','delivered'].includes(statusValue)||buildJob?.status==='ready_for_final_payment');
+        const readyForBalance=depositPaid&&statusValue==='review'&&buildJob?.status==='ready_for_final_payment';
         const canPayDeposit=!paid&&!depositPaid&&!['cancelled','delivered','review'].includes(statusValue);
         const canPayBalance=!paid&&readyForBalance&&Number(x.balance_amount||0)>0;
         const canRetryBuild=depositPaid&&buildJob?.status==='failed';
