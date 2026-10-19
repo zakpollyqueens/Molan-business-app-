@@ -79,9 +79,12 @@ async function buildWebsite(request: any) {
     throw new Error("The first website payment has not been verified by the payment provider.");
   }
   const { data: currentJob } = await admin.from("website_service_build_jobs")
-    .select("status,progress_percent,progress_message").eq("request_id", request.id).maybeSingle();
+    .select("status,progress_percent,progress_message,updated_at").eq("request_id", request.id).maybeSingle();
   if (currentJob?.status === "published" || currentJob?.status === "ready_for_final_payment") {
     return { success: true, status: currentJob.status, progress_percent: currentJob.progress_percent, message: currentJob.progress_message };
+  }
+  if (currentJob?.status === "building" && currentJob.updated_at && Date.now() - Date.parse(currentJob.updated_at) < 5 * 60 * 1000) {
+    return { success: true, status: "building", progress_percent: currentJob.progress_percent, message: currentJob.progress_message };
   }
 
   await setJob(request, {
