@@ -108,9 +108,11 @@ async function buildWebsite(request: any) {
   const timeout = setTimeout(() => controller.abort(), 100000);
   let html = "";
   try {
+    const buildSecret = Deno.env.get("MOLANO_BUILD_SECRET") ?? "";
+    if (!buildSecret) throw new Error("Website AI service authorization is not configured. Contact support; no additional payment was taken.");
     const response = await fetch(MOLANO_BUILD_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "X-Molano-Build-Secret": buildSecret },
       body: JSON.stringify(brief),
       signal: controller.signal,
     });
