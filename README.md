@@ -47,7 +47,7 @@ Email confirmation behavior depends on Supabase Auth settings. If email confirma
 ## Important limitations
 
 - Team invitation links are generated in the app, but automatic email delivery is not configured.
-- Website-service payments are recorded for manual review; there is no automated Mobile Money/bank payment gateway or automatic payment verification.
+- Website package payments use Jjuma Pay with server-side transaction verification. The first 50% starts the website build; the final 50% is requested after the AI-generated draft is ready. The live URL is published and released only after the final payment is verified.
 - Sales orders support line items and stock deduction for confirmed, paid, and partially paid orders. Stock changes and stock movements are transactional and audited; purchase movements update quantity and record an expense. Returns and adjustments are recorded in the stock ledger. Full double-entry accounting, tax reporting, and bank reconciliation remain separate future work.
 - Finance entries are management records, not a full accounting package and not connected to bank feeds.
 - The app provides a general business-management foundation, not a complete school information system or full enterprise resource-planning suite.
@@ -90,3 +90,14 @@ Workspace settings include a device-local passcode/password lock and optional pl
 ## Expanded business profile catalogue
 
 The central registry now contains **550 business profile types**: the original 50 active profile configurations plus 500 additional industry-specific profiles. The extra profiles each define their own eight-feature map in `business-profiles/extended-catalog.json`; their cards and feature pages use the shared Molan Business workspace modules, scoped to the selected business workspace. The guided onboarding business-type field includes a search box that filters the dropdown, and the catalogue page supports searching and category filtering. The additional profiles are configuration-backed templates rather than 500 separately duplicated application runtimes.
+
+
+## Automated website service delivery
+
+- After a verified first 50% payment, `molan-jjuma-payments` calls the `website-service-builder` Supabase Edge Function.
+- Molano AI generates a single-file responsive HTML website from the submitted business brief, style, public information, contact details and requested features.
+- Generated HTML is stored in the private `website-service-builds` bucket while the request waits for the final 50% payment.
+- Customers see progress in Website services and on the payment return page. They may keep the page open for live progress or return later; the request remains saved.
+- After verified final payment, the builder publishes the HTML to `website-service-deliveries` and records the live URL on the request. The customer-facing UI hides delivery links until `payment_status = paid`.
+- Build status and progress are stored in `website_service_build_jobs`; private artifact pointers are stored in service-role-only `website_service_build_artifacts`.
+- If the Molano AI build endpoint or publication step is unavailable, the request remains recorded and the customer or authorized ZakiTech staff can retry without paying again for the same stage.
