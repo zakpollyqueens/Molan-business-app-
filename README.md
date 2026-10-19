@@ -105,3 +105,8 @@ The central registry now contains **550 business profile types**: the original 5
 - After verified final payment, the builder publishes the HTML to `website-service-deliveries` and records the live URL on the request. The customer-facing UI hides delivery links until `payment_status = paid`.
 - Build status and progress are stored in `website_service_build_jobs`; private artifact pointers are stored in service-role-only `website_service_build_artifacts`.
 - If the Molano AI build endpoint or publication step is unavailable, the request remains recorded and the customer or authorized ZakiTech staff can retry without paying again for the same stage.
+
+
+## Free Molano AI customer support
+
+The Contact Support page (`contact-support.html`) now provides a cream-themed, direct chat UI for the dedicated free Molano AI support endpoint (`POST /api/support-chat`). Ordinary product help, account setup guidance, bug triage and application-use questions do not require a Gold subscription. The endpoint does not have access to private customer/payment records and must not claim to create tickets or make changes. Account-specific issues still need the authenticated support workflow and human review. Live end-to-end behavior depends on deploying the Molano AI Worker source update and testing the production endpoint.
