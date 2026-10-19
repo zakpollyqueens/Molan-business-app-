@@ -115,3 +115,12 @@ The Contact Support page (`contact-support.html`) now provides a cream-themed, d
 ## Website AI service authorization
 
 The website-service-builder Edge Function calls Molano AI using a server-to-server `X-Molano-Build-Secret` header. Set a high-entropy `MOLANO_BUILD_SECRET` as a Supabase Edge Function secret for `website-service-builder` and as a Cloudflare Worker secret for Molano AI. Use the same value in both environments; do not commit it or put it in frontend code. The builder now fails closed if its secret is absent. This separates a separately paid website project from the Gold subscription gate used for interactive Molano AI Business. Deployment and end-to-end checkout/build/preview/final-payment/publish tests are still required after both secrets are configured.
+
+
+## Website preview and revision workflow (source update)
+
+The website build pipeline now records a short-lived signed preview URL for the private draft and the payment-return page can display that preview plus a revision-notes form. The `website-service-builder` Edge Function accepts `action: "revise"` only while the initial installment is verified and the project is awaiting final payment; it saves the requested changes and rebuilds the draft. The production delivery bucket remains separate and is written only after the final installment is verified. The `preview_url` column has been added to the linked Supabase database and the migration is committed. The updated Edge Function must still be deployed and tested with real checkout records.
+
+## Remaining deployment prerequisite
+
+Website build calls require the same high-entropy `MOLANO_BUILD_SECRET` in Cloudflare Worker secrets and Supabase Edge Function secrets. The repository source deliberately fails closed when the secret is absent. The current tool connection can commit source and apply database SQL, but cannot set Cloudflare Worker secrets or deploy the Cloudflare Worker. Do not treat the website flow as production-verified until those secrets are configured, both runtimes are deployed, and deposit → preview → revision → balance → publish is tested.
