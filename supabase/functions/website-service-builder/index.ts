@@ -149,7 +149,7 @@ async function buildWebsite(request: any) {
   if (requestUpdateError) throw new Error("The website draft is ready, but the request status could not be updated.");
 
   const { data: signedPreview, error: previewError } = await admin.storage
-    .from("website-service-builds").createSignedUrl(path, 60 * 60 * 24);
+    .from("website-service-builds").createSignedUrl(path, 60 * 60 * 24 * 7);
   if (previewError || !signedPreview?.signedUrl) {
     throw new Error("The draft is stored privately but a secure preview link could not be created. Please retry or contact support.");
   }
