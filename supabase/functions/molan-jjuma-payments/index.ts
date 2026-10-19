@@ -97,8 +97,20 @@ async function createWebsiteServiceCheckout(authenticatedUser: any, body: any) {
   if (!request) return json({ error: "The website service request was not found in this business." }, 404);
   if (request.payment_status === "paid") return json({ error: "This website request has already been paid in full." }, 409);
   if (paymentStage === "balance") {
-    if (request.payment_status !== "partially_paid" || !["review", "delivered"].includes(String(request.status))) {
+    if (request.payment_status !== "partially_paid" || String(request.status) !== "review") {
       return json({ error: "The remaining balance becomes payable after the website draft is built and the first payment is verified." }, 409);
+    }
+    const { data: buildJob, error: buildJobError } = await admin.from("website_service_build_jobs")
+      .select("status").eq("request_id", request.id).maybeSingle();
+    if (buildJobError) return json({ error: "Could not verify that the website draft is ready for final checkout." }, 500);
+    if (buildJob?.status !== "ready_for_final_payment") {
+      return json({ error: "The website draft is not ready for final checkout yet. Keep the request open and wait for build completion." }, 409);
+    }
+    const { data: verifiedPayments, error: verifiedPaymentError } = await admin.from("website_service_checkout_payments")
+      .select("provider_metadata").eq("request_id", request.id).eq("status", "verified");
+    if (verifiedPaymentError) return json({ error: "Could not verify the first website payment." }, 500);
+    if (!(verifiedPayments || []).some((p: any) => p.provider_metadata?.payment_stage === "deposit")) {
+      return json({ error: "The first website payment is not verified yet." }, 409);
     }
   } else {
     if (request.payment_status === "partially_paid") return json({ error: "The first payment is already verified. The remaining balance becomes payable after website delivery." }, 409);
