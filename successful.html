@@ -30,20 +30,67 @@
     <p class="notice">For your security, this return page alone does not activate a subscription. Activation must follow verified payment confirmation from the payment provider.</p>
     <footer>Built and managed by Zakmolanitech Solutions Company</footer>
   </main>
-<script>
-    (function(){
-      if(!new URLSearchParams(window.location.search).has('website_payment_id')) return;
-      document.title='Website payment submitted | Molan Business';
-      const heading=document.querySelector('main h1');
-      if(heading) heading.textContent='Thank you for your website package payment';
-      const paragraphs=document.querySelectorAll('main > p');
-      if(paragraphs[0]) paragraphs[0].textContent='Jjuma Pay returned you to Molan Business. We are waiting for the secure payment verification before marking your website request as paid.';
-      if(paragraphs[1]) paragraphs[1].textContent='After the provider verifies the exact amount and currency, your website request will move into the work queue. Return to your workspace to see the confirmed payment status.';
-      const status=document.querySelector('.status span:last-child');
-      if(status) status.textContent='Waiting for secure Jjuma Pay confirmation';
-      const notice=document.querySelector('.notice');
-      if(notice) notice.textContent='This return page alone does not prove that payment succeeded. The website request is marked paid only after server-side provider verification.';
-    })();
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.0/dist/umd/supabase.min.js"></script>
+  <script src="./assets/js/supabase-config.js"></script>
+  <script>
+  (function(){
+    const params=new URLSearchParams(window.location.search),paymentId=params.get('website_payment_id');
+    if(!paymentId)return;
+    document.title='Website build progress | Molan Business';
+    const main=document.querySelector('main'),heading=main.querySelector('h1'),paragraphs=main.querySelectorAll(':scope > p'),status=main.querySelector('.status span:last-child'),notice=main.querySelector('.notice');
+    if(heading)heading.textContent='Your website project is underway';
+    if(paragraphs[0])paragraphs[0].textContent='Thank you. Keep this page open while we confirm your payment and prepare your website. Progress refreshes automatically; your request is saved if you need to leave and return later.';
+    if(status)status.textContent='Connecting to your secure website request…';
+    if(notice)notice.textContent='Never pay twice while a checkout is pending. A return page alone is not proof of payment; the provider must verify it server-side.';
+    const box=document.createElement('section');box.id='websiteWorkflowStatus';box.style.cssText='margin:20px 0;padding:18px;text-align:left;border:1px solid var(--line);border-radius:18px;background:#07152688';
+    const firstAction=main.querySelector('.actions');
+    if(firstAction)main.insertBefore(box,firstAction);
+    let tries=0,busy=false;
+    const show=(title,message,percent,kind='info')=>{
+      box.replaceChildren();
+      const h=document.createElement('h2');h.textContent=title;h.style.cssText='font-size:18px;margin:0 0 8px;color:var(--cyan)';
+      const p=document.createElement('p');p.textContent=message;p.style.cssText='margin:0;color:var(--muted);line-height:1.65';
+      box.append(h,p);
+      if(Number.isFinite(percent)){const track=document.createElement('div');track.style.cssText='height:7px;background:#20364f;border-radius:99px;overflow:hidden;margin:14px 0 4px';const fill=document.createElement('div');fill.style.cssText='height:100%;width:'+Math.max(0,Math.min(100,percent))+'%;background:linear-gradient(90deg,#67e8f9,#6596ff);transition:width .4s';track.append(fill);box.append(track);const small=document.createElement('small');small.textContent=Math.round(percent)+'%';small.style.color='var(--muted)';box.append(small)}
+      if(kind==='error')p.style.color='#ffb8b8';
+    };
+    const addButton=(label,fn)=>{const b=document.createElement('button');b.className='button primary';b.type='button';b.textContent=label;b.style.cssText='border:0;cursor:pointer;margin-top:14px;width:100%';b.onclick=fn;box.append(b)};
+    const client=window.ZakiTechSupabase;
+    async function poll(){
+      if(busy)return;busy=true;tries++;
+      try{
+        if(!client){show('Workspace connection unavailable','Open Molan Business, sign in again, and revisit your website request. Your payment is not considered successful from this page alone.',null,'error');if(status)status.textContent='Connection unavailable';return}
+        const {data:payment,error:paymentError}=await client.from('website_service_checkout_payments').select('id,company_id,request_id,status,amount,currency_code,provider_metadata').eq('id',paymentId).maybeSingle();
+        if(paymentError||!payment){show('Checking your payment','We could not read the payment record yet. Keep this page open briefly or return to your workspace to check the request. Do not pay again while status is pending.',null,'error');if(status)status.textContent='Waiting for secure payment status';return}
+        if(payment.status==='pending'){show('Waiting for payment verification','Jjuma Pay has returned you here. The server is checking the transaction. Do not start another checkout while this one is pending.',null);if(status)status.textContent='Waiting for secure Jjuma Pay confirmation';return}
+        if(payment.status==='failed'){show('Payment not verified','This checkout is marked failed. Check your mobile money or bank account before retrying. If you were charged, contact support first.',null,'error');if(status)status.textContent='Payment needs attention';return}
+        if(payment.status!=='verified'){show('Payment status unavailable','Your payment record has an unexpected status. Return to your workspace or contact support; do not pay twice.',null,'error');return}
+        const {data:request,error:requestError}=await client.from('website_service_requests').select('id,status,payment_status,delivered_website_url,balance_amount,package_amount,package_currency_code').eq('id',payment.request_id).maybeSingle();
+        if(requestError||!request){show('Payment verified — loading your project','Your payment is verified. We are retrieving your website project status.',null);if(status)status.textContent='Payment verified';return}
+        const {data:job}=await client.from('website_service_build_jobs').select('status,progress_percent,progress_message').eq('request_id',request.id).maybeSingle();
+        const stage=payment.provider_metadata?.payment_stage==='balance'?'balance':'deposit';
+        if(stage==='deposit'){
+          if(job?.status==='failed'){show('Your website needs another build attempt',job.progress_message||'The build needs to be retried. Your first payment remains recorded; retrying will not charge you again.',null,'error');addButton('Retry website build ↻',async()=>{const b=box.querySelector('button');if(b){b.disabled=true;b.textContent='Retrying…'}const result=await client.functions.invoke('website-service-builder',{body:{action:'build',request_id:request.id}});if(result.error||!result.data?.success){show('Build retry is still processing',result.data?.error||result.error?.message||'Please return to the workspace and retry shortly.',null,'error');return}show('Website build restarted','Keep this page open while Molano AI prepares your website.',15);setTimeout(poll,1500)});if(status)status.textContent='Website build needs a retry';return}
+          if(job?.status==='ready_for_final_payment'||request.status==='review'){show('Your website draft is ready','The first 50% payment is verified and the draft is built. Return to Molan Business → Website services and choose “Pay final 50% & publish”. Your live URL is released after that payment is verified.',100);if(status)status.textContent='Website draft ready · final payment required';return}
+          if(job?.status==='building'){show('Molano AI is building your website',job.progress_message||'Preparing the page layout, mobile styling and requested sections.',job.progress_percent||20);if(status)status.textContent='Website build in progress';return}
+          show('First payment verified — preparing your website',job?.progress_message||'Your request is in the work queue. Keep this page open to watch progress; you can leave and return later.',job?.progress_percent||5);if(status)status.textContent='Website preparation in progress';return;
+        }
+        if(request.payment_status==='paid'&&request.delivered_website_url){
+          let u;try{u=new URL(request.delivered_website_url)}catch(_){u=null}
+          if(u&&u.protocol==='https:'){show('Your website is published','Your final payment is verified. Your live website URL is ready to open.',100);const a=document.createElement('a');a.className='button primary';a.href=u.href;a.target='_blank';a.rel='noopener noreferrer';a.textContent='Open your live website ↗';a.style.marginTop='14px';box.append(a);if(status)status.textContent='Payment verified · website delivered';return}
+        }
+        if(request.payment_status==='paid'){
+          show('Final payment verified — publishing your website','Your payment is recorded. We are publishing the saved website and preparing your delivery URL.',95);
+          const result=await client.functions.invoke('website-service-builder',{body:{action:'publish',request_id:request.id}});
+          if(result.error||!result.data?.success){addButton('Retry publishing ↻',async()=>{const b=box.querySelector('button');if(b){b.disabled=true;b.textContent='Publishing…'}setTimeout(poll,500)});if(status)status.textContent='Payment verified · publication pending';return}
+          setTimeout(poll,1000);return;
+        }
+        show('Payment verified','Your payment has been verified. Return to the workspace if you need to review the website request.',null);if(status)status.textContent='Payment verified';
+      }catch(error){show('Still checking your project','We could not refresh the status just now. Your request remains saved; please keep this page open or return to the workspace later.',null,'error')}
+      finally{busy=false;if(tries<180)setTimeout(poll,5000)}
+    }
+    poll();
+  })();
   </script>
 </body>
 </html>
