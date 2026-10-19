@@ -110,3 +110,8 @@ The central registry now contains **550 business profile types**: the original 5
 ## Free Molano AI customer support
 
 The Contact Support page (`contact-support.html`) now provides a cream-themed, direct chat UI for the dedicated free Molano AI support endpoint (`POST /api/support-chat`). Ordinary product help, account setup guidance, bug triage and application-use questions do not require a Gold subscription. The endpoint does not have access to private customer/payment records and must not claim to create tickets or make changes. Account-specific issues still need the authenticated support workflow and human review. Live end-to-end behavior depends on deploying the Molano AI Worker source update and testing the production endpoint.
+
+
+## Website AI service authorization
+
+The website-service-builder Edge Function calls Molano AI using a server-to-server `X-Molano-Build-Secret` header. Set a high-entropy `MOLANO_BUILD_SECRET` as a Supabase Edge Function secret for `website-service-builder` and as a Cloudflare Worker secret for Molano AI. Use the same value in both environments; do not commit it or put it in frontend code. The builder now fails closed if its secret is absent. This separates a separately paid website project from the Gold subscription gate used for interactive Molano AI Business. Deployment and end-to-end checkout/build/preview/final-payment/publish tests are still required after both secrets are configured.
