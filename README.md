@@ -59,7 +59,7 @@ Serve this folder with a static HTTP server, or use GitHub Pages. The app loads 
 
 ## Molano AI Business — Gold plan benefit
 
-The Gold subscription is marketed as including Molano AI Business for AI-assisted business management. This benefit is highlighted in the public onboarding/pricing screen and in the in-workspace Subscription plans & upgrades page. Gold is a 3-month package; Silver is 2 months; Premium is 1 month. The marketing UI does not itself grant AI access. Before treating this as fully operational, wire and verify a server-side Gold entitlement against the verified subscription record, enforce it in the workspace AI entry point, and confirm the JJuma Pay checkout/webhook activation flow end-to-end. Do not grant access based only on browser state or a return URL.
+The Gold subscription is marketed as including Molano AI Business for AI-assisted business management. This benefit is highlighted in the public onboarding/pricing screen and in the in-workspace Subscription plans & upgrades page. Gold is a 3-month package; Silver is 2 months; Premium is 1 month. The marketing UI does not itself grant AI access. The Supabase database now has a server-checked Gold entitlement RPC scoped to the signed-in user's active workspace membership, and the Molano AI Worker source checks that entitlement for each chat request. The live Worker deployment and complete JJuma Pay checkout/webhook-to-access flow still need end-to-end verification. Do not grant access based only on browser state or a return URL. The paid website-generation endpoint also needs its server-to-server authorization flow verified separately.
 
 ## Subscription plan schedule and billing status
 
