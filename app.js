@@ -1283,6 +1283,7 @@ el.innerHTML=head(esc(title)+' overview','Your '+esc(title)+' dashboard, busines
       const link=$('#molano-ai-access-link'),status=$('#molano-ai-access-status');
       if(!link||!status)return;
       link.href='#';link.setAttribute('aria-disabled','true');link.classList.add('is-locked');
+      link.addEventListener('click',e=>{if(link.getAttribute('aria-disabled')==='true'){e.preventDefault();toast('Molano AI Business requires a verified active Gold subscription.');}});
       if(!user||!company?.id||!supabase){
         status.textContent='Sign in to a business workspace to check Gold access.';
         link.textContent='Sign in to check access';
@@ -1300,7 +1301,6 @@ el.innerHTML=head(esc(title)+' overview','Your '+esc(title)+' dashboard, busines
         }else{
           link.textContent='Gold plan required';
           status.textContent='Molano AI Business is included with an active Gold plan only. Upgrade to Gold to unlock this benefit.';
-          link.addEventListener('click',e=>{e.preventDefault();toast('Molano AI Business requires an active Gold subscription.');},{once:true});
         }
       }catch(error){
         link.textContent='Access check unavailable';
