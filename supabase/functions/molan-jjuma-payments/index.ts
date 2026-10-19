@@ -41,6 +41,24 @@ async function hmacHex(secret: string, message: string): Promise<string> {
   return [...new Uint8Array(signature)].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
+async function triggerWebsiteBuilder(action: "build" | "publish", requestId: string) {
+  try {
+    const response = await fetch(`${SUPABASE_URL}/functions/v1/website-service-builder`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`, apikey: SUPABASE_ANON_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({ action, request_id: requestId }),
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || data?.success !== true) {
+      console.error("Website builder follow-up needs retry:", action, data?.error || response.status);
+      return { success: false, status: data?.status || "pending", error: data?.error || "Website processing is still pending." };
+    }
+    return { success: true, status: data.status || "complete", url: data.url };
+  } catch (error) {
+    console.error("Website builder follow-up failed:", action, error);
+    return { success: false, status: "pending", error: "Website processing is still pending." };
+  }
+}
 async function markWebsiteCheckoutFailed(paymentId: string, requestId: string, message: string) {
   await admin.from("website_service_checkout_payments").update({
     status: "failed",
@@ -79,8 +97,8 @@ async function createWebsiteServiceCheckout(authenticatedUser: any, body: any) {
   if (!request) return json({ error: "The website service request was not found in this business." }, 404);
   if (request.payment_status === "paid") return json({ error: "This website request has already been paid in full." }, 409);
   if (paymentStage === "balance") {
-    if (request.payment_status !== "partially_paid" || String(request.status) !== "delivered") {
-      return json({ error: "The remaining balance can be paid after the website has been marked delivered and the first payment is verified." }, 409);
+    if (request.payment_status !== "partially_paid" || !["review", "delivered"].includes(String(request.status))) {
+      return json({ error: "The remaining balance becomes payable after the website draft is built and the first payment is verified." }, 409);
     }
   } else {
     if (request.payment_status === "partially_paid") return json({ error: "The first payment is already verified. The remaining balance becomes payable after website delivery." }, 409);
@@ -332,7 +350,11 @@ async function handleWebsiteServiceWebhook(
   data: any,
   deliveryId: string | null,
 ) {
-  if (websitePayment.status === "verified") return json({ success: true, already_processed: true, website_service_paid: true });
+  if (websitePayment.status === "verified") {
+    const stage = websitePayment.provider_metadata?.payment_stage === "balance" ? "balance" : "deposit";
+    const followUp = await triggerWebsiteBuilder(stage === "balance" ? "publish" : "build", websitePayment.request_id);
+    return json({ success: true, already_processed: true, website_service_paid: true, build_status: followUp.status, publication_pending: stage === "balance" && !followUp.success });
+  }
   if (websitePayment.status === "failed") return json({ success: true, ignored: true, payment_status: "failed" });
 
   if (eventName === "payment.failed" || eventName === "payment.cancelled") {
@@ -407,7 +429,8 @@ async function handleWebsiteServiceWebhook(
       .select("status").eq("id", websitePayment.id).maybeSingle();
     if (currentPayment?.status !== "verified") return json({ error: "Could not complete website payment verification." }, 500);
   }
-  return json({ success: true, website_service_paid: true, request_id: request.id });
+  const followUp = await triggerWebsiteBuilder(paymentStage === "balance" ? "publish" : "build", request.id);
+  return json({ success: true, website_service_paid: true, request_id: request.id, build_status: followUp.status, publication_pending: paymentStage === "balance" && !followUp.success });
 }
 
 async function handleWebhook(req: Request) {
