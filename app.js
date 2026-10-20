@@ -429,7 +429,7 @@
         supabase.from('subscription_plan_prices').select('plan_code,market_code,currency_code,monthly_amount,package_amount,price_status,checkout_enabled').eq('market_code',market).eq('is_visible',true)
       ]);
       if(pr.error||prices.error||!Array.isArray(pr.data)||!pr.data.length)return plans;
-      return pr.data.map(p=>{const rate=(prices.data||[]).find(x=>x.plan_code===p.plan_code),fallbackAmount=fallback[p.plan_code];return {...p,price_status:rate?.price_status||'pending_configuration',currency_code:rate?.currency_code||fallback.currency,package_amount:rate?.package_amount===null||rate?.package_amount===undefined?fallbackAmount:Number(rate.package_amount),monthly_amount:rate?.monthly_amount===null||rate?.monthly_amount===undefined?Number((fallbackAmount/p.duration_months).toFixed(2)):Number(rate.monthly_amount),checkout_enabled:!!rate?.checkout_enabled};});
+      return pr.data.map(p=>{const rate=(prices.data||[]).find(x=>x.plan_code===p.plan_code),fallbackAmount=fallback[p.plan_code],policy=DEFAULT_SUBSCRIPTION_PLANS.find(x=>x.plan_code===p.plan_code),duration=policy?.duration_months??p.duration_months;return {...p,display_name:policy?.display_name||p.display_name,duration_months:duration,price_status:rate?.price_status||'pending_configuration',currency_code:rate?.currency_code||fallback.currency,package_amount:rate?.package_amount===null||rate?.package_amount===undefined?fallbackAmount:Number(rate.package_amount),monthly_amount:rate?.monthly_amount===null||rate?.monthly_amount===undefined?Number((fallbackAmount/duration).toFixed(2)):Number(rate.monthly_amount),checkout_enabled:!!rate?.checkout_enabled};});
     }catch{return plans}
   }
   function planPriceLabels(plan,market){
