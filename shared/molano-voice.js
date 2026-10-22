@@ -78,7 +78,7 @@
     if(recognition){try{recognition.stop();}catch(_){}recognition=null;return;}
     recognition=new Recognition();recognition.lang="en-US";recognition.continuous=false;recognition.interimResults=false;
     mic.textContent="■";setStatus("Listening…");
-    recognition.onresult=e=>{const transcript=e.results[0][0].transcript.trim();pending=transcript;addMessage("I heard: “"+transcript+"”\nI’ll send this request to Molano AI for advice. Should I proceed? Say yes or no.","bot");say("I heard: "+transcript+". I will send this request to Molano AI for advice. Should I proceed? Please say yes or no.");};
+    recognition.onresult=e=>{const transcript=e.results[0][0].transcript.trim();pending=transcript;addMessage("I heard: “"+transcript+"”\nI’ll send this request to Molano AI for advice. Should I proceed? Say yes or no.","bot");if("speechSynthesis" in window){waitingForSpokenConfirm=true;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance("I heard: "+transcript+". I will send this request to Molano AI for advice. Should I proceed? Please say yes or no.");u.lang="en-US";u.onend=()=>{waitingForSpokenConfirm=false;if(pending)startConfirmation();};u.onerror=()=>{waitingForSpokenConfirm=false;if(pending)startConfirmation();};speechSynthesis.speak(u);}else{startConfirmation();}};
     recognition.onend=()=>{mic.textContent="🎙";recognition=null;if(pending&&!waitingForSpokenConfirm)startConfirmation();else if(!busy&&!pending)setStatus("Ready when you are.");};
     recognition.onerror=()=>{mic.textContent="🎙";recognition=null;setStatus("Microphone unavailable. Check browser permission and try again.");};
     try{recognition.start();}catch(_){mic.textContent="🎙";recognition=null;setStatus("Couldn't start the microphone.");}
