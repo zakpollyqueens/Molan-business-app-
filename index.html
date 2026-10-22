@@ -518,9 +518,9 @@
 </style>
 <button id="molano-voice-launcher" type="button" aria-label="Call Molano AI voice assistant" title="Call Molano AI"><span class="molano-voice-mark">M</span><span class="molano-voice-dot"></span></button>
 <section id="molano-voice-assistant" role="dialog" aria-modal="true" aria-labelledby="mva-title">
- <div class="mva-card"><div class="mva-top"><div><div class="mva-kicker">GOLD WORKSPACE ASSISTANT</div><h2 id="mva-title" style="margin:5px 0 0">Call Molano</h2></div><button class="mva-close" id="mva-close" type="button" aria-label="Close voice assistant">×</button></div>
- <div class="mva-orb" aria-hidden="true"><span>M</span></div><div class="mva-status" id="mva-status" role="status">Your business assistant is ready.</div>
- <div class="mva-transcript" id="mva-transcript">Tap “Start voice” and say, “Molano, open my shop real time.”</div><div class="mva-response" id="mva-response"></div>
+ <div class="mva-card"><div class="mva-top"><div><div class="mva-kicker">VOICE-FIRST BUSINESS COMPANION</div><h2 id="mva-title" style="margin:5px 0 0">Talk to Molano</h2></div><button class="mva-close" id="mva-close" type="button" aria-label="Close voice assistant">×</button></div>
+ <div class="mva-orb" aria-hidden="true"><span>M</span></div><div class="mva-status" id="mva-status" role="status">Your voice companion is ready.</div>
+ <div class="mva-transcript" id="mva-transcript">Tap “Start voice” and speak naturally. Molano will answer aloud.</div><div class="mva-response" id="mva-response"></div>
  <div class="mva-actions"><button class="mva-primary" id="mva-start" type="button">🎙 Start voice</button><button id="mva-stop" type="button">Stop listening</button><button id="mva-repeat" type="button">🔊 Repeat response</button></div>
  <p style="font-size:11px;line-height:1.45;color:#8fb8ca;margin:16px 0 0">Voice recognition requires microphone permission. Molano can navigate workspace pages and answer using the AI service; sensitive actions still require your confirmation and permissions.</p>
  </div>
@@ -529,21 +529,25 @@
 (()=>{'use strict';
 const $=id=>document.getElementById(id),launcher=$('molano-voice-launcher'),panel=$('molano-voice-assistant');
 if(!launcher||!panel)return;
-let recognition=null,listening=false,lastSpoken='',lastTranscript='',goldChecked=false,goldAllowed=false,checkBusy=false;
+let recognition=null,listening=false,lastSpoken='',lastTranscript='',planChecked=false,planCode='free',planAllowed=false,checkBusy=false;
 const status=t=>{$('mva-status').textContent=t};
 const response=t=>{$('mva-response').textContent=t||''};
 function speak(text){if(!text||!('speechSynthesis'in window))return;lastSpoken=text;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=1;u.pitch=1.02;u.lang=navigator.language||'en-US';speechSynthesis.speak(u)}catch(e){}}
 function getContext(){return window.MolanAppContext||null}
-async function verifyGold(){
- if(checkBusy)return goldAllowed;checkBusy=true;goldAllowed=false;goldChecked=false;
- try{const ctx=getContext(),client=ctx?.getClient?.(),user=ctx?.getUser?.(),company=ctx?.getCompany?.();if(!client||!user||!company?.id)throw new Error('Sign in and open a business workspace first.');
- const {data,error}=await client.rpc('check_molano_ai_gold_entitlement',{p_company_id:company.id});if(error)throw error;const e=Array.isArray(data)?data[0]:data;
- goldAllowed=!!(e?.has_access===true&&e?.plan_code==='gold'&&e?.expires_at&&new Date(e.expires_at)>new Date());goldChecked=true;
- if(!goldAllowed)throw new Error('This voice assistant requires an active, verified Gold subscription for the selected workspace.');
- return true;
- }catch(e){status(e.message||'Could not verify Gold access. Please retry.');response('');return false}finally{checkBusy=false}
+async function verifyPlan(){
+ if(checkBusy)return planCode;checkBusy=true;planChecked=false;planCode='free';planAllowed=false;
+ try{
+  const ctx=getContext(),client=ctx?.getClient?.(),user=ctx?.getUser?.(),company=ctx?.getCompany?.();
+  if(!client||!user||!company?.id){planChecked=true;status('Basic Molano is ready. Sign in to connect your business workspace.');return planCode}
+  const {data,error}=await client.rpc('check_molano_ai_gold_entitlement',{p_company_id:company.id});
+  if(error)throw error;const e=Array.isArray(data)?data[0]:data;
+  const active=!!(e?.has_access===true&&e?.expires_at&&new Date(e.expires_at)>new Date());
+  planCode=active?String(e?.plan_code||'free').toLowerCase():'free';planAllowed=active&&(planCode==='silver'||planCode==='gold');planChecked=true;
+  return planCode;
+ }catch(e){planCode='free';planAllowed=false;planChecked=true;return planCode}finally{checkBusy=false}
 }
-function show(){panel.classList.add('open');response('');status('Checking your Gold access…');verifyGold().then(ok=>{if(ok){status('Connected to your Gold workspace. Tap Start voice, or say your request after starting.');if(!recognition&&!(window.SpeechRecognition||window.webkitSpeechRecognition))status('Your browser does not support voice recognition. Try Chrome or use the workspace pages normally.')}})}
+function show(){panel.classList.add('open');response('');status('Molano is ready. Starting voice…');verifyPlan().then(plan=>{status(plan==='gold'?'Gold is active. Tell me what you need.':plan==='silver'?'Silver is active. Ask me for help or say “compare plans” for advanced business commands.':'I can answer general questions. Sign in and choose a plan to unlock business commands.');if(!recognition&&!(window.SpeechRecognition||window.webkitSpeechRecognition))status('Voice recognition is not supported here. Try Chrome on Android.');if(!listening)startListening()})}
+function show(){panel.classList.add('open');response('');status('Checking your Gold access…');verifyGold().then(ok=>{if(ok){status('Molano is ready. Tap Start voice and speak naturally.');if(!recognition&&!(window.SpeechRecognition||window.webkitSpeechRecognition))status('Your browser does not support voice recognition. Try Chrome or use the workspace pages normally.')}})}
 function close(){stopListening();panel.classList.remove('open');if('speechSynthesis'in window)speechSynthesis.cancel()}
 function stopListening(){listening=false;try{recognition?.stop()}catch(e){}panel.classList.remove('listening');$('mva-start').textContent='🎙 Start voice';}
 function normalize(t){return String(t||'').toLowerCase().replace(/[’']/g,'').replace(/[^a-z0-9\s-]/g,' ').replace(/\s+/g,' ').trim()}
@@ -566,8 +570,15 @@ const routes=[
 ];
 function routeCommand(text){const n=normalize(text);for(const r of routes){if(r.keys.some(k=>n.includes(k))){return r}}return null}
 async function navigateFromVoice(text){
- const ctx=getContext();if(!ctx?.navigate)throw new Error('The workspace navigation is not ready yet.');
- const route=routeCommand(text);if(!route)return null;
+ const ctx=getContext();const route=routeCommand(text);if(!route)return null;
+ if(route.page==='subscriptions'){if(ctx?.navigate)ctx.navigate('subscriptions');return route}
+ const plan=planChecked?planCode:await verifyPlan();
+ const basicPages=['overview'];
+ if(plan!=='gold'&&!basicPages.includes(route.page)){
+  if(ctx?.navigate)ctx.navigate('subscriptions');
+  throw new Error(plan==='silver'?'That business command is part of Gold’s expanded assistant access. I’ve opened the plans so you can compare options.':'That business command needs an active plan. I’ve opened the plans so you can choose Silver or Gold.');
+ }
+ if(!ctx?.navigate)throw new Error('Sign in and open a business workspace to navigate business pages.');
  ctx.navigate(route.page);return route;
 }
 async function askMolano(text,route){
@@ -587,7 +598,7 @@ async function handleCommand(text){
  }catch(e){const msg=e.message||'I could not complete that request.';response(msg);status('Please try again.');speak(msg)}
 }
 function startListening(){
- if(!goldAllowed){status('Checking Gold access…');verifyGold().then(ok=>{if(ok)startListening()});return}
+ if(checkBusy){status('Checking your access…');return}
  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
  if(!SR){status('Voice recognition is not supported in this browser. Try Chrome on Android.');return}
  try{if('speechSynthesis'in window)speechSynthesis.cancel();recognition=new SR();recognition.lang=navigator.language||'en-US';recognition.continuous=true;recognition.interimResults=true;recognition.maxAlternatives=1;
@@ -600,21 +611,22 @@ function startListening(){
  }catch(e){status('Could not start microphone. Check permission and try again.')}
 }
 launcher.addEventListener('click',show);$('mva-close').addEventListener('click',close);$('mva-start').addEventListener('click',startListening);$('mva-stop').addEventListener('click',()=>{stopListening();status('Listening stopped.')});$('mva-repeat').addEventListener('click',()=>speak(lastSpoken||$('mva-response').textContent));panel.addEventListener('click',e=>{if(e.target===panel)close()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panel.classList.contains('open'))close()});
-const observer=new MutationObserver(()=>{const dash=$('dashboard-screen'),visible=dash&&!dash.classList.contains('hidden');launcher.style.display=visible?'flex':'none';if(!visible&&panel.classList.contains('open'))close()});
-observer.observe($('app')||document.body,{subtree:true,attributes:true,attributeFilter:['class']});const dash=$('dashboard-screen');if(dash&&!dash.classList.contains('hidden'))launcher.style.display='flex';
+const observer=new MutationObserver(()=>{const dash=$('dashboard-screen'),visible=dash&&!dash.classList.contains('hidden');launcher.style.display='flex'});
+observer.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class']});launcher.style.display='flex';
 })();
 </script>
 
 <script id="molano-welcome-concierge-script">
 (()=>{'use strict';
 const $=id=>document.getElementById(id),box=$('molano-welcome-concierge');if(!box)return;
-const answer=$('mwc-answer');let rec=null,lastReply='',greeted=false;
+const answer=$('mwc-answer'),orb=box.querySelector('.mwc-orb');let rec=null,lastReply='',greeted=false,awaitingName=false;
 const savedName=()=>{try{return localStorage.getItem('molano_welcome_name')||''}catch(e){return ''}};
-function say(text){lastReply=text;answer.textContent=text;if(!('speechSynthesis'in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang=navigator.language||'en-US';u.rate=.96;u.pitch=1.03;speechSynthesis.speak(u)}catch(e){}}
+function say(text){lastReply=text;answer.textContent=text;box.dataset.state='speaking';if(!('speechSynthesis'in window)){box.dataset.state='idle';return}try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang=navigator.language||'en-US';u.rate=.96;u.pitch=1.03;u.onend=()=>{box.dataset.state='idle'};u.onerror=()=>{box.dataset.state='idle'};speechSynthesis.speak(u)}catch(e){box.dataset.state='idle'}}
 function plans(){const b=$('welcome-learn-more');if(b)b.click();say('Let’s look at the business information and upgrade plans. Silver is intended for limited assistant features. Gold is designed for full Molano business assistance across your eligible business workspaces, subject to an active subscription and the features available in your account. Please review the current package details before paying.')}
 function getStarted(){const b=$('welcome-get-started');if(b)b.click();else say('Tap Get started to create your account and business workspace.')}
 function handle(raw){const text=String(raw||'').trim();const n=text.toLowerCase().replace(/[^a-z0-9\s]/g,' ').replace(/\s+/g,' ').trim();if(!n)return;
-if(/^(hey |hi |hello )?molano$/.test(n)||/^(hey|hi|hello) molano$/.test(n)){const name=savedName();if(name){say('Hey '+name+'! It’s good to hear from you. What would you like us to work on today?');return}const picked=window.prompt('Hi! I’m Molano. What name should I call you?');if(picked&&picked.trim()){try{localStorage.setItem('molano_welcome_name',picked.trim().slice(0,60))}catch(e){}say('Lovely to meet you, '+picked.trim()+'. I’m Molano. You can ask me about creating a business, your staff, business profiles, or upgrading to Silver or Gold. What shall we do first?')}else say('Hi there! I’m Molano. Tell me what you need, or ask me about Silver and Gold business plans.');return}
+if(awaitingName){const picked=text.replace(/^(my name is|you can call me|call me|i am|i'm)\s+/i,'').trim().slice(0,60);if(picked){try{localStorage.setItem('molano_welcome_name',picked)}catch(e){}awaitingName=false;say('Lovely to meet you, '+picked+'. I’m Molano. You can ask me to help create your account, learn about business profiles, or compare Silver and Gold. What would you like to do first?')}else say('I didn’t catch your name. Please say it again.');return}
+if(/^(hey |hi |hello )?molano$/.test(n)||/^(hey|hi|hello) molano$/.test(n)){const name=savedName();if(name){say('Hey '+name+'! It’s good to hear you. What would you like us to work on today?');return}awaitingName=true;say('Hi! I’m Molano. What name should I call you? Tap Talk to Molano again and tell me your name.');return}
 if(/upgrade|subscription|package|pricing|plans|silver|gold/.test(n)){plans();return}
 if(/create|open|start|register|sign up|account|workspace/.test(n)){getStarted();say('I’ll take you to the getting-started steps. Follow the prompts to create your account and business workspace.');return}
 if(/staff|employee|assign|team/.test(n)){say('I can help you get there. First sign in and open your business workspace. From the workspace, open Staff or Team to view staff and assign the permissions you need. Gold is designed for the fullest Molano business assistance.');return}
@@ -623,9 +635,9 @@ if(/thank/.test(n)){say('You’re very welcome. We’ll take it one step at a ti
 if(/help|what can you do|question/.test(n)){say('I can guide you through account setup, business profiles, staff management, and choosing a plan. Silver has limited assistant features, while Gold is designed for full business assistance. Tell me what you want to do, and I’ll point you to the right place.');return}
 say('I may not have understood that request yet. You can say “help me upgrade to Gold”, “I want to create a business account”, or “show me how to manage staff”. I’ll guide you through the closest available option.');
 }
-function listen(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){say('Your browser does not support speech recognition here. Please open Molan Business in a recent version of Chrome and allow microphone access.');return}try{if('speechSynthesis'in window)speechSynthesis.cancel();rec=new SR();rec.lang=navigator.language||'en-US';rec.continuous=false;rec.interimResults=false;rec.maxAlternatives=1;rec.onstart=()=>{answer.textContent='I’m listening… speak naturally.'};rec.onresult=e=>handle(e.results?.[0]?.[0]?.transcript||'');rec.onerror=e=>say(e.error==='not-allowed'?'Microphone access is blocked. Allow it in your browser settings, then try again.':'I didn’t catch that. Tap Talk to Molano and try once more.');rec.onend=()=>{};rec.start()}catch(e){say('I could not start the microphone. Please check permission and try again.')}}
+function listen(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){say('Your browser does not support speech recognition here. Please open Molan Business in a recent version of Chrome and allow microphone access.');return}try{if('speechSynthesis'in window)speechSynthesis.cancel();rec=new SR();rec.lang=navigator.language||'en-US';rec.continuous=false;rec.interimResults=false;rec.maxAlternatives=1;rec.onstart=()=>{answer.textContent='I’m listening… speak naturally.';box.dataset.state='listening'};rec.onresult=e=>{box.dataset.state='thinking';handle(e.results?.[0]?.[0]?.transcript||'')};rec.onerror=e=>{box.dataset.state='idle';say(e.error==='not-allowed'?'Microphone access is blocked. Allow it in your browser settings, then try again.':'I didn’t catch that. Tap Talk to Molano and try once more.')};rec.onend=()=>{if(box.dataset.state==='listening')box.dataset.state='idle'};rec.start()}catch(e){say('I could not start the microphone. Please check permission and try again.')}}
 $('mwc-talk').addEventListener('click',listen);$('mwc-plans').addEventListener('click',plans);$('mwc-get-started').addEventListener('click',getStarted);
-if(!greeted){greeted=true;const name=savedName();if(name)answer.textContent='Welcome back, '+name+'. Tap Talk to Molano whenever you need me.'}
+if(!greeted){greeted=true;const name=savedName();if(name){answer.textContent='Welcome back, '+name+'. Tap Talk to Molano whenever you need me.'}else{answer.textContent='Molano is ready. Tap Talk to Molano and say hello.'}}
 })();
 </script>
 </body></html>
