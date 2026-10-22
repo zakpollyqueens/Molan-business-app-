@@ -575,7 +575,7 @@ function startListening(){
  recognition.onresult=e=>{let interim='',finalText='';for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0]?.transcript||'';if(e.results[i].isFinal)finalText+=t;else interim+=t}
  if(interim)$('mva-transcript').textContent='Hearing: '+interim;if(finalText.trim()){const command=finalText.trim().replace(/^\s*(hey\s+)?molano[,:\s-]*/i,'').trim()||finalText.trim();$('mva-transcript').textContent='You: '+finalText.trim();handleCommand(command)}};
  recognition.onerror=e=>{if(e.error==='not-allowed'||e.error==='service-not-allowed')status('Microphone permission was denied. Allow microphone access in your browser settings.');else if(e.error!=='no-speech'&&e.error!=='aborted')status('Voice recognition issue: '+e.error+'. Tap Start voice to retry.');};
- recognition.onend=()=>{listening=false;panel.classList.remove('listening');$('mva-start').textContent='🎙 Start voice';if(panel.classList.contains('open')&&status.textContent.startsWith('Listening'))status('Voice session paused. Tap Start voice to continue.')};
+ recognition.onend=()=>{listening=false;panel.classList.remove('listening');$('mva-start').textContent='🎙 Start voice';if(panel.classList.contains('open')&&$('mva-status').textContent.startsWith('Listening'))status('Voice session paused. Tap Start voice to continue.')};
  recognition.start();
  }catch(e){status('Could not start microphone. Check permission and try again.')}
 }
