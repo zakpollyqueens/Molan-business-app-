@@ -643,4 +643,5 @@ document.querySelectorAll('[data-welcome-dot]').forEach((d,i)=>d.addEventListene
 const name=savedName();const opening=name?'Welcome back, '+name+'! Thank you for opening Molan Business. I’m Molano, your personal guide. I’ll walk you through your workspace, business profiles, plans, and key features. Let’s begin.':'Hello and welcome to Molan Business! Thank you for joining us. I’m Molano, your friendly business guide. I’ll show you how to set up your business, understand the plans, choose a business profile, and use the main features. You can ask for help at any time. Let’s begin.';say(opening,()=>{startTour(0);if(!name){voiceTourFallback=setTimeout(()=>{if(!awaitingName&&rec===null){say('As we go, I would love to know what to call you. You can tell me whenever voice conversation is available. For now, let me show you around.');}},2500)}});
 })();
 </script>
+  <script src="shared/molano-voice.js?v=20261022-voice1" defer></script>
 </body></html>
