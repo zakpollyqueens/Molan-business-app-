@@ -6,7 +6,7 @@
   const API = "https://molanoai.zakpollyqueens.workers.dev/api/support-chat";
   const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   const history = [];
-  let busy = false, recognition = null, confirmRecognition = null, pending = "";
+  let busy = false, recognition = null, confirmRecognition = null, pending = "", waitingForSpokenConfirm = false;
   const style = document.createElement("style");
   style.textContent = `
   #molanoVoiceRoot{position:fixed;right:18px;bottom:18px;z-index:99999;font:14px/1.45 system-ui,-apple-system,sans-serif;color:#eef8ff}
@@ -79,9 +79,10 @@
     recognition=new Recognition();recognition.lang="en-US";recognition.continuous=false;recognition.interimResults=false;
     mic.textContent="■";setStatus("Listening…");
     recognition.onresult=e=>{const transcript=e.results[0][0].transcript.trim();pending=transcript;addMessage("I heard: “"+transcript+"”\nI’ll send this request to Molano AI for advice. Should I proceed? Say yes or no.","bot");say("I heard: "+transcript+". I will send this request to Molano AI for advice. Should I proceed? Please say yes or no.");};
-    recognition.onend=()=>{mic.textContent="🎙";recognition=null;if(pending)startConfirmation();else if(!busy)setStatus("Ready when you are.");};
+    recognition.onend=()=>{mic.textContent="🎙";recognition=null;if(pending&&!waitingForSpokenConfirm)startConfirmation();else if(!busy&&!pending)setStatus("Ready when you are.");};
     recognition.onerror=()=>{mic.textContent="🎙";recognition=null;setStatus("Microphone unavailable. Check browser permission and try again.");};
     try{recognition.start();}catch(_){mic.textContent="🎙";recognition=null;setStatus("Couldn't start the microphone.");}
   });
+  window.setTimeout(()=>{if(!sessionStorage.getItem("molanoVoiceWelcomed")){sessionStorage.setItem("molanoVoiceWelcomed","1");say("Hello, welcome. I’m Molano AI, your assistant for "+PRODUCT+". Open me any time and I’ll help you step by step.");}},1200);
   window.addEventListener("beforeunload",()=>{try{recognition&&recognition.stop();confirmRecognition&&confirmRecognition.stop();}catch(_){}});
 })();
