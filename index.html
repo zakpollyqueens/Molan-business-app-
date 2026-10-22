@@ -468,4 +468,121 @@
   </div>
 </footer>
 <script>const zakYear=document.getElementById("zak-footer-year");if(zakYear)zakYear.textContent=String(new Date().getFullYear());</script>
+
+<style id="molano-voice-assistant-styles">
+#molano-voice-launcher{position:fixed;right:18px;bottom:calc(20px + env(safe-area-inset-bottom));z-index:10010;width:62px;height:62px;border:1px solid #9cefff;border-radius:50%;background:radial-gradient(circle at 30% 20%,#8ff7ff 0,#25bde1 28%,#11385e 72%,#07172d 100%);color:#fff;box-shadow:0 8px 32px #00c8ff55,0 0 0 5px #1cc8f31c;display:none;align-items:center;justify-content:center;cursor:pointer;animation:molanoVoiceFloat 3s ease-in-out infinite}
+#molano-voice-launcher .molano-voice-mark{font-weight:950;font-size:25px;text-shadow:0 1px 8px #001b3b}
+#molano-voice-launcher .molano-voice-dot{position:absolute;right:2px;bottom:2px;width:13px;height:13px;border:2px solid #07172d;border-radius:50%;background:#6dffbd}
+#molano-voice-launcher:focus-visible{outline:3px solid #fff;outline-offset:4px}
+@keyframes molanoVoiceFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+#molano-voice-assistant{display:none;position:fixed;inset:0;z-index:10020;background:#03101be8;backdrop-filter:blur(14px);align-items:center;justify-content:center;padding:16px}
+#molano-voice-assistant.open{display:flex}
+#molano-voice-assistant .mva-card{width:min(100%,460px);max-height:90dvh;overflow:auto;border:1px solid #2d718b;border-radius:28px;background:radial-gradient(circle at 50% 0,#174966 0,#0b2034 43%,#07111f 100%);color:#e9fbff;padding:22px;box-shadow:0 25px 90px #0009;text-align:center}
+#molano-voice-assistant .mva-top{display:flex;justify-content:space-between;align-items:center;gap:12px;text-align:left}
+#molano-voice-assistant .mva-kicker{font-size:10px;letter-spacing:.18em;color:#83eaff;font-weight:800}
+#molano-voice-assistant .mva-close{border:1px solid #46728b;background:#102b41;color:#fff;border-radius:12px;width:38px;height:38px;font-size:20px}
+#molano-voice-assistant .mva-orb{width:142px;height:142px;margin:26px auto 16px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 25%,#b4ffff 0,#31d5f4 18%,#1681c5 42%,#12335c 70%,#061323 100%);box-shadow:0 0 0 9px #45dff41a,0 0 50px #16bce755;position:relative}
+#molano-voice-assistant .mva-orb:before{content:"";position:absolute;inset:-10px;border:1px solid #65e8ff77;border-radius:50%;animation:mvaOrbit 7s linear infinite}
+#molano-voice-assistant.listening .mva-orb{animation:mvaPulse 1.25s ease-in-out infinite}
+#molano-voice-assistant .mva-orb span{font-size:47px;font-weight:950;text-shadow:0 2px 14px #001d37}
+#molano-voice-assistant .mva-status{font-size:14px;color:#b7eefa;min-height:22px}
+#molano-voice-assistant .mva-transcript{margin:14px 0;padding:13px;border-radius:14px;background:#ffffff0a;border:1px solid #ffffff16;text-align:left;min-height:48px;max-height:130px;overflow:auto;font-size:14px;white-space:pre-wrap}
+#molano-voice-assistant .mva-response{font-size:14px;line-height:1.55;color:#e4f6ff;text-align:left;min-height:25px}
+#molano-voice-assistant .mva-actions{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin-top:17px}
+#molano-voice-assistant .mva-actions button{border:1px solid #2a9fb9;border-radius:13px;padding:12px 15px;background:#12344c;color:#effcff;font-weight:750}
+#molano-voice-assistant .mva-actions .mva-primary{background:linear-gradient(135deg,#72f0ff,#159fcf);color:#04182a;border:0}
+@keyframes mvaPulse{50%{transform:scale(1.06);box-shadow:0 0 0 17px #45dff41a,0 0 70px #16bce788}}
+@keyframes mvaOrbit{to{transform:rotate(360deg)}}
+@media(max-width:520px){#molano-voice-launcher{width:57px;height:57px;right:13px;bottom:calc(14px + env(safe-area-inset-bottom))}#molano-voice-assistant .mva-card{padding:18px;border-radius:23px}#molano-voice-assistant .mva-orb{width:124px;height:124px}}
+@media(prefers-reduced-motion:reduce){#molano-voice-launcher,#molano-voice-assistant .mva-orb,#molano-voice-assistant .mva-orb:before{animation:none!important}}
+</style>
+<button id="molano-voice-launcher" type="button" aria-label="Call Molano AI voice assistant" title="Call Molano AI"><span class="molano-voice-mark">M</span><span class="molano-voice-dot"></span></button>
+<section id="molano-voice-assistant" role="dialog" aria-modal="true" aria-labelledby="mva-title">
+ <div class="mva-card"><div class="mva-top"><div><div class="mva-kicker">GOLD WORKSPACE ASSISTANT</div><h2 id="mva-title" style="margin:5px 0 0">Call Molano</h2></div><button class="mva-close" id="mva-close" type="button" aria-label="Close voice assistant">×</button></div>
+ <div class="mva-orb" aria-hidden="true"><span>M</span></div><div class="mva-status" id="mva-status" role="status">Your business assistant is ready.</div>
+ <div class="mva-transcript" id="mva-transcript">Tap “Start voice” and say, “Molano, open my shop real time.”</div><div class="mva-response" id="mva-response"></div>
+ <div class="mva-actions"><button class="mva-primary" id="mva-start" type="button">🎙 Start voice</button><button id="mva-stop" type="button">Stop listening</button><button id="mva-repeat" type="button">🔊 Repeat response</button></div>
+ <p style="font-size:11px;line-height:1.45;color:#8fb8ca;margin:16px 0 0">Voice recognition requires microphone permission. Molano can navigate workspace pages and answer using the AI service; sensitive actions still require your confirmation and permissions.</p>
+ </div>
+</section>
+<script id="molano-voice-assistant-script">
+(()=>{'use strict';
+const $=id=>document.getElementById(id),launcher=$('molano-voice-launcher'),panel=$('molano-voice-assistant');
+if(!launcher||!panel)return;
+let recognition=null,listening=false,lastSpoken='',lastTranscript='',goldChecked=false,goldAllowed=false,checkBusy=false;
+const status=t=>{$('mva-status').textContent=t};
+const response=t=>{$('mva-response').textContent=t||''};
+function speak(text){if(!text||!('speechSynthesis'in window))return;lastSpoken=text;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=1;u.pitch=1.02;u.lang=navigator.language||'en-US';speechSynthesis.speak(u)}catch(e){}}
+function getContext(){return window.MolanAppContext||null}
+async function verifyGold(){
+ if(checkBusy)return goldAllowed;checkBusy=true;goldAllowed=false;goldChecked=false;
+ try{const ctx=getContext(),client=ctx?.getClient?.(),user=ctx?.getUser?.(),company=ctx?.getCompany?.();if(!client||!user||!company?.id)throw new Error('Sign in and open a business workspace first.');
+ const {data,error}=await client.rpc('check_molano_ai_gold_entitlement',{p_company_id:company.id});if(error)throw error;const e=Array.isArray(data)?data[0]:data;
+ goldAllowed=!!(e?.has_access===true&&e?.plan_code==='gold'&&e?.expires_at&&new Date(e.expires_at)>new Date());goldChecked=true;
+ if(!goldAllowed)throw new Error('This voice assistant requires an active, verified Gold subscription for the selected workspace.');
+ return true;
+ }catch(e){status(e.message||'Could not verify Gold access. Please retry.');response('');return false}finally{checkBusy=false}
+}
+function show(){panel.classList.add('open');response('');status('Checking your Gold access…');verifyGold().then(ok=>{if(ok){status('Connected to your Gold workspace. Tap Start voice, or say your request after starting.');if(!recognition&&!(window.SpeechRecognition||window.webkitSpeechRecognition))status('Your browser does not support voice recognition. Try Chrome or use the workspace pages normally.')}})}
+function close(){stopListening();panel.classList.remove('open');if('speechSynthesis'in window)speechSynthesis.cancel()}
+function stopListening(){listening=false;try{recognition?.stop()}catch(e){}panel.classList.remove('listening');$('mva-start').textContent='🎙 Start voice';}
+function normalize(t){return String(t||'').toLowerCase().replace(/[’']/g,'').replace(/[^a-z0-9\s-]/g,' ').replace(/\s+/g,' ').trim()}
+const routes=[
+ {keys:['overview','dashboard','home','business overview','summary'],page:'overview',label:'Overview'},
+ {keys:['shop real time','shop realtime','real time shop','live shop','workshop real time','camera','live camera','cctv','shop cameras'],page:'connections',label:'View Workshop Real Time'},
+ {keys:['inventory','stock','products in stock','stock levels','warehouse'],page:'inventory',label:'Inventory'},
+ {keys:['sales','orders','my sales','recent sales','sell'],page:'sales',label:'Sales & orders'},
+ {keys:['finance','expenses','income','money','cash flow','transactions','profit'],page:'finance',label:'Finance'},
+ {keys:['customer','customers','clients','customer list'],page:'customers',label:'Customers & clients'},
+ {keys:['tasks','deadlines','assignments','to do'],page:'tasks',label:'Tasks & deadlines'},
+ {keys:['staff','employees','team members','attendance','workers'],page:'team',label:'Staff & attendance'},
+ {keys:['reports','business report','performance report','analytics'],page:'reports',label:'Reports'},
+ {keys:['announcements','updates','notices'],page:'announcements',label:'Announcements'},
+ {keys:['business profile','industry profile','my business profile'],page:'business-profile',label:'Business profile'},
+ {keys:['business tools','tools and workflows','workflows'],page:'business-tools',label:'Business tools'},
+ {keys:['website','media','website studio','brand images'],page:'website-studio',label:'Website & media'},
+ {keys:['products','services','product hub','catalogue','catalog'],page:'products',label:'Products & services'},
+ {keys:['subscription','upgrade','gold plan','plan details'],page:'subscriptions',label:'Subscription plans'}
+];
+function routeCommand(text){const n=normalize(text);for(const r of routes){if(r.keys.some(k=>n.includes(k))){return r}}return null}
+async function navigateFromVoice(text){
+ const ctx=getContext();if(!ctx?.navigate)throw new Error('The workspace navigation is not ready yet.');
+ const route=routeCommand(text);if(!route)return null;
+ ctx.navigate(route.page);return route;
+}
+async function askMolano(text,route){
+ const ctx=getContext(),client=ctx?.getClient?.();if(!client)throw new Error('Business session unavailable. Please sign in again.');
+ const {data}=await client.auth.getSession(),token=data?.session?.access_token;if(!token)throw new Error('Your session expired. Please sign in again.');
+ const company=ctx.getCompany?.(),membership=ctx.getMembership?.();
+ const instruction='You are Molano, the voice-first business assistant inside Molan Business. Be concise, friendly, speakable, and honest. Current workspace: '+(company?.name||'unknown')+'. Business type: '+(company?.business_category||company?.business_type||'not specified')+'. User role: '+(membership?.role||'member')+'. The user said: '+text+'. '+(route?'The interface has navigated to '+route.label+' ('+route.page+'). Confirm the navigation and explain the page briefly.':'Give guidance for this business request. Do not claim you opened a page unless it was opened. Never invent live sales, inventory, cameras, balances or customer records; explain that the user must open the relevant module if actual records are needed. Do not perform payments, delete data, message customers, change permissions or execute irreversible actions without explicit confirmation.');
+ const res=await fetch('https://molanoai.zakpollyqueens.workers.dev/api/chat',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token,'X-Molano-Client':'molan-business'},body:JSON.stringify({messages:[{role:'user',content:instruction}]})});
+ const dataOut=await res.json().catch(()=>({}));if(!res.ok)throw new Error(dataOut.error||'Molano is temporarily unavailable. Please try again.');
+ return String(dataOut.reply||dataOut.message||'I am ready to help with your business.').slice(0,1800);
+}
+async function handleCommand(text){
+ lastTranscript=text;$('mva-transcript').textContent='You: '+text;status('Molano is working…');response('');
+ try{
+  const route=await navigateFromVoice(text);
+  const answer=await askMolano(text,route);response(answer);status(route?'Opened '+route.label+'.':'Response ready.');speak(answer);
+ }catch(e){const msg=e.message||'I could not complete that request.';response(msg);status('Please try again.');speak(msg)}
+}
+function startListening(){
+ if(!goldAllowed){status('Checking Gold access…');verifyGold().then(ok=>{if(ok)startListening()});return}
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!SR){status('Voice recognition is not supported in this browser. Try Chrome on Android.');return}
+ try{if('speechSynthesis'in window)speechSynthesis.cancel();recognition=new SR();recognition.lang=navigator.language||'en-US';recognition.continuous=true;recognition.interimResults=true;recognition.maxAlternatives=1;
+ recognition.onstart=()=>{listening=true;panel.classList.add('listening');$('mva-start').textContent='🎙 Listening…';status('Listening. Say “Molano, open my inventory” or ask a business question.')};
+ recognition.onresult=e=>{let interim='',finalText='';for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0]?.transcript||'';if(e.results[i].isFinal)finalText+=t;else interim+=t}
+ if(interim)$('mva-transcript').textContent='Hearing: '+interim;if(finalText.trim()){const command=finalText.trim().replace(/^\s*(hey\s+)?molano[,:\s-]*/i,'').trim()||finalText.trim();$('mva-transcript').textContent='You: '+finalText.trim();handleCommand(command)}};
+ recognition.onerror=e=>{if(e.error==='not-allowed'||e.error==='service-not-allowed')status('Microphone permission was denied. Allow microphone access in your browser settings.');else if(e.error!=='no-speech'&&e.error!=='aborted')status('Voice recognition issue: '+e.error+'. Tap Start voice to retry.');};
+ recognition.onend=()=>{listening=false;panel.classList.remove('listening');$('mva-start').textContent='🎙 Start voice';if(panel.classList.contains('open')&&status.textContent.startsWith('Listening'))status('Voice session paused. Tap Start voice to continue.')};
+ recognition.start();
+ }catch(e){status('Could not start microphone. Check permission and try again.')}
+}
+launcher.addEventListener('click',show);$('mva-close').addEventListener('click',close);$('mva-start').addEventListener('click',startListening);$('mva-stop').addEventListener('click',()=>{stopListening();status('Listening stopped.')});$('mva-repeat').addEventListener('click',()=>speak(lastSpoken||$('mva-response').textContent));panel.addEventListener('click',e=>{if(e.target===panel)close()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panel.classList.contains('open'))close()});
+const observer=new MutationObserver(()=>{const dash=$('dashboard-screen'),visible=dash&&!dash.classList.contains('hidden');launcher.style.display=visible?'flex':'none';if(!visible&&panel.classList.contains('open'))close()});
+observer.observe($('app')||document.body,{subtree:true,attributes:true,attributeFilter:['class']});const dash=$('dashboard-screen');if(dash&&!dash.classList.contains('hidden'))launcher.style.display='flex';
+})();
+</script>
+
 </body></html>
