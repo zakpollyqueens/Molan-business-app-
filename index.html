@@ -529,6 +529,8 @@
 (()=>{'use strict';
 const $=id=>document.getElementById(id),launcher=$('molano-voice-launcher'),panel=$('molano-voice-assistant');
 if(!launcher||!panel)return;
+// Keep the floating companion outside page-specific containers so it remains available while navigating the app.
+document.body.append(launcher,panel);
 let recognition=null,listening=false,lastSpoken='',lastTranscript='',planChecked=false,planCode='free',planAllowed=false,checkBusy=false;
 const status=t=>{$('mva-status').textContent=t};
 const response=t=>{$('mva-response').textContent=t||''};
