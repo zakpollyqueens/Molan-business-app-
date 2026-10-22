@@ -549,7 +549,7 @@ async function verifyPlan(){
  }catch(e){planCode='free';planAllowed=false;planChecked=true;return planCode}finally{checkBusy=false}
 }
 function show(){panel.classList.add('open');response('');status('Molano is ready. Starting voice…');verifyPlan().then(plan=>{status(plan==='gold'?'Gold is active. Tell me what you need.':plan==='silver'?'Silver is active. Ask me for help or say “compare plans” for advanced business commands.':'I can answer general questions. Sign in and choose a plan to unlock business commands.');if(!recognition&&!(window.SpeechRecognition||window.webkitSpeechRecognition))status('Voice recognition is not supported here. Try Chrome on Android.');if(!listening)startListening()})}
-function show(){panel.classList.add('open');response('');status('Checking your Gold access…');verifyGold().then(ok=>{if(ok){status('Molano is ready. Tap Start voice and speak naturally.');if(!recognition&&!(window.SpeechRecognition||window.webkitSpeechRecognition))status('Your browser does not support voice recognition. Try Chrome or use the workspace pages normally.')}})}
+
 function close(){stopListening();panel.classList.remove('open');if('speechSynthesis'in window)speechSynthesis.cancel()}
 function stopListening(){listening=false;try{recognition?.stop()}catch(e){}panel.classList.remove('listening');$('mva-start').textContent='🎙 Start voice';}
 function normalize(t){return String(t||'').toLowerCase().replace(/[’']/g,'').replace(/[^a-z0-9\s-]/g,' ').replace(/\s+/g,' ').trim()}
