@@ -160,7 +160,7 @@
   }
   const observer = new MutationObserver(install);
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install, {once:true}); else install();
-  observer.observe(document.documentElement, {childList:true,subtree:true});
+  observer.observe(document.documentElement, {childList:true,subtree:true,attributes:true,attributeFilter:['class']});
   window.addEventListener('beforeunload', () => { try { recognition?.stop(); } catch (_) {} });
   window.MolanBusinessVoiceOnboarding = {
     start: () => { active = true; stage = 'consent'; say('Welcome to Molan Business. Would you like me to help create your account and business profile?'); },
