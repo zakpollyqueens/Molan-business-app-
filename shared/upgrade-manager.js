@@ -168,6 +168,9 @@
     try { await downloadWithProgress(latest.url, latest.assetName); showDownloadProgress(100, 'Download complete. Open the downloaded installer to finish updating.');
       if (el) el.querySelector('#molan-update-heading').textContent = 'Update downloaded'; if (button) { button.disabled = false; button.textContent = 'Download again ↓'; }
       notify('Update downloaded. Open the installer and approve installation to complete the update.');
+      // The floater is temporary: close it after a completed download. On the next
+      // launch, the version check will keep it hidden if installation succeeded.
+      window.setTimeout(() => { const completed = document.getElementById('molan-update-banner'); if (completed) completed.hidden = true; }, 1800);
     } catch (error) {
       directDownloadFallback = true;
       if (button) { button.disabled = false; button.textContent = 'Open download ↗'; }
