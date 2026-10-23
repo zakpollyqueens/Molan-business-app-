@@ -481,7 +481,30 @@ async function handleWebhook(req: Request) {
       .from("website_service_checkout_payments").select("*")
       .eq("provider", "jjuma").eq("provider_reference", transactionId).maybeSingle();
     if (websiteLookupError) return json({ error: "Could not look up website payment record." }, 500);
-    if (!websitePayment) return json({ error: "No matching payment record." }, 404);
+    if (!websitePayment) {
+      // Shared JJuma webhook router: forward unmatched Molan Chat upgrade events to the ZakiChat payment processor.
+      // This function has already verified JJuma's signature and timestamp above.
+      const chatWebhookUrl = "https://xdpevlurgtvgduwzyoue.supabase.co/functions/v1/jjuma-webhook";
+      try {
+        const forwarded = await fetch(chatWebhookUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Jjuma-Signature": signature,
+            "X-Jjuma-Timestamp": timestamp,
+            "X-Jjuma-Event": eventName,
+            ...(req.headers.get("X-Jjuma-Delivery-Id") ? { "X-Jjuma-Delivery-Id": req.headers.get("X-Jjuma-Delivery-Id")! } : {}),
+          },
+          body: rawBody,
+        });
+        const forwardedBody = await forwarded.json().catch(() => ({}));
+        if (forwarded.ok) return json({ success: true, routed_to: "molan_chat", result: forwardedBody });
+        console.error("Molan Chat JJuma webhook forwarding failed:", forwarded.status, JSON.stringify(forwardedBody));
+        return json({ error: "Payment event could not be processed by Molan Chat yet." }, 502);
+      } catch (_error) {
+        return json({ error: "Could not forward the payment event to Molan Chat." }, 502);
+      }
+    }
     return await handleWebsiteServiceWebhook(
       websitePayment, transactionId, eventName, data, req.headers.get("X-Jjuma-Delivery-Id"),
     );
