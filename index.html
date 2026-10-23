@@ -569,7 +569,7 @@ async function navigateFromVoice(text){
  const ctx=getContext();const route=routeCommand(text);if(!route)return null;
  if(route.page==='subscriptions'){if(ctx?.navigate)ctx.navigate('subscriptions');return route}
  const plan=planChecked?planCode:await verifyPlan();
- const basicPages=['overview'];
+ const basicPages=['overview','business-profile'];
  if(plan!=='gold'&&!basicPages.includes(route.page)){
   if(ctx?.navigate)ctx.navigate('subscriptions');
   throw new Error(plan==='silver'?'That business command is part of Gold’s expanded assistant access. I’ve opened the plans so you can compare options.':'That business command needs an active plan. I’ve opened the plans so you can choose Silver or Gold.');
