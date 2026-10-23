@@ -596,7 +596,7 @@ async function executeCommand(text){
 async function handleCommand(text){
  lastTranscript=text;stopListening();$('mva-transcript').textContent='You: '+text;response('');
  const profileSetupStarted=(()=>{try{return localStorage.getItem('molano_business_profile_setup_started')==='1'}catch(e){return false}})();
- if(profileSetupStarted&&/\\b(?:my business profile is (?:saved|created|complete|completed)|i(?:'m| am) done (?:creating|setting up) (?:my )?business profile|i(?:'m| am) finished (?:creating|setting up) (?:my )?business profile|i saved my business profile|profile setup is complete)\\b/i.test(text)){
+ if(profileSetupStarted&&/\b(?:my business profile is (?:saved|created|complete|completed)|i(?:'m| am) done (?:creating|setting up) (?:my )?business profile|i(?:'m| am) finished (?:creating|setting up) (?:my )?business profile|i saved my business profile|profile setup is complete)\b/i.test(text)){
   const guide='Great. If your business profile has been saved, here is a quick guide: Overview summarizes your workspace; Products and Inventory organize what you offer; Sales and Finance track transactions; Customers stores customer records; Tasks and Team help coordinate staff; Reports summarize activity. You can ask me to open a section or explain a feature at any time.';
   document.body.classList.add('molano-onboarding-guide');try{localStorage.setItem('molano_business_onboarding_guide_seen','1')}catch(e){}
   response(guide);status('Your feature guide is ready.');speak(guide);return;
