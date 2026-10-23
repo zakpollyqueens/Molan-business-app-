@@ -6,12 +6,13 @@
   const API = "https://molanoai.zakpollyqueens.workers.dev/api/support-chat";
   const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   const history = [];
+  let welcomed = false;
   let busy = false, recognition = null, confirmRecognition = null, pending = "", waitingForSpokenConfirm = false;
   const style = document.createElement("style");
   style.textContent = `
-  #molanoVoiceRoot{position:fixed;right:18px;bottom:18px;z-index:99999;font:14px/1.45 system-ui,-apple-system,sans-serif;color:#eef8ff}
-  #molanoVoiceToggle{width:58px;height:58px;border-radius:50%;border:1px solid #83efff;background:linear-gradient(145deg,#a5f6ff,#37bfe7 55%,#587fff);color:#061629;font-size:25px;font-weight:900;box-shadow:0 8px 32px #20c9e955;cursor:pointer}
-  #molanoVoicePanel{display:none;position:absolute;right:0;bottom:70px;width:min(370px,calc(100vw - 28px));max-height:min(72dvh,600px);background:#091a2b;border:1px solid #2a5876;border-radius:20px;box-shadow:0 22px 70px #0009;overflow:hidden}
+  #molanoVoiceRoot{position:fixed;left:16px;right:auto;bottom:18px;z-index:99999;font:14px/1.45 system-ui,-apple-system,sans-serif;color:#eef8ff}
+  #molanoVoiceToggle{width:58px;height:58px;border-radius:50%;border:1px solid #83efff;background:radial-gradient(circle at 30% 20%,#ffffff,#9bf7ff 20%,#38bfe8 52%,#3654b8);color:#061629;display:grid;place-items:center;box-shadow:0 8px 32px #20c9e955;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease}#molanoVoiceToggle:hover{transform:translateY(-2px);box-shadow:0 12px 36px #20c9e977}#molanoVoiceToggle svg{width:30px;height:30px;display:block}
+  #molanoVoicePanel{display:none;position:absolute;left:0;right:auto;bottom:70px;width:min(370px,calc(100vw - 28px));max-height:min(72dvh,600px);background:#091a2b;border:1px solid #2a5876;border-radius:20px;box-shadow:0 22px 70px #0009;overflow:hidden}
   #molanoVoicePanel.open{display:flex;flex-direction:column}
   .mv-head{display:flex;align-items:center;gap:10px;padding:14px;background:linear-gradient(120deg,#102e4a,#122343);border-bottom:1px solid #ffffff16}
   .mv-logo{display:grid;place-items:center;width:38px;height:38px;border-radius:13px;background:linear-gradient(145deg,#a5f6ff,#37bfe7 55%,#587fff);color:#061629;font-weight:950}
@@ -28,12 +29,12 @@
   .mv-controls .mv-send{background:linear-gradient(145deg,#a5f6ff,#5d9aff);color:#071629;font-weight:900}
   .mv-controls button:disabled{opacity:.5}
   .mv-note{padding:0 13px 12px;color:#8fa9bf;font-size:10px;background:#071525}
-  @media(max-width:480px){#molanoVoiceRoot{right:12px;bottom:12px}#molanoVoiceToggle{width:54px;height:54px}.mv-messages{max-height:31dvh}}
+  @media(max-width:480px){#molanoVoiceRoot{left:12px;right:auto;bottom:calc(84px + env(safe-area-inset-bottom))}#molanoVoiceToggle{width:52px;height:52px}.mv-messages{max-height:31dvh}#molanoVoicePanel{width:min(370px,calc(100vw - 24px))}}
   `;
   document.head.appendChild(style);
   const root = document.createElement("div");
   root.id = "molanoVoiceRoot";
-  root.innerHTML = '<section id="molanoVoicePanel" role="dialog" aria-label="Molano AI voice assistant"><header class="mv-head"><span class="mv-logo">M</span><div><strong>Molano AI</strong><small>Voice assistant · ' + escapeHtml(PRODUCT) + '</small></div><button class="mv-close" aria-label="Close assistant">×</button></header><div class="mv-messages" aria-live="polite"><div class="mv-msg bot">Hi! I’m Molano AI. I can talk you through ' + escapeHtml(PRODUCT) + '. Tell me what you need, and I’ll explain the next step before you confirm anything.</div></div><div class="mv-status" aria-live="polite">Ready when you are.</div><div class="mv-controls"><textarea aria-label="Message Molano AI" placeholder="Ask Molano…"></textarea><button class="mv-mic" aria-label="Speak to Molano">🎙</button><button class="mv-send" aria-label="Send message">➤</button></div><div class="mv-note">Advice and support only here. No account, sales, inventory, or settings changes are made by this widget.</div></section><button id="molanoVoiceToggle" aria-label="Open Molano AI assistant" title="Talk to Molano AI">M</button>';
+  root.innerHTML = '<section id="molanoVoicePanel" role="dialog" aria-label="Molano AI voice assistant"><header class="mv-head"><span class="mv-logo" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><path d="M16 2.5 19.1 12.9 29.5 16 19.1 19.1 16 29.5 12.9 19.1 2.5 16 12.9 12.9 16 2.5Z" fill="#062039"/><circle cx="16" cy="16" r="3" fill="#a5f6ff"/><path d="M24.5 3.5v5M22 6h5M6 23v4M4 25h4" stroke="#062039" stroke-width="1.8" stroke-linecap="round"/></svg></span><div><strong>Molano AI</strong><small>Voice assistant · ' + escapeHtml(PRODUCT) + '</small></div><button class="mv-close" aria-label="Close assistant">×</button></header><div class="mv-messages" aria-live="polite"><div class="mv-msg bot">Hi! I’m Molano AI. I can talk you through ' + escapeHtml(PRODUCT) + '. Tell me what you need, and I’ll explain the next step before you confirm anything.</div></div><div class="mv-status" aria-live="polite">Ready when you are.</div><div class="mv-controls"><textarea aria-label="Message Molano AI" placeholder="Ask Molano…"></textarea><button class="mv-mic" aria-label="Speak to Molano">🎙</button><button class="mv-send" aria-label="Send message">➤</button></div><div class="mv-note">Advice and support only here. No account, sales, inventory, or settings changes are made by this widget.</div></section><button id="molanoVoiceToggle" aria-label="Open Molano AI assistant" title="Talk to Molano AI"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M16 2.5 19.1 12.9 29.5 16 19.1 19.1 16 29.5 12.9 19.1 2.5 16 12.9 12.9 16 2.5Z" fill="#062039"/><circle cx="16" cy="16" r="3" fill="#a5f6ff"/><path d="M24.5 3.5v5M22 6h5M6 23v4M4 25h4" stroke="#062039" stroke-width="1.8" stroke-linecap="round"/></svg></button>';
   document.body.appendChild(root);
   const panel = root.querySelector("#molanoVoicePanel"), toggle = root.querySelector("#molanoVoiceToggle");
   const messagesEl = root.querySelector(".mv-messages"), statusEl = root.querySelector(".mv-status"), input = root.querySelector("textarea");
@@ -44,18 +45,18 @@
   function setStatus(text){statusEl.textContent=text;}
   function open(){panel.classList.add("open");toggle.setAttribute("aria-expanded","true");input.focus({preventScroll:true});}
   function close(){panel.classList.remove("open");toggle.setAttribute("aria-expanded","false");}
-  toggle.addEventListener("click",()=>panel.classList.contains("open")?close():open());
+  toggle.addEventListener("click",()=>{if(panel.classList.contains("open")){close();return;}open();if(!welcomed){welcomed=true;const greeting="Hello, welcome! I’m Molano AI. Tell me what you need help with, and I’ll guide you step by step.";addMessage(greeting,"bot");say(greeting);}});
   root.querySelector(".mv-close").addEventListener("click",close);
   async function ask(text){
     if(busy||!text.trim())return;
     busy=true;send.disabled=true;setStatus("Molano is thinking…");history.push({role:"user",content:text.trim()});addMessage(text.trim(),"user");
     try{
-      const res=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({product:PRODUCT,messages:history.slice(-10)})});
-      const data=await res.json();
+      const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),30000);
+      let res,data;try{res=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({product:PRODUCT,messages:history.slice(-10)}),signal:controller.signal});data=await res.json().catch(()=>({}));}finally{clearTimeout(timeout)}
       if(!res.ok)throw new Error(data.error||"Molano is temporarily unavailable.");
       const answer=String(data.response||data.reply||data.message||"I couldn't prepare a response. Please try again.");
       history.push({role:"assistant",content:answer});addMessage(answer,"bot");setStatus("Reply ready.");say(answer);
-    }catch(e){const msg=e.message||"Connection failed.";addMessage(msg,"bot");setStatus("Could not connect.");say(msg);}
+    }catch(e){const msg=e.name==="AbortError"?"Molano is taking too long to respond. Please check your connection and try again.":(e.message||"Connection failed. Please check your connection and try again.");addMessage(msg,"bot");setStatus("Reply failed — tap Send to retry.");say(msg);}
     finally{busy=false;send.disabled=false;}
   }
   function submitTyped(){const value=input.value.trim();if(!value)return;input.value="";ask(value);}
@@ -83,6 +84,7 @@
     recognition.onerror=()=>{mic.textContent="🎙";recognition=null;setStatus("Microphone unavailable. Check browser permission and try again.");};
     try{recognition.start();}catch(_){mic.textContent="🎙";recognition=null;setStatus("Couldn't start the microphone.");}
   });
-  window.setTimeout(()=>{if(!sessionStorage.getItem("molanoVoiceWelcomed")){sessionStorage.setItem("molanoVoiceWelcomed","1");say("Hello, welcome. I’m Molano AI, your assistant for "+PRODUCT+". Open me any time and I’ll help you step by step.");}},1200);
+  function syncAssistantPosition(){const mainLauncher=document.getElementById("molano-voice-launcher");const visible=mainLauncher&&getComputedStyle(mainLauncher).display!=="none";root.style.display=visible?"none":"";}
+  syncAssistantPosition();new MutationObserver(syncAssistantPosition).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:["style","class"]});
   window.addEventListener("beforeunload",()=>{try{recognition&&recognition.stop();confirmRecognition&&confirmRecognition.stop();}catch(_){}});
 })();
