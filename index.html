@@ -542,7 +542,7 @@ async function verifyPlan(){
   return planCode;
  }catch(e){planCode='free';planAllowed=false;planChecked=true;return planCode}finally{checkBusy=false}
 }
-function show(){panel.classList.add('open');response('');status('Molano is ready. Starting voice…');verifyPlan().then(plan=>{status(plan==='gold'?'Gold is active. Tell me what you need.':plan==='silver'?'Silver is active. Ask me for help or say “compare plans” for advanced business commands.':'I can answer general questions. Sign in and choose a plan to unlock business commands.');if(!recognition&&!(window.SpeechRecognition||window.webkitSpeechRecognition))status('Voice recognition is not supported here. Try Chrome on Android.');if(!listening)startListening()})}
+function show(){panel.classList.add('open');response('');status('Molano is paused and ready. Tap Start voice when you want to give a command.');verifyPlan().then(plan=>{if(!panel.classList.contains('open'))return;status(plan==='gold'?'Gold is active. Tap Start voice when you are ready.':plan==='silver'?'Silver is active. Tap Start voice to give a command.':'Ready for your command. Sign in and choose a plan to unlock advanced business actions.');if(!recognition&&!(window.SpeechRecognition||window.webkitSpeechRecognition))status('Voice recognition is not supported here. Try Chrome on Android.')})}
 
 function close(){stopListening();panel.classList.remove('open');if('speechSynthesis'in window)speechSynthesis.cancel()}
 function stopListening(){listening=false;try{recognition?.stop()}catch(e){}panel.classList.remove('listening');$('mva-start').textContent='🎙 Start voice';}
@@ -581,17 +581,23 @@ async function askMolano(text,route){
  const ctx=getContext(),client=ctx?.getClient?.();if(!client)throw new Error('Business session unavailable. Please sign in again.');
  const {data}=await client.auth.getSession(),token=data?.session?.access_token;if(!token)throw new Error('Your session expired. Please sign in again.');
  const company=ctx.getCompany?.(),membership=ctx.getMembership?.();
- const instruction='You are Molano, the voice-first business assistant inside Molan Business. Be concise, friendly, speakable, and honest. Current workspace: '+(company?.name||'unknown')+'. Business type: '+(company?.business_category||company?.business_type||'not specified')+'. User role: '+(membership?.role||'member')+'. The user said: '+text+'. '+(route?'The interface has navigated to '+route.label+' ('+route.page+'). Confirm the navigation and explain the page briefly.':'Give guidance for this business request. Do not claim you opened a page unless it was opened. Never invent live sales, inventory, cameras, balances or customer records; explain that the user must open the relevant module if actual records are needed. Do not perform payments, delete data, message customers, change permissions or execute irreversible actions without explicit confirmation.');
+ const instruction='You are Molano, the voice-first business assistant inside Molan Business. Reply only to the user’s actual request, in 1–3 short sentences. Do not give unsolicited introductions, tours, unrelated tips, or extra commentary. If the request is unclear, ask one short clarifying question. Be honest and concise. Current workspace: '+(company?.name||'unknown')+'. Business type: '+(company?.business_category||company?.business_type||'not specified')+'. User role: '+(membership?.role||'member')+'. The user said: '+text+'. '+(route?'The interface has navigated to '+route.label+' ('+route.page+'). Confirm the navigation and explain the page briefly.':'Give guidance for this business request. Do not claim you opened a page unless it was opened. Never invent live sales, inventory, cameras, balances or customer records; explain that the user must open the relevant module if actual records are needed. Do not perform payments, delete data, message customers, change permissions or execute irreversible actions without explicit confirmation.');
  const res=await fetch('https://molanoai.zakpollyqueens.workers.dev/api/chat',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token,'X-Molano-Client':'molan-business'},body:JSON.stringify({company_id:company?.id,messages:[{role:'user',content:instruction}]})});
  const dataOut=await res.json().catch(()=>({}));if(!res.ok)throw new Error(dataOut.error||'Molano is temporarily unavailable. Please try again.');
  return String(dataOut.reply||dataOut.message||'I am ready to help with your business.').slice(0,1800);
 }
+let pendingVoiceCommand='';
+async function executeCommand(text){
+ const route=await navigateFromVoice(text);
+ const answer=await askMolano(text,route);response(answer);status(route?'Opened '+route.label+'.':'Response ready.');speak(answer);
+}
 async function handleCommand(text){
- lastTranscript=text;$('mva-transcript').textContent='You: '+text;status('Molano is working…');response('');
- try{
-  const route=await navigateFromVoice(text);
-  const answer=await askMolano(text,route);response(answer);status(route?'Opened '+route.label+'.':'Response ready.');speak(answer);
- }catch(e){const msg=e.message||'I could not complete that request.';response(msg);status('Please try again.');speak(msg)}
+ lastTranscript=text;stopListening();$('mva-transcript').textContent='You: '+text;response('');
+ const route=routeCommand(text);
+ if(route){pendingVoiceCommand=text;const prompt='I heard: “'+text+'”. I will open '+route.label+'. Do you want me to continue?';response(prompt);status('Waiting for your confirmation.');speak(prompt);return}
+ status('Molano is preparing a focused reply…');
+ try{const answer=await askMolano(text,null);response(answer);status('Response ready.');speak(answer)}
+ catch(e){const msg=e.message||'I could not complete that request.';response(msg);status('Please try again.');speak(msg)}
 }
 function startListening(){
  if(checkBusy){status('Checking your access…');return}
@@ -606,7 +612,7 @@ function startListening(){
  recognition.start();
  }catch(e){status('Could not start microphone. Check permission and try again.')}
 }
-launcher.addEventListener('click',show);$('mva-close').addEventListener('click',close);$('mva-start').addEventListener('click',startListening);$('mva-stop').addEventListener('click',()=>{stopListening();status('Listening stopped.')});$('mva-repeat').addEventListener('click',()=>speak(lastSpoken||$('mva-response').textContent));panel.addEventListener('click',e=>{if(e.target===panel)close()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panel.classList.contains('open'))close()});
+const confirmButton=document.createElement('button');confirmButton.type='button';confirmButton.id='mva-confirm-command';confirmButton.className='mva-primary';confirmButton.textContent='✓ Confirm action';confirmButton.hidden=true;const cancelButton=document.createElement('button');cancelButton.type='button';cancelButton.id='mva-cancel-command';cancelButton.textContent='Cancel';cancelButton.hidden=true;$('mva-start').parentElement.append(confirmButton,cancelButton);confirmButton.addEventListener('click',async()=>{const command=pendingVoiceCommand;if(!command)return;pendingVoiceCommand='';confirmButton.hidden=true;cancelButton.hidden=true;status('Carrying out your confirmed command…');try{await executeCommand(command)}catch(e){const msg=e.message||'I could not complete that request.';response(msg);status('Please try again.');speak(msg)}});cancelButton.addEventListener('click',()=>{pendingVoiceCommand='';confirmButton.hidden=true;cancelButton.hidden=true;response('Cancelled. No action was taken.');status('Command cancelled.');if('speechSynthesis'in window)speechSynthesis.cancel()});const commandObserver=new MutationObserver(()=>{const pending=!!pendingVoiceCommand;confirmButton.hidden=!pending;cancelButton.hidden=!pending});commandObserver.observe($('mva-response'),{childList:true,characterData:true,subtree:true});launcher.addEventListener('click',show);$('mva-close').addEventListener('click',close);$('mva-start').addEventListener('click',()=>{if(listening){stopListening();status('Listening paused. Tap Start voice to resume.')}else startListening()});$('mva-stop').addEventListener('click',()=>{stopListening();status('Listening stopped.')});$('mva-repeat').addEventListener('click',()=>speak(lastSpoken||$('mva-response').textContent));panel.addEventListener('click',e=>{if(e.target===panel)close()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panel.classList.contains('open'))close()});
 const observer=new MutationObserver(()=>{const dash=$('dashboard-screen'),visible=dash&&!dash.classList.contains('hidden');launcher.style.display='flex'});
 observer.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class']});launcher.style.display='flex';
 })();
@@ -640,7 +646,7 @@ $('mwc-talk')?.addEventListener('click',listen);$('mwc-plans')?.addEventListener
 $('welcome-prev')?.addEventListener('click',()=>{if(tourTimer)clearTimeout(tourTimer);setSlide(slideIndex-1);say('Here is the previous lesson. '+(slides[slideIndex]?.querySelector('.welcome-description')?.textContent||''))});
 $('welcome-next')?.addEventListener('click',()=>{if(tourTimer)clearTimeout(tourTimer);setSlide(slideIndex+1);say('Let’s continue. '+(slides[slideIndex]?.querySelector('.welcome-description')?.textContent||''))});
 document.querySelectorAll('[data-welcome-dot]').forEach((d,i)=>d.addEventListener('click',()=>{if(tourTimer)clearTimeout(tourTimer);setSlide(i);say(slides[i]?.querySelector('.welcome-description')?.textContent||'Let’s explore this step together.')}));
-const name=savedName();const opening=name?'Welcome back, '+name+'! Thank you for opening Molan Business. I’m Molano, your personal guide. I’ll walk you through your workspace, business profiles, plans, and key features. Let’s begin.':'Hello and welcome to Molan Business! Thank you for joining us. I’m Molano, your friendly business guide. I’ll show you how to set up your business, understand the plans, choose a business profile, and use the main features. You can ask for help at any time. Let’s begin.';say(opening,()=>{startTour(0);if(!name){voiceTourFallback=setTimeout(()=>{if(!awaitingName&&rec===null){say('As we go, I would love to know what to call you. You can tell me whenever voice conversation is available. For now, let me show you around.');}},2500)}});
+const name=savedName();const opening=name?'Welcome back, '+name+'. Tap Talk to Molano whenever you want help.':'Welcome to Molan Business. Tap Talk to Molano whenever you want help.';if(answer)answer.textContent=opening;if(box)box.dataset.state='idle';if(tourTimer)clearTimeout(tourTimer);if(voiceTourFallback)clearTimeout(voiceTourFallback);
 })();
 </script>
   <script src="shared/molano-voice.js?v=20261022-voice1" defer></script>
