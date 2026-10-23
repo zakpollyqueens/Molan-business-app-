@@ -47,9 +47,32 @@
   function close(){panel.classList.remove("open");toggle.setAttribute("aria-expanded","false");}
   toggle.addEventListener("click",()=>{if(panel.classList.contains("open")){close();return;}open();if(!welcomed){welcomed=true;const greeting="Hello, welcome! I’m Molano AI. Tell me what you need help with, and I’ll guide you step by step.";addMessage(greeting,"bot");say(greeting);}});
   root.querySelector(".mv-close").addEventListener("click",close);
+  function isPlanQuestion(text){return /\\b(upgrade|subscription|subscriptions|pricing|plans?|premium|silver|gold|checkout|grace period)\\b/i.test(text);}
+  function localPlanExplanation(){
+    const market = document.querySelector('#subscription-country')?.value || document.querySelector('#learn-country')?.value || '';
+    const cards = Array.from(document.querySelectorAll('[data-subscription-plan]'));
+    const cardText = code => {
+      const card = cards.find(el => (el.getAttribute('data-subscription-plan') || '').toLowerCase() === code);
+      return card ? card.innerText.replace(/\\s+/g,' ').trim() : '';
+    };
+    const premium = cardText('premium'), silver = cardText('silver'), gold = cardText('gold');
+    const marketName = market ? ({UG:'Uganda',KE:'Kenya',TZ:'Tanzania',RW:'Rwanda',BI:'Burundi',SS:'South Sudan',OTHER_AFRICA:'other African markets',EUROPE:'Europe',ASIA:'Asia',AMERICA:'America',USD:'USD market',OTHER:'your market'}[market] || market) : 'your market';
+    let details = '';
+    if (premium || silver || gold) {
+      details = [premium,silver,gold].filter(Boolean).join(' ');
+    } else {
+      details = 'Premium lasts one month, Silver lasts two months, and Gold lasts three months. The checkout page shows the current price for your market.';
+    }
+    return 'Of course! Molan Business has three upgrade options. Premium is the one-month plan. Silver covers two months. Gold covers three months and is the plan associated with Molano AI Access Pro, which requires an active, payment-verified Gold subscription. ' + details + ' Prices and checkout availability can depend on ' + marketName + '. Your one-month grace period begins when your account is created. From day 15, I can remind you to review these plans; you can choose Premium, Silver, or Gold in the existing subscription checkout. I will not make a payment or change your subscription for you.';
+  }
   async function ask(text){
     if(busy||!text.trim())return;
-    busy=true;send.disabled=true;setStatus("Molano is thinking…");history.push({role:"user",content:text.trim()});addMessage(text.trim(),"user");
+    busy=true;send.disabled=true;setStatus("Preparing plan information…");history.push({role:"user",content:text.trim()});addMessage(text.trim(),"user");
+    if(isPlanQuestion(text)){
+      const answer=localPlanExplanation();
+      history.push({role:"assistant",content:answer});addMessage(answer,"bot");setStatus("Plan explanation ready.");say(answer);busy=false;send.disabled=false;return;
+    }
+    setStatus("Molano is thinking…");
     try{
       const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),30000);
       let res,data;try{res=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({product:PRODUCT,messages:history.slice(-10)}),signal:controller.signal});data=await res.json().catch(()=>({}));}finally{clearTimeout(timeout)}
