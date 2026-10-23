@@ -123,6 +123,31 @@
       btn.dataset.micBound = '1';
       btn.addEventListener('dblclick', () => { muted = !muted; if (muted && 'speechSynthesis' in window) speechSynthesis.cancel(); else say('Voice guidance is on.'); });
     }
+    const stepEl = document.querySelector('.guided-step-view.active[data-guided-step]');
+    if (setupVisible && stepEl) {
+      const step = Number(stepEl.dataset.guidedStep);
+      if (step !== lastStep) {
+        lastStep = step;
+        clearTimeout(promptTimer);
+        if (active) promptTimer = setTimeout(() => {
+          if (step === 0) { stage = 'business-type'; say('Step one: choose the business type that best describes your organization, then tap Continue.'); }
+          if (step === 1) {
+            const name = $('guided-owner-name'), email = $('guided-owner-email');
+            if (name && !name.value.trim()) askFor('name', 'Now let us create your owner account. What is your full name?');
+            else if (email && !email.value.trim()) askFor('email', 'What email address should we use? Please say it clearly.');
+            else { stage = 'password'; say('Your name and email are on screen. Enter and confirm your password privately, then tap Continue.'); }
+          }
+          if (step === 2) {
+            const businessName = $('guided-business-name');
+            if (businessName && !businessName.value.trim()) askFor('business-name', 'What is your business or organization called?');
+            else { stage = 'business-details'; say('Review the business name and add any optional details you wish, then continue.'); }
+          }
+          if (step === 3) { stage = 'industry'; say('Now review the business plan and industry-specific setup options on screen. Choose what fits, then continue.'); }
+          if (step === 4) { stage = 'staff'; say('This step helps you configure your team. Add staff if you are ready, or continue to review.'); }
+          if (step === 5) { stage = 'review'; say('You are at the final review. Check your details carefully, then choose Create my business. If email confirmation is required, confirm your email and return here to finish.'); }
+        }, 350);
+      }
+    } else if (!setupVisible) { lastStep = -1; }
     const talk = $('mwc-talk');
     if (talk && !talk.dataset.voiceOnboardingBound) {
       talk.dataset.voiceOnboardingBound = '1';
