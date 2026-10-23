@@ -519,6 +519,7 @@
  <p style="font-size:11px;line-height:1.45;color:#8fb8ca;margin:16px 0 0">Voice recognition requires microphone permission. Molano can navigate workspace pages and answer using the AI service; sensitive actions still require your confirmation and permissions.</p>
  </div>
 </section>
+<style id="molano-voice-only-response">#mva-response{display:none!important}body.molano-onboarding-guide #mva-response{display:block!important}</style>
 <script id="molano-voice-assistant-script">
 (()=>{'use strict';
 const $=id=>document.getElementById(id),launcher=$('molano-voice-launcher'),panel=$('molano-voice-assistant');
@@ -527,7 +528,7 @@ if(!launcher||!panel)return;
 document.body.append(launcher,panel);
 let recognition=null,listening=false,lastSpoken='',lastTranscript='',planChecked=false,planCode='free',planAllowed=false,checkBusy=false,greetingPlayed=false,assistantPaused=true;
 const status=t=>{$('mva-status').textContent=t};
-const response=t=>{$('mva-response').textContent=t||''};
+const response=t=>{$('mva-response').textContent=t||'';$('mva-response').setAttribute('aria-live',document.body.classList.contains('molano-onboarding-guide')?'polite':'off')};
 function speak(text,onend){if(!text||!('speechSynthesis'in window)){if(onend)onend();return}lastSpoken=text;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=.96;u.pitch=1.04;u.lang=navigator.language||'en-US';u.onend=()=>{if(onend)onend()};u.onerror=()=>{if(onend)onend()};speechSynthesis.speak(u)}catch(e){if(onend)onend()}}
 function getContext(){return window.MolanAppContext||null}
 async function verifyPlan(){
@@ -589,10 +590,17 @@ async function askMolano(text,route){
 let pendingVoiceCommand='';
 async function executeCommand(text){
  const route=await navigateFromVoice(text);
+ if(route?.page==='business-profile')try{localStorage.setItem('molano_business_profile_setup_started','1')}catch(e){}
  const answer=await askMolano(text,route);response(answer);status(route?'Opened '+route.label+'.':'Response ready.');speak(answer);
 }
 async function handleCommand(text){
  lastTranscript=text;stopListening();$('mva-transcript').textContent='You: '+text;response('');
+ const profileSetupStarted=(()=>{try{return localStorage.getItem('molano_business_profile_setup_started')==='1'}catch(e){return false}})();
+ if(profileSetupStarted&&/\\b(?:my business profile is (?:saved|created|complete|completed)|i(?:'m| am) done (?:creating|setting up) (?:my )?business profile|i(?:'m| am) finished (?:creating|setting up) (?:my )?business profile|i saved my business profile|profile setup is complete)\\b/i.test(text)){
+  const guide='Great. If your business profile has been saved, here is a quick guide: Overview summarizes your workspace; Products and Inventory organize what you offer; Sales and Finance track transactions; Customers stores customer records; Tasks and Team help coordinate staff; Reports summarize activity. You can ask me to open a section or explain a feature at any time.';
+  document.body.classList.add('molano-onboarding-guide');try{localStorage.setItem('molano_business_onboarding_guide_seen','1')}catch(e){}
+  response(guide);status('Your feature guide is ready.');speak(guide);return;
+ }
  const route=routeCommand(text);
  if(route){pendingVoiceCommand=text;const prompt='I heard: “'+text+'”. I will open '+route.label+'. Do you want me to continue?';response(prompt);status('Waiting for your confirmation.');speak(prompt);return}
  status('Molano is preparing a focused reply…');
