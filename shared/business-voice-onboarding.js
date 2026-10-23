@@ -108,6 +108,9 @@
   function install() {
     startButton();
     const btn = $('molan-voice-setup');
+    const welcomeVisible = visible('welcome-screen');
+    const setupVisible = visible('guided-onboarding-screen');
+    if (btn) btn.style.display = (welcomeVisible || setupVisible) ? 'block' : 'none';
     if (btn && !btn.dataset.micBound) {
       btn.dataset.micBound = '1';
       btn.addEventListener('dblclick', () => { muted = !muted; if (muted && 'speechSynthesis' in window) speechSynthesis.cancel(); else say('Voice guidance is on.'); });
