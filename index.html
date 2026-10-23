@@ -536,7 +536,7 @@ try{if(localStorage.getItem('molano_business_onboarding_guide_seen')==='1')docum
 document.body.append(launcher,panel);
 let recognition=null,listening=false,lastSpoken='',lastTranscript='',planChecked=false,planCode='free',planAllowed=false,checkBusy=false,greetingPlayed=false,assistantPaused=true;
 const status=t=>{$('mva-status').textContent=t};
-const response=t=>{$('mva-response').textContent=t||'';$('mva-response').setAttribute('aria-live',document.body.classList.contains('molano-onboarding-guide')?'polite':'off')};
+const response=t=>{$('mva-response').textContent=t||'';$('mva-response').setAttribute('aria-live','polite')};
 function speak(text,onend){if(!text||!('speechSynthesis'in window)){if(onend)onend();return}lastSpoken=text;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=.96;u.pitch=1.04;u.lang=navigator.language||'en-US';u.onend=()=>{if(onend)onend()};u.onerror=()=>{if(onend)onend()};speechSynthesis.speak(u)}catch(e){if(onend)onend()}}
 function getContext(){return window.MolanAppContext||null}
 async function verifyPlan(){
