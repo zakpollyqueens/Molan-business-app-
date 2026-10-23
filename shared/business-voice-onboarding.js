@@ -7,7 +7,7 @@
   window.__molanBusinessVoiceOnboarding = true;
   const $ = (id) => document.getElementById(id);
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  let active = false, muted = false, listening = false, stage = '', recognition = null;
+  let active = false, muted = false, listening = false, stage = '', recognition = null, lastStep = -1, promptTimer = null;
   const say = (message) => {
     if (muted || !('speechSynthesis' in window)) return;
     try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(message); u.lang = navigator.language || 'en-US'; u.rate = .96; speechSynthesis.speak(u); } catch (_) {}
@@ -20,7 +20,15 @@
     btn.textContent = '🎙 Set up with Molano AI';
     btn.setAttribute('aria-label', 'Start voice-guided business setup with Molano AI');
     btn.style.cssText = 'position:fixed;right:16px;bottom:18px;z-index:100001;border:1px solid #83efff;border-radius:999px;padding:13px 17px;background:linear-gradient(135deg,#a5f6ff,#438fe8);color:#061629;font:700 14px system-ui;box-shadow:0 8px 28px #20c9e955;cursor:pointer';
-    btn.addEventListener('click', () => { active = true; muted = false; stage = 'consent'; say('Hello and welcome to Molan Business. I am Molano AI. I can guide you through creating your account and business workspace. I will ask for your name and email, and you will enter your password privately on screen. Would you like to begin? Say yes, or tap Talk to Molano and answer me.'); });
+    btn.addEventListener('click', () => {
+      active = true; muted = false;
+      if (listening) { try { recognition?.stop(); } catch (_) {} return; }
+      if (stage === 'consent') { listen(); return; }
+      stage = 'consent';
+      const prompt = 'Hello and welcome to Molan Business. I am Molano AI. I can guide you through creating your account and business workspace. I will ask for your name and email, and you will enter your password privately on screen. Tap this microphone button again or tap Talk to Molano, then say yes to begin.';
+      const answer = $('mwc-answer'); if (answer) answer.textContent = prompt;
+      say(prompt);
+    });
     document.body.appendChild(btn);
   };
   function askFor(stageName, prompt) {
@@ -129,5 +137,9 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install, {once:true}); else install();
   observer.observe(document.documentElement, {childList:true,subtree:true});
   window.addEventListener('beforeunload', () => { try { recognition?.stop(); } catch (_) {} });
-  window.MolanBusinessVoiceOnboarding = { start: () => { active = true; stage = 'consent'; say('Welcome to Molan Business. Would you like me to help create your account and business profile?'); }, mute: (value) => { muted = !!value; if (muted && 'speechSynthesis' in window) speechSynthesis.cancel(); } };
+  window.MolanBusinessVoiceOnboarding = {
+    start: () => { active = true; stage = 'consent'; say('Welcome to Molan Business. Would you like me to help create your account and business profile?'); },
+    listen,
+    mute: (value) => { muted = !!value; if (muted && 'speechSynthesis' in window) speechSynthesis.cancel(); else if (!muted) say('Voice guidance is on.'); }
+  };
 })();
