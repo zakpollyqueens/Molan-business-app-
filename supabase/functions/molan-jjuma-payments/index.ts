@@ -235,11 +235,57 @@ async function createCheckout(req: Request) {
   const auth = req.headers.get("Authorization") ?? "";
   const token = auth.match(/^Bearer\s+(.+)$/i)?.[1];
   if (!token) return json({ error: "Sign in is required." }, 401);
+  const body = await req.json().catch(() => null);
+  if (!body || typeof body !== "object") return json({ error: "A valid checkout request is required." }, 400);
+  const productCode = String(body?.product ?? "molan_business_subscription").toLowerCase();
+  if (productCode === "molan_chat_upgrade") {
+    // Validate the Molan Chat access token against the actual ZakiChat Auth project.
+    const chatAuth = createClient("https://xdpevlurgtvgduwzyoue.supabase.co", "sb_publishable_aMRHrU5gtNmpsytQNaz61w_Yc-yh_Pk", { auth: { persistSession: false, autoRefreshToken: false } });
+    const { data: chatUserData, error: chatUserError } = await chatAuth.auth.getUser(token);
+    if (chatUserError || !chatUserData.user) return json({ error: "Your Molan Chat session is invalid or expired." }, 401);
+    const user = chatUserData.user;
+    const planCode = String(body?.plan_code || "");
+    const expectedUsd = planCode === "personal_monthly" ? 2 : planCode === "business_monthly" ? 10 : 0;
+    const paymentId = String(body?.payment_id || "");
+    const amount = Number(body?.amount);
+    const currency = String(body?.currency || "").toUpperCase();
+    if (!expectedUsd || !paymentId || !/^[0-9a-f-]{36}$/i.test(paymentId) ||
+        String(body?.user_id || "") !== user.id || Number(body?.usd_amount) !== expectedUsd ||
+        !Number.isFinite(amount) || amount <= 0 || !/^[A-Z]{3}$/.test(currency)) {
+      return json({ error: "The Molan Chat upgrade checkout details are invalid." }, 400);
+    }
+    const phone = String(body?.phone || user.phone || user.user_metadata?.phone || "").trim();
+    const customerName = String(body?.customer_name || user.user_metadata?.full_name || user.user_metadata?.name || "Molan Chat customer").trim();
+    const webhookUrl = `${SUPABASE_URL}/functions/v1/molan-jjuma-payments?action=webhook`;
+    const payload = {
+      amount, currency,
+      description: `Molan Chat ${planCode === "personal_monthly" ? "Customized Personal" : "Customized Business"} monthly upgrade`,
+      customer_name: customerName,
+      customer_email: user.email || undefined,
+      phone_number: phone || undefined,
+      redirect_url: `https://zakpollyqueens.github.io/ZakiChat-/pages/settings.html?upgrade=return`,
+      return_url: `https://zakpollyqueens.github.io/ZakiChat-/pages/settings.html?upgrade=return`,
+      cancel_redirect_url: `https://zakpollyqueens.github.io/ZakiChat-/pages/settings.html?upgrade=cancelled`,
+      webhook_url: webhookUrl,
+      external_order_id: paymentId,
+      idempotency_key: paymentId,
+      metadata: { product: "molan_chat_upgrade", user_id: user.id, plan_code: planCode, upgrade_payment_id: paymentId, usd_amount: expectedUsd },
+    };
+    try {
+      const response = await fetch(`${API_BASE}/payments/create`, { method: "POST", headers: { Authorization: `Bearer ${JJUMA_PUBLIC_KEY}`, "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+      const providerResponse = await response.json().catch(() => ({}));
+      if (!response.ok || providerResponse?.success !== true || !providerResponse?.data?.transaction_id || typeof providerResponse?.data?.payment_url !== "string") {
+        return json({ error: "JJuma Pay could not create the Molan Chat checkout." }, 502);
+      }
+      const checkoutUrl = new URL(providerResponse.data.payment_url);
+      if (checkoutUrl.protocol !== "https:" || checkoutUrl.hostname !== "pay.jjuma.com") return json({ error: "JJuma Pay returned an untrusted checkout URL." }, 502);
+      return json({ success: true, payment_url: checkoutUrl.toString(), transaction_id: String(providerResponse.data.transaction_id), amount, currency, provider: "jjuma", status: "pending", message: "Complete JJuma Pay checkout. Your Molan Chat plan activates after payment verification." });
+    } catch (_error) {
+      return json({ error: "Could not contact JJuma Pay. No upgrade has been activated." }, 502);
+    }
+  }
   const { data: userData, error: userError } = await authClient.auth.getUser(token);
   if (userError || !userData.user) return json({ error: "Your session is invalid or expired." }, 401);
-
-  const body = await req.json().catch(() => null);
-  const productCode = String(body?.product ?? "molan_business_subscription").toLowerCase();
   if (productCode === "molan_website_service") return await createWebsiteServiceCheckout(userData.user, body);
   if (productCode !== "molan_business_subscription") return json({ error: "Unsupported checkout product." }, 400);
   const companyId = typeof body?.company_id === "string" ? body.company_id : "";
