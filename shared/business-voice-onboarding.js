@@ -20,7 +20,7 @@
     btn.textContent = '🎙 Set up with Molano AI';
     btn.setAttribute('aria-label', 'Start voice-guided business setup with Molano AI');
     btn.style.cssText = 'position:fixed;right:16px;bottom:18px;z-index:100001;border:1px solid #83efff;border-radius:999px;padding:13px 17px;background:linear-gradient(135deg,#a5f6ff,#438fe8);color:#061629;font:700 14px system-ui;box-shadow:0 8px 28px #20c9e955;cursor:pointer';
-    btn.addEventListener('click', () => { active = true; muted = false; stage = ''; say('Hello and welcome to Molan Business. I am Molano AI. I can guide you through creating your account and business workspace. I will ask for your name and email, and you will enter your password privately on screen. Would you like to begin? Say yes, or tap the microphone in the assistant.'); });
+    btn.addEventListener('click', () => { active = true; muted = false; stage = 'consent'; say('Hello and welcome to Molan Business. I am Molano AI. I can guide you through creating your account and business workspace. I will ask for your name and email, and you will enter your password privately on screen. Would you like to begin? Say yes, or tap Talk to Molano and answer me.'); });
     document.body.appendChild(btn);
   };
   function askFor(stageName, prompt) {
