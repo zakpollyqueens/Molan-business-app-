@@ -8,8 +8,8 @@ const catalogPath = path.join(root, 'business-profiles/extended-catalog.json');
 const registryPath = path.join(root, 'business-profiles/registry.json');
 const catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
 const registry = JSON.parse(fs.readFileSync(registryPath, 'utf8'));
-if (!Array.isArray(catalog.profiles) || catalog.profiles.length !== 500) {
-  throw new Error('Expected exactly 500 extended business profiles.');
+if (!Array.isArray(catalog.profiles) || catalog.profiles.length !== 1500) {
+  throw new Error('Expected exactly 1,500 extended business profiles.');
 }
 const slugify = value => String(value || '').toLowerCase().normalize('NFKD')
   .replace(/[^a-z0-9\s-]/g, '').trim().replace(/[\s_]+/g, '-').replace(/-+/g, '-');
