@@ -134,12 +134,12 @@
       macos: /\.dmg$/i,
       linux: /\.AppImage$/i
     };
-    const asset = assets.find(item => patterns[platform]?.test(item.name));
-    // Android production updates should come from the trusted store. Never fall
-    // back to an unsigned/debug APK from a generic release.
-    if (platform === 'android' && !asset) {
+    // Every installed Android app must update through the trusted Google Play
+    // listing. Never install an APK directly from GitHub releases from inside the app.
+    if (platform === 'android') {
       return { platform, url: PLAY_STORE_URL, assetName: '', storeListing: true };
     }
+    const asset = assets.find(item => patterns[platform]?.test(item.name));
     return { platform, url: asset?.browser_download_url || '', assetName: asset?.name || '', storeListing: false };
   }
 
@@ -164,13 +164,13 @@
   let directDownloadFallback = false;
   async function applyUpdate() {
     if (!latest || busy) return; const button = document.getElementById('molan-apply-update');
-    if (directDownloadFallback && latest.url) { window.location.href = latest.url; return; }
-    if (!latest.native) { if (button) { button.disabled = true; button.textContent = 'Refreshing…'; } const url = new URL(window.location.href); url.searchParams.set('molan_release', latest.version); url.searchParams.set('refresh', String(Date.now())); window.location.replace(url.toString()); return; }
-    if (latest.storeListing) {
-      notify('Opening the official Google Play listing so you can install the signed update.');
+    if (latest.storeListing && latest.url) {
+      notify('Opening the official Google Play listing so you can update Molan Business.');
       window.location.href = latest.url;
       return;
     }
+    if (directDownloadFallback && latest.url) { window.location.href = latest.url; return; }
+    if (!latest.native) { if (button) { button.disabled = true; button.textContent = 'Refreshing…'; } const url = new URL(window.location.href); url.searchParams.set('molan_release', latest.version); url.searchParams.set('refresh', String(Date.now())); window.location.replace(url.toString()); return; }
     if (!latest.url || !latest.assetName) { notify('The latest release does not include an installer for this device.'); return; }
     if (button) { button.disabled = true; button.textContent = 'Downloading…'; } const el = document.getElementById('molan-update-banner');
     if (el) el.querySelector('#molan-update-heading').textContent = 'Downloading Molan Business';
@@ -221,11 +221,13 @@
         latest = { version: latestVersion, native, ...destination };
         const el = banner();
         el.querySelector('#molan-update-heading').textContent = 'Molan Business update available';
-        el.querySelector('#molan-update-message').textContent = native
-          ? 'Version ' + latestVersion + ' is ready for ' + (destination.platform === 'android' ? 'Android' : destination.platform === 'windows' ? 'Windows' : destination.platform === 'macos' ? 'macOS' : destination.platform === 'linux' ? 'Linux' : 'your device') + '. Your current workspace and saved records remain online.'
-          : 'Version ' + latestVersion + ' is available. Refresh the app to load the latest published system.';
+        el.querySelector('#molan-update-message').textContent = destination.storeListing
+          ? 'Version ' + latestVersion + ' is available. Open Google Play to update Molan Business to the latest official release.'
+          : native
+            ? 'Version ' + latestVersion + ' is ready for ' + (destination.platform === 'windows' ? 'Windows' : destination.platform === 'macos' ? 'macOS' : destination.platform === 'linux' ? 'Linux' : 'your device') + '. Your current workspace and saved records remain online.'
+            : 'Version ' + latestVersion + ' is available. Refresh the app to load the latest published system.';
         const apply = el.querySelector('#molan-apply-update');
-        apply.textContent = native ? 'Download update ↓' : 'Update now ↻';
+        apply.textContent = destination.storeListing ? 'Update now ↗' : native ? 'Download update ↓' : 'Update now ↻';
         el.hidden = false;
         setCheckButton('', true);
         if (manual) notify('A new Molan Business version is available.');
