@@ -178,13 +178,15 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release/assets
-          cp release/android/app-debug.apk release/assets/Molan-Business.apk
+          # Do not publish a debug-signed APK as an install/update package.
+          # Android production updates must come from the signed Play Store release.
           installer="$(find release/windows -maxdepth 1 -type f -name '*.exe' | head -n 1)"
           test -n "$installer"
           cp "$installer" release/assets/Molan-Business-Setup.exe
           find release/macos -maxdepth 1 -type f \( -name '*.dmg' -o -name '*.zip' \) -exec cp {} release/assets/ \;
           find release/linux -maxdepth 1 -type f \( -name '*.AppImage' -o -name '*.deb' \) -exec cp {} release/assets/ \;
-          test -s release/assets/Molan-Business.apk
+          # A signed Android APK is intentionally not attached by this workflow.
+          # The Android App Bundle is built and distributed through the Play Store workflow.
           test -s release/assets/Molan-Business-Setup.exe
           compgen -G 'release/assets/*.dmg' >/dev/null
           compgen -G 'release/assets/*.AppImage' >/dev/null
