@@ -94,7 +94,7 @@
       if (stage === 'consent') { listen(); return; }
       if (!SR) { say('Voice input is not supported in this browser. You can still use the form, and I will read each step aloud. Please try Chrome on Android and allow microphone access for full voice setup.'); return; }
       if (currentStep() >= 0) {
-        if (stage === 'password') { say('Please enter and confirm your password privately on screen. When finished, say continue.'); listen(); return; }
+        if (stage === 'password') { say('Please enter and confirm your password privately on screen. When finished, say continue.', true); return; }
         if (stage === 'confirm-create') { say('To confirm, say create my workspace. I will submit only after you explicitly confirm.', true); return; }
         if (stage === 'confirm-terms') { say('Please say I agree if you accept the terms and privacy policy, or say no to leave them unchecked.', true); return; }
         if (stage === 'email') { say('Please say the email address clearly. You can say at and dot.', true); return; }
@@ -152,6 +152,8 @@
       say('No problem. I have not submitted anything. You can return whenever you are ready.'); return;
     }
     if (stage === 'consent') {
+      if (/\b(plan|price|pricing|silver|gold|premium|subscription)\b/.test(n)) { explainPlans(); setTimeout(() => say('Would you like me to help you create your account and business workspace? Please say yes or no.', true), 4500); return; }
+      if (/\b(features|what can you do|what does|how does|help|inventory|sales|staff|reports|customers|finance|what is molan business)\b/.test(n)) { explainFeatures(value); setTimeout(() => say('Would you like me to help you create your account and business workspace? Please say yes or no.', true), 4500); return; }
       if (/^(yes|yeah|yep|okay|ok|start|proceed|sure|please)\b/.test(n) || /\b(yes|create an account|set up my business)\b/.test(n)) {
         welcomeStart();
         stage = 'step-0';
@@ -227,9 +229,7 @@
     }
     if (step === 4) {
       if (/\b(add staff|invite staff|add a staff|yes)\b/.test(n)) {
-        const name = prompt('For privacy and accuracy, type the staff member’s name into the visible staff form, then return to Molano and say continue.');
-        if (name) { const field = document.querySelector('#guided-staff-list [name="staff-name"]'); if(field) setField(field.id, name); }
-        say('Please enter staff names and email addresses directly in the staff form. I can guide you, or you can say skip to do this later.', true);
+        say('Please enter each staff member’s name and email directly into the staff fields on screen. For security, review each role carefully. When finished, say continue. You can also say skip to do this later.', true);
         return;
       }
       if (/\b(skip|later|no|continue|next|done|ready)\b/.test(n)) { stage = 'step-4'; click('guided-skip-staff'); if (currentStep() === 4) click('guided-next'); return; }
@@ -330,14 +330,6 @@
   const observer = new MutationObserver(install);
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install, { once: true }); else install();
   observer.observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'hidden'] });
-  const talk = $('mwc-talk');
-  if (talk && !talk.dataset.voiceOnboardingBound) {
-    talk.dataset.voiceOnboardingBound = '1';
-    talk.addEventListener('click', () => {
-      if (!active) { active = true; stage = 'consent'; say('Welcome to Molan Business. Would you like me to help create your account and business workspace? Say yes or no.', true); }
-      else listen();
-    });
-  }
   window.addEventListener('beforeunload', () => { try { recognition?.stop(); } catch (_) {} });
   window.MolanBusinessVoiceOnboarding = {
     start: () => { active = true; stage = 'consent'; say('Welcome to Molan Business. Would you like me to help create your account and business workspace? Say yes or no.', true); },
