@@ -1,8 +1,8 @@
 name: Build and upload Molan Business to Google Play
 
 on:
-  push:
-    branches: [main]
+  release:
+    types: [published]
   workflow_dispatch:
     inputs:
       upload_to_play_store:
@@ -35,6 +35,29 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
+      - name: Resolve published release version
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$GITHUB_EVENT_NAME" == "release" ]]; then
+            tag="${{ github.event.release.tag_name }}"
+          else
+            response="$(curl --fail --silent --show-error \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/latest")"
+            tag="$(printf '%s' "$response" | python -c 'import json,sys; print(json.load(sys.stdin).get("tag_name", ""))')"
+          fi
+          version="${tag#v}"
+          version="${version#V}"
+          if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Latest published release tag must be vMAJOR.MINOR.PATCH; got '$tag'."
+            exit 1
+          fi
+          printf 'MOLAN_BUILD_VERSION=%s\n' "$version" >> "$GITHUB_ENV"
+          echo "Preparing Play Store bundle for published release $tag (version $version)."
       - name: Install web and Android dependencies
         run: npm install
       - name: Generate web bundle and Android project
@@ -75,8 +98,11 @@ jobs:
           app_gradle = pathlib.Path('android/app/build.gradle')
           app_source = app_gradle.read_text()
           run_number = os.environ['GITHUB_RUN_NUMBER']
+          release_version = os.environ.get('MOLAN_BUILD_VERSION', '')
+          if not re.fullmatch(r'\d+\.\d+\.\d+', release_version):
+              raise SystemExit('MOLAN_BUILD_VERSION must match the published release tag (MAJOR.MINOR.PATCH).')
           app_source, code_count = re.subn(r'(?m)^(\s*versionCode\s+)\d+', lambda m: m.group(1) + run_number, app_source, count=1)
-          app_source, name_count = re.subn(r'(?m)^(\s*versionName\s+)[\"\'][^\"\']+[\"\']', lambda m: m.group(1) + '\"1.0.' + run_number + '\"', app_source, count=1)
+          app_source, name_count = re.subn(r'(?m)^(\s*versionName\s+)[\"\'][^\"\']+[\"\']', lambda m: m.group(1) + '\"' + release_version + '\"', app_source, count=1)
           if code_count != 1 or name_count != 1:
               raise SystemExit('Could not safely set Android versionCode/versionName')
           if os.environ.get('HAS_ANDROID_SIGNING', '').lower() == 'true':
@@ -95,7 +121,7 @@ jobs:
                   raise SystemExit('Could not locate release build type to attach signing config')
               app_source = app_source[:match.end()] + '\n            signingConfig signingConfigs.release' + app_source[match.end():]
           app_gradle.write_text(app_source)
-          print('Configured Android API 35 and version 1.0.' + run_number + ' (code ' + run_number + ').')
+          print('Configured Android release ' + release_version + ' (versionCode ' + run_number + ').')
           print('Release signing configured: ' + str(os.environ.get('HAS_ANDROID_SIGNING', '').lower() == 'true'))
           PY
       - name: Install upload keystore
@@ -127,7 +153,7 @@ jobs:
           if-no-files-found: error
           retention-days: 30
       - name: Verify credentials before Play Store upload
-        if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.upload_to_play_store)
+        if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.upload_to_play_store)
         shell: bash
         run: |
           set -euo pipefail
@@ -141,7 +167,7 @@ jobs:
           fi
           echo 'Play Store credentials are configured.'
       - name: Upload signed bundle to Google Play internal testing
-        if: env.HAS_ANDROID_SIGNING == 'true' && env.HAS_PLAY_STORE_ACCESS == 'true' && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.upload_to_play_store))
+        if: env.HAS_ANDROID_SIGNING == 'true' && env.HAS_PLAY_STORE_ACCESS == 'true' && (github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.upload_to_play_store))
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlain: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}
