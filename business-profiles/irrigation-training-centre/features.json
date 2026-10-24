@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "source": "profile.json",
+  "features": [
+    {
+      "slug": "operations-service-jobs",
+      "title": "Operations & service jobs",
+      "route": "operations",
+      "status": "profile-page-scaffold",
+      "backend": "shared authenticated module; domain-specific CRUD requires verification"
+    },
+    {
+      "slug": "products-equipment-inventory",
+      "title": "Products, equipment & inventory",
+      "route": "inventory",
+      "status": "profile-page-scaffold",
+      "backend": "shared authenticated module; domain-specific CRUD requires verification"
+    },
+    {
+      "slug": "customer-client-records",
+      "title": "Customer & client records",
+      "route": "customers",
+      "status": "profile-page-scaffold",
+      "backend": "shared authenticated module; domain-specific CRUD requires verification"
+    },
+    {
+      "slug": "tasks-schedules",
+      "title": "Tasks & schedules",
+      "route": "tasks",
+      "status": "profile-page-scaffold",
+      "backend": "shared authenticated module; domain-specific CRUD requires verification"
+    },
+    {
+      "slug": "quotes-invoices-finance",
+      "title": "Quotes, invoices & finance",
+      "route": "finance",
+      "status": "profile-page-scaffold",
+      "backend": "shared authenticated module; domain-specific CRUD requires verification"
+    },
+    {
+      "slug": "team-permissions",
+      "title": "Team & permissions",
+      "route": "team",
+      "status": "profile-page-scaffold",
+      "backend": "shared authenticated module; domain-specific CRUD requires verification"
+    },
+    {
+      "slug": "documents-media",
+      "title": "Documents & media",
+      "route": "website-studio",
+      "status": "profile-page-scaffold",
+      "backend": "shared authenticated module; domain-specific CRUD requires verification"
+    },
+    {
+      "slug": "reports-performance",
+      "title": "Reports & performance",
+      "route": "reports",
+      "status": "profile-page-scaffold",
+      "backend": "shared authenticated module; domain-specific CRUD requires verification"
+    }
+  ],
+  "sharedServices": [
+    "authentication",
+    "workspace membership",
+    "role authorization",
+    "tenant-safe data access",
+    "camera/workshop realtime access restricted to owner or creating admin"
+  ],
+  "notes": "A page scaffold does not certify every specialist backend workflow is complete."
+}
