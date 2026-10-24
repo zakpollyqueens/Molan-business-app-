@@ -158,19 +158,19 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: molan-business-android-apk
           path: release/android
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: molan-business-windows-installer
           path: release/windows
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: molan-business-macos-installers
           path: release/macos
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: molan-business-linux-installers
           path: release/linux
