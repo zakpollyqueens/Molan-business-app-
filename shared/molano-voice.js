@@ -12,8 +12,11 @@
   style.textContent = `
   #molanoVoiceRoot{position:fixed;left:16px;right:auto;bottom:18px;z-index:99999;font:14px/1.45 system-ui,-apple-system,sans-serif;color:#eef8ff}
   #molanoVoiceToggle{width:58px;height:58px;border-radius:50%;border:1px solid #83efff;background:radial-gradient(circle at 30% 20%,#ffffff,#9bf7ff 20%,#38bfe8 52%,#3654b8);color:#061629;display:grid;place-items:center;box-shadow:0 8px 32px #20c9e955;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease}#molanoVoiceToggle:hover{transform:translateY(-2px);box-shadow:0 12px 36px #20c9e977}#molanoVoiceToggle svg{width:30px;height:30px;display:block}
-  #molanoVoicePanel{display:none;position:absolute;left:0;right:auto;bottom:70px;width:min(370px,calc(100vw - 28px));max-height:min(72dvh,600px);background:#091a2b;border:1px solid #2a5876;border-radius:20px;box-shadow:0 22px 70px #0009;overflow:hidden}
-  #molanoVoicePanel.open{display:flex;flex-direction:column}
+  #molanoVoicePanel{display:none!important;visibility:hidden!important;pointer-events:none!important}
+  #molanoVoicePanel.open{display:none!important}
+  #molanoVoiceToggle.voice-listening{animation:molanoPulse 1.1s ease-in-out infinite;box-shadow:0 0 0 8px #38bfe833,0 8px 32px #20c9e977}
+  #molanoVoiceToggle.voice-speaking{box-shadow:0 0 0 5px #a5f6ff33,0 8px 32px #20c9e977}
+  @keyframes molanoPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
   .mv-head{display:flex;align-items:center;gap:10px;padding:14px;background:linear-gradient(120deg,#102e4a,#122343);border-bottom:1px solid #ffffff16}
   .mv-logo{display:grid;place-items:center;width:38px;height:38px;border-radius:13px;background:linear-gradient(145deg,#a5f6ff,#37bfe7 55%,#587fff);color:#061629;font-weight:950}
   .mv-head strong{display:block;font-size:14px}.mv-head small{color:#a7c2d8;font-size:11px}
@@ -72,9 +75,23 @@
   }
   function addMessage(text, who){const el=document.createElement("div");el.className="mv-msg "+who;el.textContent=text;messagesEl.appendChild(el);messagesEl.scrollTop=messagesEl.scrollHeight;}
   function setStatus(text){statusEl.textContent=text;}
-  function open(){panel.classList.add("open");toggle.setAttribute("aria-expanded","true");input.focus({preventScroll:true});}
-  function close(){panel.classList.remove("open");toggle.setAttribute("aria-expanded","false");}
-  toggle.addEventListener("click",()=>{if(panel.classList.contains("open")){close();return;}open();if(!welcomed){welcomed=true;const greeting="Hello, welcome! I’m Molano AI. Tell me what you need help with, and I’ll guide you step by step.";addMessage(greeting,"bot");say(greeting);}});
+  function open(){panel.classList.remove("open");}
+  function close(){panel.classList.remove("open");}
+  let voiceActivated=false;
+  toggle.setAttribute("aria-expanded","false");
+  toggle.setAttribute("aria-label","Start Molano AI voice assistant");
+  toggle.addEventListener("click",()=>{
+    if(!voiceActivated){
+      voiceActivated=true;welcomed=true;
+      const greeting="Hello, welcome! I’m Molano AI, your voice assistant for Molan Business. I can guide you through setting up your business profile, understanding your workspace, and using the app. Tap me again and tell me what you would like help with.";
+      toggle.classList.remove("voice-listening");toggle.classList.add("voice-speaking");
+      say(greeting);
+      const checkSpeech=()=>{if(!window.speechSynthesis?.speaking)toggle.classList.remove("voice-speaking");};
+      setTimeout(checkSpeech,1200);
+      return;
+    }
+    startListening();
+  });
   root.querySelector(".mv-close").addEventListener("click",close);
   function isPlanQuestion(text){return /\b(upgrade|subscription|subscriptions|pricing|plans?|premium|silver|gold|checkout|grace period|countdown|trial|days left)\b/i.test(text);}
   function localPlanExplanation(){
@@ -116,27 +133,50 @@
   replay.addEventListener("click",()=>{if(lastSpokenText)say(lastSpokenText);else{const latest=messagesEl.querySelector(".mv-msg.bot:last-of-type");if(latest)say(latest.textContent);else say("Hello, welcome! I’m Molano AI. Tell me what you need help with.");}});
   input.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();submitTyped();}});
   function startConfirmation(){
-    if(!Recognition){const yes=window.confirm('I heard: "'+pending+'". Send this request to Molano AI?');const cmd=pending;pending="";if(yes)ask(cmd);else setStatus("Request cancelled.");return;}
+    if(!Recognition){say("I can’t verify your confirmation because voice input is unavailable in this browser. Please open Molan Business in Chrome and allow microphone access.");return;}
     confirmRecognition=new Recognition();confirmRecognition.lang="en-US";confirmRecognition.continuous=false;confirmRecognition.interimResults=false;
     confirmRecognition.onresult=e=>{
       const answer=e.results[0][0].transcript.toLowerCase().trim(),cmd=pending;pending="";
       if(/^(yes|yeah|yep|confirm|confirmed|proceed|go ahead|do it|correct|that's right|that is right)\b/.test(answer)){setStatus("Confirmed. Sending request…");ask(cmd);}
       else if(/^(no|nope|cancel|stop|don't|do not|not now)\b/.test(answer)){setStatus("Cancelled. Nothing was sent.");say("Okay, cancelled. Nothing was sent.");}
-      else{setStatus("Please say yes to send or no to cancel.");say("Please say yes to send, or no to cancel.");}
+      else{pending=cmd;say("Please say yes to continue, or no to cancel.");setTimeout(startConfirmation,900);}
     };
-    confirmRecognition.onerror=()=>setStatus("I couldn't hear yes or no. Tap the microphone to try again.");
-    try{confirmRecognition.start();setStatus("Listening for yes or no…");}catch(_){setStatus("Please confirm using the prompt on your screen.");}
+    confirmRecognition.onerror=()=>{setStatus("I couldn't hear your confirmation. Tap the Molano button to try again.");};
+    confirmRecognition.onend=()=>{confirmRecognition=null;};
+    try{confirmRecognition.start();setStatus("Listening for confirmation…");toggle.classList.add("voice-listening");}catch(_){say("I couldn’t start the microphone. Please check microphone permission in your browser.");}
   }
-  mic.addEventListener("click",()=>{
-    if(!Recognition){setStatus("Voice input isn't supported in this browser. Type your message instead.");return;}
-    if(recognition){try{recognition.stop();}catch(_){}recognition=null;return;}
+  function startListening(){
+    if(busy){say("I’m still preparing your answer. Please wait a moment, then tap me again.");return;}
+    if(!Recognition){say("Voice input isn’t supported in this browser. Please open Molan Business in Chrome and allow microphone access.");return;}
+    try{window.speechSynthesis?.cancel();}catch(_){}
+    toggle.classList.remove("voice-speaking");
+    if(recognition){try{recognition.stop();}catch(_){}recognition=null;toggle.classList.remove("voice-listening");return;}
     recognition=new Recognition();recognition.lang="en-US";recognition.continuous=false;recognition.interimResults=false;
-    mic.textContent="■";setStatus("Listening…");
-    recognition.onresult=e=>{const transcript=e.results[0][0].transcript.trim();pending=transcript;addMessage("I heard: “"+transcript+"”\nI’ll send this request to Molano AI for advice. Should I proceed? Say yes or no.","bot");if("speechSynthesis" in window){waitingForSpokenConfirm=true;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance("I heard: "+transcript+". I will send this request to Molano AI for advice. Should I proceed? Please say yes or no.");u.lang="en-US";u.onend=()=>{waitingForSpokenConfirm=false;if(pending)startConfirmation();};u.onerror=()=>{waitingForSpokenConfirm=false;if(pending)startConfirmation();};speechSynthesis.speak(u);}else{startConfirmation();}};
-    recognition.onend=()=>{mic.textContent="🎙";recognition=null;if(pending&&!waitingForSpokenConfirm)startConfirmation();else if(!busy&&!pending)setStatus("Ready when you are.");};
-    recognition.onerror=()=>{mic.textContent="🎙";recognition=null;setStatus("Microphone unavailable. Check browser permission and try again.");};
-    try{recognition.start();}catch(_){mic.textContent="🎙";recognition=null;setStatus("Couldn't start the microphone.");}
-  });
+    toggle.classList.add("voice-listening");toggle.setAttribute("aria-label","Listening to Molano AI. Tap to stop listening");
+    setStatus("Listening…");
+    recognition.onresult=e=>{
+      const transcript=String(e.results?.[0]?.[0]?.transcript||"").trim();
+      if(!transcript){say("Sorry, I didn’t catch that. Tap me again and speak a little louder.");return;}
+      pending=transcript;
+      if(/\b(create|set up|open|register|delete|remove|send|publish|buy|pay|change|update|invite|approve|submit|cancel|sign out|log out)\b/i.test(transcript)){
+        say("I heard: "+transcript+". I’ll explain the next step before anything is changed. Say yes if you want me to continue, or no to cancel.");
+        waitingForSpokenConfirm=true;
+        const begin=()=>{waitingForSpokenConfirm=false;if(pending)startConfirmation();};
+        const waitSpeech=()=>{if(!window.speechSynthesis?.speaking)begin();else setTimeout(waitSpeech,250);};
+        setTimeout(waitSpeech,400);
+      }else{
+        const question=pending;pending="";ask(question);
+      }
+    };
+    recognition.onend=()=>{recognition=null;toggle.classList.remove("voice-listening");toggle.setAttribute("aria-label",voiceActivated?"Tap to speak to Molano AI":"Start Molano AI voice assistant");if(!busy&&!pending)setStatus("Ready for your next voice command.");};
+    recognition.onerror=e=>{
+      recognition=null;toggle.classList.remove("voice-listening");toggle.setAttribute("aria-label","Tap to speak to Molano AI");
+      if(e.error==="not-allowed"||e.error==="service-not-allowed")say("Microphone access is blocked. Please allow microphone access for this site in Chrome settings, then tap me again.");
+      else if(e.error!=="aborted")say("I couldn’t hear you clearly. Please tap me again and try once more.");
+    };
+    try{recognition.start();}catch(_){recognition=null;toggle.classList.remove("voice-listening");say("I couldn’t start the microphone. Please check microphone permission and try again.");}
+  }
+  mic.addEventListener("click",startListening);
   function syncAssistantPosition(){const mainLauncher=document.getElementById("molano-voice-launcher");const visible=mainLauncher&&getComputedStyle(mainLauncher).display!=="none";root.style.display=visible?"none":"";}
   syncAssistantPosition();new MutationObserver(syncAssistantPosition).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:["style","class"]});
   window.addEventListener("beforeunload",()=>{try{recognition&&recognition.stop();confirmRecognition&&confirmRecognition.stop();}catch(_){}});
