@@ -91,9 +91,13 @@ The subscription catalog stores full package totals separately from the monthly 
 Workspace settings include a device-local passcode/password lock and optional platform fingerprint/face unlock through WebAuthn when supported by the browser and device. The lock is scoped to the signed-in user and active business on that device and prompts again after a browser/app restart. It is a privacy gate only; it does not replace Supabase Auth, RLS or server-side authorization. Clearing browser storage removes the local lock, so sensitive data must remain protected by database policies.
 
 
-## Expanded business profile catalogue
+## Expanded business profile catalogue and audit
 
-The central registry now contains **550 business profile types**: the original 50 active profile configurations plus 500 additional industry-specific profiles. The extra profiles each define their own eight-feature map in `business-profiles/extended-catalog.json`; their cards and feature pages use the shared Molan Business workspace modules, scoped to the selected business workspace. The guided onboarding business-type field includes a search box that filters the dropdown, and the catalogue page supports searching and category filtering. The additional profiles are configuration-backed templates rather than 500 separately duplicated application runtimes.
+The selectable registry contains **1,550 business profile types**: 50 core profiles and 1,500 extended industry-specific profiles. Each extended entry has a dedicated profile folder, configuration, overview page, profile loader/styles, and feature pages generated from its declared feature map. The shared runtime supplies common workspace modules; a dedicated profile page does not by itself mean every industry-specific backend workflow is fully implemented or production-tested.
+
+The repository also retains 200 legacy/specialist profile folders and one retired savings-circle redirect, so the total folder count is **1,751**, not the number of selectable profiles. The registry and extended catalogue are the source of truth for selectable profile counts. The GitHub Actions validation workflow checks expected catalogue counts, duplicate names/slugs, feature-route mappings, profile configuration identity, and required profile/feature pages and navigation hooks. Passing static validation does not replace authenticated browser tests or tenant/role-permission tests for every workflow.
+
+Both guided onboarding business-type fields are searchable, and the catalogue page supports searching and category filtering. The additional profiles are configuration-backed templates using shared application infrastructure rather than 1,500 separately duplicated application runtimes.
 
 
 ## Automated website service delivery
