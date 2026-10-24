@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 555,
+  "slug": "wind-energy-installation-service",
+  "name": "Wind Energy Installation Service",
+  "plural": "Wind Energy Installation Services",
+  "description": "Wind Energy Installation Service: manage wind energy operations, customer records, resources, schedules, service delivery and reporting in a dedicated Molan Business workspace.",
+  "icon": "⚡",
+  "group": "Energy & utilities",
+  "extended": true,
+  "features": [
+    {
+      "title": "Wind Energy operations",
+      "route": "operations"
+    },
+    {
+      "title": "Wind Energy records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Inventory & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & service orders",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & costs",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Customers & partners",
+      "route": "customers"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

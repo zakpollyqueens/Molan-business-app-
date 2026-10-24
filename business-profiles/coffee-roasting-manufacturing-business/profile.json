@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 1399,
+  "slug": "coffee-roasting-manufacturing-business",
+  "name": "Coffee Roasting Manufacturing Business",
+  "plural": "Coffee Roasting Manufacturing Businesses",
+  "description": "Coffee Roasting Manufacturing Business: manage coffee roasting operations, customer records, resources, schedules, service delivery and reporting in a dedicated Molan Business workspace.",
+  "icon": "♨",
+  "group": "Specialist services & industries",
+  "extended": true,
+  "features": [
+    {
+      "title": "Coffee Roasting operations",
+      "route": "operations"
+    },
+    {
+      "title": "Coffee Roasting records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Inventory & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & service orders",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & costs",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Customers & partners",
+      "route": "customers"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

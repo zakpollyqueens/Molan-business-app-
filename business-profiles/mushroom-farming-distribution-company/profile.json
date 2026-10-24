@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 880,
+  "slug": "mushroom-farming-distribution-company",
+  "name": "Mushroom Farming Distribution Company",
+  "plural": "Mushroom Farming Distribution Companies",
+  "description": "Mushroom Farming Distribution Company: manage mushroom farming operations, customer records, resources, schedules, service delivery and reporting in a dedicated Molan Business workspace.",
+  "icon": "❋",
+  "group": "Agriculture, food & natural resources",
+  "extended": true,
+  "features": [
+    {
+      "title": "Mushroom Farming operations",
+      "route": "operations"
+    },
+    {
+      "title": "Mushroom Farming records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Inventory & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & service orders",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & costs",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Customers & partners",
+      "route": "customers"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

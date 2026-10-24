@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 708,
+  "slug": "physiotherapy-support-service",
+  "name": "Physiotherapy Support Service",
+  "plural": "Physiotherapy Support Services",
+  "description": "Physiotherapy Support Service: manage physiotherapy operations, customer records, resources, schedules, service delivery and reporting in a dedicated Molan Business workspace.",
+  "icon": "✚",
+  "group": "Healthcare & wellbeing",
+  "extended": true,
+  "features": [
+    {
+      "title": "Physiotherapy operations",
+      "route": "operations"
+    },
+    {
+      "title": "Physiotherapy records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Inventory & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & service orders",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & costs",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Customers & partners",
+      "route": "customers"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

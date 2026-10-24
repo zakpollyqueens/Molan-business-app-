@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 1086,
+  "slug": "metal-fabrication-project-contractor",
+  "name": "Metal Fabrication Project Contractor",
+  "plural": "Metal Fabrication Project Contractors",
+  "description": "Metal Fabrication Project Contractor: manage metal fabrication operations, customer records, resources, schedules, service delivery and reporting in a dedicated Molan Business workspace.",
+  "icon": "◈",
+  "group": "Specialist services & industries",
+  "extended": true,
+  "features": [
+    {
+      "title": "Metal Fabrication operations",
+      "route": "operations"
+    },
+    {
+      "title": "Metal Fabrication records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Inventory & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & service orders",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & costs",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Customers & partners",
+      "route": "customers"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

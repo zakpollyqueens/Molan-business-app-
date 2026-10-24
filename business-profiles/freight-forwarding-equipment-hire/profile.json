@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 1510,
+  "slug": "freight-forwarding-equipment-hire",
+  "name": "Freight Forwarding Equipment Hire",
+  "plural": "Freight Forwarding Equipment Hires",
+  "description": "Freight Forwarding Equipment Hire: manage freight forwarding operations, customer records, resources, schedules, service delivery and reporting in a dedicated Molan Business workspace.",
+  "icon": "◈",
+  "group": "Specialist services & industries",
+  "extended": true,
+  "features": [
+    {
+      "title": "Freight Forwarding operations",
+      "route": "operations"
+    },
+    {
+      "title": "Freight Forwarding records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Inventory & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & service orders",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & costs",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Customers & partners",
+      "route": "customers"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

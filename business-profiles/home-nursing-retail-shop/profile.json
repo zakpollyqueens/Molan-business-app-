@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 735,
+  "slug": "home-nursing-retail-shop",
+  "name": "Home Nursing Retail Shop",
+  "plural": "Home Nursing Retail Shops",
+  "description": "Home Nursing Retail Shop: manage home nursing operations, customer records, resources, schedules, service delivery and reporting in a dedicated Molan Business workspace.",
+  "icon": "◈",
+  "group": "Specialist services & industries",
+  "extended": true,
+  "features": [
+    {
+      "title": "Home Nursing operations",
+      "route": "operations"
+    },
+    {
+      "title": "Home Nursing records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Inventory & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & service orders",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & costs",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Customers & partners",
+      "route": "customers"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

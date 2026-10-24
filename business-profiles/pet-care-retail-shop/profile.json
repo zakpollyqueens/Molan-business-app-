@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 795,
+  "slug": "pet-care-retail-shop",
+  "name": "Pet Care Retail Shop",
+  "plural": "Pet Care Retail Shops",
+  "description": "Pet Care Retail Shop: manage pet care operations, customer records, resources, schedules, service delivery and reporting in a dedicated Molan Business workspace.",
+  "icon": "✚",
+  "group": "Healthcare & wellbeing",
+  "extended": true,
+  "features": [
+    {
+      "title": "Pet Care operations",
+      "route": "operations"
+    },
+    {
+      "title": "Pet Care records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Inventory & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & service orders",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & costs",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Customers & partners",
+      "route": "customers"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

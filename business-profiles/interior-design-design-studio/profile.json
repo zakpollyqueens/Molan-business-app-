@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 1022,
+  "slug": "interior-design-design-studio",
+  "name": "Interior Design Design Studio",
+  "plural": "Interior Design Design Studios",
+  "description": "Interior Design Design Studio: manage interior design operations, customer records, resources, schedules, service delivery and reporting in a dedicated Molan Business workspace.",
+  "icon": "◈",
+  "group": "Specialist services & industries",
+  "extended": true,
+  "features": [
+    {
+      "title": "Interior Design operations",
+      "route": "operations"
+    },
+    {
+      "title": "Interior Design records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Inventory & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & service orders",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & costs",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Customers & partners",
+      "route": "customers"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

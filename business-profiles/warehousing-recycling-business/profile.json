@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 1483,
+  "slug": "warehousing-recycling-business",
+  "name": "Warehousing Recycling Business",
+  "plural": "Warehousing Recycling Businesses",
+  "description": "Warehousing Recycling Business: manage warehousing operations, customer records, resources, schedules, service delivery and reporting in a dedicated Molan Business workspace.",
+  "icon": "◈",
+  "group": "Specialist services & industries",
+  "extended": true,
+  "features": [
+    {
+      "title": "Warehousing operations",
+      "route": "operations"
+    },
+    {
+      "title": "Warehousing records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Inventory & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & service orders",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & costs",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Customers & partners",
+      "route": "customers"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

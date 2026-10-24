@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 958,
+  "slug": "forestry-training-centre",
+  "name": "Forestry Training Centre",
+  "plural": "Forestry Training Centres",
+  "description": "Forestry Training Centre: manage forestry operations, customer records, resources, schedules, service delivery and reporting in a dedicated Molan Business workspace.",
+  "icon": "❋",
+  "group": "Agriculture, food & natural resources",
+  "extended": true,
+  "features": [
+    {
+      "title": "Forestry operations",
+      "route": "operations"
+    },
+    {
+      "title": "Forestry records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Inventory & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & service orders",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & costs",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Customers & partners",
+      "route": "customers"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

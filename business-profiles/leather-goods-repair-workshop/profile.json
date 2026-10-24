@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 1173,
+  "slug": "leather-goods-repair-workshop",
+  "name": "Leather Goods Repair Workshop",
+  "plural": "Leather Goods Repair Workshops",
+  "description": "Leather Goods Repair Workshop: manage leather goods operations, customer records, resources, schedules, service delivery and reporting in a dedicated Molan Business workspace.",
+  "icon": "◈",
+  "group": "Specialist services & industries",
+  "extended": true,
+  "features": [
+    {
+      "title": "Leather Goods operations",
+      "route": "operations"
+    },
+    {
+      "title": "Leather Goods records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Inventory & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & service orders",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & costs",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Customers & partners",
+      "route": "customers"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 852,
+  "slug": "beekeeping-maintenance-service",
+  "name": "Beekeeping Maintenance Service",
+  "plural": "Beekeeping Maintenance Services",
+  "description": "Beekeeping Maintenance Service: manage beekeeping operations, customer records, resources, schedules, service delivery and reporting in a dedicated Molan Business workspace.",
+  "icon": "◈",
+  "group": "Specialist services & industries",
+  "extended": true,
+  "features": [
+    {
+      "title": "Beekeeping operations",
+      "route": "operations"
+    },
+    {
+      "title": "Beekeeping records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Inventory & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & service orders",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & costs",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Customers & partners",
+      "route": "customers"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

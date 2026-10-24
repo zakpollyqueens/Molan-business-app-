@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 719,
+  "slug": "mental-wellness-manufacturing-business",
+  "name": "Mental Wellness Manufacturing Business",
+  "plural": "Mental Wellness Manufacturing Businesses",
+  "description": "Mental Wellness Manufacturing Business: manage mental wellness operations, customer records, resources, schedules, service delivery and reporting in a dedicated Molan Business workspace.",
+  "icon": "◈",
+  "group": "Specialist services & industries",
+  "extended": true,
+  "features": [
+    {
+      "title": "Mental Wellness operations",
+      "route": "operations"
+    },
+    {
+      "title": "Mental Wellness records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Inventory & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & service orders",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & costs",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Customers & partners",
+      "route": "customers"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

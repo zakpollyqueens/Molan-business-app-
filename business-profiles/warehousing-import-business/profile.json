@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 1485,
+  "slug": "warehousing-import-business",
+  "name": "Warehousing Import Business",
+  "plural": "Warehousing Import Businesses",
+  "description": "Warehousing Import Business: manage warehousing operations, customer records, resources, schedules, service delivery and reporting in a dedicated Molan Business workspace.",
+  "icon": "◈",
+  "group": "Specialist services & industries",
+  "extended": true,
+  "features": [
+    {
+      "title": "Warehousing operations",
+      "route": "operations"
+    },
+    {
+      "title": "Warehousing records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Inventory & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & service orders",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & costs",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Customers & partners",
+      "route": "customers"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

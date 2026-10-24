@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 902,
+  "slug": "seed-production-design-studio",
+  "name": "Seed Production Design Studio",
+  "plural": "Seed Production Design Studios",
+  "description": "Seed Production Design Studio: manage seed production operations, customer records, resources, schedules, service delivery and reporting in a dedicated Molan Business workspace.",
+  "icon": "❋",
+  "group": "Agriculture, food & natural resources",
+  "extended": true,
+  "features": [
+    {
+      "title": "Seed Production operations",
+      "route": "operations"
+    },
+    {
+      "title": "Seed Production records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Inventory & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & service orders",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & costs",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Customers & partners",
+      "route": "customers"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

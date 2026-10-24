@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 646,
+  "slug": "biotechnology-equipment-hire",
+  "name": "Biotechnology Equipment Hire",
+  "plural": "Biotechnology Equipment Hires",
+  "description": "Biotechnology Equipment Hire: manage biotechnology operations, customer records, resources, schedules, service delivery and reporting in a dedicated Molan Business workspace.",
+  "icon": "⌘",
+  "group": "Technology & digital services",
+  "extended": true,
+  "features": [
+    {
+      "title": "Biotechnology operations",
+      "route": "operations"
+    },
+    {
+      "title": "Biotechnology records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Inventory & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & service orders",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & costs",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Customers & partners",
+      "route": "customers"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

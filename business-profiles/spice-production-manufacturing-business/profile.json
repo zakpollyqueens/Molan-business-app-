@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 1339,
+  "slug": "spice-production-manufacturing-business",
+  "name": "Spice Production Manufacturing Business",
+  "plural": "Spice Production Manufacturing Businesses",
+  "description": "Spice Production Manufacturing Business: manage spice production operations, customer records, resources, schedules, service delivery and reporting in a dedicated Molan Business workspace.",
+  "icon": "◈",
+  "group": "Specialist services & industries",
+  "extended": true,
+  "features": [
+    {
+      "title": "Spice Production operations",
+      "route": "operations"
+    },
+    {
+      "title": "Spice Production records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Inventory & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & service orders",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & costs",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Customers & partners",
+      "route": "customers"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

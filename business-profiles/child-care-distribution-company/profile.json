@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 780,
+  "slug": "child-care-distribution-company",
+  "name": "Child Care Distribution Company",
+  "plural": "Child Care Distribution Companies",
+  "description": "Child Care Distribution Company: manage child care operations, customer records, resources, schedules, service delivery and reporting in a dedicated Molan Business workspace.",
+  "icon": "✚",
+  "group": "Healthcare & wellbeing",
+  "extended": true,
+  "features": [
+    {
+      "title": "Child Care operations",
+      "route": "operations"
+    },
+    {
+      "title": "Child Care records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Inventory & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & service orders",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & costs",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Customers & partners",
+      "route": "customers"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

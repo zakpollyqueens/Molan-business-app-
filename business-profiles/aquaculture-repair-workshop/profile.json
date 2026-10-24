@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 833,
+  "slug": "aquaculture-repair-workshop",
+  "name": "Aquaculture Repair Workshop",
+  "plural": "Aquaculture Repair Workshops",
+  "description": "Aquaculture Repair Workshop: manage aquaculture operations, customer records, resources, schedules, service delivery and reporting in a dedicated Molan Business workspace.",
+  "icon": "◈",
+  "group": "Specialist services & industries",
+  "extended": true,
+  "features": [
+    {
+      "title": "Aquaculture operations",
+      "route": "operations"
+    },
+    {
+      "title": "Aquaculture records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Inventory & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & service orders",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & costs",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Customers & partners",
+      "route": "customers"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

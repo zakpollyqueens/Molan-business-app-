@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 561,
+  "slug": "battery-storage-technology-provider",
+  "name": "Battery Storage Technology Provider",
+  "plural": "Battery Storage Technology Providers",
+  "description": "Battery Storage Technology Provider: manage battery storage operations, customer records, resources, schedules, service delivery and reporting in a dedicated Molan Business workspace.",
+  "icon": "⚡",
+  "group": "Energy & utilities",
+  "extended": true,
+  "features": [
+    {
+      "title": "Battery Storage operations",
+      "route": "operations"
+    },
+    {
+      "title": "Battery Storage records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Inventory & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & service orders",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & costs",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Customers & partners",
+      "route": "customers"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

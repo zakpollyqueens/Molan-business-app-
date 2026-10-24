@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 828,
+  "slug": "veterinary-support-service",
+  "name": "Veterinary Support Service",
+  "plural": "Veterinary Support Services",
+  "description": "Veterinary Support Service: manage veterinary operations, customer records, resources, schedules, service delivery and reporting in a dedicated Molan Business workspace.",
+  "icon": "✚",
+  "group": "Healthcare & wellbeing",
+  "extended": true,
+  "features": [
+    {
+      "title": "Veterinary operations",
+      "route": "operations"
+    },
+    {
+      "title": "Veterinary records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Inventory & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & service orders",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & costs",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Customers & partners",
+      "route": "customers"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

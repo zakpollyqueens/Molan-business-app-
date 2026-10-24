@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 1147,
+  "slug": "paper-recycling-booking-agency",
+  "name": "Paper Recycling Booking Agency",
+  "plural": "Paper Recycling Booking Agencies",
+  "description": "Paper Recycling Booking Agency: manage paper recycling operations, customer records, resources, schedules, service delivery and reporting in a dedicated Molan Business workspace.",
+  "icon": "◈",
+  "group": "Specialist services & industries",
+  "extended": true,
+  "features": [
+    {
+      "title": "Paper Recycling operations",
+      "route": "operations"
+    },
+    {
+      "title": "Paper Recycling records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Inventory & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & service orders",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & costs",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Customers & partners",
+      "route": "customers"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 945,
+  "slug": "landscaping-import-business",
+  "name": "Landscaping Import Business",
+  "plural": "Landscaping Import Businesses",
+  "description": "Landscaping Import Business: manage landscaping operations, customer records, resources, schedules, service delivery and reporting in a dedicated Molan Business workspace.",
+  "icon": "◈",
+  "group": "Specialist services & industries",
+  "extended": true,
+  "features": [
+    {
+      "title": "Landscaping operations",
+      "route": "operations"
+    },
+    {
+      "title": "Landscaping records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Inventory & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & service orders",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & costs",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Customers & partners",
+      "route": "customers"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

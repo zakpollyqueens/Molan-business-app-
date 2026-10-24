@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 607,
+  "slug": "water-pumping-booking-agency",
+  "name": "Water Pumping Booking Agency",
+  "plural": "Water Pumping Booking Agencies",
+  "description": "Water Pumping Booking Agency: manage water pumping operations, customer records, resources, schedules, service delivery and reporting in a dedicated Molan Business workspace.",
+  "icon": "♨",
+  "group": "Specialist services & industries",
+  "extended": true,
+  "features": [
+    {
+      "title": "Water Pumping operations",
+      "route": "operations"
+    },
+    {
+      "title": "Water Pumping records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Inventory & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & service orders",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & costs",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Customers & partners",
+      "route": "customers"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

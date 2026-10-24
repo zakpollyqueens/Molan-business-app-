@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 1402,
+  "slug": "coffee-roasting-design-studio",
+  "name": "Coffee Roasting Design Studio",
+  "plural": "Coffee Roasting Design Studios",
+  "description": "Coffee Roasting Design Studio: manage coffee roasting operations, customer records, resources, schedules, service delivery and reporting in a dedicated Molan Business workspace.",
+  "icon": "♨",
+  "group": "Specialist services & industries",
+  "extended": true,
+  "features": [
+    {
+      "title": "Coffee Roasting operations",
+      "route": "operations"
+    },
+    {
+      "title": "Coffee Roasting records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Inventory & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & service orders",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & costs",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Customers & partners",
+      "route": "customers"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

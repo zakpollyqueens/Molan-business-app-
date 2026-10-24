@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 682,
+  "slug": "hearing-care-design-studio",
+  "name": "Hearing Care Design Studio",
+  "plural": "Hearing Care Design Studios",
+  "description": "Hearing Care Design Studio: manage hearing care operations, customer records, resources, schedules, service delivery and reporting in a dedicated Molan Business workspace.",
+  "icon": "✚",
+  "group": "Healthcare & wellbeing",
+  "extended": true,
+  "features": [
+    {
+      "title": "Hearing Care operations",
+      "route": "operations"
+    },
+    {
+      "title": "Hearing Care records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Inventory & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & service orders",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & costs",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Customers & partners",
+      "route": "customers"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

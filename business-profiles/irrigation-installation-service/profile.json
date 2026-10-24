@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 611,
+  "slug": "irrigation-installation-service",
+  "name": "Irrigation Installation Service",
+  "plural": "Irrigation Installation Services",
+  "description": "Irrigation Installation Service: manage irrigation operations, customer records, resources, schedules, service delivery and reporting in a dedicated Molan Business workspace.",
+  "icon": "❋",
+  "group": "Agriculture, food & natural resources",
+  "extended": true,
+  "features": [
+    {
+      "title": "Irrigation operations",
+      "route": "operations"
+    },
+    {
+      "title": "Irrigation records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Inventory & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & service orders",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & costs",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Customers & partners",
+      "route": "customers"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

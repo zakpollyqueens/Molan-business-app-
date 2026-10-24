@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 1253,
+  "slug": "food-processing-repair-workshop",
+  "name": "Food Processing Repair Workshop",
+  "plural": "Food Processing Repair Workshops",
+  "description": "Food Processing Repair Workshop: manage food processing operations, customer records, resources, schedules, service delivery and reporting in a dedicated Molan Business workspace.",
+  "icon": "♨",
+  "group": "Specialist services & industries",
+  "extended": true,
+  "features": [
+    {
+      "title": "Food Processing operations",
+      "route": "operations"
+    },
+    {
+      "title": "Food Processing records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Inventory & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & service orders",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & costs",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Customers & partners",
+      "route": "customers"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}

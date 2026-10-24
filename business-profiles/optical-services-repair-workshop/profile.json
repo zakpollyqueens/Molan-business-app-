@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "index": 653,
+  "slug": "optical-services-repair-workshop",
+  "name": "Optical Services Repair Workshop",
+  "plural": "Optical Services Repair Workshops",
+  "description": "Optical Services Repair Workshop: manage optical services operations, customer records, resources, schedules, service delivery and reporting in a dedicated Molan Business workspace.",
+  "icon": "◈",
+  "group": "Specialist services & industries",
+  "extended": true,
+  "features": [
+    {
+      "title": "Optical Services operations",
+      "route": "operations"
+    },
+    {
+      "title": "Optical Services records",
+      "route": "business-tools"
+    },
+    {
+      "title": "Inventory & supplies",
+      "route": "inventory"
+    },
+    {
+      "title": "Sales & service orders",
+      "route": "sales"
+    },
+    {
+      "title": "Tasks & schedules",
+      "route": "tasks"
+    },
+    {
+      "title": "Finance & costs",
+      "route": "finance"
+    },
+    {
+      "title": "Reports & insights",
+      "route": "reports"
+    },
+    {
+      "title": "Customers & partners",
+      "route": "customers"
+    }
+  ],
+  "settingsRoute": "industry-settings",
+  "overviewRoute": "industry-profile"
+}
