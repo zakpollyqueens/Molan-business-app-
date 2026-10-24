@@ -70,7 +70,7 @@ jobs:
           if (!html.includes('business-profiles.js') || !html.includes('business-profiles.css')) throw new Error('Shared profile loader/styles must be loaded by index.html.');
           if (!js.includes('e.stopImmediatePropagation()') || !js.includes('navigate(page)')) throw new Error('Shared navigation click handler is missing.');
           const profileFolders = fs.readdirSync('business-profiles', { withFileTypes: true }).filter(item => item.isDirectory());
-          if (profileFolders.length !== 1551) throw new Error('Expected 1,551 business profile folders (50 original active categories, one retired redirect, and 1,500 additional profiles), found ' + profileFolders.length);
+          if (profileFolders.length !== 1751) throw new Error('Expected 1,751 business profile folders (50 core profiles, 1,500 extended profiles, one retired redirect, and 200 retained specialist folders), found ' + profileFolders.length);
           const profileNames = new Set();
           for (const folder of profileFolders) {
             const file = 'business-profiles/' + folder.name + '/profile.json';
@@ -104,7 +104,7 @@ jobs:
               throw new Error('SACCO-only workflow leaked into non-SACCO profile: ' + file);
             }
           }
-          if (profileNames.size !== 1551) throw new Error('Expected 1,551 unique profile folder names (including the retired redirect and 1,500 additional profiles).');
+          if (profileNames.size !== 1751) throw new Error('Expected 1,751 unique profile folder names (including the retired redirect and 200 retained specialist folders).');
           if (!js.includes('manage_company_workspace_status') || !js.includes('data-workspace-admin-action')) throw new Error('Workspace lifecycle controls are not connected.');
           const lifecycleMigration = fs.readFileSync('supabase/migrations/20261016090000_workspace_lifecycle_controls.sql', 'utf8');
           for (const required of ['status text','deleted_at','manage_company_workspace_status','security invoker','from public, anon','to authenticated']) {
