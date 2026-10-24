@@ -152,8 +152,8 @@
       say('No problem. I have not submitted anything. You can return whenever you are ready.'); return;
     }
     if (stage === 'consent') {
-      if (/\b(plan|price|pricing|silver|gold|premium|subscription)\b/.test(n)) { explainPlans(); setTimeout(() => say('Would you like me to help you create your account and business workspace? Please say yes or no.', true), 4500); return; }
-      if (/\b(features|what can you do|what does|how does|help|inventory|sales|staff|reports|customers|finance|what is molan business)\b/.test(n)) { explainFeatures(value); setTimeout(() => say('Would you like me to help you create your account and business workspace? Please say yes or no.', true), 4500); return; }
+      if (/\b(plan|price|pricing|silver|gold|premium|subscription)\b/.test(n)) { explainPlans(); return; }
+      if (/\b(features|what can you do|what does|how does|help|inventory|sales|staff|reports|customers|finance|what is molan business)\b/.test(n)) { explainFeatures(value); return; }
       if (/^(yes|yeah|yep|okay|ok|start|proceed|sure|please)\b/.test(n) || /\b(yes|create an account|set up my business)\b/.test(n)) {
         welcomeStart();
         stage = 'step-0'; lastStep = currentStep();
