@@ -1,0 +1,121 @@
+name: Build signed Molan Business APK for Uptodown
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'scripts/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'capacitor.config.*'
+      - '.github/workflows/uptodown-android-apk.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  signed-android-apk:
+    name: Build and verify production-signed APK
+    runs-on: ubuntu-latest
+    env:
+      ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+      ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+      HAS_ANDROID_SIGNING: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' && secrets.ANDROID_KEYSTORE_PASSWORD != '' && secrets.ANDROID_KEY_ALIAS != '' && secrets.ANDROID_KEY_PASSWORD != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Require production signing secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$HAS_ANDROID_SIGNING" != "true" ]]; then
+            echo "::error::Missing Android signing secrets. Configure ANDROID_KEYSTORE_BASE64, ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS, and ANDROID_KEY_PASSWORD in GitHub Actions secrets."
+            exit 1
+          fi
+      - run: npm install
+      - name: Prepare web app and generate Android project
+        run: |
+          npm run prepare:web
+          npx cap add android
+          node scripts/configure-android-app-access.cjs
+          npx capacitor-assets generate --android
+          npx cap sync android
+      - name: Configure release version and signing
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os, pathlib, re
+          path = pathlib.Path('android/app/build.gradle')
+          source = path.read_text()
+          run_number = os.environ['GITHUB_RUN_NUMBER']
+          source, code_count = re.subn(r'(?m)^(\s*versionCode\s+)\d+', lambda m: m.group(1) + run_number, source, count=1)
+          source, name_count = re.subn(r"""(?m)^(\s*versionName\s+)[\"'][^\"']+[\"']""", lambda m: m.group(1) + '"1.0.' + run_number + '"', source, count=1)
+          if code_count != 1 or name_count != 1:
+              raise SystemExit('Could not safely set Android versionCode/versionName')
+          if 'signingConfigs {' not in source:
+              source = source.replace('    buildTypes {', '''    signingConfigs {
+              release {
+                  storeFile file("upload-keystore.jks")
+                  storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD")
+                  keyAlias System.getenv("ANDROID_KEY_ALIAS")
+                  keyPassword System.getenv("ANDROID_KEY_PASSWORD")
+              }
+          }
+
+              buildTypes {''', 1)
+          if 'signingConfig signingConfigs.release' not in source:
+              match = re.search(r'(buildTypes\s*\{\s*release\s*\{)', source)
+              if not match:
+                  raise SystemExit('Could not locate Android release build type')
+              source = source[:match.end()] + '\n            signingConfig signingConfigs.release' + source[match.end():]
+          path.write_text(source)
+          print('Configured release 1.0.' + run_number + ' (versionCode ' + run_number + ').')
+          PY
+      - name: Install signing keystore
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/app/upload-keystore.jks
+          test -s android/app/upload-keystore.jks
+      - name: Build release APK
+        working-directory: android
+        run: ./gradlew --no-daemon assembleRelease
+      - name: Verify APK signature, package, and checksum
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK=android/app/build/outputs/apk/release/app-release.apk
+          test -s "$APK"
+          APKSIGNER="$(find "$ANDROID_HOME/build-tools" -name apksigner -type f | sort -V | tail -n 1)"
+          test -x "$APKSIGNER"
+          "$APKSIGNER" verify --verbose --print-certs "$APK"
+          if command -v aapt >/dev/null 2>&1; then
+            aapt dump badging "$APK" | head -n 1
+          else
+            AAPT="$(find "$ANDROID_HOME/build-tools" -name aapt -type f | sort -V | tail -n 1)"
+            test -x "$AAPT"
+            "$AAPT" dump badging "$APK" | head -n 1
+          fi
+          ls -lh "$APK"
+          sha256sum "$APK"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: molan-business-uptodown-signed-apk-${{ github.run_number }}
+          path: android/app/build/outputs/apk/release/app-release.apk
+          if-no-files-found: error
+          retention-days: 30
+      - name: Remove temporary keystore
+        if: always()
+        run: rm -f android/app/upload-keystore.jks
