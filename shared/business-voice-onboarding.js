@@ -156,7 +156,7 @@
       if (/\b(features|what can you do|what does|how does|help|inventory|sales|staff|reports|customers|finance|what is molan business)\b/.test(n)) { explainFeatures(value); setTimeout(() => say('Would you like me to help you create your account and business workspace? Please say yes or no.', true), 4500); return; }
       if (/^(yes|yeah|yep|okay|ok|start|proceed|sure|please)\b/.test(n) || /\b(yes|create an account|set up my business)\b/.test(n)) {
         welcomeStart();
-        stage = 'step-0';
+        stage = 'step-0'; lastStep = currentStep();
         say('Great. I am opening the real setup form now. First, tell me what kind of business you run.', true);
       } else say('Please say yes to begin, or no to cancel.', true);
       return;
@@ -171,7 +171,18 @@
     }
     if (step === 0 || stage === 'step-0') {
       if (!selectBusinessType(value)) {
-        say('I could not match that phrase to a business type yet. Please say a shorter category such as school, shop, restaurant, farm, salon, or SACCO savings group. You can also choose from the list on screen.', true);
+        const search = $('guided-business-type-search');
+        if (search) { setField('guided-business-type-search', value); }
+        say('I am searching the business-type list for that answer. Please wait a moment.', false);
+        setTimeout(() => {
+          if (selectBusinessType(value)) {
+            const selected = $('guided-business-type')?.selectedOptions?.[0]?.textContent || value;
+            say('I selected ' + selected + '. Please check it is correct. I will continue to the owner account step.', false);
+            setTimeout(() => click('guided-next'), 750);
+          } else {
+            say('I could not match that phrase to a business type. Please say a shorter category such as school, shop, restaurant, farm, salon, or SACCO savings group, or choose it from the list on screen.', true);
+          }
+        }, 650);
         return;
       }
       const selected = $('guided-business-type')?.selectedOptions?.[0]?.textContent || value;
