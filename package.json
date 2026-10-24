@@ -15,12 +15,12 @@
     "@capacitor/core": "6.2.1"
   },
   "devDependencies": {
-    "@capacitor/android": "6.2.1",
-    "@capacitor/cli": "6.2.1",
-    "electron": "35.2.1",
-    "electron-builder": "26.0.12",
+    "@capacitor/android": "8.5.3",
+    "@capacitor/cli": "8.5.3",
+    "electron": "45.0.0",
+    "electron-builder": "26.18.0",
     "@capacitor/assets": "^3.0.5",
-    "sharp": "^0.34.4"
+    "sharp": "^0.35.5"
   },
   "build": {
     "appId": "com.zakmolanitech.molanbusiness",
