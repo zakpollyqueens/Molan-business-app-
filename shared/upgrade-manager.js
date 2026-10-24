@@ -5,6 +5,7 @@
   const RELEASE_API = 'https://api.github.com/repos/zakpollyqueens/Molan-business-app-/releases/latest';
   const RELEASE_PAGE = 'https://github.com/zakpollyqueens/Molan-business-app-/releases/latest';
   const REMOTE_MANIFEST = 'https://zakpollyqueens.github.io/Molan-business-app-/version.json';
+  const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.zakmolanitech.molanbusiness';
   let latest = null;
   let busy = false;
   let timer = null;
@@ -134,7 +135,12 @@
       linux: /\.AppImage$/i
     };
     const asset = assets.find(item => patterns[platform]?.test(item.name));
-    return { platform, url: asset?.browser_download_url || '', assetName: asset?.name || '' };
+    // Android production updates should come from the trusted store. Never fall
+    // back to an unsigned/debug APK from a generic release.
+    if (platform === 'android' && !asset) {
+      return { platform, url: PLAY_STORE_URL, assetName: '', storeListing: true };
+    }
+    return { platform, url: asset?.browser_download_url || '', assetName: asset?.name || '', storeListing: false };
   }
 
   function showDownloadProgress(percent, message) {
@@ -160,6 +166,11 @@
     if (!latest || busy) return; const button = document.getElementById('molan-apply-update');
     if (directDownloadFallback && latest.url) { window.location.href = latest.url; return; }
     if (!latest.native) { if (button) { button.disabled = true; button.textContent = 'Refreshing…'; } const url = new URL(window.location.href); url.searchParams.set('molan_release', latest.version); url.searchParams.set('refresh', String(Date.now())); window.location.replace(url.toString()); return; }
+    if (latest.storeListing) {
+      notify('Opening the official Google Play listing so you can install the signed update.');
+      window.location.href = latest.url;
+      return;
+    }
     if (!latest.url || !latest.assetName) { notify('The latest release does not include an installer for this device.'); return; }
     if (button) { button.disabled = true; button.textContent = 'Downloading…'; } const el = document.getElementById('molan-update-banner');
     if (el) el.querySelector('#molan-update-heading').textContent = 'Downloading Molan Business';
