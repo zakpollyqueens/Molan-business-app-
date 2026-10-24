@@ -159,7 +159,7 @@ if (fs.existsSync(versionPath)) {
     process.env.MOLAN_BUILD_VERSION ||
     (Number.isInteger(buildNumber) && buildNumber > 0 ? '1.0.' + buildNumber : '')
   ).trim().replace(/^v/i, '');
-  if (/^\\d+\\.\\d+\\.\\d+$/.test(requestedVersion)) {
+  if (/^\d+\.\d+\.\d+$/.test(requestedVersion)) {
     // Keep the packaged frontend, manifest, and Android versionName aligned with
     // the published release tag so an installed app does not report a false update.
     const buildVersion = requestedVersion;
