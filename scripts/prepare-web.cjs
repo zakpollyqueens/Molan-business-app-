@@ -155,12 +155,17 @@ const versionPath = path.join(output, 'version.json');
 if (fs.existsSync(versionPath)) {
   const version = JSON.parse(fs.readFileSync(versionPath, 'utf8'));
   const buildNumber = Number.parseInt(process.env.GITHUB_RUN_NUMBER || '', 10);
-  if (Number.isInteger(buildNumber) && buildNumber > 0) {
-    // Keep the packaged frontend and its manifest on exactly the same version.
-    const buildVersion = '1.0.' + buildNumber;
+  const requestedVersion = String(
+    process.env.MOLAN_BUILD_VERSION ||
+    (Number.isInteger(buildNumber) && buildNumber > 0 ? '1.0.' + buildNumber : '')
+  ).trim().replace(/^v/i, '');
+  if (/^\\d+\\.\\d+\\.\\d+$/.test(requestedVersion)) {
+    // Keep the packaged frontend, manifest, and Android versionName aligned with
+    // the published release tag so an installed app does not report a false update.
+    const buildVersion = requestedVersion;
     version.currentVersion = buildVersion;
     version.version = buildVersion;
-    version.buildNumber = buildNumber;
+    if (Number.isInteger(buildNumber) && buildNumber > 0) version.buildNumber = buildNumber;
     version.buildCommit = process.env.GITHUB_SHA || 'local';
     const htmlPath = path.join(output, 'index.html');
     let html = fs.readFileSync(htmlPath, 'utf8');
