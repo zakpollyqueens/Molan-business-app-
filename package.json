@@ -12,7 +12,7 @@
     "prepare:icons": "node scripts/generate-icons.cjs"
   },
   "dependencies": {
-    "@capacitor/core": "6.2.1"
+    "@capacitor/core": "8.5.3"
   },
   "devDependencies": {
     "@capacitor/android": "6.2.1",
