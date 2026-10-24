@@ -1,4 +1,4 @@
-name: Generate 500 dedicated business profiles
+name: Generate dedicated business profiles
 # Generate missing profile pages and add profile-scoped navigation.
 
 on:
@@ -42,7 +42,7 @@ jobs:
           import fs from 'node:fs';
           const catalog = JSON.parse(fs.readFileSync('business-profiles/extended-catalog.json', 'utf8'));
           const registry = JSON.parse(fs.readFileSync('business-profiles/registry.json', 'utf8'));
-          if (catalog.profiles.length !== 500) throw new Error('Expected 500 catalog entries');
+          if (!Number.isInteger(catalog.profiles.length) || catalog.profiles.length < 1) throw new Error('Extended catalogue is empty or invalid');
           for (const p of catalog.profiles) {
             for (const file of [`business-profiles/${p.slug}/profile.json`, `business-profiles/${p.slug}/index.html`, `business-profiles/${p.slug}/profile.js`, `business-profiles/${p.slug}/profile.css`]) {
               if (!fs.existsSync(file)) throw new Error('Missing generated file: ' + file);
@@ -55,7 +55,7 @@ jobs:
             }
           }
           const indexed = registry.profiles.filter(p => catalog.profiles.some(c => c.slug === p.slug));
-          if (indexed.length !== 500) throw new Error('Registry does not include all 500 extended profiles');
+          if (indexed.length !== catalog.profiles.length) throw new Error('Registry does not include every extended profile');
           for (const p of registry.profiles) {
             const configPath = p.config || `business-profiles/${p.slug}/profile.json`;
             const indexPath = p.page || `business-profiles/${p.slug}/index.html`;
@@ -79,7 +79,7 @@ jobs:
           for (const required of ['data-give-device-access','data-profile-device-access-dialog','new MutationObserver','ensureAccessMenuItem','business-app-handoff','targetDevice']) {
             if (!accessRuntime.includes(required)) throw new Error('Give Access runtime is missing required behavior: ' + required);
           }
-          console.log('Validated all 550 business profile folders, every declared feature page, and resilient device-access navigation.');
+          console.log('Validated ' + registry.profiles.length + ' registered business profiles, every declared feature page, and resilient device-access navigation.');
           NODE
       - name: Commit generated profiles to main
         run: |
@@ -90,5 +90,5 @@ jobs:
             echo "No generated changes to commit."
             exit 0
           fi
-          git commit -m "Generate 500 dedicated business profile workspaces"
+          git commit -m "Generate dedicated business profile workspaces"
           git push origin HEAD:main

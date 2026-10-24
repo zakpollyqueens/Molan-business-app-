@@ -1,4 +1,4 @@
-/* Shared runtime registry for 550 selectable Molan Business profiles (plus one retired redirect folder).
+/* Shared runtime registry for 1,550 selectable Molan Business profiles (plus one retired redirect folder).
  * Profile-specific configuration lives in /business-profiles/<slug>/profile.json.
  * Shared rendering, navigation, styling and database wiring stay in the application root.
  */
@@ -31,7 +31,7 @@
       const response = await fetch('business-profiles/extended-catalog.json', { cache: 'no-cache' });
       if (!response.ok) throw new Error('Extended business profile catalogue could not be loaded.');
       const data = await response.json();
-      if (!Array.isArray(data.profiles) || data.profiles.length < 500) throw new Error('Extended catalogue must contain at least 500 profiles.');
+      if (!Array.isArray(data.profiles) || data.profiles.length < 500) throw new Error('Extended business profile catalogue is incomplete.');
       data.profiles.forEach(profile => {
         if (!profile || !profile.slug || !profile.name || !Array.isArray(profile.features)) return;
         profile.extended = true;
@@ -42,7 +42,7 @@
         loaded.push({ config:profile, fallback:[profile.name,profile.plural,profile.description,profile.icon], extended:true });
       });
     } catch (error) {
-      console.error('[Molan Business] The 500-profile catalogue did not load:', error);
+      console.error('[Molan Business] The extended business profile catalogue did not load:', error);
     }
     catalog = loaded.map(item => [item.config.name, item.config.plural || item.config.name, item.config.description || '', item.config.icon || '◈']);
     byName = Object.create(null);
