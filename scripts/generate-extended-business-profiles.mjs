@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const root = process.cwd();
-// Keep every declared feature page in sync with its profile-owned navigation and route map.
+// Keep all 1,500 extended profiles and their declared feature pages in sync with profile-owned navigation and route maps.
 
 const catalogPath = path.join(root, 'business-profiles/extended-catalog.json');
 const registryPath = path.join(root, 'business-profiles/registry.json');
