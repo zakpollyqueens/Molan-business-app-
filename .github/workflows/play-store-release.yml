@@ -120,7 +120,7 @@ jobs:
           else
             echo '::warning::This AAB is unsigned and cannot be uploaded to Google Play. Configure the four ANDROID_KEYSTORE_* secrets to produce a signed release.'
           fi
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: molan-business-android-aab-${{ github.run_number }}
           path: android/app/build/outputs/bundle/release/app-release.aab
